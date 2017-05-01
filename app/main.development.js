@@ -1,7 +1,7 @@
 import { app, BrowserWindow } from 'electron';
 import MenuBuilder from './menu';
 
-let mainWindow: Electron.BrowserWindow | null = null;
+let mainWindow = null;
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');

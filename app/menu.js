@@ -1,9 +1,7 @@
 import { app, Menu, shell, BrowserWindow } from 'electron';
 
 export default class MenuBuilder {
-  mainWindow: Electron.BrowserWindow;
-
-  constructor(mainWindow: Electron.BrowserWindow) {
+  constructor(mainWindow) {
     this.mainWindow = mainWindow;
   }
 
@@ -42,8 +40,8 @@ export default class MenuBuilder {
     });
   }
 
-  private buildDarwinTemplate(): Electron.MenuItemOptions[] {
-    const subMenuAbout: Electron.MenuItemOptions = {
+  buildDarwinTemplate() {
+    const subMenuAbout = {
       label: 'Electron',
       submenu: [
         { label: 'About ElectronReact', selector: 'orderFrontStandardAboutPanel:' },
@@ -57,7 +55,7 @@ export default class MenuBuilder {
         { label: 'Quit', accelerator: 'Command+Q', click: () => { app.quit(); } }
       ]
     };
-    const subMenuEdit: Electron.MenuItemOptions = {
+    const subMenuEdit = {
       label: 'Edit',
       submenu: [
         { label: 'Undo', accelerator: 'Command+Z', selector: 'undo:' },
@@ -69,7 +67,7 @@ export default class MenuBuilder {
         { label: 'Select All', accelerator: 'Command+A', selector: 'selectAll:' }
       ]
     };
-    const subMenuViewDev: Electron.MenuItemOptions = {
+    const subMenuViewDev = {
       label: 'View',
       submenu: [
         { label: 'Reload', accelerator: 'Command+R', click: () => { this.mainWindow.webContents.reload(); } },
@@ -77,13 +75,13 @@ export default class MenuBuilder {
         { label: 'Toggle Developer Tools', accelerator: 'Alt+Command+I', click: () => { this.mainWindow.toggleDevTools(); } }
       ]
     };
-    const subMenuViewProd: Electron.MenuItemOptions = {
+    const subMenuViewProd = {
       label: 'View',
       submenu: [
         { label: 'Toggle Full Screen', accelerator: 'Ctrl+Command+F', click: () => { this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen()); } }
       ]
     };
-    const subMenuWindow: Electron.MenuItemOptions = {
+    const subMenuWindow = {
       label: 'Window',
       submenu: [
         { label: 'Minimize', accelerator: 'Command+M', selector: 'performMiniaturize:' },
@@ -92,7 +90,7 @@ export default class MenuBuilder {
         { label: 'Bring All to Front', selector: 'arrangeInFront:' }
       ]
     };
-    const subMenuHelp: Electron.MenuItemOptions = {
+    const subMenuHelp = {
       label: 'Help',
       submenu: [
         { label: 'Learn More', click() { shell.openExternal('http://electron.atom.io'); } },
@@ -102,7 +100,7 @@ export default class MenuBuilder {
       ]
     };
 
-    const subMenuView: Electron.MenuItemOptions = process.env.NODE_ENV === 'development'
+    const subMenuView = process.env.NODE_ENV === 'development'
       ? subMenuViewDev
       : subMenuViewProd;
 
@@ -115,8 +113,8 @@ export default class MenuBuilder {
     ];
   }
 
-  private buildDefaultTemplate() {
-    const templateDefault: Electron.MenuItemOptions[] = [{
+  buildDefaultTemplate() {
+    const templateDefault = [{
       label: '&File',
       submenu: [{
         label: '&Open',

@@ -1,6 +1,14 @@
-const local = (process.env.NODE_ENV === 'production') ?
-  require('./configureStore.production').default as any :
-  require('./configureStore.development').default as any;
+let store: any;
 
-export const configureStore: Function = local.configureStore;
-export const history: any = local.history;
+if (process.env.NODE_ENV === 'production') {
+	store = require('./configureStore.production');
+} else {
+	store = require('./configureStore.development');
+}
+
+// TODO: redux thunk doesn't use 'default' prop?
+console.log('store', store);
+
+const {history, configureStore} = store;
+
+export {history, configureStore};
