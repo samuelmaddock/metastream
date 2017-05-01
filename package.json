@@ -102,6 +102,7 @@
     "@types/react-router-dom": "^4.0.4",
     "@types/react-router-redux": "^5.0.0",
     "@types/redux": "^3.6.0",
+    "@types/redux-logger": "^3.0.0",
     "@types/redux-thunk": "^2.1.0",
     "asar": "^0.13.0",
     "awesome-typescript-loader": "^3.1.3",

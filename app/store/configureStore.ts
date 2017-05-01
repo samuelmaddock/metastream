@@ -1,5 +1,6 @@
-const configureStore = (process.env.NODE_ENV === 'production') ?
-  require('./configureStore.production').default :
-  require('./configureStore.development').default;
+const local = (process.env.NODE_ENV === 'production') ?
+  require('./configureStore.production').default as any :
+  require('./configureStore.development').default as any;
 
-export default configureStore as any;
+export const configureStore: Function = local.configureStore;
+export const history: any = local.history;
