@@ -1,5 +1,6 @@
 {
   "javascript.validate.enable": false,
+  "typescript.tsdk": "node_modules/typescript/lib",
   "search.exclude": {
     ".git": true,
     "node_modules": true,
