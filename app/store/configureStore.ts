@@ -1,13 +1,10 @@
 let store: any;
 
 if (process.env.NODE_ENV === 'production') {
-	store = require('./configureStore.production');
+	store = require('./configureStore.prod');
 } else {
-	store = require('./configureStore.development');
+	store = require('./configureStore.dev');
 }
-
-// TODO: redux thunk doesn't use 'default' prop?
-console.log('store', store);
 
 const {history, configureStore} = store;
 

@@ -15,10 +15,10 @@ export default merge.smart(baseConfig, {
 
   entry: ['babel-polyfill', './app/main.dev'],
 
-  // 'main.js' in root
+  // 'main.prod.js' in root
   output: {
     path: __dirname,
-    filename: './app/main.js'
+    filename: './app/main.prod.js'
   },
 
   plugins: [
