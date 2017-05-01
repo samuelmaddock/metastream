@@ -1,14 +1,12 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
-import { hashHistory } from 'react-router-dom';
-import { createBrowserHistory } from 'history';
-import { routerMiddleware, push } from 'react-router-redux';
+import { createHashHistory } from 'history';
+import { routerMiddleware, routerAction } from 'react-router-redux';
 import { createLogger } from 'redux-logger';
 import rootReducer from '../reducers';
 
 
-
-const history = createBrowserHistory();
+const history = createHashHistory();
 
 const configureStore = (initialState: {}) => {
   // Redux Configuration
@@ -26,13 +24,12 @@ const configureStore = (initialState: {}) => {
   middleware.push(logger);
 
   // Router Middleware
-  const router = routerMiddleware(hashHistory);
+  const router = routerMiddleware(history);
   middleware.push(router);
 
   // Redux DevTools Configuration
   const actionCreators = {
-
-    push,
+    ...routerAction
   };
   // If Redux DevTools Extension is installed use it, otherwise use Redux compose
   const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
