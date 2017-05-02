@@ -27,7 +27,8 @@
     "package-win": "npm run build && build --win --x64",
     "package-linux": "npm run build && build --linux",
     "package-all": "npm run build && build -mwl",
-    "cleanup": "mop -v"
+    "steam:appid": "echo 480 > app/steam_appid.txt",
+    "greenworks:rebuild": "HOME=~/.electron-gyp node-gyp rebuild --target=1.6.7 --arch=x64 --dist-url=https://atom.io/download/electron"
   },
   "browserslist": "electron 1.4",
   "build": {
@@ -128,9 +129,10 @@
     "cross-spawn": "^5.1.0",
     "css-loader": "^0.28.0",
     "devtron": "^1.4.0",
-    "electron": "^1.6.5",
+    "electron": "1.6.7",
     "electron-builder": "^17.0.1",
     "electron-devtools-installer": "^2.2.0",
+    "electron-rebuild": "^1.5.7",
     "enzyme": "^2.8.2",
     "express": "^4.15.2",
     "fbjs-scripts": "^0.7.1",
