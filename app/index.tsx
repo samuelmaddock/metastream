@@ -8,26 +8,45 @@ import './app.global.css';
 const { configureStore, history } = cfgStore;
 const store = configureStore();
 
-function initSteam() {
-  let steamworks: any;
+/*function initSteam() {
+  let steamworks: Steamworks | null;
   try {
-    steamworks = require('greenworks');
+    steamworks = require('./steamworks');
   } catch (e) {
     console.log('Failed to load steamworks');
     console.error(e);
     steamworks = null;
   }
-  console.log('steamworks', steamworks);
+
+  if (!steamworks) {
+    return;
+  }
+
+  console.info(`Initializing Steamworks (Greenworks ${steamworks._version})...`);
+  if (steamworks.initAPI()) {
+    console.info('Successfully initialized Steamworks');
+  } else {
+    console.error('Failed to initialize Steamworks');
+  }
+
+  (global as any).steamworks = steamworks;
+}*/
+
+function onRendered() {
+  // initSteam();
 }
 
-initSteam();
+function init() {
+  render(
+    <AppContainer>
+      <Root store={store} history={history} />
+    </AppContainer>,
+    document.getElementById('root'),
+    onRendered
+  );
+}
 
-render(
-  <AppContainer>
-    <Root store={store} history={history} />
-  </AppContainer>,
-  document.getElementById('root')
-);
+init();
 
 if (module.hot) {
   module.hot.accept('./containers/Root', () => {
