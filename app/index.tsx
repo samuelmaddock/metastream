@@ -8,6 +8,20 @@ import './app.global.css';
 const { configureStore, history } = cfgStore;
 const store = configureStore();
 
+function initSteam() {
+  let steamworks: any;
+  try {
+    steamworks = require('greenworks');
+  } catch (e) {
+    console.log('Failed to load steamworks');
+    console.error(e);
+    steamworks = null;
+  }
+  console.log('steamworks', steamworks);
+}
+
+initSteam();
+
 render(
   <AppContainer>
     <Root store={store} history={history} />

@@ -14,5 +14,6 @@
   },
   "license": "MIT",
   "dependencies": {
+    "greenworks": "^0.1.0"
   }
 }
