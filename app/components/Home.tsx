@@ -6,7 +6,9 @@ export default class Home extends Component<{},{}> {
   render() {
     return (
       <div>
-        <div className={styles.container} data-tid="container" />
+        <div className={styles.container} data-tid="container">
+          home
+        </div>
       </div>
     );
   }

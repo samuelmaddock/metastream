@@ -6,6 +6,5 @@ if (process.env.NODE_ENV === 'production') {
 	store = require('./configureStore.dev');
 }
 
-const {history, configureStore} = store;
-
-export {history, configureStore};
+export const history = store.history;
+export const configureStore = store.configureStore;
