@@ -9,3 +9,8 @@ declare module Electron {
     selector?: string;
   }
 }
+
+interface Window {
+  // Runtime 'require' preventing webpack from resolving the module
+  require(module: string): any;
+}
