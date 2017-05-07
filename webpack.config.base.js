@@ -39,10 +39,7 @@ export default {
     modules: [
       path.join(__dirname, 'app'),
       'node_modules',
-    ],
-    alias: {
-      steamworks: 'greenworks'
-    }
+    ]
   },
 
   plugins: [

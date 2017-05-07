@@ -36,30 +36,6 @@ const installExtensions = async () => {
     .catch(console.log);
 };
 
-const initSteam = () => {
-  let steamworks;
-  try {
-    steamworks = require('./steamworks');
-  } catch (e) {
-    console.log('Failed to load steamworks');
-    console.error(e);
-    steamworks = null;
-  }
-
-  if (!steamworks) {
-    return;
-  }
-
-  console.info(`Initializing Steamworks (Greenworks ${steamworks._version})...`);
-  if (steamworks.initAPI()) {
-    console.info('Successfully initialized Steamworks');
-  } else {
-    console.error('Failed to initialize Steamworks');
-  }
-
-  global.steamworks = steamworks;
-};
-
 /**
  * Add event listeners...
  */
@@ -74,8 +50,6 @@ app.on('window-all-closed', () => {
 
 
 app.on('ready', async () => {
-  initSteam();
-
   if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
     await installExtensions();
   }

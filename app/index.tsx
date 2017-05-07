@@ -8,10 +8,10 @@ import './app.global.css';
 const { configureStore, history } = cfgStore;
 const store = configureStore();
 
-/*function initSteam() {
-  let steamworks: Steamworks | null;
+function initSteam() {
+  let steamworks: Steamworks.Steamworks | null;
   try {
-    steamworks = require('./steamworks');
+    steamworks = window.require('./steamworks');
   } catch (e) {
     console.log('Failed to load steamworks');
     console.error(e);
@@ -29,11 +29,18 @@ const store = configureStore();
     console.error('Failed to initialize Steamworks');
   }
 
+  console.log(steamworks.getFriendCount(steamworks.FriendFlags.Immediate));
+  var friends = steamworks.getFriends(steamworks.FriendFlags.Immediate);
+  for (var i = 0; i < friends.length; ++i) {
+    console.log(`${friends[i].getPersonaName()} [${friends[i].getRawSteamID()}]`);
+    steamworks.requestUserInformation(friends[i].getRawSteamID(), true);
+  }
+
   (global as any).steamworks = steamworks;
-}*/
+}
 
 function onRendered() {
-  // initSteam();
+  initSteam();
 }
 
 function init() {
