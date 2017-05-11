@@ -130,3 +130,7 @@ declare module Steamworks {
     getSteamLevel(): number;
   }
 }
+
+interface NodeRequireFunction {
+	(moduleName: 'greenworks'): Steamworks.Steamworks;
+}

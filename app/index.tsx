@@ -5,6 +5,8 @@ import Root from './containers/Root';
 import * as cfgStore from './store/configureStore';
 import './app.global.css';
 
+const electron = window.require('electron');
+
 const { configureStore, history } = cfgStore;
 const store = configureStore();
 
@@ -27,6 +29,8 @@ function initSteam() {
     console.info('Successfully initialized Steamworks');
   } else {
     console.error('Failed to initialize Steamworks');
+    electron.remote.app.exit();
+    return;
   }
 
   console.log(steamworks.getFriendCount(steamworks.FriendFlags.Immediate));
