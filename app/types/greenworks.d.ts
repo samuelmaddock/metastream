@@ -1,19 +1,75 @@
+/**
+ * Greenworks
+ * https://github.com/greenheartgames/greenworks/tree/master/docs
+ */
 declare module Steamworks {
   interface Steamworks {
     _version: string;
 
+    // FRIENDS
     FriendFlags: typeof FriendFlags;
     FriendRelationship: typeof FriendRelationship;
     PersonaChange: typeof PersonaChange;
     AccountType: typeof AccountType;
     ChatEntryType: typeof ChatEntryType;
 
-    initAPI(): boolean;
+    // AUTHENTICATION
+    // https://github.com/greenheartgames/greenworks/blob/master/docs/authentication.md
+    getAuthSessionTicket(success: (ticket: IAuthSessionTicket) => void, error: ErrorCallback): void;
+    cancelAuthTicket(ticket_handle: Handle): void;
+    getEncryptedAppTicket(user_data: string, success: (encrypted_ticket: Buffer) => void, error: ErrorCallback): void;
+    decryptAppTicket(encrypted_ticket: Buffer, decryption_key: Buffer): Buffer | null;
+    isTicketForApp(decrypted_ticket: Buffer, app_id: number): boolean;
+    getTicketIssueTime(decrypted_ticket: Buffer): number;
+    getTicketSteamId(decrypted_ticket: Buffer): SteamID;
+    getTicketAppId(decrypted_ticket: Buffer): number;
 
+    // SETTING
+    // https://github.com/greenheartgames/greenworks/blob/master/docs/setting.md
+    initAPI(): boolean;
+    init(): boolean;
+    isSteamRunning(): boolean;
+    restartAppIfNecessary(appId: number): boolean;
+    getAppId(): number;
+    getSteamId(): SteamID;
+    getCurrentGameLanguage(): string;
+    getCurrentUILanguage(): string;
+    getCurrentGameInstallDir(): never;
+    getNumberOfPlayers(success: (num_of_players: number) => void, error: ErrorCallback): void;
+    activateGameOverlay(option: OverlayOption): void;
+    isGameOverlayEnabled(): boolean;
+    activateGameOverlayToWebPage(url: string): void;
+    isSubscribedApp(appId: number): boolean;
+    getImageSize(handle: number): { width: number; height: number; }; // TODO: verify return type
+    getImageRGBA(handle: number): Buffer;
+
+    // FRIENDS
     getFriendCount(friend_flag: FriendFlags): number;
     getFriends(friend_flag: FriendFlags): SteamID[];
     requestUserInformation(raw_steam_id: SteamID64, require_name_only: boolean): void;
+    getSmallFriendAvatar(raw_steam_id: SteamID64): Handle;
+    getMediumFriendAvatar(raw_steam_id: SteamID64): Handle;
+    getLargeFriendAvatar(raw_steam_id: SteamID64): Handle;
+    setListenForFriendsMessage(intercept_enabled: boolean): boolean;
+    replyToFriendMessage(raw_steam_id: SteamID64, message: string): boolean;
+    getFriendMessage(raw_steam_id: SteamID64, message_id: number, maximum_message_size: number): string;
   }
+
+  type Handle = number;
+  type ErrorCallback = (err: string) => void;
+
+  //
+  // AUTHENTICATION
+  //
+
+  interface IAuthSessionTicket {
+    ticket: Buffer;
+    handle: Handle;
+  }
+
+  //
+  // FRIENDS
+  //
 
   /**
    * Represents Steam SDK `EFriendFlags`, for enumerating friends list, or
@@ -128,6 +184,29 @@ declare module Steamworks {
     getNickname(): string;
     getRelationship(): FriendRelationship;
     getSteamLevel(): number;
+  }
+
+  //
+  // SETTING
+  //
+
+  type OverlayOption = 'Friends' | 'Community' | 'Players' | 'Settings' | 'OfficialGameGroup' | 'Stats' | 'Achievements';
+
+  //
+  // EVENTS
+  // https://github.com/greenheartgames/greenworks/blob/master/docs/events.md
+  //
+
+  interface Steamworks {
+    on(eventName: 'game-overlay-activated', callback: (is_active: boolean) => void): void;
+    on(eventName: 'game-servers-connected', callback: Function): void;
+    on(eventName: 'game-servers-disconnected', callback: Function): void;
+    on(eventName: 'game-server-connect-failure', callback: Function): void;
+    on(eventName: 'steam-shutdown', callback: Function): void;
+    on(eventName: 'persona-state-change', callback: Function): void;
+    on(eventName: 'avatar-image-loaded', callback: Function): void;
+    on(eventName: 'game-connected-friend-chat-message', callback: (steam_id: SteamID64, message_id: number) => void): void;
+    on(eventName: 'dlc-installed', callback: (dlc_app_id: number) => void): void;
   }
 }
 
