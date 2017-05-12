@@ -3,15 +3,8 @@
  * https://github.com/greenheartgames/greenworks/tree/master/docs
  */
 declare module Steamworks {
-  interface Steamworks {
+  interface API {
     _version: string;
-
-    // FRIENDS
-    FriendFlags: typeof FriendFlags;
-    FriendRelationship: typeof FriendRelationship;
-    PersonaChange: typeof PersonaChange;
-    AccountType: typeof AccountType;
-    ChatEntryType: typeof ChatEntryType;
 
     // AUTHENTICATION
     // https://github.com/greenheartgames/greenworks/blob/master/docs/authentication.md
@@ -44,6 +37,11 @@ declare module Steamworks {
     getImageRGBA(handle: number): Buffer;
 
     // FRIENDS
+    FriendFlags: typeof FriendFlags;
+    FriendRelationship: typeof FriendRelationship;
+    PersonaChange: typeof PersonaChange;
+    AccountType: typeof AccountType;
+    ChatEntryType: typeof ChatEntryType;
     getFriendCount(friend_flag: FriendFlags): number;
     getFriends(friend_flag: FriendFlags): SteamID[];
     requestUserInformation(raw_steam_id: SteamID64, require_name_only: boolean): void;
@@ -53,6 +51,11 @@ declare module Steamworks {
     setListenForFriendsMessage(intercept_enabled: boolean): boolean;
     replyToFriendMessage(raw_steam_id: SteamID64, message: string): boolean;
     getFriendMessage(raw_steam_id: SteamID64, message_id: number, maximum_message_size: number): string;
+
+    // MATCHMAKING
+    LobbyType: typeof LobbyType;
+    createLobby(lobby_type: LobbyType, max_members: number, success: (lobby_id: SteamID64) => void): void;
+    inviteUserToLobby(lobby_id: SteamID64, user_id: SteamID64): boolean;
   }
 
   type Handle = number;
@@ -193,11 +196,22 @@ declare module Steamworks {
   type OverlayOption = 'Friends' | 'Community' | 'Players' | 'Settings' | 'OfficialGameGroup' | 'Stats' | 'Achievements';
 
   //
+  // MATCHMAKING
+  //
+
+  enum LobbyType {
+    Private = 0,
+    FriendsOnly = 1,
+    Public = 2,
+    Invisible = 3
+  }
+
+  //
   // EVENTS
   // https://github.com/greenheartgames/greenworks/blob/master/docs/events.md
   //
 
-  interface Steamworks {
+  interface API {
     on(eventName: 'game-overlay-activated', callback: (is_active: boolean) => void): void;
     on(eventName: 'game-servers-connected', callback: Function): void;
     on(eventName: 'game-servers-disconnected', callback: Function): void;
@@ -211,5 +225,5 @@ declare module Steamworks {
 }
 
 interface NodeRequireFunction {
-	(moduleName: 'greenworks'): Steamworks.Steamworks;
+	(moduleName: 'greenworks'): Steamworks.API;
 }

@@ -11,7 +11,7 @@ const { configureStore, history } = cfgStore;
 const store = configureStore();
 
 function initSteam() {
-  let steamworks: Steamworks.Steamworks | null;
+  let steamworks: Steamworks.API | null;
   try {
     steamworks = window.require('./steamworks');
   } catch (e) {
