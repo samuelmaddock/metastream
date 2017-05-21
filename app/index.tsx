@@ -50,15 +50,55 @@ function initSteam() {
     });
   }
 
-  steamworks.createLobby(steamworks.LobbyType.FriendsOnly, 16, async (lobbyId) => {
+  const GAME_GUID = '328e7911-b879-4846-8fcc-3ba367984e6f';
+
+  steamworks.createLobby(steamworks.LobbyType.Public, 16, async (lobbyId) => {
     console.info(`Created lobby [${lobbyId}]`);
+
+    steamworks.setLobbyData(lobbyId, 'game', GAME_GUID);
 
     steamworks.sendLobbyChatMsg(lobbyId, Buffer.from('Hello world', 'utf-8'));
     await sleep(1000);
-    steamworks.sendLobbyChatMsg(lobbyId, Buffer.from('Another test', 'utf-8'));
-    await sleep(5000);
-    steamworks.sendLobbyChatMsg(lobbyId, Buffer.from('yay!!1', 'utf-8'));
+
+    (window as any).requestLobbyList = requestList;
+    requestList();
+    // steamworks.sendLobbyChatMsg(lobbyId, Buffer.from('Another test', 'utf-8'));
+    // await sleep(5000);
+    // steamworks.sendLobbyChatMsg(lobbyId, Buffer.from('yay!!1', 'utf-8'));
   });
+
+  const getLobbyData = (lobbyId: Steamworks.SteamID) => {
+    let data: any = {};
+    const numData = steamworks.getLobbyDataCount(lobbyId.getRawSteamID());
+    for (let i = 0; i < numData; i++) {
+      const [key, value] = steamworks.getLobbyDataByIndex(lobbyId.getRawSteamID(), i);
+      data[key] = value;
+    }
+    return data;
+  };
+
+  const requestList = () => {
+    steamworks.requestLobbyList({
+      filters: [
+        // { key: 'mod', value: 'Stellaris', comparator: steamworks.LobbyComparison.Equal },
+        // { key: 'status', value: 'STARTING', comparator: steamworks.LobbyComparison.NotEqual },
+        { key: 'game', value: GAME_GUID, comparator: steamworks.LobbyComparison.Equal }
+      ],
+      distance: steamworks.LobbyDistanceFilter.Worldwide,
+      count: 50
+    }, (count) => {
+      console.info('Received lobby list', count);
+
+      let lobbies: any = {};
+
+      for (let i = 0; i < count; i++) {
+        const lobby = steamworks.getLobbyByIndex(i);
+        lobbies[lobby.getRawSteamID()] = getLobbyData(lobby);
+      }
+
+      console.log(lobbies);
+    });
+  }
 
   (global as any).steamworks = steamworks;
 }

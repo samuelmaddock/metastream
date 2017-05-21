@@ -54,10 +54,18 @@ declare module Steamworks {
 
     // MATCHMAKING
     LobbyType: typeof LobbyType;
+    LobbyComparison: typeof LobbyComparison;
+    LobbyDistanceFilter: typeof LobbyDistanceFilter;
+    requestLobbyList(options: ILobbyListRequest, success: (count: number) => void): void;
+    getLobbyByIndex(lobby_idx: number): SteamID;
     createLobby(lobby_type: LobbyType, max_members: number, success: (lobby_id: SteamID64) => void): void;
     joinLobby(lobby_id: SteamID64, success: (lobby_id: SteamID64) => void): void;
     leaveLobby(lobby_id: SteamID64): void;
     inviteUserToLobby(lobby_id: SteamID64, user_id: SteamID64): boolean;
+    getLobbyData(lobby_id: SteamID64, key: string): string;
+    setLobbyData(lobby_id: SteamID64, key: string, value: string): boolean;
+    getLobbyDataCount(lobby_id: SteamID64): number;
+    getLobbyDataByIndex(lobby_id: SteamID64, data_idx: number): [string, string];
     sendLobbyChatMsg(lobby_id: SteamID64, msg: Buffer): boolean;
     getLobbyChatEntry(lobby_id: SteamID64, chat_id: number): { steamId: SteamID64; message: Buffer };
   }
@@ -208,6 +216,42 @@ declare module Steamworks {
     FriendsOnly = 1,
     Public = 2,
     Invisible = 3
+  }
+
+  enum LobbyComparison {
+    EqualToOrLessThan = -2,
+    LessThan = -1,
+    Equal = 0,
+    GreaterThan = 1,
+    EqualToOrGreaterThan = 2,
+    NotEqual = 3
+  }
+
+  enum LobbyDistanceFilter {
+    Close,
+    Default,
+    Far,
+    Worldwide
+  }
+
+  interface ILobbyListRequestFilter {
+    key: string;
+    value: string | number;
+    comparator: LobbyComparison;
+  }
+
+  interface ILobbyListRequestNearFilter {
+    key: string;
+    value: number;
+  }
+
+  interface ILobbyListRequest {
+    filters?: ILobbyListRequestFilter[];
+    nearFilters?: ILobbyListRequestNearFilter[];
+    slots?: number;
+    distance?: LobbyDistanceFilter;
+    count?: number;
+    compatibleMembers?: SteamID64;
   }
 
   //
