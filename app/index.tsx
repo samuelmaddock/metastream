@@ -7,10 +7,9 @@ import './app.global.css';
 
 const electron = window.require('electron');
 
-const { configureStore, history } = cfgStore;
-const store = configureStore();
+let store: any;
 
-function initSteam() {
+function initSteam(): Steamworks.API | undefined {
   let steamworks: Steamworks.API;
   try {
     steamworks = window.require('./steamworks');
@@ -25,10 +24,15 @@ function initSteam() {
     console.info('Successfully initialized Steamworks');
   } else {
     console.error('Failed to initialize Steamworks');
-    electron.remote.app.exit();
     return;
   }
 
+  // DEBUG
+  (global as any).steamworks = steamworks;
+
+  return steamworks;
+
+  /*
   console.log(steamworks.getFriendCount(steamworks.FriendFlags.Immediate));
   var friends = steamworks.getFriends(steamworks.FriendFlags.Immediate);
   for (var i = 0; i < friends.length; ++i) {
@@ -66,54 +70,27 @@ function initSteam() {
     // await sleep(5000);
     // steamworks.sendLobbyChatMsg(lobbyId, Buffer.from('yay!!1', 'utf-8'));
   });
-
-  const getLobbyData = (lobbyId: Steamworks.SteamID) => {
-    let data: any = {};
-    const numData = steamworks.getLobbyDataCount(lobbyId.getRawSteamID());
-    for (let i = 0; i < numData; i++) {
-      const [key, value] = steamworks.getLobbyDataByIndex(lobbyId.getRawSteamID(), i);
-      data[key] = value;
-    }
-    return data;
-  };
-
-  const requestList = () => {
-    steamworks.requestLobbyList({
-      filters: [
-        // { key: 'mod', value: 'Stellaris', comparator: steamworks.LobbyComparison.Equal },
-        // { key: 'status', value: 'STARTING', comparator: steamworks.LobbyComparison.NotEqual },
-        { key: 'game', value: GAME_GUID, comparator: steamworks.LobbyComparison.Equal }
-      ],
-      distance: steamworks.LobbyDistanceFilter.Worldwide,
-      count: 50
-    }, (count) => {
-      console.info('Received lobby list', count);
-
-      let lobbies: any = {};
-
-      for (let i = 0; i < count; i++) {
-        const lobby = steamworks.getLobbyByIndex(i);
-        lobbies[lobby.getRawSteamID()] = getLobbyData(lobby);
-      }
-
-      console.log(lobbies);
-    });
-  }
-
-  (global as any).steamworks = steamworks;
-}
-
-function onRendered() {
-  initSteam();
+  */
 }
 
 function init() {
+  const steamworks = initSteam();
+
+  if (!steamworks) {
+    electron.remote.app.exit();
+    return;
+  }
+
+  const extra = { steamworks };
+
+  const { configureStore, history } = cfgStore;
+  store = configureStore(extra);
+
   render(
     <AppContainer>
       <Root store={store} history={history} />
     </AppContainer>,
-    document.getElementById('root'),
-    onRendered
+    document.getElementById('root')
   );
 }
 

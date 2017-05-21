@@ -4,17 +4,19 @@ import { createHashHistory } from 'history';
 import { routerMiddleware, routerAction } from 'react-router-redux';
 import { createLogger } from 'redux-logger';
 import rootReducer from '../reducers';
+import { IExtra } from 'types/thunk';
 
 
 const history = createHashHistory();
 
-const configureStore = (initialState?: {}) => {
+const configureStore = (extra: IExtra, initialState?: {}) => {
   // Redux Configuration
   const middleware = [];
   const enhancers = [];
 
   // Thunk Middleware
-  middleware.push(thunk);
+  const thunkMiddleware = thunk.withExtraArgument(extra);
+  middleware.push(thunkMiddleware);
 
   // Logging Middleware
   const logger = createLogger({

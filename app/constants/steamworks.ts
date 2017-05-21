@@ -1,0 +1,1 @@
+export const LOBBY_GAME_GUID = '328e7911-b879-4846-8fcc-3ba367984e6f';
