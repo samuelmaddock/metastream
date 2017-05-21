@@ -55,7 +55,11 @@ declare module Steamworks {
     // MATCHMAKING
     LobbyType: typeof LobbyType;
     createLobby(lobby_type: LobbyType, max_members: number, success: (lobby_id: SteamID64) => void): void;
+    joinLobby(lobby_id: SteamID64, success: (lobby_id: SteamID64) => void): void;
+    leaveLobby(lobby_id: SteamID64): void;
     inviteUserToLobby(lobby_id: SteamID64, user_id: SteamID64): boolean;
+    sendLobbyChatMsg(lobby_id: SteamID64, msg: Buffer): boolean;
+    getLobbyChatEntry(lobby_id: SteamID64, chat_id: number): { steamId: SteamID64; message: Buffer };
   }
 
   type Handle = number;
@@ -219,8 +223,9 @@ declare module Steamworks {
     on(eventName: 'steam-shutdown', callback: Function): void;
     on(eventName: 'persona-state-change', callback: Function): void;
     on(eventName: 'avatar-image-loaded', callback: Function): void;
-    on(eventName: 'game-connected-friend-chat-message', callback: (steam_id: SteamID64, message_id: number) => void): void;
+    on(eventName: 'game-connected-friend-chat-message', callback: (steam_id: SteamID, message_id: number) => void): void;
     on(eventName: 'dlc-installed', callback: (dlc_app_id: number) => void): void;
+    on(eventName: 'lobby-chat-message', callback: (lobby_steam_id: SteamID, user_steam_id: SteamID, type: any, chat_id: number) => void): void;
   }
 }
 
