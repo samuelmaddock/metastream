@@ -5,7 +5,7 @@ import { IReactReduxProps } from 'types/redux';
 
 import { IAppState } from "reducers";
 
-import { requestLobbies, ILobbyRequestResult, joinLobby, leaveLobby, sendLobbyChatMsg } from 'actions/steamworks';
+import { requestLobbies, ILobbyRequestResult, joinLobby, leaveLobby, sendLobbyChatMsg, IChatMessage } from 'actions/steamworks';
 import { NetworkState } from "types/network";
 import { Lobby } from "components/Lobby";
 
@@ -17,10 +17,12 @@ interface IProps extends RouteComponentProps<IRouteParams> {
 }
 
 interface IConnectedProps {
+  chat?: IChatMessage[];
 }
 
 function mapStateToProps(state: IAppState): IConnectedProps {
   return {
+    chat: state.lobby.chat
   };
 }
 
@@ -48,6 +50,7 @@ export class _LobbyPage extends Component<PrivateProps, void> {
 
     return (
       <Lobby name={this.getLobbyId()}
+        messages={this.props.chat || []}
         sendMessage={this.sendMessage} />
     );
   }

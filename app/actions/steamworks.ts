@@ -9,9 +9,23 @@ export interface ILobbyRequestResult {
   data: {[key: string]: string}
 }
 
+export interface IChatMessage {
+  senderId: Steamworks.SteamID64;
+  name: string;
+  text: string;
+}
+
+interface ILobbyChatAction<P> {
+  type: string;
+  payload: P;
+}
+
+type LobbyChatMessageAction = ILobbyChatAction<string>;
+
 export const loadLobbies = actionCreator<void>('LOAD_LOBBIES');
 export const setLobbies = actionCreator<ILobbyRequestResult[]>('SET_LOBBIES');
 export const setLobby = actionCreator<void>('SET_LOBBY');
+export const addChat = actionCreator<IChatMessage>('ADD_CHAT');
 
 export const initSteam = (): Thunk<void> => {
   return (dispatch, getState, { steamworks }) => {
@@ -58,10 +72,32 @@ export const joinLobby = (lobbyId: Steamworks.SteamID64): Thunk<void> => {
       console.info('JOINED LOBBY', lobbyId);
       // dispatch(setLobby());
 
-      // TODO: make this more maintanable
+      // TODO: make this more maintainable
       const events = {
         onChatMsg(lobbyId: Steamworks.SteamID, userId: Steamworks.SteamID, type: any, chatId: number) {
-          console.log('received chat msg', arguments);
+          const entry = steamworks.getLobbyChatEntry(lobbyId.getRawSteamID(), chatId);
+          const message = entry.message.toString('utf-8');
+          let json: LobbyChatMessageAction;
+
+          try {
+            json = JSON.parse(message);
+          } catch (e) {
+            console.error('Failed to parse message');
+            return;
+          }
+
+          console.log('Received', entry, json);
+
+          if (json.type === 'chat') {
+            dispatch(addChat({
+              senderId: entry.steamId,
+              name: userId.getPersonaName(),
+              text: json.payload
+            }));
+          }
+
+          // if (entry.steamId !== steamworks.getSteamId().getRawSteamID()) {
+          // }
         }
       };
       lobbyEvents[lobbyId] = events;
@@ -98,7 +134,7 @@ export const createLobby = (): Thunk<void> => {
 export const sendLobbyChatMsg = (lobbyId: Steamworks.SteamID64, msg: string): Thunk<void> => {
   return (dispatch, getState, { steamworks }) => {
     // TODO: create chat middleware for handling protocol
-    const envelope = {
+    const envelope: LobbyChatMessageAction = {
       type: 'chat',
       payload: msg
     };
