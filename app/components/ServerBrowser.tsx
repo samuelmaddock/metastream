@@ -34,7 +34,7 @@ export class ServerBrowser extends Component<IProps,{}> {
     const lobbies = list!.map((result) => {
       return (
         <li key={result.steamId}>
-          {result.steamId}
+          <Link to={`/lobby/${result.steamId}`}>{result.steamId}</Link>
         </li>
       )
     });

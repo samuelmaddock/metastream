@@ -34,8 +34,9 @@ type PrivateProps = IProps & IConnectedProps & IReactReduxProps;
 
 export class _ServerBrowserPage extends Component<PrivateProps, void> {
   componentDidMount(): void {
-    console.log('ServerBrowserPage mounted');
-    this.props.dispatch(requestLobbies());
+    if (this.props.network === NetworkState.Uninitialized) {
+      this.props.dispatch(requestLobbies());
+    }
   }
 
   render() {

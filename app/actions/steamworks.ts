@@ -10,6 +10,13 @@ export interface ILobbyRequestResult {
 
 export const loadLobbies = actionCreator<void>('LOAD_LOBBIES');
 export const setLobbies = actionCreator<ILobbyRequestResult[]>('SET_LOBBIES');
+export const setLobby = actionCreator<void>('SET_LOBBY');
+
+export const initSteam = (): Thunk<void> => {
+  return (dispatch, getState, { steamworks }) => {
+    // TODO: move init code here?
+  };
+}
 
 export const requestLobbies = (): Thunk<void> => {
   return (dispatch, getState, { steamworks }) => {
@@ -42,8 +49,19 @@ export const requestLobbies = (): Thunk<void> => {
   };
 }
 
-export const initSteam = (): Thunk<void> => {
+export const joinLobby = (lobbyId: Steamworks.SteamID64): Thunk<void> => {
   return (dispatch, getState, { steamworks }) => {
-    // TODO: move init code here?
+    steamworks.joinLobby(lobbyId, (test) => {
+      console.info('JOINED LOBBY', lobbyId);
+      // dispatch(setLobby());
+    });
   };
-}
+};
+
+export const leaveLobby = (lobbyId: Steamworks.SteamID64): Thunk<void> => {
+  return (dispatch, getState, { steamworks }) => {
+    steamworks.leaveLobby(lobbyId);
+    console.info('LEFT LOBBY', lobbyId);
+    // dispatch(setLobby());
+  };
+};
