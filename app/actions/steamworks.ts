@@ -50,11 +50,23 @@ export const requestLobbies = (): Thunk<void> => {
   };
 }
 
+const lobbyEvents: any = {};
+
 export const joinLobby = (lobbyId: Steamworks.SteamID64): Thunk<void> => {
   return (dispatch, getState, { steamworks }) => {
     steamworks.joinLobby(lobbyId, (test) => {
       console.info('JOINED LOBBY', lobbyId);
       // dispatch(setLobby());
+
+      // TODO: make this more maintanable
+      const events = {
+        onChatMsg(lobbyId: Steamworks.SteamID, userId: Steamworks.SteamID, type: any, chatId: number) {
+          console.log('received chat msg', arguments);
+        }
+      };
+      lobbyEvents[lobbyId] = events;
+
+      steamworks.on('lobby-chat-message', events.onChatMsg);
     });
   };
 };
@@ -63,7 +75,12 @@ export const leaveLobby = (lobbyId: Steamworks.SteamID64): Thunk<void> => {
   return (dispatch, getState, { steamworks }) => {
     steamworks.leaveLobby(lobbyId);
     console.info('LEFT LOBBY', lobbyId);
-    // dispatch(setLobby());
+
+    const events = lobbyEvents[lobbyId];
+    if (events) {
+      steamworks.removeListener('lobby-chat-message', events.onChatMsg);
+      lobbyEvents[lobbyId] = undefined;
+    }
   };
 };
 
@@ -75,5 +92,20 @@ export const createLobby = (): Thunk<void> => {
       steamworks.setLobbyData(lobbyId, 'game', LOBBY_GAME_GUID);
       dispatch(push(`/lobby/${lobbyId}?owner`));
     });
+  };
+};
+
+export const sendLobbyChatMsg = (lobbyId: Steamworks.SteamID64, msg: string): Thunk<void> => {
+  return (dispatch, getState, { steamworks }) => {
+    // TODO: create chat middleware for handling protocol
+    const envelope = {
+      type: 'chat',
+      payload: msg
+    };
+
+    const json = JSON.stringify(envelope);
+    console.log('SendLobbyChatMsg', json);
+    const buf = Buffer.from(json, 'utf-8');
+    steamworks.sendLobbyChatMsg(lobbyId, buf);
   };
 };

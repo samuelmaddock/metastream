@@ -270,6 +270,8 @@ declare module Steamworks {
     on(eventName: 'game-connected-friend-chat-message', callback: (steam_id: SteamID, message_id: number) => void): void;
     on(eventName: 'dlc-installed', callback: (dlc_app_id: number) => void): void;
     on(eventName: 'lobby-chat-message', callback: (lobby_steam_id: SteamID, user_steam_id: SteamID, type: any, chat_id: number) => void): void;
+
+    removeListener(eventName: string, callback: Function): void;
   }
 }
 

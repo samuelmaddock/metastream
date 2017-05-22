@@ -5,7 +5,7 @@ import { IReactReduxProps } from 'types/redux';
 
 import { IAppState } from "reducers";
 
-import { requestLobbies, ILobbyRequestResult, joinLobby, leaveLobby } from 'actions/steamworks';
+import { requestLobbies, ILobbyRequestResult, joinLobby, leaveLobby, sendLobbyChatMsg } from 'actions/steamworks';
 import { NetworkState } from "types/network";
 import { Lobby } from "components/Lobby";
 
@@ -47,9 +47,15 @@ export class _LobbyPage extends Component<PrivateProps, void> {
     console.log('LOBBY PAGE', this.props);
 
     return (
-      <Lobby name={this.getLobbyId()} />
+      <Lobby name={this.getLobbyId()}
+        sendMessage={this.sendMessage} />
     );
   }
+
+  private sendMessage = (msg: string) => {
+    const lobbyId = this.getLobbyId();
+    this.props.dispatch(sendLobbyChatMsg(lobbyId, msg));
+  };
 }
 
 export const LobbyPage = connect<IConnectedProps, {}, IProps>(mapStateToProps)(_LobbyPage);
