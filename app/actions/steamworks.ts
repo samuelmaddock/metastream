@@ -2,6 +2,7 @@ import { Thunk } from 'types/thunk';
 import { LOBBY_GAME_GUID } from "constants/steamworks";
 import { getLobbyData } from "utils/steamworks";
 import { actionCreator } from "utils/redux";
+import { push } from "react-router-redux";
 
 export interface ILobbyRequestResult {
   steamId: Steamworks.SteamID64;
@@ -24,7 +25,7 @@ export const requestLobbies = (): Thunk<void> => {
 
     steamworks.requestLobbyList({
       filters: [
-        // { key: 'game', value: LOBBY_GAME_GUID, comparator: steamworks.LobbyComparison.Equal }
+        { key: 'game', value: LOBBY_GAME_GUID, comparator: steamworks.LobbyComparison.Equal }
       ],
       distance: steamworks.LobbyDistanceFilter.Worldwide,
       count: 50
@@ -63,5 +64,16 @@ export const leaveLobby = (lobbyId: Steamworks.SteamID64): Thunk<void> => {
     steamworks.leaveLobby(lobbyId);
     console.info('LEFT LOBBY', lobbyId);
     // dispatch(setLobby());
+  };
+};
+
+export const createLobby = (): Thunk<void> => {
+  return (dispatch, getState, { steamworks }) => {
+    console.log('Creating lobby...');
+    steamworks.createLobby(steamworks.LobbyType.Public, 16, lobbyId => {
+      console.info('CREATED LOBBY', lobbyId);
+      steamworks.setLobbyData(lobbyId, 'game', LOBBY_GAME_GUID);
+      dispatch(push(`/lobby/${lobbyId}?owner`));
+    });
   };
 };
