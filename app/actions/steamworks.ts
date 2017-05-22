@@ -1,29 +1,44 @@
 import { Thunk } from 'types/thunk';
 import { LOBBY_GAME_GUID } from "constants/steamworks";
 import { getLobbyData } from "utils/steamworks";
+import { actionCreator } from "utils/redux";
+
+export interface ILobbyRequestResult {
+  steamId: Steamworks.SteamID64;
+  data: {[key: string]: string}
+}
+
+export const loadLobbies = actionCreator<void>('LOAD_LOBBIES');
+export const setLobbies = actionCreator<ILobbyRequestResult[]>('SET_LOBBIES');
 
 export const requestLobbies = (): Thunk<void> => {
   return (dispatch, getState, { steamworks }) => {
-    const requestList = () => {
-      steamworks.requestLobbyList({
-        filters: [
-          { key: 'game', value: LOBBY_GAME_GUID, comparator: steamworks.LobbyComparison.Equal }
-        ],
-        distance: steamworks.LobbyDistanceFilter.Worldwide,
-        count: 50
-      }, (count) => {
-        console.info('Received lobby list', count);
+    dispatch(loadLobbies());
 
-        let lobbies: any = {};
+    steamworks.requestLobbyList({
+      filters: [
+        // { key: 'game', value: LOBBY_GAME_GUID, comparator: steamworks.LobbyComparison.Equal }
+      ],
+      distance: steamworks.LobbyDistanceFilter.Worldwide,
+      count: 50
+    }, (count) => {
+      console.info('Received lobby list', count);
 
-        for (let i = 0; i < count; i++) {
-          const lobby = steamworks.getLobbyByIndex(i);
-          lobbies[lobby.getRawSteamID()] = getLobbyData(steamworks, lobby);
-        }
+      let lobbies = [];
 
-        console.log(lobbies);
-      });
-    }
+      for (let i = 0; i < count; i++) {
+        const lobbyId = steamworks.getLobbyByIndex(i);
+
+        const lobby = {
+          steamId: lobbyId.getRawSteamID(),
+          data: getLobbyData(steamworks, lobbyId)
+        };
+        lobbies.push(lobby)
+      }
+
+      console.log(lobbies);
+      dispatch(setLobbies(lobbies));
+    });
   };
 }
 

@@ -48,14 +48,6 @@ function initSteam(): Steamworks.API | undefined {
     console.log('Message: ', entry.message.toString('utf-8'));
   });
 
-  const sleep = (time: number) => {
-    return new Promise(resolve => {
-      setTimeout(resolve, time);
-    });
-  }
-
-  const GAME_GUID = '328e7911-b879-4846-8fcc-3ba367984e6f';
-
   steamworks.createLobby(steamworks.LobbyType.Public, 16, async (lobbyId) => {
     console.info(`Created lobby [${lobbyId}]`);
 
@@ -92,6 +84,12 @@ function init() {
     </AppContainer>,
     document.getElementById('root')
   );
+
+  // DEBUG
+  const app = Object.create(null);
+  app.store = store;
+  app.steamworks = steamworks;
+  (window as any).app = app;
 }
 
 init();
