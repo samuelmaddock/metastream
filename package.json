@@ -32,15 +32,17 @@
   },
   "browserslist": "electron 1.4",
   "build": {
-    "productName": "ElectronReact",
-    "appId": "org.develar.ElectronReact",
+    "productName": "DankApp",
+    "appId": "dankapp",
     "files": [
       "dist/",
       "node_modules/",
+      "lib/",
       "app.html",
       "main.prod.js",
       "main.prod.js.map",
-      "package.json"
+      "package.json",
+      "steam_appid.txt"
     ],
     "dmg": {
       "contents": [
