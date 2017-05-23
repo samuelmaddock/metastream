@@ -69,6 +69,7 @@ function init() {
   const steamworks = initSteam();
 
   if (!steamworks) {
+    alert('Failed to initialize Steamworks');
     electron.remote.app.exit();
     return;
   }
