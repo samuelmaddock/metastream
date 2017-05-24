@@ -3,25 +3,30 @@
 // found in the LICENSE file.
 
 // The source code can be found in https://github.com/greenheartgames/greenworks
-var fs = require('fs');
+let fs = require('fs');
+let path = require('path');
+
+const dirname = process.env.NODE_ENV === 'development' ?
+  __dirname :
+  ROOT_DIR;
 
 var greenworks;
 
 if (process.platform == 'darwin') {
   if (process.arch == 'x64')
-    greenworks = require('./lib/greenworks-osx64');
+    greenworks = require(path.join(dirname, './lib/greenworks-osx64'));
   else if (process.arch == 'ia32')
-    greenworks = require('./lib/greenworks-osx32');
+    greenworks = require(path.join(dirname, './lib/greenworks-osx32'));
 } else if (process.platform == 'win32') {
   if (process.arch == 'x64')
-    greenworks = require('./lib/greenworks-win64');
+    greenworks = require(path.join(dirname, './lib/greenworks-win64'));
   else if (process.arch == 'ia32')
-    greenworks = require('./lib/greenworks-win32');
+    greenworks = require(path.join(dirname, './lib/greenworks-win32'));
 } else if (process.platform == 'linux') {
   if (process.arch == 'x64')
-    greenworks = require('./lib/greenworks-linux64');
+    greenworks = require(path.join(dirname, './lib/greenworks-linux64'));
   else if (process.arch == 'ia32')
-    greenworks = require('./lib/greenworks-linux32');
+    greenworks = require(path.join(dirname, './lib/greenworks-linux32'));
 }
 
 function error_process(err, error_callback) {

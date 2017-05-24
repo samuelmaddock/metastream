@@ -37,11 +37,17 @@
     "files": [
       "dist/",
       "node_modules/",
-      "lib/",
       "app.html",
       "main.prod.js",
       "main.prod.js.map",
       "package.json",
+      "steamworks.js"
+    ],
+    "extraFiles": [
+      {
+        "from": "app/lib/",
+        "to": "lib/"
+      },
       "steam_appid.txt"
     ],
     "dmg": {
@@ -60,7 +66,7 @@
     },
     "win": {
       "target": [
-        "nsis"
+        "dir"
       ]
     },
     "linux": {

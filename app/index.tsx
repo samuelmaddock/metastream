@@ -4,18 +4,28 @@ import { AppContainer } from 'react-hot-loader';
 import Root from './containers/Root';
 import * as cfgStore from './store/configureStore';
 import './app.global.css';
+import { getRootDir } from "utils/path";
 
 const electron = window.require('electron');
+const process = window.require('process');
+
+(global as any).ROOT_DIR = getRootDir();
 
 let store: any;
 
 function initSteam(): Steamworks.API | undefined {
   let steamworks: Steamworks.API;
+
+  // Activate UV loop for async workers
+  // https://github.com/greenheartgames/greenworks#general-greenworks-gotchas
+  process.activateUvLoop();
+
   try {
     steamworks = window.require('./steamworks');
   } catch (e) {
     console.log('Failed to load steamworks');
     console.error(e);
+    alert(e.message);
     return;
   }
 
@@ -83,7 +93,10 @@ function init() {
     <AppContainer>
       <Root store={store} history={history} />
     </AppContainer>,
-    document.getElementById('root')
+    document.getElementById('root'),
+    function () {
+      console.info('Render complete', arguments);
+    }
   );
 
   // DEBUG
