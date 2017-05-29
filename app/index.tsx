@@ -13,7 +13,7 @@ const process = window.require('process');
 
 let store: any;
 
-function initSteam(): Steamworks.API | undefined {
+function initSteam(): Steamworks.API | null {
   let steamworks: Steamworks.API;
 
   // Activate UV loop for async workers
@@ -26,7 +26,7 @@ function initSteam(): Steamworks.API | undefined {
     console.log('Failed to load steamworks');
     console.error(e);
     alert(e.message);
-    return;
+    return null;
   }
 
   console.info(`Initializing Steamworks (Greenworks ${steamworks._version})...`);
@@ -34,54 +34,27 @@ function initSteam(): Steamworks.API | undefined {
     console.info('Successfully initialized Steamworks');
   } else {
     console.error('Failed to initialize Steamworks');
-    return;
+    return null;
   }
 
   // DEBUG
   (global as any).steamworks = steamworks;
 
   return steamworks;
-
-  /*
-  console.log(steamworks.getFriendCount(steamworks.FriendFlags.Immediate));
-  var friends = steamworks.getFriends(steamworks.FriendFlags.Immediate);
-  for (var i = 0; i < friends.length; ++i) {
-    console.log(`${friends[i].getPersonaName()} [${friends[i].getRawSteamID()}]`);
-    steamworks.requestUserInformation(friends[i].getRawSteamID(), true);
-  }
-
-  steamworks.on('lobby-chat-message', function (lobbyId, userId, chatType, chatId) {
-    console.log('received chat message', arguments);
-
-    const entry = steamworks.getLobbyChatEntry(lobbyId.getRawSteamID(), chatId);
-    console.log('Entry: ', entry);
-    console.log('Message: ', entry.message.toString('utf-8'));
-  });
-
-  steamworks.createLobby(steamworks.LobbyType.Public, 16, async (lobbyId) => {
-    console.info(`Created lobby [${lobbyId}]`);
-
-    steamworks.setLobbyData(lobbyId, 'game', GAME_GUID);
-
-    steamworks.sendLobbyChatMsg(lobbyId, Buffer.from('Hello world', 'utf-8'));
-    await sleep(1000);
-
-    (window as any).requestLobbyList = requestList;
-    requestList();
-    // steamworks.sendLobbyChatMsg(lobbyId, Buffer.from('Another test', 'utf-8'));
-    // await sleep(5000);
-    // steamworks.sendLobbyChatMsg(lobbyId, Buffer.from('yay!!1', 'utf-8'));
-  });
-  */
 }
 
 function init() {
-  const steamworks = initSteam();
+  const useSteam = PRODUCTION ? true : !process.env.NO_STEAM;
+  let steamworks;
 
-  if (!steamworks) {
-    alert('Failed to initialize Steamworks');
-    electron.remote.app.exit();
-    return;
+  if (useSteam) {
+    steamworks = initSteam();
+
+    if (!steamworks) {
+      alert('Failed to initialize Steamworks');
+      electron.remote.app.exit();
+      return;
+    }
   }
 
   const extra = { steamworks };
