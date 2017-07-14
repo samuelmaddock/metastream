@@ -25,7 +25,16 @@ Providers:
 	☐ Split up metadata service and client renderer
 
 Auto-detect player algorithm:
-Detect controllable video player on page
+	☐ Detect controllable video player on page
+	☐ Image recognition (really difficult, but could be a robust solution)
+		- Inject mouseover over target media player
+		- Use electron to capture texture of webview
+		- Run image recognition to detect player elements (play/pause, seekbar)
+		- Inject clicks based on UI positions
+	☐ If website unsupported, prompt user to forward URL to developers
+		- Rank requested websites, implement support, ship
+		- ^ Might need automation to be scalable ^
+
 
 ### Heuristics
 - Find video/audio/object/embed element
@@ -56,6 +65,11 @@ Proprietary video codecs:
 
 	https://github.com/mafintosh/playback
 	https://github.com/mafintosh/peerflix
+☐ Rebuild with custom ffmpeg
+	https://github.com/electron/libchromiumcontent/issues/198
+☐ Licensing
+	x264 https://licensing.x264.org/en/
+	OpenH264?
 
 Google Shaka Player - testing video encodings
 https://shaka-player-demo.appspot.com
@@ -63,6 +77,27 @@ https://github.com/google/shaka-player
 
 Test support
 http://www.leanbackplayer.com/test/h5mt.html
+
+Electron issues:
+	☐ Can't use 'preload' WebView property in nested iframes
+		https://github.com/electron/electron/issues/5115
+		- This would be limiting for accessing video elements within iframes.
+		- Can get around by disabling web security, but this is likely a huge risk
+		  for end users
+		- Could try sending <iframe> src url to parent, inspect contents in another
+		  <webview> and recurse -- attempting to find media
+
+		Example of nested <iframes> with media
+		https://www.reddit.com/r/gaming/comments/6n2bxt/i_just_pulled_off_the_liquor_hole_skydiving_stunt/
+	☐ Nested <webview> is not supported
+		https://github.com/electron/electron/issues/1130
+		- How else can we add the web player into our app?
+
+Electron thoughts:
+	☐ Use isolated sessions for each website
+		https://electron.atom.io/docs/api/webview-tag/#partition
+		- This will keep malicious websites from being able to see cookies
+		- Persist sessions on websites like google/youtube/netflix
 
 Workshop Plugins:
 	☐ What happens when a plugin updates to hijack all requests (this would be real bad)
@@ -83,6 +118,8 @@ Search:
 Torrents:
 Users are going to ask if they can sync up Torrents
 Maybe external programs could be synced up so the app won't have to deal with torrents itself?
+☐ Transcoding
+	prob not butttt https://www.kurento.org/whats-kurento
 
 Provider plugins:
 Support fetching metadata
@@ -113,3 +150,12 @@ https://github.com/muaz-khan/RecordRTC
 
 How does this work?
 https://chrome.google.com/webstore/detail/videostream-for-google-ch/cnciopoikihiagdjbjpnocolokfelagl?hl=en
+
+Electron:
+	☐ Recompile without proprietary FFmpeg encodings
+		mp4, h.264
+	☐ Upgrade electron to latest with node 8
+	☐ Adblock?
+		https://github.com/brave/ad-block
+	☐ Take a look at vscode
+		https://github.com/Microsoft/vscode/blob/43298ba5473ad3282a6e25fb29bc0eaaa4ac808d/src/vs/code/electron-main/window.ts
