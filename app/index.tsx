@@ -44,7 +44,9 @@ function initSteam(): Steamworks.API | null {
 }
 
 function init() {
-  const useSteam = PRODUCTION ? true : !process.env.NO_STEAM;
+  // Disable Steam by default in development
+  const useSteam = PRODUCTION ? true : process.env.WITH_STEAM;
+
   let steamworks;
 
   if (useSteam) {
