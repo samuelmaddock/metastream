@@ -8,9 +8,9 @@ import { LobbyPage } from "containers/LobbyPage";
 export default () => (
   <App>
     <Switch>
-      <Route exact path="/" component={ServerBrowserPage} />
+      <Route exact path="/" component={HomePage} />
       <Route path="/lobby/:lobbyId" component={LobbyPage} />
-      <Route path="/home" component={HomePage} />
+      <Route path="/servers" component={ServerBrowserPage} />
     </Switch>
   </App>
 );
