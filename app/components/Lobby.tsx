@@ -10,7 +10,7 @@ interface IProps {
   sendMessage(msg: string): void;
 }
 
-export class Lobby extends Component<IProps,void> {
+export class Lobby extends Component<IProps> {
   private chatInput: HTMLInputElement | null;
 
   render(): JSX.Element | null {

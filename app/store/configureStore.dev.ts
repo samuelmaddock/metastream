@@ -1,7 +1,7 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import { createHashHistory } from 'history';
-import { routerMiddleware, routerAction } from 'react-router-redux';
+import { routerMiddleware, routerActions } from 'react-router-redux';
 import { createLogger } from 'redux-logger';
 import rootReducer from '../reducers';
 import { IExtra } from 'types/thunk';
@@ -31,7 +31,7 @@ const configureStore = (extra: IExtra, initialState?: {}) => {
 
   // Redux DevTools Configuration
   const actionCreators = {
-    ...routerAction
+    ...routerActions
   };
   // If Redux DevTools Extension is installed use it, otherwise use Redux compose
   const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__

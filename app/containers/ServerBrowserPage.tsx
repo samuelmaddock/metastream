@@ -32,7 +32,7 @@ interface IDispatchProps {
 
 type PrivateProps = IProps & IConnectedProps & IReactReduxProps;
 
-export class _ServerBrowserPage extends Component<PrivateProps, void> {
+export class _ServerBrowserPage extends Component<PrivateProps> {
   componentDidMount(): void {
     if (this.props.network === NetworkState.Uninitialized) {
       this.props.dispatch(requestLobbies());

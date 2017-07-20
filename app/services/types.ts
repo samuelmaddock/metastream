@@ -28,5 +28,5 @@ export abstract class MediaMetadataService {
   abstract match(url: string): boolean;
 
   /** Resolve metadata for the given URL. */
-  abstract async resolve<T extends IMediaMetadataResult>(url: string): Promise<T>;
+  abstract async resolve(url: string): Promise<IMediaMetadataResult>;
 }

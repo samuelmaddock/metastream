@@ -28,7 +28,7 @@ function mapStateToProps(state: IAppState): IConnectedProps {
 
 type PrivateProps = IProps & IConnectedProps & IReactReduxProps;
 
-export class _LobbyPage extends Component<PrivateProps, void> {
+export class _LobbyPage extends Component<PrivateProps> {
   componentDidMount(): void {
     const lobbyId = this.getLobbyId();
     this.props.dispatch(joinLobby(lobbyId));
