@@ -25,6 +25,10 @@ interface IState {
   signal?: Object;
 }
 
+const iceServers = [
+  { url: 'stun:stun.l.google.com:19302' }
+];
+
 const encode = (signal: Object) => btoa(JSON.stringify(signal));
 const decode = (signal: string) => JSON.parse(atob(signal));
 
@@ -101,7 +105,10 @@ export class _LobbyPage extends Component<IProps, IState> {
 
     let p = new SimplePeer({
       initiator: isOwner,
-      trickle: false
+      trickle: true,
+      config: {
+        iceServers
+      }
     });
 
     p.on('error', err => {
@@ -129,7 +136,12 @@ export class _LobbyPage extends Component<IProps, IState> {
   private joinLobby(): void {
     const signal = decode(this.joinInput!.value);
 
-    let p = new SimplePeer();
+    let p = new SimplePeer({
+      trickle: true,
+      config: {
+        iceServers
+      }
+    });
 
     p.on('error', err => {
       console.log('peer error', err);
