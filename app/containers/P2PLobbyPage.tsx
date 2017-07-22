@@ -25,6 +25,9 @@ interface IState {
   signal?: Object;
 }
 
+const encode = (signal: Object) => btoa(JSON.stringify(signal));
+const decode = (signal: string) => JSON.parse(atob(signal));
+
 export class _LobbyPage extends Component<IProps, IState> {
   constructor() {
     super();
@@ -116,7 +119,7 @@ export class _LobbyPage extends Component<IProps, IState> {
     p.on('signal', (data: Object) => {
       console.log('peer signal', data);
 
-      const signal = btoa(JSON.stringify(data));
+      const signal = encode(data);
       this.setState({ signal });
     });
 
@@ -124,7 +127,7 @@ export class _LobbyPage extends Component<IProps, IState> {
   }
 
   private joinLobby(): void {
-    const signal = this.joinInput!.value;
+    const signal = decode(this.joinInput!.value);
 
     let p = new SimplePeer();
 
