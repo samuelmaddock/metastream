@@ -97,19 +97,23 @@ export class _LobbyPage extends Component<IProps, IState> {
 
   private peerConn: SimplePeer.Instance;
 
+  private createPeer(): SimplePeer.Instance {
+    return new SimplePeer({
+      initiator: !!this.state.isOwner,
+      trickle: false,
+      config: {
+        iceServers
+      }
+    });
+  }
+
   private createLobby(): void {
     const { isOwner } = this.state;
     if (!isOwner) { return; }
 
     console.log('CREATE LOBBY OWNER');
 
-    let p = new SimplePeer({
-      initiator: isOwner,
-      trickle: true,
-      config: {
-        iceServers
-      }
-    });
+    let p = this.createPeer();
 
     p.on('error', err => {
       console.log('peer error', err);
@@ -136,12 +140,7 @@ export class _LobbyPage extends Component<IProps, IState> {
   private joinLobby(): void {
     const signal = decode(this.joinInput!.value);
 
-    let p = new SimplePeer({
-      trickle: true,
-      config: {
-        iceServers
-      }
-    });
+    let p = this.createPeer();
 
     p.on('error', err => {
       console.log('peer error', err);
