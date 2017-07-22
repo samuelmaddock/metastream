@@ -26,7 +26,7 @@ interface IState {
 }
 
 const iceServers = [
-  { url: 'stun:stun.l.google.com:19302' }
+  { url: 'stun:stun3.l.google.com:19302' }
 ];
 
 const encode = (signal: Object) => btoa(JSON.stringify(signal));
@@ -128,13 +128,14 @@ export class _LobbyPage extends Component<IProps, IState> {
     });
 
     p.on('signal', (data: Object) => {
-      console.log('peer signal', data);
+      console.log('server peer signal', data);
 
       const signal = encode(data);
       this.setState({ signal });
     });
 
     this.peerConn = p;
+    (window as any).PEER = p;
   }
 
   private joinLobby(): void {
@@ -155,15 +156,16 @@ export class _LobbyPage extends Component<IProps, IState> {
     });
 
     p.on('signal', (data: Object) => {
-      console.log('peer signal', data);
+      console.log('client peer signal', data);
 
-      const signal = btoa(JSON.stringify(data));
-      this.setState({ signal });
+      const signal = encode(data);
+      console.log(signal);
     });
 
     p.signal(signal);
 
     this.peerConn = p;
+    (window as any).PEER = p;
   }
 
   private leaveLobby(): void {
