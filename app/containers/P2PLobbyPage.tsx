@@ -3,6 +3,9 @@ import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { IReactReduxProps } from 'types/redux';
 
+import SimplePeer from "simple-peer";
+import { pack, unpack } from 'utils/lzw';
+
 import { IAppState } from "reducers";
 
 import { requestLobbies, ILobbyRequestResult, IChatMessage } from 'actions/steamworks';
@@ -17,27 +20,27 @@ interface IRouteParams {
 interface IProps extends RouteComponentProps<IRouteParams> {
 }
 
-interface IConnectedProps {
-  chat?: IChatMessage[];
+interface IState {
+  isOwner: boolean;
+  signal?: Object;
 }
 
-function mapStateToProps(state: IAppState): IConnectedProps {
-  return {
-    chat: state.lobby.chat
-  };
-}
+export class _LobbyPage extends Component<IProps, IState> {
+  constructor() {
+    super();
+    this.state = {
+      isOwner: window.location.href.endsWith('owner')
+    }
+  }
 
-type PrivateProps = IProps & IConnectedProps & IReactReduxProps;
-
-export class _LobbyPage extends Component<PrivateProps> {
   componentDidMount(): void {
-    const lobbyId = this.getLobbyId();
-    this.props.dispatch(createLobby());
+    if (this.state.isOwner) {
+      this.createLobby();
+    }
   }
 
   componentWillUnmount(): void {
-    const lobbyId = this.getLobbyId();
-    this.props.dispatch(leaveLobby());
+    this.leaveLobby();
   }
 
   private getLobbyId(): string {
@@ -47,19 +50,121 @@ export class _LobbyPage extends Component<PrivateProps> {
   }
 
   render() {
-    console.log('P2P LOBBY PAGE', this.props);
-
     return (
-      <Lobby name={this.getLobbyId()}
-        messages={this.props.chat || []}
-        sendMessage={this.sendMessage} />
+      <main>
+        <h1>P2P Lobby</h1>
+        {this.state.isOwner ?
+          this.renderServer() :
+          this.renderClient()}
+      </main>
     );
   }
 
+  private renderServer(): JSX.Element {
+    return (
+      <div>
+        <div style={{wordWrap: 'break-word'}}>
+          {this.state.signal}
+        </div>
+      </div>
+    );
+  }
+
+  private joinInput: HTMLInputElement | null;
+
+  private renderClient(): JSX.Element {
+    return (
+      <div>
+        <input ref={e => { this.joinInput = e; }}
+               type="text"
+               placeholder="Enter signal" />
+        <button type="button"
+                onClick={this.joinLobby.bind(this)}>Connect</button>
+      </div>
+    );
+  }
+
+  //
+  // LOBBY SETUP
+  //
+
+  private peerConn: SimplePeer.Instance;
+
+  private createLobby(): void {
+    const { isOwner } = this.state;
+    if (!isOwner) { return; }
+
+    console.log('CREATE LOBBY OWNER');
+
+    let p = new SimplePeer({
+      initiator: isOwner,
+      trickle: false
+    });
+
+    p.on('error', err => {
+      console.log('peer error', err);
+    });
+
+    p.on('connect', () => {
+      console.log('peer connect');
+    });
+
+    p.on('data', data => {
+      console.log('peer data', data);
+    });
+
+    p.on('signal', (data: Object) => {
+      console.log('peer signal', data);
+
+      const signal = btoa(JSON.stringify(data));
+      this.setState({ signal });
+    });
+
+    this.peerConn = p;
+  }
+
+  private joinLobby(): void {
+    const signal = this.joinInput!.value;
+
+    let p = new SimplePeer();
+
+    p.on('error', err => {
+      console.log('peer error', err);
+    });
+
+    p.on('connect', () => {
+      console.log('peer connect');
+    });
+
+    p.on('data', data => {
+      console.log('peer data', data);
+    });
+
+    p.on('signal', (data: Object) => {
+      console.log('peer signal', data);
+
+      const signal = btoa(JSON.stringify(data));
+      this.setState({ signal });
+    });
+
+    p.signal(signal);
+
+    this.peerConn = p;
+  }
+
+  private leaveLobby(): void {
+    if (this.peerConn) {
+      this.peerConn.destroy();
+    }
+  }
+
+  //
+  // LOBBY NETWORKING
+  //
+
   private sendMessage = (msg: string) => {
-    const lobbyId = this.getLobbyId();
     // TODO: send message to peer
   };
 }
 
-export const P2PLobbyPage = connect<IConnectedProps, {}, IProps>(mapStateToProps)(_LobbyPage);
+export const P2PLobbyPage = _LobbyPage;

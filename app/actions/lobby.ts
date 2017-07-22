@@ -1,5 +1,6 @@
 import { Thunk } from "types/thunk";
 import SimplePeer from "simple-peer";
+import { push } from "react-router-redux";
 
 let p: SimplePeer.Instance;
 
@@ -8,7 +9,8 @@ export const createLobby = (): Thunk<void> => {
     console.log('Creating P2P lobby...');
 
     p = new SimplePeer({
-      initiator: false
+      initiator: window.location.href.endsWith('owner'),
+      trickle: false
     });
 
     p.on('error', err => {
@@ -26,6 +28,8 @@ export const createLobby = (): Thunk<void> => {
     p.on('signal', (data: any) => {
       console.log('peer signal', data);
     });
+
+    dispatch(push(`/lobby/dev?owner`));
   };
 };
 
