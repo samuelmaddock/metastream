@@ -66,6 +66,7 @@ declare module Steamworks {
     setLobbyData(lobby_id: SteamID64, key: string, value: string): boolean;
     getLobbyDataCount(lobby_id: SteamID64): number;
     getLobbyDataByIndex(lobby_id: SteamID64, data_idx: number): [string, string];
+    getLobbyOwner(lobby_id: SteamID64): SteamID;
     sendLobbyChatMsg(lobby_id: SteamID64, msg: Buffer): boolean;
     getLobbyChatEntry(lobby_id: SteamID64, chat_id: number): { steamId: SteamID64; message: Buffer };
   }

@@ -93,6 +93,13 @@ export class SteamMatchmakingLobby extends React.Component<IProps> {
   }
 
   private lobbyDidReceive = (lobbySteamId: Steamworks.SteamID, userSteamId: Steamworks.SteamID, type: any, chatId: number) => {
+    // Ignore messages from self
+    const localSteamId = steamworks.getSteamId();
+    const ownerSteamId = steamworks.getLobbyOwner(lobbySteamId.getRawSteamID());
+    if (ownerSteamId.getRawSteamID() === localSteamId.getRawSteamID()) {
+      return;
+    }
+
     if (this.subLobby) {
       const msg = steamworks.getLobbyChatEntry(this.steamId, chatId);
       this.subLobby.lobbyReceive({
