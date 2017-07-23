@@ -2,3 +2,4 @@
 *.png binary
 *.ico binary
 *.icns binary
+*.node text=auto
