@@ -102,7 +102,7 @@ export class SteamMatchmakingLobby extends React.Component<IProps> {
     if (this.subLobby) {
       const msg = steamworks.getLobbyChatEntry(this.steamId, chatId);
       this.subLobby.lobbyReceive({
-        userId: userSteamId,
+        userId: userSteamId.getRawSteamID(),
         data: msg.message
       });
     }
