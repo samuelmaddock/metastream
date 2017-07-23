@@ -118,6 +118,7 @@ export class WebRTCLobby extends LobbyComponent<IProps> {
       <GameLobby
         ref={e => { this.gameLobby = e; }}
         host={this.props.host}
+        hostId={this.props.hostId}
         send={this.send.bind(this)} />
     );
   }
