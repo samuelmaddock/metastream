@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { steamworks } from "steam";
 import SimplePeer from "simple-peer";
-import { ILobbyProps, LobbyComponent, ILobbyMessage } from "lobby/types";
+import { ILobbyProps, LobbyComponent, ILobbyMessage, INetAction } from "lobby/types";
 import { Deferred } from "utils/async";
 
 import { EventEmitter } from 'events';
+import { GameLobby } from "lobby/GameLobby";
 
 interface IProps extends ILobbyProps {
 }
@@ -104,6 +105,8 @@ export class WebRTCLobby extends LobbyComponent<IProps> {
 
   private lobbySend: (data: Buffer) => void;
 
+  private gameLobby: GameLobby | null;
+
   constructor(props: IProps) {
     super(props);
 
@@ -112,7 +115,9 @@ export class WebRTCLobby extends LobbyComponent<IProps> {
 
   render(): JSX.Element {
     return (
-      <div>Connecting...</div>
+      <GameLobby
+        ref={e => { this.gameLobby = e; }}
+        send={() => {}} />
     );
   }
 
@@ -196,12 +201,22 @@ export class WebRTCLobby extends LobbyComponent<IProps> {
     const conn = new P2PConnection(userId, peer);
     this.peers[userId] = conn;
 
+    conn.on('data', this.receive);
+
     conn.on('close', () => {
       // TODO: emit event?
       this.peers[userId] = undefined;
     })
 
     return conn;
+  }
+
+  private forEachPeer(func: (peer: P2PConnection) => void) {
+    for (let id in this.peers) {
+      if (this.peers.hasOwnProperty(id)) {
+        func(this.peers[id]!);
+      }
+    }
   }
 
   private async joinLobby(hostId: string, signal: string): Promise<void> {
@@ -213,10 +228,28 @@ export class WebRTCLobby extends LobbyComponent<IProps> {
   }
 
   private leaveLobby(): void {
-    for (let id in this.peers) {
-      if (this.peers.hasOwnProperty(id)) {
-        this.peers[id]!.close();
-      }
+    this.forEachPeer(conn => {
+      conn.close();
+    });
+  }
+
+  private send = (action: INetAction): void => {
+    const data = new Buffer(JSON.stringify(action), 'utf-8');
+
+    if (this.props.host) {
+      this.forEachPeer(conn => {
+        conn.send(data);
+      });
+    } else {
+      this.peers[this.props.hostId]!.send(data);
+    }
+  }
+
+  private receive = (data: Buffer) => {
+    const action = JSON.parse(data.toString('utf-8'));
+
+    if (this.gameLobby) {
+      this.gameLobby.receive(action);
     }
   }
 }

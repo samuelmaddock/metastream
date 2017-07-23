@@ -2,6 +2,7 @@ import { Component } from 'react';
 
 export interface ILobbyProps {
   host: boolean;
+  hostId: string;
   lobbySend(data: Buffer): void;
 }
 
@@ -18,4 +19,13 @@ export const enum LobbyNetworkState {
 export interface ILobbyMessage {
   userId: any;
   data: Buffer;
+}
+
+export interface INetAction<T = undefined> {
+  type: string;
+  payload: T;
+}
+
+export interface INetResponse<T = undefined> extends INetAction<T> {
+  userId: string;
 }
