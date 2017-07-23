@@ -51,6 +51,8 @@ export class SteamMatchmakingLobby extends React.Component<IProps, IState> {
     const owner = steamworks.getLobbyOwner(this.steamId);
     const ownerSteamId = owner ? owner.getRawSteamID() : '-1';
 
+    const local = steamworks.getSteamId();
+
     return (
       <div>
         steam lobby: {this.props.steamId}
@@ -65,6 +67,7 @@ export class SteamMatchmakingLobby extends React.Component<IProps, IState> {
             }}
             host={this.host}
             hostId={ownerSteamId}
+            localId={local.getRawSteamID()}
             lobbySend={this.lobbySend} />
         )}
       </div>

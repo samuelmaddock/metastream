@@ -27,8 +27,8 @@ enum MessageType {
 
 type IMessageFrame =
   { type: MessageType.RequestJoin, data: undefined } |
-  { type: MessageType.Offer, data: string } |
-  { type: MessageType.Answer, data: string };
+  { type: MessageType.Offer, data: string, to: string } |
+  { type: MessageType.Answer, data: string, to: string };
 
 class P2PConnection extends EventEmitter {
   id: string;
@@ -129,14 +129,21 @@ export class WebRTCLobby extends LobbyComponent<IProps> {
     this.lobbySend(buf);
   }
 
-  private sendOffer(signal: Object): void {
-    const msg = { type: MessageType.Offer, data: encodeSignal(signal) } as IMessageFrame;
+  private sendOffer(signal: SignalData, userId: string): void {
+    const msg = {
+      type: MessageType.Offer,
+      data: encodeSignal(signal),
+      to: userId
+    } as IMessageFrame;
     const buf = new Buffer(JSON.stringify(msg), 'utf-8');
     this.lobbySend(buf);
   }
 
   private sendAnswer(signal: Object): void {
-    const msg = { type: MessageType.Answer, data: encodeSignal(signal) } as IMessageFrame;
+    const msg = {
+      type: MessageType.Answer,
+      data: encodeSignal(signal)
+    } as IMessageFrame;
     const buf = new Buffer(JSON.stringify(msg), 'utf-8');
     this.lobbySend(buf);
   }
@@ -165,12 +172,12 @@ export class WebRTCLobby extends LobbyComponent<IProps> {
         if (this.props.host) {
           const conn = this.createPeer(message.userId);
           conn.getSignal().then(signal => {
-            this.sendOffer(signal);
+            this.sendOffer(signal, message.userId);
           });
         }
         return;
       case MessageType.Offer:
-        if (!this.props.host) {
+        if (!this.props.host && (msg as any).to === this.props.localId) {
           const signal = decodeSignal(msg.data!);
           this.joinLobby(message.userId, signal);
         }
@@ -217,8 +224,9 @@ export class WebRTCLobby extends LobbyComponent<IProps> {
 
   private forEachPeer(func: (peer: P2PConnection) => void) {
     for (let id in this.peers) {
-      if (this.peers.hasOwnProperty(id)) {
-        func(this.peers[id]!);
+      const conn = this.peers[id];
+      if (this.peers.hasOwnProperty(id) && conn) {
+        func(conn);
       }
     }
   }

@@ -3,6 +3,7 @@ import { Component } from 'react';
 export interface ILobbyProps {
   host: boolean;
   hostId: string;
+  localId: string;
   lobbySend(data: Buffer): void;
 }
 
