@@ -94,16 +94,19 @@ export class WebRTCLobby extends LobbyComponent<IProps> {
         if (this.props.host && this.signal) {
           this.sendOffer(this.signal);
         }
+        break;
       case MessageType.Offer:
         if (!this.props.host) {
           const signal = decodeSignal(msg.data!);
           this.joinLobby(signal);
         }
+        break;
       case MessageType.Answer:
         if (this.props.host) {
           const signal = decodeSignal(msg.data!);
           this.peerConn.signal(signal);
         }
+        break;
     }
   }
 
