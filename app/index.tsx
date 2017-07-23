@@ -5,6 +5,7 @@ import Root from './containers/Root';
 import * as cfgStore from './store/configureStore';
 import './app.global.css';
 import { getRootDir } from "utils/path";
+import { steamworks } from "steam";
 
 const electron = window.require('electron');
 const process = window.require('process');
@@ -14,18 +15,11 @@ const process = window.require('process');
 let store: any;
 
 function initSteam(): Steamworks.API | null {
-  let steamworks: Steamworks.API;
-
   // Activate UV loop for async workers
   // https://github.com/greenheartgames/greenworks#general-greenworks-gotchas
   process.activateUvLoop();
 
-  try {
-    steamworks = window.require('./steamworks');
-  } catch (e) {
-    console.log('Failed to load steamworks');
-    console.error(e);
-    alert(e.message);
+  if (!steamworks) {
     return null;
   }
 

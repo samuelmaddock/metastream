@@ -11,7 +11,6 @@ import { IAppState } from "reducers";
 import { requestLobbies, ILobbyRequestResult, IChatMessage } from 'actions/steamworks';
 import { NetworkState } from "types/network";
 import { Lobby } from "components/Lobby";
-import { createLobby, leaveLobby } from "actions/lobby";
 
 interface IRouteParams {
   lobbyId: string;
@@ -31,6 +30,9 @@ const iceServers = [
 
 const encode = (signal: Object) => btoa(JSON.stringify(signal));
 const decode = (signal: string) => JSON.parse(atob(signal));
+
+(window as any).encode = encode;
+(window as any).decode = decode;
 
 export class _LobbyPage extends Component<IProps, IState> {
   constructor() {

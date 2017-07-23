@@ -8,6 +8,8 @@ import { IAppState } from "reducers";
 import { requestLobbies, ILobbyRequestResult, joinLobby, leaveLobby, sendLobbyChatMsg, IChatMessage } from 'actions/steamworks';
 import { NetworkState } from "types/network";
 import { Lobby } from "components/Lobby";
+import { SteamMatchmakingLobby } from "lobby/SteamLobby";
+import { WebRTCLobby } from "lobby/WebRTCLobby";
 
 interface IRouteParams {
   lobbyId: string;
@@ -31,12 +33,12 @@ type PrivateProps = IProps & IConnectedProps & IReactReduxProps;
 export class _LobbyPage extends Component<PrivateProps> {
   componentDidMount(): void {
     const lobbyId = this.getLobbyId();
-    this.props.dispatch(joinLobby(lobbyId));
+    // this.props.dispatch(joinLobby(lobbyId));
   }
 
   componentWillUnmount(): void {
     const lobbyId = this.getLobbyId();
-    this.props.dispatch(leaveLobby(lobbyId));
+    // this.props.dispatch(leaveLobby(lobbyId));
   }
 
   private getLobbyId(): string {
@@ -45,19 +47,22 @@ export class _LobbyPage extends Component<PrivateProps> {
     return lobbyId;
   }
 
-  render() {
-    console.log('LOBBY PAGE', this.props);
-
-    return (
-      <Lobby name={this.getLobbyId()}
-        messages={this.props.chat || []}
-        sendMessage={this.sendMessage} />
-    );
+  render(): JSX.Element {
+    if (PRODUCTION || process.env.WITH_STEAM) {
+      return (
+        <SteamMatchmakingLobby
+          host={window.location.href.endsWith('owner')}
+          steamId={this.getLobbyId()}
+          protocolLobby={WebRTCLobby} />
+      );
+    } else {
+      return <div>Only Steam is supported :(</div>
+    }
   }
 
   private sendMessage = (msg: string) => {
     const lobbyId = this.getLobbyId();
-    this.props.dispatch(sendLobbyChatMsg(lobbyId, msg));
+    // this.props.dispatch(sendLobbyChatMsg(lobbyId, msg));
   };
 }
 

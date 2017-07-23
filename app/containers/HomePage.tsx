@@ -3,7 +3,6 @@ import Home from '../components/Home';
 import { RouteComponentProps } from "react-router";
 import { IReactReduxProps } from "types/redux";
 import { connect } from "react-redux";
-import { createLobby } from "actions/lobby";
 
 interface IProps extends RouteComponentProps<any> {
 }
