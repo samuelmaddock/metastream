@@ -29,7 +29,7 @@ interface IMessageFrame<T = any> {
 
 export class WebRTCLobby extends LobbyComponent<IProps> {
   private conn?: SimplePeer.Instance;
-  private signal?: string;
+  private signal?: Object;
 
   private lobbySend: (data: Buffer) => void;
 
@@ -52,13 +52,13 @@ export class WebRTCLobby extends LobbyComponent<IProps> {
   }
 
   private sendOffer(signal: Object): void {
-    const msg = { type: MessageType.Offer, data: signal } as IMessageFrame;
+    const msg = { type: MessageType.Offer, data: encodeSignal(signal) } as IMessageFrame;
     const buf = new Buffer(JSON.stringify(msg), 'utf-8');
     this.lobbySend(buf);
   }
 
   private sendAnswer(signal: Object): void {
-    const msg = { type: MessageType.Answer, data: signal } as IMessageFrame;
+    const msg = { type: MessageType.Answer, data: encodeSignal(signal) } as IMessageFrame;
     const buf = new Buffer(JSON.stringify(msg), 'utf-8');
     this.lobbySend(buf);
   }
@@ -142,7 +142,7 @@ export class WebRTCLobby extends LobbyComponent<IProps> {
     p.on('signal', (data: Object) => {
       console.log('server peer signal', data);
 
-      this.signal = encodeSignal(data);
+      this.signal = data;
     });
 
     this.peerConn = p;
@@ -157,7 +157,7 @@ export class WebRTCLobby extends LobbyComponent<IProps> {
     p.on('signal', (data: Object) => {
       console.log('client peer signal', data);
 
-      this.signal = encodeSignal(data);
+      this.signal = data;
       this.sendAnswer(this.signal);
     });
 
