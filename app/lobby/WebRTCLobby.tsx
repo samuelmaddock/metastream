@@ -117,7 +117,8 @@ export class WebRTCLobby extends LobbyComponent<IProps> {
     return (
       <GameLobby
         ref={e => { this.gameLobby = e; }}
-        send={() => {}} />
+        host={this.props.host}
+        send={this.send.bind(this)} />
     );
   }
 
@@ -201,7 +202,9 @@ export class WebRTCLobby extends LobbyComponent<IProps> {
     const conn = new P2PConnection(userId, peer);
     this.peers[userId] = conn;
 
-    conn.on('data', this.receive);
+    conn.on('data', (data: Buffer) => {
+      this.receive(conn, data);
+    });
 
     conn.on('close', () => {
       // TODO: emit event?
@@ -233,7 +236,7 @@ export class WebRTCLobby extends LobbyComponent<IProps> {
     });
   }
 
-  private send = (action: INetAction): void => {
+  private send<T>(action: INetAction<T>): void {
     const data = new Buffer(JSON.stringify(action), 'utf-8');
 
     if (this.props.host) {
@@ -245,11 +248,14 @@ export class WebRTCLobby extends LobbyComponent<IProps> {
     }
   }
 
-  private receive = (data: Buffer) => {
+  private receive = (conn: P2PConnection, data: Buffer) => {
     const action = JSON.parse(data.toString('utf-8'));
 
     if (this.gameLobby) {
-      this.gameLobby.receive(action);
+      this.gameLobby.receive({
+        userId: conn.id,
+        ...action
+      });
     }
   }
 }

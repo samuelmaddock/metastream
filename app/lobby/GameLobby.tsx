@@ -6,13 +6,15 @@ import { Deferred } from "utils/async";
 
 import { EventEmitter } from 'events';
 import { Lobby } from "components/Lobby";
+import { IChatMessage } from "actions/steamworks";
 
 interface IProps {
+  host: boolean;
   send<T>(action: INetAction<T>): void;
 }
 
 interface IState {
-  chatMessages: string[];
+  chatMessages: IChatMessage[];
 }
 
 enum NetActions {
@@ -31,16 +33,11 @@ export class GameLobby extends React.Component<IProps, IState> {
   }
 
   render(): JSX.Element {
-    const messages = this.state.chatMessages.map(msg => ({
-      senderId: '-1',
-      name: 'Unknown',
-      text: msg
-    }));
 
     return (
       <Lobby
-        name="Test"
-        messages={messages}
+        name="WebRTC Test"
+        messages={this.state.chatMessages}
         sendMessage={(msg) => { this.addChat(msg); }} />
     );
   }
@@ -50,8 +47,18 @@ export class GameLobby extends React.Component<IProps, IState> {
   receive<T>(action: INetResponse<T>): void {
     switch (action.type) {
       case NetActions.AddChat:
+        if (this.props.host) {
+          this.send(action); // relay to clients
+        }
+
+        const chatMessage = {
+          senderId: action.userId,
+          name: action.userId,
+          text: action.payload as any as string
+        } as IChatMessage;
+
         this.setState({
-          chatMessages: [...this.state.chatMessages, action.payload as any as string]
+          chatMessages: [...this.state.chatMessages, chatMessage]
         });
         break;
     }
@@ -66,9 +73,11 @@ export class GameLobby extends React.Component<IProps, IState> {
     this.send(action);
 
     // always relay actions to host?
-    this.receive({
-      userId: 'todo',
-      ...action
-    });
+    if (this.props.host) {
+      this.receive({
+        userId: 'host',
+        ...action
+      });
+    }
   }
 }
