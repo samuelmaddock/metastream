@@ -8,13 +8,24 @@ interface IProps {
   protocolLobby?: React.ComponentClass<ILobbyProps>;
 }
 
-export class SteamMatchmakingLobby extends React.Component<IProps> {
-  private subLobby: LobbyComponent | null;
+interface IState {
+  connected: boolean;
+}
 
-  private connected?: boolean;
+export class SteamMatchmakingLobby extends React.Component<IProps, IState> {
+  private subLobby: LobbyComponent | null;
 
   get steamId() { return this.props.steamId; }
   get host() { return this.props.host; }
+  get connected() { return this.state.connected; }
+
+  constructor() {
+    super();
+
+    this.state = {
+      connected: false
+    }
+  }
 
   componentDidMount(): void {
     if (this.host) {
@@ -62,10 +73,6 @@ export class SteamMatchmakingLobby extends React.Component<IProps> {
 
   private setLobby(lobby: LobbyComponent): void {
     this.subLobby = lobby;
-
-    if (this.connected) {
-      this.subLobby.lobbyConnect();
-    }
   }
 
   private unsetLobby(): void {
@@ -78,12 +85,12 @@ export class SteamMatchmakingLobby extends React.Component<IProps> {
     if (this.connected) {
       this.lobbyWillLeave();
       steamworks.leaveLobby(this.steamId);
-      this.connected = false;
+      this.setState({ connected: false });
     }
   }
 
   private lobbyDidJoin(): void {
-    this.connected = true;
+    this.setState({ connected: true });
 
     steamworks.on('lobby-chat-message', this.lobbyDidReceive);
 
