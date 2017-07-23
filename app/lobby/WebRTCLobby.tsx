@@ -13,19 +13,24 @@ const iceServers = [
   { url: 'stun:stun3.l.google.com:19302' }
 ];
 
-const enum MessageType {
-  RequestJoin,
+enum MessageType {
+  RequestJoin = 1,
   Offer,
   Answer
 }
 
-interface IMessageFrame<T = any> {
-  /** Type */
-  type: MessageType;
+// interface IMessageFrame<T = any> {
+//   /** Type */
+//   type: MessageType;
 
-  /** Data */
-  data?: T;
-}
+//   /** Data */
+//   data?: T;
+// }
+
+type IMessageFrame =
+  { type: MessageType.RequestJoin, data: undefined } |
+  { type: MessageType.Offer, data: string } |
+  { type: MessageType.Answer, data: string };
 
 export class WebRTCLobby extends LobbyComponent<IProps> {
   private conn?: SimplePeer.Instance;
@@ -74,31 +79,29 @@ export class WebRTCLobby extends LobbyComponent<IProps> {
   }
 
   lobbyReceive(message: ILobbyMessage): void {
-    let type, data;
+    let msg;
 
     try {
-      const msg = JSON.parse(message.data.toString('utf-8')) as IMessageFrame;
-      type = msg.type;
-      data = msg.data;
+      msg = JSON.parse(message.data.toString('utf-8')) as IMessageFrame;
     } catch (e) {
       console.error('Failed to read lobby message', message);
       return;
     }
 
     // TODO: need to validate this by checking steam lobby owner
-    switch (type) {
+    switch (msg.type) {
       case MessageType.RequestJoin:
         if (this.props.host && this.signal) {
           this.sendOffer(this.signal);
         }
       case MessageType.Offer:
         if (!this.props.host) {
-          const signal = decodeSignal(data);
+          const signal = decodeSignal(msg.data!);
           this.joinLobby(signal);
         }
       case MessageType.Answer:
         if (this.props.host) {
-          const signal = decodeSignal(data);
+          const signal = decodeSignal(msg.data!);
           this.peerConn.signal(signal);
         }
     }
