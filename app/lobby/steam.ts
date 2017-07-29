@@ -3,6 +3,7 @@ import { steamworks } from "steam";
 import { NetUniqueId } from "lobby/types";
 import { IRTCPeerCoordinator, RTCPeerConn, SignalData } from "lobby/rtc";
 import SimplePeer from "simple-peer";
+import { LOBBY_GAME_GUID } from "constants/steamworks";
 
 
 type SteamID64 = Steamworks.SteamID64;
@@ -49,10 +50,11 @@ export class SteamMatchmakingLobby extends EventEmitter {
 
   private createLobby(opts: SteamMatchmakingLobbyOptions): void {
     steamworks.createLobby(
-      opts.lobbyType || steamworks.LobbyType.FriendsOnly,
+      opts.lobbyType || steamworks.LobbyType.Public,
       opts.maxMembers || 8,
       lobbyId => {
         this.steamId = lobbyId;
+        steamworks.setLobbyData(lobbyId, 'game', LOBBY_GAME_GUID);
         this.onJoin();
       }
     )
