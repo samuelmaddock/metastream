@@ -40,7 +40,9 @@ export class SteamMatchmakingLobby extends EventEmitter {
 
   private joinLobby(opts: SteamMatchmakingLobbyOptions): void {
     steamworks.joinLobby(opts.steamId!, lobbyId => {
-      this.steamId = lobbyId;
+      // BUG: lobbyId = '1'???
+      // this.steamId = lobbyId;
+      this.steamId = opts.steamId!;
       this.onJoin();
     });
   }
@@ -173,6 +175,11 @@ export class SteamRTCPeerCoordinator extends EventEmitter implements IRTCPeerCoo
 
   private onReceive = (entry: Steamworks.ILobbyChatEntry) => {
     const { message, steamId } = entry;
+
+    // Ignore messages from self
+    if (steamId === this.localSteamId) {
+      return;
+    }
 
     let msg;
 
