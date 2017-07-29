@@ -1,8 +1,10 @@
-import SimplePeer from "simple-peer";
+import SimplePeer, { SignalData } from "simple-peer";
 import { EventEmitter } from 'events';
 import { steamworks } from "steam";
 import { NetUniqueId, NetConnection, NetServer } from "lobby/types";
+import { Deferred } from "utils/async";
 
+export type SignalData = SignalData;
 
 /** WebRTC server. */
 export class RTCServer extends NetServer {
@@ -28,27 +30,53 @@ export class RTCServer extends NetServer {
 
 /** WebRTC peer connection. */
 export class RTCPeerConn extends NetConnection {
-  private conn: SimplePeer.Instance;
+  private peer: SimplePeer.Instance;
+  private signalData?: SignalData;
+  private signalDeferred: Deferred<SignalData> = new Deferred();
 
-  constructor(id: NetUniqueId, conn: SimplePeer.Instance) {
+  constructor(id: NetUniqueId, peer: SimplePeer.Instance) {
     super(id);
-    this.conn = conn;
+    this.peer = peer;
     this.setup();
   }
 
   private setup(): void {
-    this.conn.on('close', this.close);
-    this.conn.on('data', this.receive);
+    this.peer.on('close', this.close);
+    this.peer.on('data', this.receive);
+    this.peer.on('signal', this.onSignal);
+  }
+
+  private onSignal = (signal: SignalData) => {
+    this.signalData = signal;
+    this.signalDeferred.resolve(signal);
   }
 
   protected onClose(): void {
-    this.conn.removeAllListeners();
-    this.conn.destroy();
+    this.peer.removeAllListeners();
+    this.peer.destroy();
     super.onClose();
   }
 
+  async getSignal(): Promise<SignalData> {
+    return this.signalDeferred.promise;
+  }
+
+  signal(signal: SignalData): void {
+    if (this.peer) {
+      this.peer.signal(signal);
+    }
+  }
+
   send(data: Buffer): void {
-    this.conn.send(data);
+    this.peer.send(data);
+  }
+
+  getIP(): string {
+    return this.peer.address().address;
+  }
+
+  getPort(): string {
+    return this.peer.address().port;
   }
 }
 

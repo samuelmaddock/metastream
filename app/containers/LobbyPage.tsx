@@ -20,30 +20,34 @@ interface IProps extends RouteComponentProps<IRouteParams> {
 }
 
 interface IConnectedProps {
-  chat?: IChatMessage[];
 }
 
 function mapStateToProps(state: IAppState): IConnectedProps {
-  return {
-    chat: state.lobby.chat
-  };
+  return {};
 }
 
 type PrivateProps = IProps & IConnectedProps & IReactReduxProps;
 
 export class _LobbyPage extends Component<PrivateProps> {
   private steamLobby: SteamMatchmakingLobby;
-  private peerCoord?: IRTCPeerCoordinator;
   private server: NetServer;
+  private host: boolean;
+
+  constructor(props: PrivateProps) {
+    super(props);
+    this.host = this.lobbyId === 'create';
+  }
 
   componentDidMount(): void {
-    const steamLobby = new SteamMatchmakingLobby();
-    const peerCoord = SteamRTCPeerCoordinatorFactory(steamLobby);
+    const lobbyId = this.lobbyId === 'create' ? undefined : this.lobbyId;
+    const steamLobby = new SteamMatchmakingLobby({
+      steamId: lobbyId
+    });
 
+    const peerCoord = SteamRTCPeerCoordinatorFactory(steamLobby);
     const rtcServer = new RTCServer(peerCoord);
 
     this.steamLobby = steamLobby;
-    this.peerCoord = peerCoord;
     this.server = rtcServer;
   }
 

@@ -37,12 +37,16 @@ export abstract class NetConnection extends EventEmitter {
   protected onClose(): void {
     this.emit('close');
   }
+
+  abstract getIP(): string;
+  abstract getPort(): string;
 }
 
 export abstract class NetServer {
   protected connections: NetConnection[] = [];
 
   protected connect(conn: NetConnection): void {
+    console.log(`New connection from ${conn.getIP()}:${conn.getPort()}`);
     this.connections.push(conn);
     conn.once('close', () => this.disconnect(conn));
   }

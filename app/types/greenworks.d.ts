@@ -68,7 +68,7 @@ declare module Steamworks {
     getLobbyDataByIndex(lobby_id: SteamID64, data_idx: number): [string, string];
     getLobbyOwner(lobby_id: SteamID64): SteamID;
     sendLobbyChatMsg(lobby_id: SteamID64, msg: Buffer): boolean;
-    getLobbyChatEntry(lobby_id: SteamID64, chat_id: number): { steamId: SteamID64; message: Buffer };
+    getLobbyChatEntry(lobby_id: SteamID64, chat_id: number): ILobbyChatEntry;
   }
 
   type Handle = number;
@@ -253,6 +253,11 @@ declare module Steamworks {
     distance?: LobbyDistanceFilter;
     count?: number;
     compatibleMembers?: SteamID64;
+  }
+
+  interface ILobbyChatEntry {
+    steamId: SteamID64;
+    message: Buffer;
   }
 
   //

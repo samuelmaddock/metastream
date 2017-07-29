@@ -16,7 +16,7 @@ export class ServerBrowser extends Component<IProps,{}> {
     return (
       <div className={styles.container} data-tid="container">
         <Link to="/">Go back</Link>
-        <button type="button" onClick={() => this.props.createLobby()}>Create lobby</button>
+        <Link to="/lobby/create">Create lobby</Link>
         <h1>Lobbies:</h1>
         {this.renderList()}
       </div>
