@@ -77,7 +77,7 @@ export class SteamRTCPeerCoordinator extends EventEmitter implements IRTCPeerCoo
   constructor(lobby: SteamMatchmakingLobby) {
     super();
     this.lobby = lobby;
-    this.lobby.on('message');
+    // this.lobby.on('message');
   }
 
   signal(signal: string): void {
