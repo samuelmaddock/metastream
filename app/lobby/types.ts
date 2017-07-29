@@ -38,6 +38,10 @@ export abstract class NetConnection extends EventEmitter {
     this.emit('close');
   }
 
+  protected onConnect = (): void => {
+    this.emit('connect');
+  }
+
   abstract getIP(): string;
   abstract getPort(): string;
 }
