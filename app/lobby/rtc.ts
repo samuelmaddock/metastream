@@ -1,52 +1,54 @@
 import SimplePeer from "simple-peer";
 import { EventEmitter } from 'events';
 import { steamworks } from "steam";
-import { NetUniqueId } from "lobby";
+import { NetUniqueId, NetConnection, NetServer } from "lobby/types";
 
 
 /** WebRTC server. */
-export class RTCServer {
+export class RTCServer extends NetServer {
   // Dependencies
   private peerCoord: IRTCPeerCoordinator;
 
-  private peers: RTCPeerConn[] = [];
-
   constructor(peerCoord: IRTCPeerCoordinator) {
+    super();
     this.peerCoord = peerCoord;
-
     this.peerCoord.on('connection', this.onConnection);
   }
 
   private onConnection = (peer: RTCPeerConn): void => {
-    console.log('new peer', peer);
-
-    this.peers.push(peer);
+    this.connect(peer);
   }
 
-  private close(): void {
+  close(): void {
     this.peerCoord.removeListener('connection', this.onConnection);
-
-    this.peers.forEach(peer => {
-      peer.close();
-    });
-
-    this.peers = [];
+    super.close();
   }
 }
 
 
 /** WebRTC peer connection. */
-export class RTCPeerConn {
-  id: NetUniqueId;
-
+export class RTCPeerConn extends NetConnection {
   private conn: SimplePeer.Instance;
 
-  constructor(conn: SimplePeer.Instance) {
+  constructor(id: NetUniqueId, conn: SimplePeer.Instance) {
+    super(id);
     this.conn = conn;
+    this.setup();
   }
 
-  close(): void {
+  private setup(): void {
+    this.conn.on('close', this.close);
+    this.conn.on('data', this.receive);
+  }
+
+  protected onClose(): void {
+    this.conn.removeAllListeners();
     this.conn.destroy();
+    super.onClose();
+  }
+
+  send(data: Buffer): void {
+    this.conn.send(data);
   }
 }
 

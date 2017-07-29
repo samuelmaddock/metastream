@@ -1,25 +1,7 @@
 import { EventEmitter } from 'events';
 import { steamworks } from "steam";
-import { NetUniqueId } from "lobby";
+import { NetUniqueId } from "lobby/types";
 import { IRTCPeerCoordinator } from "lobby/rtc";
-
-export class SteamRTCPeerCoordinator extends EventEmitter implements IRTCPeerCoordinator {
-  private lobby: SteamMatchmakingLobby;
-
-  constructor(lobby: SteamMatchmakingLobby) {
-    super();
-    this.lobby = lobby;
-  }
-
-  signal(signal: string): void {
-    throw new Error("Method not implemented.");
-  }
-}
-
-export const SteamRTCPeerCoordinatorFactory = (steamLobby: SteamMatchmakingLobby) => {
-  const peerCoord = new SteamRTCPeerCoordinator(steamLobby);
-  return peerCoord;
-}
 
 
 type SteamID64 = Steamworks.SteamID64;
@@ -70,20 +52,40 @@ export class SteamMatchmakingLobby extends EventEmitter {
     )
   }
 
-  onJoin(): void {
+  private onJoin(): void {
     this.ownerSteamId = steamworks.getLobbyOwner(this.steamId).getRawSteamID();
     steamworks.on('lobby-chat-message', this.onMessage);
   }
 
-  onLeave(): void {
+  private onLeave(): void {
     steamworks.removeListener('lobby-chat-message', this.onMessage);
   }
 
-  onMessage = (lobbyId: Steamworks.SteamID, userId: Steamworks.SteamID, type: any, chatId: number): void => {
+  private onMessage = (lobbyId: Steamworks.SteamID, userId: Steamworks.SteamID, type: any, chatId: number): void => {
     const entry = steamworks.getLobbyChatEntry(lobbyId.getRawSteamID(), chatId);
 
     this.emit('message', entry);
   }
 
   close(): void {}
+}
+
+
+export class SteamRTCPeerCoordinator extends EventEmitter implements IRTCPeerCoordinator {
+  private lobby: SteamMatchmakingLobby;
+
+  constructor(lobby: SteamMatchmakingLobby) {
+    super();
+    this.lobby = lobby;
+    this.lobby.on('message');
+  }
+
+  signal(signal: string): void {
+    throw new Error("Method not implemented.");
+  }
+}
+
+export const SteamRTCPeerCoordinatorFactory = (steamLobby: SteamMatchmakingLobby) => {
+  const peerCoord = new SteamRTCPeerCoordinator(steamLobby);
+  return peerCoord;
 }

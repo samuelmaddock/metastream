@@ -8,8 +8,9 @@ import { IAppState } from "reducers";
 import { requestLobbies, ILobbyRequestResult, joinLobby, leaveLobby, sendLobbyChatMsg, IChatMessage } from 'actions/steamworks';
 import { NetworkState } from "types/network";
 import { Lobby } from "components/Lobby";
-import { SteamMatchmakingLobby } from "lobby/SteamLobby";
-import { WebRTCLobby } from "lobby/WebRTCLobby";
+import { SteamMatchmakingLobby, SteamRTCPeerCoordinatorFactory, SteamRTCPeerCoordinator } from "lobby/steam";
+import { RTCServer, IRTCPeerCoordinator } from "lobby/rtc";
+import { NetServer } from "lobby/types";
 
 interface IRouteParams {
   lobbyId: string;
@@ -31,39 +32,35 @@ function mapStateToProps(state: IAppState): IConnectedProps {
 type PrivateProps = IProps & IConnectedProps & IReactReduxProps;
 
 export class _LobbyPage extends Component<PrivateProps> {
+  private steamLobby: SteamMatchmakingLobby;
+  private peerCoord?: IRTCPeerCoordinator;
+  private server: NetServer;
+
   componentDidMount(): void {
-    const lobbyId = this.getLobbyId();
-    // this.props.dispatch(joinLobby(lobbyId));
+    const steamLobby = new SteamMatchmakingLobby();
+    const peerCoord = SteamRTCPeerCoordinatorFactory(steamLobby);
+
+    const rtcServer = new RTCServer(peerCoord);
+
+    this.steamLobby = steamLobby;
+    this.peerCoord = peerCoord;
+    this.server = rtcServer;
   }
 
   componentWillUnmount(): void {
-    const lobbyId = this.getLobbyId();
-    // this.props.dispatch(leaveLobby(lobbyId));
+    this.steamLobby.close();
+    this.server.close();
   }
 
-  private getLobbyId(): string {
+  private get lobbyId(): string | undefined {
     const { match } = this.props;
     const lobbyId = match.params.lobbyId;
-    return lobbyId;
+    return lobbyId === 'create' ? undefined : lobbyId;
   }
 
   render(): JSX.Element {
-    if (PRODUCTION || process.env.WITH_STEAM) {
-      return (
-        <SteamMatchmakingLobby
-          host={window.location.href.endsWith('owner')}
-          steamId={this.getLobbyId()}
-          protocolLobby={WebRTCLobby} />
-      );
-    } else {
-      return <div>Only Steam is supported :(</div>
-    }
+    return <div>Lobby</div>;
   }
-
-  private sendMessage = (msg: string) => {
-    const lobbyId = this.getLobbyId();
-    // this.props.dispatch(sendLobbyChatMsg(lobbyId, msg));
-  };
 }
 
 export const LobbyPage = connect<IConnectedProps, {}, IProps>(mapStateToProps)(_LobbyPage);
