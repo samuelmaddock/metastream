@@ -51,25 +51,58 @@ export abstract class NetConnection extends EventEmitter {
 }
 
 export abstract class NetServer {
-  protected connections: NetConnection[] = [];
+  protected connections: {[key: string]: NetConnection | undefined } = {};
 
   protected connect(conn: NetConnection): void {
     console.log(`New client connection from ${conn}`);
-    this.connections.push(conn);
+    const id = conn.id.toString();
+    this.connections[id] = conn;
     conn.once('close', () => this.disconnect(conn));
   }
 
   protected disconnect(conn: NetConnection): void {
     console.log(`Client ${conn} has disconnected`);
-    const idx = this.connections.indexOf(conn);
-    this.connections.splice(idx, 1);
+    const id = conn.id.toString();
+    this.connections[id] = undefined;
+  }
+
+  protected getClientById(clientId: string) {
+    return this.connections[clientId];
+  }
+
+  protected forEachClient(func: (conn: NetConnection) => void) {
+    for (let id in this.connections) {
+      const conn = this.connections[id];
+      if (this.connections.hasOwnProperty(id) && conn) {
+        func(conn);
+      }
+    }
   }
 
   close(): void {
-    this.connections.forEach(conn => {
+    this.forEachClient(conn => {
       conn.close();
     });
 
-    this.connections = [];
+    this.connections = {};
+  }
+
+  send(data: Buffer): void {
+    this.forEachClient(conn => {
+      conn.send(data);
+    });
+  }
+
+  sendTo(clientId: string, data: Buffer): void {
+    const conn = this.getClientById(clientId);
+    if (conn) {
+      conn.send(data);
+    } else {
+      throw `No client found with an ID of '${clientId}'`;
+    }
+  }
+
+  sendToHost(data: Buffer): void {
+
   }
 }

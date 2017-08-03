@@ -1,17 +1,19 @@
 import * as React from 'react';
 import { steamworks } from "steam";
 import SimplePeer from "simple-peer";
-import { ILobbyProps, LobbyComponent, ILobbyMessage, INetAction, INetResponse } from "lobby/types";
+// import { ILobbyProps, LobbyComponent, ILobbyMessage, INetAction, INetResponse } from "lobby/types";
 import { Deferred } from "utils/async";
 
 import { EventEmitter } from 'events';
 import { Lobby } from "components/Lobby";
 import { IChatMessage } from "actions/steamworks";
+import { netConnect } from "lobby/net";
 
 interface IProps {
   host: boolean;
   hostId: string;
-  send<T>(action: INetAction<T>): void;
+  // send<T>(action: INetAction<T>): void;
+  send<T>(action: any): void;
 }
 
 interface IState {
@@ -22,7 +24,7 @@ enum NetActions {
   AddChat = 'ADD_CHAT'
 }
 
-export class GameLobby extends React.Component<IProps, IState> {
+class _GameLobby extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
 
@@ -30,20 +32,24 @@ export class GameLobby extends React.Component<IProps, IState> {
       chatMessages: []
     }
 
-    this.send = this.props.send;
+    // this.send = this.props.send;
   }
 
   render(): JSX.Element {
 
-    return (
-      <Lobby
-        name="WebRTC Test"
-        messages={this.state.chatMessages}
-        sendMessage={(msg) => { this.sendChat(msg); }} />
-    );
+    // return (
+    //   <Lobby
+    //     name="WebRTC Test"
+    //     messages={this.state.chatMessages}
+    //     sendMessage={(msg) => { this.sendChat(msg); }} />
+    // );
+
+    console.log('GameLobby', (this.props as any).chat);
+
+    return <div />;
   }
 
-  private addChat(action: INetResponse<string>): void {
+  /*private addChat(action: INetResponse<string>): void {
     const chatMessage = {
       senderId: action.userId,
       name: action.userId,
@@ -84,5 +90,9 @@ export class GameLobby extends React.Component<IProps, IState> {
         ...action
       });
     }
-  }
+  }*/
 }
+
+export const GameLobby = netConnect<{}, {}, IProps>((state: any) => {
+  return { chat: state.chat }
+})(_GameLobby);

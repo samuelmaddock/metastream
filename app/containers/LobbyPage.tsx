@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
+import { createStore, Store } from 'redux';
 import { IReactReduxProps } from 'types/redux';
 
 import { IAppState } from "reducers";
@@ -11,6 +12,8 @@ import { Lobby } from "components/Lobby";
 import { SteamMatchmakingLobby, SteamRTCPeerCoordinatorFactory, SteamRTCPeerCoordinator } from "lobby/steam";
 import { RTCServer, IRTCPeerCoordinator } from "lobby/rtc";
 import { NetServer } from "lobby/types";
+import { netReducer, ILobbyNetState, NetProvider } from "lobby/net";
+import { GameLobby } from "components/GameLobby";
 
 interface IRouteParams {
   lobbyId: string;
@@ -28,17 +31,19 @@ function mapStateToProps(state: IAppState): IConnectedProps {
 
 type PrivateProps = IProps & IConnectedProps & IReactReduxProps;
 
-export class _LobbyPage extends Component<PrivateProps> {
+export class _LobbyPage extends Component<PrivateProps, {}> {
   private steamLobby: SteamMatchmakingLobby;
   private server: NetServer;
   private host: boolean;
+  private netStore: Store<ILobbyNetState>;
 
   constructor(props: PrivateProps) {
     super(props);
     this.host = this.lobbyId === 'create';
+    this.netStore = createStore(netReducer);
   }
 
-  componentDidMount(): void {
+  private setupLobby(): void {
     const lobbyId = this.lobbyId === 'create' ? undefined : this.lobbyId;
     const steamLobby = new SteamMatchmakingLobby({
       steamId: lobbyId
@@ -49,6 +54,10 @@ export class _LobbyPage extends Component<PrivateProps> {
 
     this.steamLobby = steamLobby;
     this.server = rtcServer;
+  }
+
+  componentDidMount(): void {
+    this.setupLobby();
   }
 
   componentWillUnmount(): void {
@@ -63,7 +72,18 @@ export class _LobbyPage extends Component<PrivateProps> {
   }
 
   render(): JSX.Element {
-    return <div>Lobby</div>;
+    const child = (
+      <GameLobby
+        host={this.host}
+        hostId={this.steamLobby ? this.steamLobby.ownerSteamId : '-1'}
+        send={(msg) => { console.log('todo: send', msg); }} />
+    );
+
+    return (
+      <NetProvider store={this.netStore}>
+        {child}
+      </NetProvider>
+    );
   }
 }
 
