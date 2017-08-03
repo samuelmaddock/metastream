@@ -177,11 +177,11 @@
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "react-hot-loader": "3.0.0-beta.6",
-    "react-redux": "^5.0.4",
+    "react-redux": "^5.0.5",
     "react-router": "^4.1.1",
     "react-router-dom": "^4.1.1",
     "react-router-redux": "^5.0.0-alpha.6",
-    "redux": "^3.6.0",
+    "redux": "^3.7.2",
     "redux-thunk": "^2.2.0",
     "simple-peer": "^8.1.1",
     "source-map-support": "^0.4.14"
