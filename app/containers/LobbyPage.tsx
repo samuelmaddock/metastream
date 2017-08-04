@@ -13,6 +13,7 @@ import { SteamMatchmakingLobby, SteamRTCPeerCoordinatorFactory, SteamRTCPeerCoor
 import { RTCServer, IRTCPeerCoordinator } from "lobby/rtc";
 import { NetServer } from "lobby/types";
 import { netReducer, ILobbyNetState, NetProvider } from "lobby/net";
+import { createNetStore } from "lobby/net/redux";
 import { GameLobby } from "components/GameLobby";
 
 interface IRouteParams {
@@ -40,7 +41,7 @@ export class _LobbyPage extends Component<PrivateProps, {}> {
   constructor(props: PrivateProps) {
     super(props);
     this.host = this.lobbyId === 'create';
-    this.netStore = createStore(netReducer);
+    this.netStore = createNetStore();
   }
 
   private setupLobby(): void {

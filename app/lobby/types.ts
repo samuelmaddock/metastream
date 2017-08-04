@@ -50,7 +50,7 @@ export abstract class NetConnection extends EventEmitter {
   }
 }
 
-export abstract class NetServer {
+export abstract class NetServer extends EventEmitter {
   protected connections: {[key: string]: NetConnection | undefined } = {};
 
   protected connect(conn: NetConnection): void {

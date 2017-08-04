@@ -7,7 +7,9 @@ import { Deferred } from "utils/async";
 import { EventEmitter } from 'events';
 import { Lobby } from "components/Lobby";
 import { IChatMessage } from "actions/steamworks";
-import { netConnect } from "lobby/net";
+import { netConnect, ILobbyNetState } from "lobby/net";
+import { IReactReduxProps } from "types/redux";
+import { addChat } from "lobby/net/actions/chat";
 
 interface IProps {
   host: boolean;
@@ -16,37 +18,25 @@ interface IProps {
   send<T>(action: any): void;
 }
 
-interface IState {
-  chatMessages: IChatMessage[];
+interface IConnectedProps {
+  chat: string[];
 }
 
-enum NetActions {
-  AddChat = 'ADD_CHAT'
-}
+type PrivateProps = IProps & IConnectedProps & IReactReduxProps;
 
-class _GameLobby extends React.Component<IProps, IState> {
-  constructor(props: IProps) {
-    super(props);
-
-    this.state = {
-      chatMessages: []
-    }
-
-    // this.send = this.props.send;
-  }
-
+class _GameLobby extends React.Component<PrivateProps> {
   render(): JSX.Element {
 
-    // return (
-    //   <Lobby
-    //     name="WebRTC Test"
-    //     messages={this.state.chatMessages}
-    //     sendMessage={(msg) => { this.sendChat(msg); }} />
-    // );
-
-    console.log('GameLobby', (this.props as any).chat);
-
-    return <div />;
+    return (
+      <Lobby
+        name="WebRTC Test"
+        messages={this.props.chat.map(msg => ({
+          senderId: '-1',
+          name: 'Name',
+          text: msg
+        }))}
+        sendMessage={(msg) => { this.sendChat(msg); }} />
+    );
   }
 
   /*private addChat(action: INetResponse<string>): void {
@@ -91,8 +81,13 @@ class _GameLobby extends React.Component<IProps, IState> {
       });
     }
   }*/
+
+  private sendChat(msg: string): void {
+    // TODO: dispatch net message
+    this.props.dispatch(addChat(msg));
+  }
 }
 
-export const GameLobby = netConnect<{}, {}, IProps>((state: any) => {
-  return { chat: state.chat }
+export const GameLobby = netConnect<{}, {}, IProps>((state: ILobbyNetState): IConnectedProps => {
+  return { chat: state.chat.entries };
 })(_GameLobby);

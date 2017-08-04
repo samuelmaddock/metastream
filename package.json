@@ -101,6 +101,7 @@
     }
   },
   "devDependencies": {
+    "@types/deep-diff": "^0.0.30",
     "@types/electron": "^1.4.37",
     "@types/history": "^4.5.0",
     "@types/node": "^7.0.14",
@@ -170,6 +171,7 @@
     "webpack-merge": "^4.1.0"
   },
   "dependencies": {
+    "deep-diff": "^0.3.8",
     "electron-debug": "^1.1.0",
     "extract-text-webpack-plugin": "^2.1.0",
     "font-awesome": "^4.7.0",
