@@ -58,12 +58,14 @@ export abstract class NetServer extends EventEmitter {
     const id = conn.id.toString();
     this.connections[id] = conn;
     conn.once('close', () => this.disconnect(conn));
+    conn.on('data', (data: Buffer) => this.receive(conn, data));
   }
 
   protected disconnect(conn: NetConnection): void {
     console.log(`Client ${conn} has disconnected`);
     const id = conn.id.toString();
     this.connections[id] = undefined;
+    conn.removeAllListeners();
   }
 
   protected getClientById(clientId: string) {
@@ -86,6 +88,10 @@ export abstract class NetServer extends EventEmitter {
 
     this.connections = {};
   }
+
+  protected receive(conn: NetConnection, data: Buffer) {
+    this.emit('data', conn, data);
+  };
 
   send(data: Buffer): void {
     this.forEachClient(conn => {

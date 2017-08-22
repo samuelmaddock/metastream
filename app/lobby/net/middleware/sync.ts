@@ -1,13 +1,15 @@
 import { Middleware, MiddlewareAPI, Action, Dispatch } from "redux";
 import deepDiff from 'deep-diff';
-import { NetServer } from "lobby/types";
+import { NetServer, NetConnection } from "lobby/types";
+
+export const NetActionTypes = {
+  UPDATE: '@@net/UPDATE'
+}
 
 export interface NetMiddlewareOptions {
   server: NetServer;
   host: boolean;
 }
-
-
 
 interface NetPayload {
   /** Version */
@@ -33,16 +35,16 @@ export const netSyncMiddleware = (options: NetMiddlewareOptions): Middleware => 
     };
 
     // Apply diffs on connected clients
-    server.on('data', (data: Buffer) => {
+    server.on('data', (conn: NetConnection, data: Buffer) => {
       const obj = JSON.parse(data.toString()) as NetPayload;
-      console.info(`[Net] Received update #${obj.v}`, obj);
+      console.info(`[Net] Received update #${obj.v} from ${conn.id}`, obj);
 
       // apply diff to local state
       let state = getState();
       deepDiff.applyChange(state, state, obj.d);
 
       // trigger update noop
-      dispatch({type: '@@netupdate', payload: {}});
+      dispatch({type: NetActionTypes.UPDATE, payload: obj.v});
     });
 
     return (next: Dispatch<S>) => <A extends Action, B>(action: A): B|Action => {
