@@ -40,8 +40,11 @@ export class _LobbyPage extends Component<PrivateProps, {}> {
 
   constructor(props: PrivateProps) {
     super(props);
-    this.host = this.lobbyId === 'create';
-    this.netStore = createNetStore();
+
+    const lobbyId = props.match.params.lobbyId;
+    this.host = lobbyId === 'create';
+
+    this.setupLobby();
   }
 
   private setupLobby(): void {
@@ -55,10 +58,11 @@ export class _LobbyPage extends Component<PrivateProps, {}> {
 
     this.steamLobby = steamLobby;
     this.server = rtcServer;
-  }
 
-  componentDidMount(): void {
-    this.setupLobby();
+    this.netStore = createNetStore({
+      server: rtcServer,
+      host: this.host
+    });
   }
 
   componentWillUnmount(): void {

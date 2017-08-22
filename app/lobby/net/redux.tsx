@@ -2,7 +2,8 @@ import React, { PropTypes, ReactNode } from 'react'
 import { connect, Provider, Store } from 'react-redux'
 import { createStore, Middleware, applyMiddleware } from "redux";
 import { netReducer, ILobbyNetState } from "lobby/net";
-import { netSyncMiddleware } from "lobby/net/middleware/sync";
+import { netSyncMiddleware, NetMiddlewareOptions } from "lobby/net/middleware/sync";
+import { NetServer } from "lobby/types";
 
 export const NET_STORE_NAME = 'netStore';
 
@@ -31,9 +32,9 @@ export default customConnect;
 const createProvider = require('react-redux').createProvider;
 export const NetProvider = createProvider(NET_STORE_NAME) as typeof Provider;
 
-export function createNetStore(): Store<ILobbyNetState> {
+export function createNetStore(opts: NetMiddlewareOptions): Store<ILobbyNetState> {
   const middleware: Middleware[] = [
-    netSyncMiddleware
+    netSyncMiddleware(opts)
   ];
 
   const store = createStore(
