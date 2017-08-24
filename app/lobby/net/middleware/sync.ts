@@ -33,7 +33,9 @@ export const netSyncMiddleware = (options: NetMiddlewareOptions): Middleware => 
   const { server, host } = options;
   console.log('[Net] Init netSync', options);
 
-  return <S extends Object>({dispatch, getState}: MiddlewareAPI<S>) => {
+  return <S extends Object>(store: MiddlewareAPI<S>) => {
+    const {dispatch, getState} = store;
+
     /** Relay state changes from Server to Clients */
     const relay = (delta: deepDiff.IDiff[]) => {
       const action: NetPayload = {

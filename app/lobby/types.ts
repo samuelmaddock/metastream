@@ -16,7 +16,7 @@ export class NetUniqueId<T = any> {
 export abstract class NetConnection extends EventEmitter {
   id: NetUniqueId;
 
-  protected closed: boolean;
+  protected connected: boolean;
 
   constructor(id: NetUniqueId) {
     super();
@@ -30,7 +30,7 @@ export abstract class NetConnection extends EventEmitter {
   }
 
   close = (): void => {
-    this.closed = true;
+    this.connected = false;
     this.onClose();
   }
 
@@ -39,6 +39,7 @@ export abstract class NetConnection extends EventEmitter {
   }
 
   protected onConnect = (): void => {
+    this.connected = true;
     this.emit('connect');
   }
 
@@ -59,7 +60,7 @@ export abstract class NetServer extends EventEmitter implements INetServerEvents
   protected connections: {[key: string]: NetConnection | undefined } = {};
 
   protected connect(conn: NetConnection): void {
-    console.log(`New client connection from ${conn}`);
+    console.log(`[NetServer] New client connection from ${conn}`);
     const id = conn.id.toString();
     this.connections[id] = conn;
     conn.once('close', () => this.disconnect(conn));
@@ -68,7 +69,7 @@ export abstract class NetServer extends EventEmitter implements INetServerEvents
   }
 
   protected disconnect(conn: NetConnection): void {
-    console.log(`Client ${conn} has disconnected`);
+    console.log(`[NetServer] Client ${conn} has disconnected`);
     const id = conn.id.toString();
     this.connections[id] = undefined;
     conn.removeAllListeners();

@@ -42,14 +42,25 @@ export class RTCPeerConn extends NetConnection {
 
   private setup(): void {
     this.peer.on('close', this.close);
-    this.peer.on('data', this.receive);
+    this.peer.on('data', this.onData);
     this.peer.on('signal', this.onSignal);
-    this.peer.on('connect', this.onConnect);
+    this.peer.once('connect', this.onConnect);
   }
 
   private onSignal = (signal: SignalData) => {
     this.signalData = signal;
     this.signalDeferred.resolve(signal);
+  }
+
+  private onData = (data: Buffer): void => {
+    // HACK: Workaround simple-peer bug where data is received before
+    // 'connect' event
+    if (!this.connected) {
+      this.once('connect', () => this.receive(data));
+      return;
+    }
+
+    this.receive(data);
   }
 
   protected onClose(): void {

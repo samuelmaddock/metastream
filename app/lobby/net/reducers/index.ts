@@ -5,6 +5,7 @@ import { Reducer } from "redux";
 
 import { chat, IChatState } from "./chat";
 import { AnyAction } from "redux";
+import { NetReduxActionTypes } from "lobby/net/middleware/sync";
 
 export interface ILobbyNetState {
   chat: IChatState;
@@ -14,4 +15,12 @@ const rootReducer = combineReducers<ILobbyNetState>({
   chat
 });
 
-export default rootReducer;
+const reducer = (state: ILobbyNetState, action: AnyAction): ILobbyNetState => {
+  // HACK: force re-render on network update
+  if (action.type === NetReduxActionTypes.UPDATE) {
+    return {...state};
+  }
+  return rootReducer(state, action);
+};
+
+export default reducer;
