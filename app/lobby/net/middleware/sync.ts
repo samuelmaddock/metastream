@@ -1,8 +1,9 @@
 import { Middleware, MiddlewareAPI, Action, Dispatch } from "redux";
 import deepDiff from 'deep-diff';
 import { NetServer, NetConnection } from "lobby/types";
+import { clone } from "utils/object";
 
-export const NetActionTypes = {
+export const NetReduxActionTypes = {
   UPDATE: '@@net/UPDATE'
 }
 
@@ -11,7 +12,14 @@ export interface NetMiddlewareOptions {
   host: boolean;
 }
 
+const NetActionTypes = {
+  FULL_UPDATE: 'FULL_UPDATE',
+  UPDATE: 'UPDATE'
+}
+
 interface NetPayload {
+  type: string;
+
   /** Version */
   v: number;
 
@@ -28,23 +36,51 @@ export const netSyncMiddleware = (options: NetMiddlewareOptions): Middleware => 
   return <S extends Object>({dispatch, getState}: MiddlewareAPI<S>) => {
     /** Relay state changes from Server to Clients */
     const relay = (delta: deepDiff.IDiff[]) => {
-      const payload: NetPayload = { v: COMMIT_NUMBER, d: delta[0] };
-      console.info(`[Net] Sending update #${COMMIT_NUMBER}`, payload);
-      const buf = new Buffer(JSON.stringify(payload));
+      const action: NetPayload = {
+        type: NetActionTypes.UPDATE,
+        v: COMMIT_NUMBER,
+        d: delta[0]
+      };
+      console.info(`[Net] Sending update #${COMMIT_NUMBER}`, action);
+      const buf = new Buffer(JSON.stringify(action));
       server.send(buf);
     };
 
+    if (host) {
+      server.on('connect', (conn: NetConnection) => {
+        const state = getState();
+        const action = { type: NetActionTypes.FULL_UPDATE, v: COMMIT_NUMBER, state };
+        const buf = new Buffer(JSON.stringify(action));
+        server.sendTo(conn.id, buf);
+      });
+    }
+
     // Apply diffs on connected clients
     server.on('data', (conn: NetConnection, data: Buffer) => {
-      const obj = JSON.parse(data.toString()) as NetPayload;
-      console.info(`[Net] Received update #${obj.v} from ${conn.id}`, obj);
+      const action = JSON.parse(data.toString());
+      console.info(`[Net] Received action #${action.type} from ${conn.id}`, action);
 
-      // apply diff to local state
-      let state = getState();
-      deepDiff.applyChange(state, state, obj.d);
+      switch (action.type) {
+        case NetActionTypes.FULL_UPDATE:
+          COMMIT_NUMBER = action.v;
+          Object.assign(getState(), action.state);
 
-      // trigger update noop
-      dispatch({type: NetActionTypes.UPDATE, payload: obj.v});
+          // trigger update noop - forces rerender of applied diff
+          dispatch({type: NetReduxActionTypes.UPDATE});
+          break;
+        case NetActionTypes.UPDATE:
+          // apply diff to local state
+          let state = clone(getState());
+          deepDiff.applyChange(state, state, action.d);
+          Object.assign(getState(), state);
+
+          // TODO: Write a redux middleware to apply minimal changes of state tree.
+          // Calling `clone` for each networked state update will be bad prob.
+
+          // trigger update noop - forces rerender of applied diff
+          dispatch({type: NetReduxActionTypes.UPDATE});
+          break;
+      }
     });
 
     return (next: Dispatch<S>) => <A extends Action, B>(action: A): B|Action => {

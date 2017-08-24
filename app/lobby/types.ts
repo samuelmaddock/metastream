@@ -50,7 +50,12 @@ export abstract class NetConnection extends EventEmitter {
   }
 }
 
-export abstract class NetServer extends EventEmitter {
+interface INetServerEvents {
+  on(eventName: 'connect', cb: (conn: NetConnection) => void): this;
+  on(eventName: 'data', cb: (data: Buffer) => void): this;
+}
+
+export abstract class NetServer extends EventEmitter implements INetServerEvents {
   protected connections: {[key: string]: NetConnection | undefined } = {};
 
   protected connect(conn: NetConnection): void {
@@ -59,6 +64,7 @@ export abstract class NetServer extends EventEmitter {
     this.connections[id] = conn;
     conn.once('close', () => this.disconnect(conn));
     conn.on('data', (data: Buffer) => this.receive(conn, data));
+    this.emit('connect', conn);
   }
 
   protected disconnect(conn: NetConnection): void {
@@ -68,8 +74,8 @@ export abstract class NetServer extends EventEmitter {
     conn.removeAllListeners();
   }
 
-  protected getClientById(clientId: string) {
-    return this.connections[clientId];
+  protected getClientById(clientId: NetUniqueId) {
+    return this.connections[clientId.toString()];
   }
 
   protected forEachClient(func: (conn: NetConnection) => void) {
@@ -99,7 +105,7 @@ export abstract class NetServer extends EventEmitter {
     });
   }
 
-  sendTo(clientId: string, data: Buffer): void {
+  sendTo(clientId: NetUniqueId, data: Buffer): void {
     const conn = this.getClientById(clientId);
     if (conn) {
       conn.send(data);
