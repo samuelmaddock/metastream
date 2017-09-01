@@ -82,5 +82,15 @@ app.on('ready', async () => {
     await installExtensions();
   }
 
-  setupWindow();
+  let numWindows = 1;
+
+  // Allow multiple windows for local testing
+  if (process.env.NODE_ENV === 'development') {
+    numWindows = parseInt(process.env.NUM_WINDOWS, 10) || 1;
+    numWindows = Math.min(Math.max(numWindows, 1), 4);
+  }
+
+  for (let i = 0; i < numWindows; i++) {
+    setupWindow();
+  }
 });

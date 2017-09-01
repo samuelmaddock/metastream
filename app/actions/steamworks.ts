@@ -18,6 +18,7 @@ export const requestLobbies = (): Thunk<void> => {
     try {
       lobbies = await PlatformService.findLobbies();
     } catch(e) {
+      console.error(e);
       return;
     }
 
