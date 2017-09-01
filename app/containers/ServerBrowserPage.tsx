@@ -6,15 +6,16 @@ import { IReactReduxProps } from 'types/redux';
 import { IAppState } from "reducers";
 
 import { ServerBrowser } from 'components/ServerBrowser';
-import { requestLobbies, ILobbyRequestResult, createLobby } from 'actions/steamworks';
+import { requestLobbies } from 'actions/steamworks';
 import { NetworkState } from "types/network";
+import { ILobbySession } from "platform/types";
 
 interface IProps extends RouteComponentProps<void> {
 }
 
 interface IConnectedProps {
   network: NetworkState;
-  lobbies?: ILobbyRequestResult[];
+  lobbies?: ILobbySession[];
 }
 
 function mapStateToProps(state: IAppState): IConnectedProps {
@@ -45,14 +46,9 @@ export class _ServerBrowserPage extends Component<PrivateProps> {
       <ServerBrowser
         network={network}
         list={lobbies}
-        refresh={() => {}}
-        createLobby={this.createLobby} />
+        refresh={() => {}} />
     );
   }
-
-  private createLobby = () => {
-    this.props.dispatch(createLobby());
-  };
 }
 
 export const ServerBrowserPage = connect<IConnectedProps, {}, IProps>(mapStateToProps)(_ServerBrowserPage);

@@ -2,7 +2,12 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './ServerBrowser.css';
 import { NetworkState } from "types/network";
-import { ILobbyRequestResult, IChatMessage } from "actions/steamworks";
+
+interface IChatMessage {
+  senderId: Steamworks.SteamID64;
+  name: string;
+  text: string;
+}
 
 interface IProps {
   name: string;

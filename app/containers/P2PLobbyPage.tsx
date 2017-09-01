@@ -8,7 +8,7 @@ import { pack, unpack } from 'utils/lzw';
 
 import { IAppState } from "reducers";
 
-import { requestLobbies, ILobbyRequestResult, IChatMessage } from 'actions/steamworks';
+import { requestLobbies } from 'actions/steamworks';
 import { NetworkState } from "types/network";
 import { Lobby } from "components/Lobby";
 

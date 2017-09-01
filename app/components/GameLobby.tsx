@@ -1,21 +1,15 @@
 import * as React from 'react';
-import { steamworks } from "steam";
-import SimplePeer from "simple-peer";
-// import { ILobbyProps, LobbyComponent, ILobbyMessage, INetAction, INetResponse } from "lobby/types";
-import { Deferred } from "utils/async";
 
-import { EventEmitter } from 'events';
 import { Lobby } from "components/Lobby";
-import { IChatMessage } from "actions/steamworks";
 import { netConnect, ILobbyNetState } from "lobby/net";
 import { IReactReduxProps } from "types/redux";
 import { addChat } from "lobby/net/actions/chat";
 
 interface IProps {
   host: boolean;
-  hostId: string;
+  // hostId: string;
   // send<T>(action: INetAction<T>): void;
-  send<T>(action: any): void;
+  // send<T>(action: any): void;
 }
 
 interface IConnectedProps {

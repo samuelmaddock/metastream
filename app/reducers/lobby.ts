@@ -2,12 +2,12 @@ import { Reducer } from "redux";
 import { NetworkState } from "types/network";
 import { isType } from "utils/redux";
 
-import { loadLobbies, setLobbies, ILobbyRequestResult, IChatMessage, addChat } from "actions/steamworks";
+import { loadLobbies, setLobbies } from "actions/steamworks";
+import { ILobbySession } from "platform/types";
 
 export interface ILobbyState {
   network: NetworkState;
-  list?: ILobbyRequestResult[];
-  chat?: IChatMessage[];
+  list?: ILobbySession[];
 }
 
 const initial: ILobbyState = {
@@ -25,11 +25,6 @@ export const lobby: Reducer<ILobbyState> = (state: ILobbyState, action: any) => 
       network: NetworkState.Ready,
       list: action.payload
     };
-  }
-
-  if (isType(action, addChat)) {
-    const chat = [...state.chat || [], action.payload];
-    return { ...state, chat };
   }
 
   return initial;
