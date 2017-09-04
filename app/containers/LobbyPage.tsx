@@ -42,8 +42,6 @@ export class _LobbyPage extends Component<PrivateProps, {}> {
 
     const lobbyId = props.match.params.lobbyId;
     this.host = lobbyId === 'create';
-
-    this.setupLobby();
   }
 
   private setupLobby(): void {
@@ -66,6 +64,10 @@ export class _LobbyPage extends Component<PrivateProps, {}> {
     });
   }
 
+  componentWillMount(): void {
+    this.setupLobby();
+  }
+
   componentWillUnmount(): void {
     PlatformService.leaveLobby(this.lobbyId || '');
     this.server.close();
@@ -78,6 +80,10 @@ export class _LobbyPage extends Component<PrivateProps, {}> {
   }
 
   render(): JSX.Element {
+    if (!this.netStore) {
+      return <div>Connecting...</div>;
+    }
+
     const child = (
       <GameLobby
         host={this.host} />
