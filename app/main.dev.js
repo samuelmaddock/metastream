@@ -19,6 +19,10 @@ if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true')
   const path = require('path');
   const p = path.join(__dirname, '..', 'app', 'node_modules');
   require('module').globalPaths.push(p);
+
+  if (!process.env.WITH_STEAM) {
+    require('./platform/electron/main-backend.js');
+  }
 }
 
 const installExtensions = async () => {
