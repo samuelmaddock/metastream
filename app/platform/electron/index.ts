@@ -5,13 +5,13 @@ import { IRTCPeerCoordinator } from "lobby/rtc";
 import { Deferred } from "utils/async";
 
 export class ElectronPlatform extends Platform {
-  private currentSession: string;
+  private currentSessionId: string | null;
 
   async createLobby(opts: ILobbyOptions): Promise<boolean> {
     const deferred = new Deferred<boolean>();
 
     ipcRenderer.once('platform-create-lobby-result', (event: any, sessionId: string) => {
-      this.currentSession = sessionId;
+      this.currentSessionId = sessionId;
       deferred.resolve(true);
     });
 
@@ -21,11 +21,21 @@ export class ElectronPlatform extends Platform {
   }
 
   joinLobby(id: string): Promise<boolean> {
-    throw new Error("Method not implemented.");
+    const deferred = new Deferred<boolean>();
+    this.currentSessionId = id;
+    ipcRenderer.send('platform-join-lobby', id);
+
+    ipcRenderer.once('platform-join-lobby-result', (event: any, success: boolean) => {
+      deferred.resolve(success);
+    });
+
+    return deferred.promise;
   }
 
   leaveLobby(id: string): boolean {
-    throw new Error("Method not implemented.");
+    ipcRenderer.send('platform-leave-lobby', id);
+    this.currentSessionId = null;
+    return true;
   }
 
   async findLobbies(): Promise<ILobbySession[]> {
