@@ -30,7 +30,6 @@ type IMessageFrame =
  */
 export class SteamRTCPeerCoordinator extends EventEmitter implements IRTCPeerCoordinator {
   private lobby: SteamMatchmakingLobby;
-  private owner: boolean;
   private connecting: {[key: string]: RTCPeerConn | undefined} = {};
 
   get isLobbyOwner() {

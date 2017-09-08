@@ -3,38 +3,29 @@ import { ipcRenderer } from 'electron';
 import { Platform, ILobbyOptions, ILobbySession } from "platform/types";
 import { IRTCPeerCoordinator } from "lobby/rtc";
 import { Deferred } from "utils/async";
+import { ElectronRTCPeerCoordinator } from "platform/electron/peer-coordinator";
+import { ElectronLobby } from "platform/electron/lobby";
 
 export class ElectronPlatform extends Platform {
-  private currentSessionId: string | null;
+  private currentSession: ElectronLobby | null;
 
   async createLobby(opts: ILobbyOptions): Promise<boolean> {
-    const deferred = new Deferred<boolean>();
-
-    ipcRenderer.once('platform-create-lobby-result', (event: any, sessionId: string) => {
-      this.currentSessionId = sessionId;
-      deferred.resolve(true);
-    });
-
-    ipcRenderer.send('platform-create-lobby');
-
-    return await deferred.promise;
+    const lobby = await ElectronLobby.createLobby();
+    this.currentSession = lobby;
+    return !!lobby;
   }
 
-  joinLobby(id: string): Promise<boolean> {
-    const deferred = new Deferred<boolean>();
-    this.currentSessionId = id;
-    ipcRenderer.send('platform-join-lobby', id);
-
-    ipcRenderer.once('platform-join-lobby-result', (event: any, success: boolean) => {
-      deferred.resolve(success);
-    });
-
-    return deferred.promise;
+  async joinLobby(id: string): Promise<boolean> {
+    const lobby = await ElectronLobby.joinLobby(id);
+    this.currentSession = lobby;
+    return !!lobby;
   }
 
   leaveLobby(id: string): boolean {
-    ipcRenderer.send('platform-leave-lobby', id);
-    this.currentSessionId = null;
+    if (this.currentSession) {
+      this.currentSession.close();
+      this.currentSession = null;
+    }
     return true;
   }
 
@@ -51,7 +42,11 @@ export class ElectronPlatform extends Platform {
   }
 
   createPeerCoordinator(): IRTCPeerCoordinator {
-    throw new Error("Method not implemented.");
+    if (!this.currentSession) {
+      throw new Error('[Electron Platform] createPeerCoordinator: No active session.');
+    }
+
+    return new ElectronRTCPeerCoordinator(this.currentSession);
   }
 
 }

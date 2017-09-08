@@ -4,10 +4,12 @@ import crypto from 'crypto';
 const sessions = new Map();
 
 class Session {
-  clients = new Set()
-
-  constructor() {
+  constructor(hostClient) {
     this.id = crypto.randomBytes(6).toString('hex');
+    this.clients = new Set();
+
+    this.clients.add(hostClient.id);
+    this.owner = hostClient.id;
 
     ipcMain.on(`platform-lobby-message-${this.id}`, this.receive);
   }
@@ -25,7 +27,12 @@ class Session {
   }
 
   leave(client) {
-    this.clients.delete(client.id);
+    if (this.owner === client.id) {
+      // TODO: inform clients of disconnect
+      this.clients.clear();
+    } else {
+      this.clients.delete(client.id);
+    }
   }
 
   sendTo(id, msg) {
@@ -41,8 +48,7 @@ class Session {
 ipcMain.on('platform-create-lobby', (event, opts) => {
   const { sender } = event;
 
-  const session = new Session();
-  session.join(sender);
+  const session = new Session(sender);
 
   sessions.set(session.id, session);
 
@@ -60,7 +66,7 @@ ipcMain.on('platform-join-lobby', (event, lobbyId) => {
   }
 
   session.join(sender);
-  sender.send('platform-join-lobby-result', true);
+  sender.send('platform-join-lobby-result', true, session.owner + '');
 });
 
 ipcMain.on('platform-leave-lobby', (event, lobbyId) => {
@@ -81,10 +87,11 @@ ipcMain.on('platform-leave-lobby', (event, lobbyId) => {
 });
 
 ipcMain.on('platform-query', (event, opts) => {
-  const results = Array.from(sessions).map(session => {
+  const results = Array.from(sessions).map(mapEntry => {
+    const [id, session] = mapEntry;
     return {
-      name: 'Electron Lobby Foo',
       id: session.id,
+      name: 'Electron Lobby Foo',
       data: {
         foo: 'bar'
       }

@@ -44,15 +44,19 @@ export class _LobbyPage extends Component<PrivateProps, {}> {
     this.host = lobbyId === 'create';
   }
 
-  private setupLobby(): void {
+  private async setupLobby(): Promise<void> {
     if (this.lobbyId) {
-      PlatformService.joinLobby(this.lobbyId);
+      await PlatformService.joinLobby(this.lobbyId);
     } else {
-      PlatformService.createLobby({
+      await PlatformService.createLobby({
         maxMembers: 4
       });
     }
 
+    this.onJoinLobby();
+  }
+
+  private onJoinLobby(): void {
     const peerCoord = PlatformService.createPeerCoordinator();
     const rtcServer = new RTCServer(peerCoord);
 
@@ -62,6 +66,8 @@ export class _LobbyPage extends Component<PrivateProps, {}> {
       server: rtcServer,
       host: this.host
     });
+
+    this.forceUpdate();
   }
 
   componentWillMount(): void {
