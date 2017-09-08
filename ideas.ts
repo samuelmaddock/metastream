@@ -72,5 +72,98 @@ const sendChatMessage = (msg: string): Thunk<void> => {
 
 export const server_sendChatMessage = rpc('server', sendChatMessage);
 
-// TODO: how to send to specific client?
-// client_addChat('76561197991989781')(msg);
+/* TODO: how to send to specific client(s)?
+client_addChat('76561197991989781')(msg);
+
+multicast_addChat([
+  '76561197991989781',
+  '76561197991989782'
+])(msg);
+
+// Recipient filters? Player ID instead of social ID?
+*/
+
+/** RPC using classes and decorators */
+
+// @RPC('Server')
+class ServerSendChat {
+	validate() {
+		return true;
+	}
+
+	action() {
+    console.log('foobar');
+	}
+}
+
+/* Networked action creator
+context => ({ type: 'action' }) // action creator
+context => store => {...} // thunk
+
+...args => context => [object | Function]
+
+const server_addChat =
+  (msg: string) =>
+  (context: {role: 'client' | 'server', id: 'sam'}) =>
+  (store: Redux.Store) => {
+    // Implementation
+  }
+*/
+
+/* STRING TABLES
+   Register RPC names into a string table for easy lookup via integers
+*/
+
+/*
+const state = {
+  chat: [],
+
+  // Replicated via decorator (not possible?)
+  @Replicated
+  players: []
+
+  // Replicated via name
+  rep_players: []
+}
+
+Could possibly parse TS code and generate code for the types using TSC
+https://github.com/Microsoft/TypeScript/wiki/Using-the-Compiler-API#using-the-type-checker
+
+// Replication via types
+interface IState {
+  chat: string[],
+
+  @Replicated
+  players: IPlayer[]
+}
+
+// Manual
+const replicationManifest = {
+  players: true
+}
+
+OR
+
+have a network update action and manually handle copying of updated
+subtrees
+
+e.g.
+if (action.type === 'NetUpdate') {
+  return {
+    ...state,
+    networkedProp: action.payload.networkedProp
+    // ...
+  }
+}
+*/
+
+/*
+actions
+reducers
+replicators
+
+Replicators are responsible for describing when and what data to network using redux. Replicators should match the same structure as reducers
+
+Can also handle responding to data changes.
+  - Is this needed? We can handle data changing in components and such
+*/
