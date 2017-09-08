@@ -18,8 +18,11 @@ class Session {
     ipcMain.removeListener(`platform-lobby-message-${this.id}`, this.receive);
   }
 
-  receive = (event, msg) => {
-    console.log(`[Session.receive][${this.id}] Received '${msg}' from ${event.sender.id}`);
+  receive = (event, targetId, msg) => {
+    targetId = parseInt(targetId, 10);
+    const senderId = event.sender.id;
+    console.log(`[Session.receive][${this.id}] Received '${msg}' from ${senderId} for ${targetId}`);
+    this.sendTo(targetId, senderId, msg);
   }
 
   join(client) {
@@ -35,9 +38,14 @@ class Session {
     }
   }
 
-  sendTo(id, msg) {
-    const client = webContents.fromId(id);
-    client.send('platform-lobby-message', msg);
+  sendTo(targetId, senderId, msg) {
+    if (!this.clients.has(targetId)) {
+      console.error(`Unknown target ${targetId}`);
+      return;
+    }
+
+    const client = webContents.fromId(targetId);
+    client.send(`platform-lobby-message-${this.id}`, senderId, msg);
   }
 
   isEmpty() {

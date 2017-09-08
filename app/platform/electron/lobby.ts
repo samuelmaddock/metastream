@@ -31,11 +31,12 @@ export class ElectronLobby extends EventEmitter {
 
     this.id = opts.id;
     this.isOwner = !!opts.host;
-    this.ownerId = opts.host ? remote.webContents.getFocusedWebContents().id + '' : opts.hostId!;
+    this.ownerId = opts.host ? remote.getCurrentWindow().id + '' : opts.hostId!;
 
     // window.addEventListener('beforeunload', this.close, false);
 
     ipcRenderer.on(`platform-lobby-message-${this.id}`, this.onMessage);
+    console.log(`Renderer ElectronLobby now listening for messages on 'platform-lobby-message-${this.id}'`);
   }
 
   close = (): void => {
@@ -43,10 +44,10 @@ export class ElectronLobby extends EventEmitter {
     ipcRenderer.send('platform-leave-lobby', this.id);
   }
 
-  private onMessage = (todo: any): void => {
+  private onMessage = (event: any, senderId: number, msg: Buffer): void => {
     const entry: IElectronLobbyMessage = {
-      senderId: '-1', // TODO
-      message: todo
+      senderId: senderId + '',
+      message: msg
     };
     console.log('Received Electron lobby message', entry);
     this.emit('message', entry);
@@ -57,7 +58,7 @@ export class ElectronLobby extends EventEmitter {
   }
 
   sendChatMessage(targetId: string, message: Buffer) {
-    ipcRenderer.send(`platform-lobby-message-${this.id}`, message);
+    ipcRenderer.send(`platform-lobby-message-${this.id}`, targetId, message);
   }
 
   static async createLobby(): Promise<ElectronLobby> {

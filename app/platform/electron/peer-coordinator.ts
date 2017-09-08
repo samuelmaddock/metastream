@@ -1,5 +1,5 @@
 import SimplePeer from "simple-peer";
-import { webContents } from 'electron';
+import { webContents, remote } from 'electron';
 import { EventEmitter } from "events";
 import { IRTCPeerCoordinator, RTCPeerConn, SignalData } from "lobby/rtc";
 import { ElectronLobby, IElectronLobbyMessage } from "platform/electron/lobby";
@@ -33,7 +33,7 @@ export class ElectronRTCPeerCoordinator extends EventEmitter implements IRTCPeer
   }
 
   get localId(): string {
-    const contents = webContents.getFocusedWebContents();
+    const contents = remote.getCurrentWindow();
     if (contents) {
       return contents.id + '';
     }
@@ -111,7 +111,7 @@ export class ElectronRTCPeerCoordinator extends EventEmitter implements IRTCPeer
         }
         return;
       case MessageType.Offer:
-        if (!this.isLobbyOwner && (msg as any).to === this.localId) {
+        if (!this.isLobbyOwner) {
           const signal = decodeSignal(msg.data!);
           const conn = this.createPeer(this.lobby.ownerId);
           conn.signal(signal);
