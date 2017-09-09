@@ -88,9 +88,10 @@ export const netRpcMiddleware = (options: NetRpcMiddlewareOptions): Middleware =
             sendRpc(action);
           }
           break;
-        default:
-          sendRpc(action);
-          break;
+        case RpcRealm.Client:
+          throw new Error('[RPC] Client RPCs not yet implemented');
+        case RpcRealm.Multicast:
+          throw new Error('[RPC] Multicast RPCs not yet implemented');
       }
 
       return true;
