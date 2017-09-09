@@ -2,4 +2,4 @@
 *.png binary
 *.ico binary
 *.icns binary
-*.node text=auto
+*.node text=auto eol=auto
