@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Lobby } from "components/Lobby";
 import { netConnect, ILobbyNetState } from "lobby/net";
 import { IReactReduxProps } from "types/redux";
-import { addChat } from "lobby/net/actions/chat";
+import { server_addChat } from "lobby/net/actions/chat";
 
 interface IProps {
   host: boolean;
@@ -77,8 +77,7 @@ class _GameLobby extends React.Component<PrivateProps> {
   }*/
 
   private sendChat(msg: string): void {
-    // TODO: dispatch net message
-    this.props.dispatch(addChat(msg));
+    this.props.dispatch(server_addChat(msg));
   }
 }
 

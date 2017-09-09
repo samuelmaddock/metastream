@@ -58,7 +58,10 @@ export class _LobbyPage extends Component<PrivateProps, {}> {
 
   private onJoinLobby(): void {
     const peerCoord = PlatformService.createPeerCoordinator();
-    const rtcServer = new RTCServer(peerCoord);
+    const rtcServer = new RTCServer({
+      isHost: this.host,
+      peerCoord
+    });
 
     this.server = rtcServer;
 

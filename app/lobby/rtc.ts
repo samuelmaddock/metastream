@@ -1,19 +1,23 @@
 import SimplePeer, { SignalData } from "simple-peer";
 import { EventEmitter } from 'events';
 import { steamworks } from "steam";
-import { NetUniqueId, NetConnection, NetServer } from "lobby/types";
+import { NetUniqueId, NetConnection, NetServer, INetServerOptions } from "lobby/types";
 import { Deferred } from "utils/async";
 
 export type SignalData = SignalData;
+
+interface IRTCServerOptions extends INetServerOptions {
+  peerCoord: IRTCPeerCoordinator;
+}
 
 /** WebRTC server. */
 export class RTCServer extends NetServer {
   // Dependencies
   private peerCoord: IRTCPeerCoordinator;
 
-  constructor(peerCoord: IRTCPeerCoordinator) {
-    super();
-    this.peerCoord = peerCoord;
+  constructor(opts: IRTCServerOptions) {
+    super(opts);
+    this.peerCoord = opts.peerCoord;
     this.peerCoord.on('connection', this.onConnection);
   }
 

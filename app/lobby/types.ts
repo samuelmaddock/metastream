@@ -56,8 +56,18 @@ interface INetServerEvents {
   on(eventName: 'data', cb: (data: Buffer) => void): this;
 }
 
+export interface INetServerOptions {
+  isHost: boolean;
+}
+
 export abstract class NetServer extends EventEmitter implements INetServerEvents {
   protected connections: {[key: string]: NetConnection | undefined } = {};
+  protected isHost: boolean;
+
+  constructor(opts: INetServerOptions) {
+    super();
+    this.isHost = opts.isHost;
+  }
 
   protected connect(conn: NetConnection): void {
     console.log(`[NetServer] New client connection from ${conn}`);
@@ -116,6 +126,11 @@ export abstract class NetServer extends EventEmitter implements INetServerEvents
   }
 
   sendToHost(data: Buffer): void {
+    if (this.isHost) {
+      throw new Error('Attempted to send data to self');
+    }
 
+    // If we're not the host, the only other connection we have is the host.
+    this.send(data);
   }
 }

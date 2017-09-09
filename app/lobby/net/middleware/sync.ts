@@ -27,6 +27,8 @@ interface NetPayload {
   d: deepDiff.IDiff;
 }
 
+const SYNC_HEADER = 'SYNC';
+
 export const netSyncMiddleware = (options: NetMiddlewareOptions): Middleware => {
   let COMMIT_NUMBER = 0;
 
@@ -44,7 +46,8 @@ export const netSyncMiddleware = (options: NetMiddlewareOptions): Middleware => 
         d: delta[0]
       };
       console.info(`[Net] Sending update #${COMMIT_NUMBER}`, action);
-      const buf = new Buffer(JSON.stringify(action));
+      const jsonStr = JSON.stringify(action);
+      const buf = new Buffer(SYNC_HEADER + jsonStr);
       server.send(buf);
     };
 
@@ -52,14 +55,20 @@ export const netSyncMiddleware = (options: NetMiddlewareOptions): Middleware => 
       server.on('connect', (conn: NetConnection) => {
         const state = getState();
         const action = { type: NetActionTypes.FULL_UPDATE, v: COMMIT_NUMBER, state };
-        const buf = new Buffer(JSON.stringify(action));
+        const jsonStr = JSON.stringify(action);
+        const buf = new Buffer(SYNC_HEADER + jsonStr);
         server.sendTo(conn.id, buf);
       });
     }
 
     // Apply diffs on connected clients
     server.on('data', (conn: NetConnection, data: Buffer) => {
-      const action = JSON.parse(data.toString());
+      if (data.indexOf(SYNC_HEADER) !== 0) {
+        return;
+      }
+
+      const json = data.toString('utf-8', SYNC_HEADER.length);
+      const action = JSON.parse(json);
       console.info(`[Net] Received action #${action.type} from ${conn.id}`, action);
 
       switch (action.type) {
