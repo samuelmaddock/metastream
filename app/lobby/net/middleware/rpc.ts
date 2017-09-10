@@ -119,7 +119,7 @@ interface RpcAction extends Action {
 
 interface IRPCOptions {
 	realm: RpcRealm;
-	action: (...args: any[]) => void;
+	action: Function;
 	validate?: (...args: any[]) => boolean;
 }
 
@@ -143,11 +143,11 @@ const execRpc = <T>({payload}: RpcAction): T => {
   return opts.action.apply(null, args);
 };
 
-export const rpc = (
+export const rpc = <T extends Function>(
 	realm: RpcRealm,
-	action: (...args: any[]) => void,
+	action: T,
 	validate?: (...args: any[]) => boolean
-): Function => {
+): T => {
   const { name } = action;
 
   if (name === 'action') {
@@ -163,11 +163,13 @@ export const rpc = (
 
   // Return Redux action creator;
   // intercepted by redux-rpc middleware
-	return (...args: any[]) => ({
+	const proxy = (...args: any[]) => ({
 		type: RpcReduxActionTypes.DISPATCH,
 		payload: {
 			name: name,
 			args: args
 		}
-	} as RpcAction);
+  } as RpcAction);
+
+  return proxy as any as T;
 };
