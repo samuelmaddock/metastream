@@ -17,14 +17,12 @@ export class SteamPlatform extends Platform {
   private lobby: SteamMatchmakingLobby | null;
 
   async createLobby(opts: ILobbyOptions): Promise<boolean> {
-    this.lobby = new SteamMatchmakingLobby(opts);
+    this.lobby = await SteamMatchmakingLobby.createLobby(opts);
     return true;
   }
 
-  async joinLobby(id: string): Promise<boolean> {
-    this.lobby = new SteamMatchmakingLobby({
-      steamId: id
-    });
+  async joinLobby(steamId: string): Promise<boolean> {
+    this.lobby = await SteamMatchmakingLobby.joinLobby({steamId});
     return true;
   }
 
@@ -55,11 +53,12 @@ export class SteamPlatform extends Platform {
 
       for (let i = 0; i < count; i++) {
         const lobbyId = steamworks.getLobbyByIndex(i);
+        const data = getLobbyData(steamworks, lobbyId);
 
         const lobby = {
-          name: 'Steam Lobby Foo',
+          name: data.name,
           id: lobbyId.getRawSteamID(),
-          data: getLobbyData(steamworks, lobbyId)
+          data
         };
 
         lobbies.push(lobby);
