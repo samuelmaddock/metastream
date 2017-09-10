@@ -11,7 +11,7 @@ import { NetworkState } from "types/network";
 import { Lobby } from "components/Lobby";
 import { RTCServer, IRTCPeerCoordinator } from "lobby/rtc";
 import { NetServer } from "lobby/types";
-import { netReducer, ILobbyNetState, NetProvider } from "lobby/net";
+import { netReducer, ILobbyNetState, NetProvider, LobbyReplicatedState } from "lobby/net";
 import { createNetStore } from "lobby/net/redux";
 import { GameLobby } from "components/GameLobby";
 import { PlatformService } from "platform";
@@ -67,7 +67,8 @@ export class _LobbyPage extends Component<PrivateProps, {}> {
 
     this.netStore = createNetStore({
       server: rtcServer,
-      host: this.host
+      host: this.host,
+      replicated: LobbyReplicatedState
     });
 
     this.forceUpdate();

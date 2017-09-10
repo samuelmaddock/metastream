@@ -1,4 +1,4 @@
-import netReducer, { ILobbyNetState } from './reducers';
+import netReducer, { ILobbyNetState, LobbyReplicatedState } from './reducers';
 import netConnect, { NetProvider } from './redux';
 
 export type ILobbyNetState = ILobbyNetState;
@@ -6,5 +6,6 @@ export type ILobbyNetState = ILobbyNetState;
 export {
   netReducer,
   netConnect,
-  NetProvider
+  NetProvider,
+  LobbyReplicatedState
 }

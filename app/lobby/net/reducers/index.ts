@@ -6,9 +6,13 @@ import { Reducer } from "redux";
 import { chat, IChatState } from "./chat";
 import { AnyAction } from "redux";
 import { NetReduxActionTypes } from "lobby/net/middleware/sync";
+import { ReplicatedState } from "lobby/types";
 
 export interface ILobbyNetState {
   chat: IChatState;
+}
+
+export const LobbyReplicatedState: ReplicatedState<ILobbyNetState> = {
 }
 
 const rootReducer = combineReducers<ILobbyNetState>({

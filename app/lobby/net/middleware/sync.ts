@@ -1,6 +1,6 @@
 import { Middleware, MiddlewareAPI, Action, Dispatch } from "redux";
 import deepDiff from 'deep-diff';
-import { NetServer, NetConnection } from "lobby/types";
+import { NetServer, NetConnection, ReplicatedState } from "lobby/types";
 import { clone } from "utils/object";
 
 export const NetReduxActionTypes = {
@@ -10,6 +10,7 @@ export const NetReduxActionTypes = {
 export interface NetMiddlewareOptions {
   server: NetServer;
   host: boolean;
+  replicated: ReplicatedState<any>;
 }
 
 const NetActionTypes = {
@@ -29,14 +30,58 @@ interface NetPayload {
 
 const SYNC_HEADER = 'SYNC';
 
+/** Redux subtree replication */
+const replicationPrefilter =
+  <T>(state: ReplicatedState<T>): deepDiff.IPrefilter =>
+  (path, key) => {
+    let i = 0;
+    let tree: ReplicatedState<any> = state;
+
+    // traverse path in tree
+    while (i < path.length) {
+      const k = path[i];
+      if (tree.hasOwnProperty(k)) {
+        const result = state[k]!;
+        if (typeof result === 'object') {
+          tree = result;
+        } else if (typeof result === 'boolean') {
+          return !result;
+        }
+      } else {
+        return true; // ignore undefined replication path
+      }
+      i++;
+    }
+
+    if (tree && tree.hasOwnProperty(key)) {
+      const result = tree[key]!;
+      if (typeof result === 'boolean') {
+        return !result;
+      }
+    }
+
+    return true; // ignore undefined replication path
+  };
+
 export const netSyncMiddleware = (options: NetMiddlewareOptions): Middleware => {
   let COMMIT_NUMBER = 0;
 
   const { server, host } = options;
+  const prefilter = replicationPrefilter(options.replicated);
   console.log('[Net] Init netSync', options);
 
   return <S extends Object>(store: MiddlewareAPI<S>) => {
     const {dispatch, getState} = store;
+
+    /** Get tree containing only replicated state. */
+    const getReplicatedState = () => {
+      const state = {}
+      const diffs = deepDiff.diff(state, getState(), prefilter);
+      if (diffs && diffs.length) {
+        diffs.forEach(diff => { deepDiff.applyChange(state, state, diff); });
+      }
+      return state;
+    };
 
     /** Relay state changes from Server to Clients */
     const relay = (delta: deepDiff.IDiff[]) => {
@@ -53,7 +98,7 @@ export const netSyncMiddleware = (options: NetMiddlewareOptions): Middleware => 
 
     if (host) {
       server.on('connect', (conn: NetConnection) => {
-        const state = getState();
+        const state = getReplicatedState();
         const action = { type: NetActionTypes.FULL_UPDATE, v: COMMIT_NUMBER, state };
         const jsonStr = JSON.stringify(action);
         const buf = new Buffer(SYNC_HEADER + jsonStr);
@@ -105,13 +150,15 @@ export const netSyncMiddleware = (options: NetMiddlewareOptions): Middleware => 
       const result = next(<A>action);
       const stateB = getState();
 
-      const delta = deepDiff.diff(stateA, stateB);
+      const delta = deepDiff.diff(stateA, stateB, prefilter);
 
       console.log('[Net] netSyncMiddleware 2', stateB);
       console.log('[Net] netSyncMiddleware delta', delta);
 
-      relay(delta);
-      COMMIT_NUMBER++;
+      if (delta && delta.length > 0) {
+        relay(delta);
+        COMMIT_NUMBER++;
+      }
 
       return result;
     };
