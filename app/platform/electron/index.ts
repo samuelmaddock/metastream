@@ -1,3 +1,4 @@
+import { hostname } from 'os';
 import { ipcRenderer } from 'electron';
 
 import { Platform, ILobbyOptions, ILobbySession } from "platform/types";
@@ -49,4 +50,7 @@ export class ElectronPlatform extends Platform {
     return new ElectronRTCPeerCoordinator(this.currentSession);
   }
 
+  getUserName(platformId: string): string {
+    return `${hostname()}-${platformId}`;
+  }
 }

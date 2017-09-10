@@ -81,6 +81,7 @@ export abstract class NetServer extends EventEmitter implements INetServerEvents
   }
 
   protected disconnect(conn: NetConnection): void {
+    this.emit('disconnect', conn);
     console.log(`[NetServer] Client ${conn} has disconnected`);
     const id = conn.id.toString();
     this.connections[id] = undefined;

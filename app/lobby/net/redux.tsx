@@ -5,6 +5,7 @@ import { netReducer, ILobbyNetState } from "lobby/net";
 import { netSyncMiddleware, NetMiddlewareOptions } from "lobby/net/middleware/sync";
 import { netRpcMiddleware, NetRpcMiddlewareOptions } from "lobby/net/middleware/rpc";
 import { NetServer } from "lobby/types";
+import { usersMiddleware } from "lobby/net/middleware/users";
 
 export const NET_STORE_NAME = 'netStore';
 
@@ -36,7 +37,8 @@ export const NetProvider = createProvider(NET_STORE_NAME) as typeof Provider;
 export function createNetStore(opts: NetMiddlewareOptions): Store<ILobbyNetState> {
   const middleware: Middleware[] = [
     netRpcMiddleware(opts),
-    netSyncMiddleware(opts)
+    netSyncMiddleware(opts),
+    usersMiddleware(opts)
   ];
 
   const store = createStore(

@@ -80,4 +80,9 @@ export class SteamPlatform extends Platform {
       throw new Error("[SteamPlatform] createPeerCoordinator: No active session.");
     }
   }
+
+  getUserName(platformId: string): string {
+    // TODO: hold copy of SteamID in UniqueNetId, pass that into this function
+    return platformId;
+  }
 }

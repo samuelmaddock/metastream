@@ -1,22 +1,26 @@
 import { combineReducers } from 'redux';
 import { routerReducer as router } from 'react-router-redux';
 import { lobby, ILobbyState } from "reducers/lobby";
-import { Reducer } from "redux";
+import { Reducer, AnyAction } from "redux";
 
-import { chat, IChatState } from "./chat";
-import { AnyAction } from "redux";
 import { NetReduxActionTypes } from "lobby/net/middleware/sync";
 import { ReplicatedState } from "lobby/types";
 
+import { chat, IChatState } from "./chat";
+import { users, IUsersState } from "lobby/net/reducers/users";
+
 export interface ILobbyNetState {
   chat: IChatState;
+  users: IUsersState;
 }
 
 export const LobbyReplicatedState: ReplicatedState<ILobbyNetState> = {
+  users: true
 }
 
 const rootReducer = combineReducers<ILobbyNetState>({
-  chat
+  chat,
+  users
 });
 
 const reducer = (state: ILobbyNetState, action: AnyAction): ILobbyNetState => {

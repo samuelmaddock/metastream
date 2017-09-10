@@ -18,10 +18,15 @@ export interface ILobbySession {
 }
 
 export abstract class Platform {
+  // Matchmaking
   abstract createLobby(opts: ILobbyOptions): Promise<boolean>
   abstract joinLobby(id: string): Promise<boolean>
   abstract leaveLobby(id: string): boolean
   abstract findLobbies(): Promise<ILobbySession[]>
 
+  // RTC
   abstract createPeerCoordinator(): IRTCPeerCoordinator
+
+  // Users
+  abstract getUserName(platformId: string): string
 }

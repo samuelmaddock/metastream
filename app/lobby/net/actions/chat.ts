@@ -1,6 +1,7 @@
 import { actionCreator } from "utils/redux";
 import { rpc, RpcRealm } from "lobby/net/middleware/rpc";
 import { RpcThunk } from "lobby/net/types";
+import { getUserName } from "lobby/net/reducers/users";
 
 export const addChat = actionCreator<{
   sender: string;
@@ -12,7 +13,7 @@ const broadcastChat = (userId: string, text: string): RpcThunk<void> =>
 (dispatch, getState, context) => {
   dispatch(addChat({
     sender: userId,
-    name: userId, // TODO: derive using context?
+    name: getUserName(getState(), userId),
     message: text
   }));
 };

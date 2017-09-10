@@ -5,7 +5,7 @@ interface IAction<P> extends Action {
   payload: P;
 }
 
-export interface IActionCreator<P> {
+export interface IActionCreator<P = void> {
     type: string;
     (payload?: P): IAction<P>;
 }
