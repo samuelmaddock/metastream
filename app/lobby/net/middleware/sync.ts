@@ -145,17 +145,13 @@ export const netSyncMiddleware = (options: NetMiddlewareOptions): Middleware => 
       }
 
       const stateA = getState();
-      console.log('[Net] netSyncMiddleware 1', action, stateA);
-
       const result = next(<A>action);
       const stateB = getState();
 
       const delta = deepDiff.diff(stateA, stateB, prefilter);
 
-      console.log('[Net] netSyncMiddleware 2', stateB);
-      console.log('[Net] netSyncMiddleware delta', delta);
-
       if (delta && delta.length > 0) {
+        console.log('[Net] netSyncMiddleware delta', delta);
         relay(delta);
         COMMIT_NUMBER++;
       }
