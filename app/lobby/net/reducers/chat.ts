@@ -3,8 +3,14 @@ import { NetworkState } from "types/network";
 import { isType } from "utils/redux";
 import { addChat } from "lobby/net/actions/chat";
 
+export interface IChatEntry {
+  sender: string;
+  name: string;
+  message: string;
+}
+
 export interface IChatState {
-  entries: string[];
+  entries: IChatEntry[];
 }
 
 const initialState: IChatState = {

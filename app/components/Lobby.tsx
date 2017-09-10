@@ -4,9 +4,9 @@ import styles from './ServerBrowser.css';
 import { NetworkState } from "types/network";
 
 interface IChatMessage {
-  senderId: Steamworks.SteamID64;
+  sender: string;
   name: string;
-  text: string;
+  message: string;
 }
 
 interface IProps {
@@ -33,7 +33,7 @@ export class Lobby extends Component<IProps> {
     const messages = (this.props.messages || []).map((msg, idx) => {
       return (
         <li key={idx}>
-          <div><b title={msg.senderId}>{msg.name}</b>: {msg.text}</div>
+          <div><b title={msg.sender}>{msg.name}</b>: {msg.message}</div>
         </li>
       );
     });

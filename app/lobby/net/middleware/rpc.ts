@@ -1,11 +1,22 @@
 import { Middleware, MiddlewareAPI, Action, Dispatch } from "redux";
 import { NetServer, NetConnection } from "lobby/types";
+import { localHost } from "lobby/net/localhost";
+import { ActionCreator } from "redux";
 
 const RpcReduxActionTypes = {
   DISPATCH: '@@rpc/DISPATCH'
 }
 
 type RpcMiddlewareResult = boolean;
+
+interface IRpcThunkContext {
+  client: NetConnection;
+}
+
+export type RpcThunkAction<R, S> = (dispatch: Dispatch<S>, getState: () => S,
+context: IRpcThunkContext) => R;
+
+const isRpcThunk = (arg: any): arg is RpcThunkAction<any,any> => typeof arg === 'function';
 
 export interface NetRpcMiddlewareOptions {
   server: NetServer;
@@ -21,8 +32,8 @@ export const netRpcMiddleware = (options: NetRpcMiddlewareOptions): Middleware =
   return <S extends Object>(store: MiddlewareAPI<S>) => {
     const {dispatch, getState} = store;
 
-    // Dispatch RPCs
-    server.on('data', (conn: NetConnection, data: Buffer) => {
+    // Listen for RPCs and dispatch them
+    server.on('data', (client: NetConnection, data: Buffer) => {
       if (data.indexOf(RPC_HEADER) !== 0) {
         return;
       }
@@ -38,28 +49,37 @@ export const netRpcMiddleware = (options: NetRpcMiddlewareOptions): Middleware =
         }
       };
 
-      console.info(`[RPC] Received RPC '#${action.type}' from ${conn.id}`, action);
+      console.info(`[RPC] Received RPC '#${action.type}' from ${client.id}`, action);
 
-      dispatchRpc(action);
+      dispatchRpc(action, client);
     });
 
+    /** Send RPC to recipients. */
     const sendRpc = ({payload}: RpcAction) => {
       const rpc = getRpc(payload.name)!;
 
       const json = JSON.stringify(payload);
       const buf = new Buffer(RPC_HEADER + json);
 
-      if (rpc.realm === RpcRealm.Server) {
-        server.sendToHost(buf);
+      switch (rpc.realm) {
+        case RpcRealm.Server:
+          server.sendToHost(buf);
+          break;
+        case RpcRealm.Multicast:
+          server.send(buf);
+          break;
+        default:
+          throw new Error('Not yet implemented');
       }
     };
 
-    const dispatchRpc = (action: RpcAction) => {
+    /** Dispatch RPC on local Redux store. */
+    const dispatchRpc = (action: RpcAction, client: NetConnection) => {
       const result = execRpc(action);
 
-      if (typeof result === 'function') {
-        // net thunk
-        result(dispatch, getState);
+      if (isRpcThunk(result)) {
+        const context = {client};
+        result(dispatch, getState, context);
       } else if (typeof result === 'object') {
         dispatch(result as Action);
       }
@@ -80,10 +100,13 @@ export const netRpcMiddleware = (options: NetRpcMiddlewareOptions): Middleware =
         throw new Error(`[RPC] Attempted to dispatch unknown RPC '${rpcName}'`);
       }
 
+      // https://docs.unrealengine.com/latest/INT/Gameplay/Networking/Actors/RPCs/#rpcinvokedfromtheserver
       switch (rpc.realm) {
         case RpcRealm.Server:
+          // SERVER: dispatch
+          // CLIENT: send to server
           if (options.host) {
-            dispatchRpc(action);
+            dispatchRpc(action, localHost());
           } else {
             sendRpc(action);
           }
@@ -91,7 +114,13 @@ export const netRpcMiddleware = (options: NetRpcMiddlewareOptions): Middleware =
         case RpcRealm.Client:
           throw new Error('[RPC] Client RPCs not yet implemented');
         case RpcRealm.Multicast:
-          throw new Error('[RPC] Multicast RPCs not yet implemented');
+          // SERVER: broadcast and dispatch
+          // CLIENT: dispatch
+          if (options.host) {
+            sendRpc(action);
+          }
+          dispatchRpc(action, localHost());
+          break;
       }
 
       return true;
@@ -131,7 +160,7 @@ const execRpc = <T>({payload}: RpcAction): T => {
   const {name, args} = payload;
 
   if (!rpcMap.hasOwnProperty(name)) {
-    throw new Error(`Unknown RPC received for "${name}"`);
+    throw new Error(`Exec unknown RPC "${name}"`);
   }
 
   const opts = rpcMap[name]!;
@@ -147,7 +176,7 @@ export const rpc = <T extends Function>(
 	realm: RpcRealm,
 	action: T,
 	validate?: (...args: any[]) => boolean
-): T => {
+): ActionCreator<any> => {
   const { name } = action;
 
   if (name === 'action') {
@@ -171,5 +200,5 @@ export const rpc = <T extends Function>(
 		}
   } as RpcAction);
 
-  return proxy as any as T;
+  return proxy as ActionCreator<any>;
 };
