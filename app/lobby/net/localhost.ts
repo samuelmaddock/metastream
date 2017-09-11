@@ -1,4 +1,4 @@
-import { NetConnection, NetUniqueId } from "lobby/types";
+import { NetConnection, NetUniqueId } from 'lobby/types';
 
 class LocalHostConnection extends NetConnection {
   constructor() {
@@ -24,4 +24,4 @@ export const localHost = (): NetConnection => {
     client = new LocalHostConnection();
   }
   return client;
-}
+};

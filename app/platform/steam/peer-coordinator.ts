@@ -1,15 +1,13 @@
-import SimplePeer from "simple-peer";
+import SimplePeer from 'simple-peer';
 import { EventEmitter } from 'events';
-import { steamworks } from "steam";
+import { steamworks } from 'steam';
 
-import { NetUniqueId } from "lobby/types";
-import { IRTCPeerCoordinator, RTCPeerConn, SignalData } from "lobby/rtc";
+import { NetUniqueId } from 'lobby/types';
+import { IRTCPeerCoordinator, RTCPeerConn, SignalData } from 'lobby/rtc';
 
-import { SteamMatchmakingLobby } from "./lobby";
+import { SteamMatchmakingLobby } from './lobby';
 
-const iceServers = [
-  { url: 'stun:stun3.l.google.com:19302' }
-];
+const iceServers = [{ url: 'stun:stun3.l.google.com:19302' }];
 
 const encodeSignal = (signal: Object) => btoa(JSON.stringify(signal));
 const decodeSignal = (signal: string) => JSON.parse(atob(signal));
@@ -21,16 +19,16 @@ enum MessageType {
 }
 
 type IMessageFrame =
-  { type: MessageType.RequestJoin, data: undefined } |
-  { type: MessageType.Offer, data: string, to: string } |
-  { type: MessageType.Answer, data: string, to: string };
+  | { type: MessageType.RequestJoin; data: undefined }
+  | { type: MessageType.Offer; data: string; to: string }
+  | { type: MessageType.Answer; data: string; to: string };
 
 /**
  * Coordinates RTC peer connections over Steam's Matchmaking lobby chat.
  */
 export class SteamRTCPeerCoordinator extends EventEmitter implements IRTCPeerCoordinator {
   private lobby: SteamMatchmakingLobby;
-  private connecting: {[key: string]: RTCPeerConn | undefined} = {};
+  private connecting: { [key: string]: RTCPeerConn | undefined } = {};
 
   get isLobbyOwner() {
     return this.lobby.isOwner;
@@ -48,7 +46,7 @@ export class SteamRTCPeerCoordinator extends EventEmitter implements IRTCPeerCoo
   }
 
   signal(signal: string): void {
-    throw new Error("Method not implemented.");
+    throw new Error('Method not implemented.');
   }
 
   private createPeer(userId: string): RTCPeerConn {
@@ -81,7 +79,7 @@ export class SteamRTCPeerCoordinator extends EventEmitter implements IRTCPeerCoo
     if (!this.isLobbyOwner) {
       this.sendJoinRequest();
     }
-  }
+  };
 
   private onReceive = (entry: Steamworks.ILobbyChatEntry) => {
     const { message, steamId } = entry;
@@ -131,7 +129,7 @@ export class SteamRTCPeerCoordinator extends EventEmitter implements IRTCPeerCoo
         }
         break;
     }
-  }
+  };
 
   private sendJoinRequest(): void {
     const msg = { type: MessageType.RequestJoin } as IMessageFrame;

@@ -23,7 +23,7 @@ class Session {
     const senderId = event.sender.id;
     console.log(`[Session.receive][${this.id}] Received '${msg}' from ${senderId} for ${targetId}`);
     this.sendTo(targetId, senderId, msg);
-  }
+  };
 
   join(client) {
     this.clients.add(client.id);
@@ -103,7 +103,7 @@ ipcMain.on('platform-query', (event, opts) => {
       data: {
         foo: 'bar'
       }
-    }
+    };
   });
 
   event.sender.send('platform-query-result', results);

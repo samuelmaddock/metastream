@@ -1,11 +1,11 @@
-import { Middleware, MiddlewareAPI, Action, Dispatch } from "redux";
+import { Middleware, MiddlewareAPI, Action, Dispatch } from 'redux';
 import deepDiff from 'deep-diff';
-import { NetServer, NetConnection, ReplicatedState } from "lobby/types";
-import { clone } from "utils/object";
+import { NetServer, NetConnection, ReplicatedState } from 'lobby/types';
+import { clone } from 'utils/object';
 
 export const NetReduxActionTypes = {
   UPDATE: '@@net/UPDATE'
-}
+};
 
 export interface NetMiddlewareOptions {
   server: NetServer;
@@ -16,7 +16,7 @@ export interface NetMiddlewareOptions {
 const NetActionTypes = {
   FULL_UPDATE: 'FULL_UPDATE',
   UPDATE: 'UPDATE'
-}
+};
 
 interface NetPayload {
   type: string;
@@ -31,37 +31,35 @@ interface NetPayload {
 const SYNC_HEADER = 'SYNC';
 
 /** Redux subtree replication */
-const replicationPrefilter =
-  <T>(state: ReplicatedState<T>): deepDiff.IPrefilter =>
-  (path, key) => {
-    let i = 0;
-    let tree: ReplicatedState<any> = state;
+const replicationPrefilter = <T>(state: ReplicatedState<T>): deepDiff.IPrefilter => (path, key) => {
+  let i = 0;
+  let tree: ReplicatedState<any> = state;
 
-    // traverse path in tree
-    while (i < path.length) {
-      const k = path[i];
-      if (tree.hasOwnProperty(k)) {
-        const result = state[k]!;
-        if (typeof result === 'object') {
-          tree = result;
-        } else if (typeof result === 'boolean') {
-          return !result;
-        }
-      } else {
-        return true; // ignore undefined replication path
-      }
-      i++;
-    }
-
-    if (tree && tree.hasOwnProperty(key)) {
-      const result = tree[key]!;
-      if (typeof result === 'boolean') {
+  // traverse path in tree
+  while (i < path.length) {
+    const k = path[i];
+    if (tree.hasOwnProperty(k)) {
+      const result = state[k]!;
+      if (typeof result === 'object') {
+        tree = result;
+      } else if (typeof result === 'boolean') {
         return !result;
       }
+    } else {
+      return true; // ignore undefined replication path
     }
+    i++;
+  }
 
-    return true; // ignore undefined replication path
-  };
+  if (tree && tree.hasOwnProperty(key)) {
+    const result = tree[key]!;
+    if (typeof result === 'boolean') {
+      return !result;
+    }
+  }
+
+  return true; // ignore undefined replication path
+};
 
 export const netSyncMiddleware = (options: NetMiddlewareOptions): Middleware => {
   let COMMIT_NUMBER = 0;
@@ -71,14 +69,16 @@ export const netSyncMiddleware = (options: NetMiddlewareOptions): Middleware => 
   console.log('[Net] Init netSync', options);
 
   return <S extends Object>(store: MiddlewareAPI<S>) => {
-    const {dispatch, getState} = store;
+    const { dispatch, getState } = store;
 
     /** Get tree containing only replicated state. */
     const getReplicatedState = () => {
-      const state = {}
+      const state = {};
       const diffs = deepDiff.diff(state, getState(), prefilter);
       if (diffs && diffs.length) {
-        diffs.forEach(diff => { deepDiff.applyChange(state, state, diff); });
+        diffs.forEach(diff => {
+          deepDiff.applyChange(state, state, diff);
+        });
       }
       return state;
     };
@@ -122,7 +122,7 @@ export const netSyncMiddleware = (options: NetMiddlewareOptions): Middleware => 
           Object.assign(getState(), action.state);
 
           // trigger update noop - forces rerender of applied diff
-          dispatch({type: NetReduxActionTypes.UPDATE});
+          dispatch({ type: NetReduxActionTypes.UPDATE });
           break;
         case NetActionTypes.UPDATE:
           // apply diff to local state
@@ -134,12 +134,12 @@ export const netSyncMiddleware = (options: NetMiddlewareOptions): Middleware => 
           // Calling `clone` for each networked state update will be bad prob.
 
           // trigger update noop - forces rerender of applied diff
-          dispatch({type: NetReduxActionTypes.UPDATE});
+          dispatch({ type: NetReduxActionTypes.UPDATE });
           break;
       }
     });
 
-    return (next: Dispatch<S>) => <A extends Action, B>(action: A): B|Action => {
+    return (next: Dispatch<S>) => <A extends Action, B>(action: A): B | Action => {
       if (!host) {
         return next(<A>action);
       }

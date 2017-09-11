@@ -1,14 +1,11 @@
 import React, { Component } from 'react';
 import styles from './UserList.css';
 
-interface IProps {
-}
+interface IProps {}
 
 export class UserList extends Component<IProps> {
   render(): JSX.Element | null {
     // TODO
-    return (
-      <div />
-    );
+    return <div />;
   }
 }

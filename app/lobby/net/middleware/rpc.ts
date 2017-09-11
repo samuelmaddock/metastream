@@ -1,11 +1,11 @@
-import { Middleware, MiddlewareAPI, Action, Dispatch } from "redux";
-import { NetServer, NetConnection } from "lobby/types";
-import { localHost } from "lobby/net/localhost";
-import { ActionCreator } from "redux";
+import { Middleware, MiddlewareAPI, Action, Dispatch } from 'redux';
+import { NetServer, NetConnection } from 'lobby/types';
+import { localHost } from 'lobby/net/localhost';
+import { ActionCreator } from 'redux';
 
 const RpcReduxActionTypes = {
   DISPATCH: '@@rpc/DISPATCH'
-}
+};
 
 type RpcMiddlewareResult = boolean;
 
@@ -13,10 +13,13 @@ interface IRpcThunkContext {
   client: NetConnection;
 }
 
-export type RpcThunkAction<R, S> = (dispatch: Dispatch<S>, getState: () => S,
-context: IRpcThunkContext) => R;
+export type RpcThunkAction<R, S> = (
+  dispatch: Dispatch<S>,
+  getState: () => S,
+  context: IRpcThunkContext
+) => R;
 
-const isRpcThunk = (arg: any): arg is RpcThunkAction<any,any> => typeof arg === 'function';
+const isRpcThunk = (arg: any): arg is RpcThunkAction<any, any> => typeof arg === 'function';
 
 export interface NetRpcMiddlewareOptions {
   server: NetServer;
@@ -30,7 +33,7 @@ export const netRpcMiddleware = (options: NetRpcMiddlewareOptions): Middleware =
   console.log('[RPC] Init middleware', options);
 
   return <S extends Object>(store: MiddlewareAPI<S>) => {
-    const {dispatch, getState} = store;
+    const { dispatch, getState } = store;
 
     // Listen for RPCs and dispatch them
     server.on('data', (client: NetConnection, data: Buffer) => {
@@ -55,7 +58,7 @@ export const netRpcMiddleware = (options: NetRpcMiddlewareOptions): Middleware =
     });
 
     /** Send RPC to recipients. */
-    const sendRpc = ({payload}: RpcAction) => {
+    const sendRpc = ({ payload }: RpcAction) => {
       const rpc = getRpc(payload.name)!;
 
       const json = JSON.stringify(payload);
@@ -78,14 +81,16 @@ export const netRpcMiddleware = (options: NetRpcMiddlewareOptions): Middleware =
       const result = execRpc(action);
 
       if (isRpcThunk(result)) {
-        const context = {client};
+        const context = { client };
         result(dispatch, getState, context);
       } else if (typeof result === 'object') {
         dispatch(result as Action);
       }
     };
 
-    return (next: Dispatch<S>) => <A extends RpcAction>(action: A): Action|RpcMiddlewareResult => {
+    return (next: Dispatch<S>) => <A extends RpcAction>(
+      action: A
+    ): Action | RpcMiddlewareResult => {
       // TODO: check for RPC special prop
       if (action.type !== RpcReduxActionTypes.DISPATCH) {
         return next(action);
@@ -128,7 +133,6 @@ export const netRpcMiddleware = (options: NetRpcMiddlewareOptions): Middleware =
   };
 };
 
-
 //
 // RPC FUNCTION WRAPPER
 //
@@ -142,22 +146,22 @@ export const enum RpcRealm {
 interface RpcAction extends Action {
   payload: {
     name: string;
-    args: any[]
-  }
+    args: any[];
+  };
 }
 
 interface IRPCOptions {
-	realm: RpcRealm;
-	action: Function;
-	validate?: (...args: any[]) => boolean;
+  realm: RpcRealm;
+  action: Function;
+  validate?: (...args: any[]) => boolean;
 }
 
-const rpcMap: {[key: string]: IRPCOptions | undefined} = {};
+const rpcMap: { [key: string]: IRPCOptions | undefined } = {};
 
 const getRpc = (name: string) => rpcMap[name];
 
-const execRpc = <T>({payload}: RpcAction): T => {
-  const {name, args} = payload;
+const execRpc = <T>({ payload }: RpcAction): T => {
+  const { name, args } = payload;
 
   if (!rpcMap.hasOwnProperty(name)) {
     throw new Error(`Exec unknown RPC "${name}"`);
@@ -173,9 +177,9 @@ const execRpc = <T>({payload}: RpcAction): T => {
 };
 
 export const rpc = <T extends Function>(
-	realm: RpcRealm,
-	action: T,
-	validate?: (...args: any[]) => boolean
+  realm: RpcRealm,
+  action: T,
+  validate?: (...args: any[]) => boolean
 ): ActionCreator<any> => {
   const { name } = action;
 
@@ -192,13 +196,14 @@ export const rpc = <T extends Function>(
 
   // Return Redux action creator;
   // intercepted by redux-rpc middleware
-	const proxy = (...args: any[]) => ({
-		type: RpcReduxActionTypes.DISPATCH,
-		payload: {
-			name: name,
-			args: args
-		}
-  } as RpcAction);
+  const proxy = (...args: any[]) =>
+    ({
+      type: RpcReduxActionTypes.DISPATCH,
+      payload: {
+        name: name,
+        args: args
+      }
+    } as RpcAction);
 
   return proxy as ActionCreator<any>;
 };

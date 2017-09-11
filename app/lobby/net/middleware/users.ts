@@ -1,8 +1,8 @@
-import { Middleware, MiddlewareAPI, Action, Dispatch } from "redux";
-import { NetServer, NetConnection } from "lobby/types";
-import { actionCreator } from "utils/redux";
-import { Platform } from "platform/types";
-import { PlatformService } from "platform";
+import { Middleware, MiddlewareAPI, Action, Dispatch } from 'redux';
+import { NetServer, NetConnection } from 'lobby/types';
+import { actionCreator } from 'utils/redux';
+import { Platform } from 'platform/types';
+import { PlatformService } from 'platform';
 
 export interface NetMiddlewareOptions {
   server: NetServer;
@@ -21,21 +21,23 @@ export const usersMiddleware = (options: NetMiddlewareOptions): Middleware => {
   const { server, host } = options;
 
   return <S extends Object>(store: MiddlewareAPI<S>) => {
-    const {dispatch, getState} = store;
+    const { dispatch, getState } = store;
 
     if (host) {
       server.on('connect', (conn: NetConnection) => {
-        dispatch(addUser({
-          conn,
-          name: PlatformService.getUserName(conn.id.toString())
-        }));
+        dispatch(
+          addUser({
+            conn,
+            name: PlatformService.getUserName(conn.id.toString())
+          })
+        );
       });
       server.on('disconnect', (conn: NetConnection) => {
         dispatch(removeUser(conn.id.toString()));
       });
     }
 
-    return (next: Dispatch<S>) => <A extends Action, B>(action: A): B|Action => {
+    return (next: Dispatch<S>) => <A extends Action, B>(action: A): B | Action => {
       return next(<A>action);
     };
   };

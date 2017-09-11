@@ -1,7 +1,7 @@
-import { Reducer } from "redux";
-import { NetworkState } from "types/network";
-import { isType } from "utils/redux";
-import { addChat } from "lobby/net/actions/chat";
+import { Reducer } from 'redux';
+import { NetworkState } from 'types/network';
+import { isType } from 'utils/redux';
+import { addChat } from 'lobby/net/actions/chat';
 
 export interface IChatEntry {
   sender: string;
@@ -22,7 +22,7 @@ export const chat: Reducer<IChatState> = (state: IChatState = initialState, acti
     return {
       ...state,
       entries: [...state.entries, action.payload]
-    }
+    };
   }
 
   return state;

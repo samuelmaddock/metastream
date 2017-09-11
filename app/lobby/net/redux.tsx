@@ -1,11 +1,11 @@
-import React, { PropTypes, ReactNode } from 'react'
-import { connect, Provider, Store } from 'react-redux'
-import { createStore, Middleware, applyMiddleware } from "redux";
-import { netReducer, ILobbyNetState } from "lobby/net";
-import { netSyncMiddleware, NetMiddlewareOptions } from "lobby/net/middleware/sync";
-import { netRpcMiddleware, NetRpcMiddlewareOptions } from "lobby/net/middleware/rpc";
-import { NetServer } from "lobby/types";
-import { usersMiddleware } from "lobby/net/middleware/users";
+import React, { PropTypes, ReactNode } from 'react';
+import { connect, Provider, Store } from 'react-redux';
+import { createStore, Middleware, applyMiddleware } from 'redux';
+import { netReducer, ILobbyNetState } from 'lobby/net';
+import { netSyncMiddleware, NetMiddlewareOptions } from 'lobby/net/middleware/sync';
+import { netRpcMiddleware, NetRpcMiddlewareOptions } from 'lobby/net/middleware/rpc';
+import { NetServer } from 'lobby/types';
+import { usersMiddleware } from 'lobby/net/middleware/users';
 
 export const NET_STORE_NAME = 'netStore';
 
@@ -14,20 +14,20 @@ function customConnect<TStateProps, TDispatchProps, TOwnProps>(...args: any[]) {
     // Return the "normal" connected component from `react-redux`.
     // Then wrap it and pass the store with the custom name as a `prop`,
     // after picking it from `context`.
-    const ConnectedComponent = connect(...args)(Component)
+    const ConnectedComponent = connect(...args)(Component);
 
     const Wrapper: any = (props: any, context: any) => (
       <ConnectedComponent {...props} store={context[storeName]} />
     );
 
-    Wrapper.displayName = `WrappedConnect(${ConnectedComponent.displayName})`
+    Wrapper.displayName = `WrappedConnect(${ConnectedComponent.displayName})`;
     Wrapper.contextTypes = {
-      [storeName]: PropTypes.object,
-    }
+      [storeName]: PropTypes.object
+    };
 
-    return Wrapper
+    return Wrapper;
   };
-};
+}
 
 export default customConnect;
 
@@ -41,10 +41,7 @@ export function createNetStore(opts: NetMiddlewareOptions): Store<ILobbyNetState
     usersMiddleware(opts)
   ];
 
-  const store = createStore(
-    netReducer,
-    applyMiddleware(...middleware)
-  );
+  const store = createStore(netReducer, applyMiddleware(...middleware));
 
   return store;
 }

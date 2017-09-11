@@ -1,11 +1,11 @@
 import { hostname } from 'os';
 import { ipcRenderer } from 'electron';
 
-import { Platform, ILobbyOptions, ILobbySession } from "platform/types";
-import { IRTCPeerCoordinator } from "lobby/rtc";
-import { Deferred } from "utils/async";
-import { ElectronRTCPeerCoordinator } from "platform/electron/peer-coordinator";
-import { ElectronLobby } from "platform/electron/lobby";
+import { Platform, ILobbyOptions, ILobbySession } from 'platform/types';
+import { IRTCPeerCoordinator } from 'lobby/rtc';
+import { Deferred } from 'utils/async';
+import { ElectronRTCPeerCoordinator } from 'platform/electron/peer-coordinator';
+import { ElectronLobby } from 'platform/electron/lobby';
 
 export class ElectronPlatform extends Platform {
   private currentSession: ElectronLobby | null;

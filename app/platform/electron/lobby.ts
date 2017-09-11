@@ -1,10 +1,10 @@
 import { EventEmitter } from 'events';
-import { steamworks } from "steam";
+import { steamworks } from 'steam';
 import { ipcRenderer, remote } from 'electron';
-import { NetUniqueId } from "lobby/types";
+import { NetUniqueId } from 'lobby/types';
 
-import { LOBBY_GAME_GUID } from "constants/steamworks";
-import { Deferred } from "utils/async";
+import { LOBBY_GAME_GUID } from 'constants/steamworks';
+import { Deferred } from 'utils/async';
 
 type SteamID64 = Steamworks.SteamID64;
 type SteamUniqueId = NetUniqueId<Steamworks.SteamID64>;
@@ -36,13 +36,15 @@ export class ElectronLobby extends EventEmitter {
     // window.addEventListener('beforeunload', this.close, false);
 
     ipcRenderer.on(`platform-lobby-message-${this.id}`, this.onMessage);
-    console.log(`Renderer ElectronLobby now listening for messages on 'platform-lobby-message-${this.id}'`);
+    console.log(
+      `Renderer ElectronLobby now listening for messages on 'platform-lobby-message-${this.id}'`
+    );
   }
 
   close = (): void => {
     ipcRenderer.removeListener(`platform-lobby-message-${this.id}`, this.onMessage);
     ipcRenderer.send('platform-leave-lobby', this.id);
-  }
+  };
 
   private onMessage = (event: any, senderId: number, msg: Buffer): void => {
     const entry: IElectronLobbyMessage = {
@@ -51,7 +53,7 @@ export class ElectronLobby extends EventEmitter {
     };
     console.log('Received Electron lobby message', entry);
     this.emit('message', entry);
-  }
+  };
 
   getOwner(): SteamID64 {
     return this.ownerId;
@@ -65,7 +67,7 @@ export class ElectronLobby extends EventEmitter {
     const deferred = new Deferred<ElectronLobby>();
 
     ipcRenderer.once('platform-create-lobby-result', (event: any, sessionId: string) => {
-      const lobby = new ElectronLobby({id: sessionId, host: true});
+      const lobby = new ElectronLobby({ id: sessionId, host: true });
       deferred.resolve(lobby);
     });
 
@@ -78,10 +80,13 @@ export class ElectronLobby extends EventEmitter {
     const deferred = new Deferred<ElectronLobby>();
     ipcRenderer.send('platform-join-lobby', lobbyId);
 
-    ipcRenderer.once('platform-join-lobby-result', (event: any, success: boolean, hostId: string) => {
-      const lobby = new ElectronLobby({id: lobbyId, hostId});
-      deferred.resolve(lobby);
-    });
+    ipcRenderer.once(
+      'platform-join-lobby-result',
+      (event: any, success: boolean, hostId: string) => {
+        const lobby = new ElectronLobby({ id: lobbyId, hostId });
+        deferred.resolve(lobby);
+      }
+    );
 
     return deferred.promise;
   }

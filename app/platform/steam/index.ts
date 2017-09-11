@@ -1,17 +1,17 @@
 import { EventEmitter } from 'events';
 
-import { NetUniqueId } from "lobby/types";
-import { IRTCPeerCoordinator, RTCPeerConn, SignalData } from "lobby/rtc";
-import SimplePeer from "simple-peer";
-import { LOBBY_GAME_GUID } from "constants/steamworks";
+import { NetUniqueId } from 'lobby/types';
+import { IRTCPeerCoordinator, RTCPeerConn, SignalData } from 'lobby/rtc';
+import SimplePeer from 'simple-peer';
+import { LOBBY_GAME_GUID } from 'constants/steamworks';
 
-import { SteamMatchmakingLobby } from "./lobby";
-import { SteamRTCPeerCoordinator } from "./peer-coordinator";
-import { Platform, ILobbyOptions, ILobbySession } from "platform/types";
+import { SteamMatchmakingLobby } from './lobby';
+import { SteamRTCPeerCoordinator } from './peer-coordinator';
+import { Platform, ILobbyOptions, ILobbySession } from 'platform/types';
 
-import { steamworks } from "steam";
-import { getLobbyData } from "utils/steamworks";
-import { Deferred } from "utils/async";
+import { steamworks } from 'steam';
+import { getLobbyData } from 'utils/steamworks';
+import { Deferred } from 'utils/async';
 
 export class SteamPlatform extends Platform {
   private lobby: SteamMatchmakingLobby | null;
@@ -22,7 +22,7 @@ export class SteamPlatform extends Platform {
   }
 
   async joinLobby(steamId: string): Promise<boolean> {
-    this.lobby = await SteamMatchmakingLobby.joinLobby({steamId});
+    this.lobby = await SteamMatchmakingLobby.joinLobby({ steamId });
     return true;
   }
 
@@ -32,7 +32,7 @@ export class SteamPlatform extends Platform {
       this.lobby = null;
       return true;
     } else {
-      throw new Error("[SteamPlatform] leaveLobby: No active session.");
+      throw new Error('[SteamPlatform] leaveLobby: No active session.');
     }
   }
 
@@ -40,32 +40,35 @@ export class SteamPlatform extends Platform {
     const deferred = new Deferred<ILobbySession[]>();
 
     // TODO: allow filter customization
-    steamworks.requestLobbyList({
-      filters: [
-        { key: 'game', value: LOBBY_GAME_GUID, comparator: steamworks.LobbyComparison.Equal }
-      ],
-      distance: steamworks.LobbyDistanceFilter.Worldwide,
-      count: 50
-    }, (count) => {
-      console.info('Received lobby list', count);
+    steamworks.requestLobbyList(
+      {
+        filters: [
+          { key: 'game', value: LOBBY_GAME_GUID, comparator: steamworks.LobbyComparison.Equal }
+        ],
+        distance: steamworks.LobbyDistanceFilter.Worldwide,
+        count: 50
+      },
+      count => {
+        console.info('Received lobby list', count);
 
-      let lobbies: ILobbySession[] = [];
+        let lobbies: ILobbySession[] = [];
 
-      for (let i = 0; i < count; i++) {
-        const lobbyId = steamworks.getLobbyByIndex(i);
-        const data = getLobbyData(steamworks, lobbyId);
+        for (let i = 0; i < count; i++) {
+          const lobbyId = steamworks.getLobbyByIndex(i);
+          const data = getLobbyData(steamworks, lobbyId);
 
-        const lobby = {
-          name: data.name,
-          id: lobbyId.getRawSteamID(),
-          data
-        };
+          const lobby = {
+            name: data.name,
+            id: lobbyId.getRawSteamID(),
+            data
+          };
 
-        lobbies.push(lobby);
+          lobbies.push(lobby);
+        }
+
+        deferred.resolve(lobbies);
       }
-
-      deferred.resolve(lobbies);
-    });
+    );
     // TODO: failure case
 
     return deferred.promise;
@@ -76,7 +79,7 @@ export class SteamPlatform extends Platform {
       const peerCoord = new SteamRTCPeerCoordinator(this.lobby);
       return peerCoord;
     } else {
-      throw new Error("[SteamPlatform] createPeerCoordinator: No active session.");
+      throw new Error('[SteamPlatform] createPeerCoordinator: No active session.');
     }
   }
 

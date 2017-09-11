@@ -1,13 +1,11 @@
-import SimplePeer from "simple-peer";
+import SimplePeer from 'simple-peer';
 import { webContents, remote } from 'electron';
-import { EventEmitter } from "events";
-import { IRTCPeerCoordinator, RTCPeerConn, SignalData } from "lobby/rtc";
-import { ElectronLobby, IElectronLobbyMessage } from "platform/electron/lobby";
-import { NetUniqueId } from "lobby/types";
+import { EventEmitter } from 'events';
+import { IRTCPeerCoordinator, RTCPeerConn, SignalData } from 'lobby/rtc';
+import { ElectronLobby, IElectronLobbyMessage } from 'platform/electron/lobby';
+import { NetUniqueId } from 'lobby/types';
 
-const iceServers = [
-  { url: 'stun:stun3.l.google.com:19302' }
-];
+const iceServers = [{ url: 'stun:stun3.l.google.com:19302' }];
 
 const encodeSignal = (signal: Object) => btoa(JSON.stringify(signal));
 const decodeSignal = (signal: string) => JSON.parse(atob(signal));
@@ -19,14 +17,13 @@ enum MessageType {
 }
 
 type IMessageFrame =
-  { type: MessageType.RequestJoin, data: undefined } |
-  { type: MessageType.Offer, data: string } |
-  { type: MessageType.Answer, data: string };
-
+  | { type: MessageType.RequestJoin; data: undefined }
+  | { type: MessageType.Offer; data: string }
+  | { type: MessageType.Answer; data: string };
 
 export class ElectronRTCPeerCoordinator extends EventEmitter implements IRTCPeerCoordinator {
   private lobby: ElectronLobby;
-  private connecting: {[key: string]: RTCPeerConn | undefined} = {};
+  private connecting: { [key: string]: RTCPeerConn | undefined } = {};
 
   get isLobbyOwner() {
     return this.lobby.isOwner;
@@ -48,7 +45,7 @@ export class ElectronRTCPeerCoordinator extends EventEmitter implements IRTCPeer
   }
 
   signal(signal: string): void {
-    throw new Error("Method not implemented.");
+    throw new Error('Method not implemented.');
   }
 
   private createPeer(userId: string): RTCPeerConn {
@@ -81,7 +78,7 @@ export class ElectronRTCPeerCoordinator extends EventEmitter implements IRTCPeer
     if (!this.isLobbyOwner) {
       this.sendJoinRequest();
     }
-  }
+  };
 
   private onReceive = (entry: IElectronLobbyMessage) => {
     const { message, senderId } = entry;
@@ -131,7 +128,7 @@ export class ElectronRTCPeerCoordinator extends EventEmitter implements IRTCPeer
         }
         break;
     }
-  }
+  };
 
   private sendJoinRequest(): void {
     const msg = { type: MessageType.RequestJoin } as IMessageFrame;

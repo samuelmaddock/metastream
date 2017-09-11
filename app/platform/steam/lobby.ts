@@ -1,9 +1,9 @@
 import { EventEmitter } from 'events';
-import { steamworks } from "steam";
-import { NetUniqueId } from "lobby/types";
+import { steamworks } from 'steam';
+import { NetUniqueId } from 'lobby/types';
 
-import { LOBBY_GAME_GUID } from "constants/steamworks";
-import { Deferred } from "utils/async";
+import { LOBBY_GAME_GUID } from 'constants/steamworks';
+import { Deferred } from 'utils/async';
 
 type SteamID64 = Steamworks.SteamID64;
 type SteamUniqueId = NetUniqueId<Steamworks.SteamID64>;
@@ -55,15 +55,20 @@ export class SteamMatchmakingLobby extends EventEmitter {
     steamworks.removeListener('lobby-chat-message', this.onMessage);
   }
 
-  private onMessage = (lobbyId: Steamworks.SteamID, userId: Steamworks.SteamID, type: any, chatId: number): void => {
+  private onMessage = (
+    lobbyId: Steamworks.SteamID,
+    userId: Steamworks.SteamID,
+    type: any,
+    chatId: number
+  ): void => {
     const entry = steamworks.getLobbyChatEntry(lobbyId.getRawSteamID(), chatId);
     console.log('Received Steam lobby message', entry);
     this.emit('message', entry);
-  }
+  };
 
   close = (): void => {
     steamworks.leaveLobby(this.steamId);
-  }
+  };
 
   getOwner(): SteamID64 {
     return this.ownerSteamId;
@@ -83,7 +88,7 @@ export class SteamMatchmakingLobby extends EventEmitter {
         const lobby = new SteamMatchmakingLobby(lobbyId);
         deferred.resolve(lobby);
       }
-    )
+    );
 
     return deferred.promise;
   }
