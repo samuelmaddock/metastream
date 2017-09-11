@@ -6,6 +6,7 @@ import { netSyncMiddleware, NetMiddlewareOptions } from 'lobby/net/middleware/sy
 import { netRpcMiddleware, NetRpcMiddlewareOptions } from 'lobby/net/middleware/rpc';
 import { NetServer } from 'lobby/types';
 import { usersMiddleware } from 'lobby/net/middleware/users';
+import { sessionMiddleware } from 'lobby/net/middleware/session';
 
 export const NET_STORE_NAME = 'netStore';
 
@@ -38,7 +39,8 @@ export function createNetStore(opts: NetMiddlewareOptions): Store<ILobbyNetState
   const middleware: Middleware[] = [
     netRpcMiddleware(opts),
     netSyncMiddleware(opts),
-    usersMiddleware(opts)
+    usersMiddleware(opts),
+    sessionMiddleware(opts)
   ];
 
   const store = createStore(netReducer, applyMiddleware(...middleware));

@@ -6,6 +6,7 @@ import { IReactReduxProps } from 'types/redux';
 import { server_addChat } from 'lobby/net/actions/chat';
 import { IChatEntry } from 'lobby/net/reducers/chat';
 import { IUsersState } from 'lobby/net/reducers/users';
+import { getSessionName } from 'lobby/net/reducers/session';
 
 interface IProps {
   host: boolean;
@@ -14,6 +15,7 @@ interface IProps {
 interface IConnectedProps {
   chat: IChatEntry[];
   users: IUsersState;
+  sessionName?: string;
 }
 
 type PrivateProps = IProps & IConnectedProps & IReactReduxProps;
@@ -22,7 +24,11 @@ class _GameLobby extends React.Component<PrivateProps> {
   render(): JSX.Element {
     return (
       <div>
-        <Lobby name="WebRTC Test" messages={this.props.chat} sendMessage={this.sendChat} />
+        <Lobby
+          name={this.props.sessionName || 'Connecting'}
+          messages={this.props.chat}
+          sendMessage={this.sendChat}
+        />
         <h2>Users</h2>
         {Object.keys(this.props.users).map(userId => {
           return <div key={userId}>{this.props.users[userId]!.name}</div>;
@@ -39,6 +45,7 @@ class _GameLobby extends React.Component<PrivateProps> {
 export const GameLobby = netConnect<{}, {}, IProps>((state: ILobbyNetState): IConnectedProps => {
   return {
     chat: state.chat.entries,
-    users: state.users
+    users: state.users,
+    sessionName: getSessionName(state)
   };
 })(_GameLobby);

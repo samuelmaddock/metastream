@@ -8,18 +8,22 @@ import { ReplicatedState } from 'lobby/types';
 
 import { chat, IChatState } from './chat';
 import { users, IUsersState } from 'lobby/net/reducers/users';
+import { session, ISessionState } from 'lobby/net/reducers/session';
 
 export interface ILobbyNetState {
   chat: IChatState;
+  session: ISessionState;
   users: IUsersState;
 }
 
 export const LobbyReplicatedState: ReplicatedState<ILobbyNetState> = {
+  session: true,
   users: true
 };
 
 const rootReducer = combineReducers<ILobbyNetState>({
   chat,
+  session,
   users
 });
 

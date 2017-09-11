@@ -26,8 +26,7 @@ export interface ISteamLobbyChatEnvelope {
 }
 
 export class SteamMatchmakingLobby extends EventEmitter {
-  private steamId: SteamID64;
-
+  steamId: SteamID64;
   ownerSteamId: Steamworks.SteamID;
   isOwner: boolean = false;
 

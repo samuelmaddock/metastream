@@ -7,7 +7,7 @@ import { LOBBY_GAME_GUID } from 'constants/steamworks';
 
 import { SteamMatchmakingLobby } from './lobby';
 import { SteamRTCPeerCoordinator } from './peer-coordinator';
-import { Platform, ILobbyOptions, ILobbySession, SessionKey } from 'platform/types';
+import { Platform, ILobbyOptions, ILobbySession, SessionKey, ILobbyData } from 'platform/types';
 
 import { steamworks } from 'steam';
 import { getLobbyData } from 'utils/steamworks';
@@ -78,6 +78,24 @@ export class SteamPlatform extends Platform {
     // TODO: failure case
 
     return deferred.promise;
+  }
+
+  getLobbyData(): ILobbyData | null {
+    if (!this.lobby) {
+      return null;
+    }
+
+    const data: { [key: string]: string } = {};
+
+    const lobbyId = this.lobby.steamId;
+    const len = steamworks.getLobbyDataCount(lobbyId);
+
+    for (let i = 0; i < len; i++) {
+      const kv = steamworks.getLobbyDataByIndex(lobbyId, i);
+      data[kv[0]] = kv[1];
+    }
+
+    return data;
   }
 
   createPeerCoordinator(): IRTCPeerCoordinator {

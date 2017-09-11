@@ -1,7 +1,7 @@
 import { hostname } from 'os';
 import { ipcRenderer, remote } from 'electron';
 
-import { Platform, ILobbyOptions, ILobbySession } from 'platform/types';
+import { Platform, ILobbyOptions, ILobbySession, ILobbyData } from 'platform/types';
 import { IRTCPeerCoordinator } from 'lobby/rtc';
 import { Deferred } from 'utils/async';
 import { ElectronRTCPeerCoordinator } from 'platform/electron/peer-coordinator';
@@ -42,6 +42,11 @@ export class ElectronPlatform extends Platform {
     ipcRenderer.send('platform-query', {});
 
     return await deferred.promise;
+  }
+
+  getLobbyData(): ILobbyData | null {
+    // TODO
+    return null;
   }
 
   createPeerCoordinator(): IRTCPeerCoordinator {

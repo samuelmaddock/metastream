@@ -18,21 +18,6 @@ export interface ILobbySession {
   id: string;
 }
 
-export abstract class Platform {
-  // Matchmaking
-  abstract createLobby(opts: ILobbyOptions): Promise<boolean>;
-  abstract joinLobby(id: string): Promise<boolean>;
-  abstract leaveLobby(id: string): boolean;
-  abstract findLobbies(): Promise<ILobbySession[]>;
-
-  // RTC
-  abstract createPeerCoordinator(): IRTCPeerCoordinator;
-
-  // Users
-  abstract getLocalId(): NetUniqueId;
-  abstract getUserName(id: NetUniqueId): string;
-}
-
 export const enum SessionKey {
   /** Session name */
   Name = 'name',
@@ -47,4 +32,26 @@ export const enum SessionKey {
 
   /** Boolean value indicating the session is password protected */
   PasswordProtected = 'pw'
+}
+
+export interface ILobbyData {
+  // see Microsoft/TypeScript#18346
+  // [key in SessionKey]: string;
+  [key: string]: string;
+}
+
+export abstract class Platform {
+  // Matchmaking
+  abstract createLobby(opts: ILobbyOptions): Promise<boolean>;
+  abstract joinLobby(id: string): Promise<boolean>;
+  abstract leaveLobby(id: string): boolean;
+  abstract findLobbies(): Promise<ILobbySession[]>;
+  abstract getLobbyData(): ILobbyData | null;
+
+  // RTC
+  abstract createPeerCoordinator(): IRTCPeerCoordinator;
+
+  // Users
+  abstract getLocalId(): NetUniqueId;
+  abstract getUserName(id: NetUniqueId): string;
 }
