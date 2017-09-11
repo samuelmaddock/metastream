@@ -3,6 +3,7 @@ import { NetServer, NetConnection } from 'lobby/types';
 import { actionCreator } from 'utils/redux';
 import { Platform } from 'platform/types';
 import { PlatformService } from 'platform';
+import { localUser } from 'lobby/net/localhost';
 
 export interface NetMiddlewareOptions {
   server: NetServer;
@@ -24,6 +25,14 @@ export const usersMiddleware = (options: NetMiddlewareOptions): Middleware => {
     const { dispatch, getState } = store;
 
     if (host) {
+      // Add local user as initial user
+      dispatch(
+        addUser({
+          conn: localUser(),
+          name: PlatformService.getUserName(localUser().id.toString())
+        })
+      );
+
       server.on('connect', (conn: NetConnection) => {
         dispatch(
           addUser({
@@ -32,6 +41,7 @@ export const usersMiddleware = (options: NetMiddlewareOptions): Middleware => {
           })
         );
       });
+
       server.on('disconnect', (conn: NetConnection) => {
         dispatch(removeUser(conn.id.toString()));
       });

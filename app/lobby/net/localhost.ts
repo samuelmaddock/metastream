@@ -13,13 +13,13 @@ class LocalHostConnection extends NetConnection {
     throw '127.0.0.1';
   }
   getPort(): string {
-    return '';
+    return '0';
   }
 }
 
 let client: LocalHostConnection;
 
-export const localHost = (): NetConnection => {
+export const localUser = (): NetConnection => {
   if (!client) {
     client = new LocalHostConnection();
   }

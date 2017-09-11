@@ -1,6 +1,6 @@
 import { Middleware, MiddlewareAPI, Action, Dispatch } from 'redux';
 import { NetServer, NetConnection } from 'lobby/types';
-import { localHost } from 'lobby/net/localhost';
+import { localUser } from 'lobby/net/localhost';
 import { ActionCreator } from 'redux';
 
 const RpcReduxActionTypes = {
@@ -111,7 +111,7 @@ export const netRpcMiddleware = (options: NetRpcMiddlewareOptions): Middleware =
           // SERVER: dispatch
           // CLIENT: send to server
           if (options.host) {
-            dispatchRpc(action, localHost());
+            dispatchRpc(action, localUser());
           } else {
             sendRpc(action);
           }
@@ -124,7 +124,7 @@ export const netRpcMiddleware = (options: NetRpcMiddlewareOptions): Middleware =
           if (options.host) {
             sendRpc(action);
           }
-          dispatchRpc(action, localHost());
+          dispatchRpc(action, localUser());
           break;
       }
 
