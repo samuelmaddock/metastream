@@ -19,23 +19,20 @@ if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true')
   const path = require('path');
   const p = path.join(__dirname, '..', 'app', 'node_modules');
   require('module').globalPaths.push(p);
+}
 
-  if (!process.env.WITH_STEAM) {
-    require('./platform/electron/main-backend.js');
-  }
+if (process.env.NODE_ENV === 'development' && !process.env.WITH_STEAM) {
+  window.require('./platform/electron/main-backend.js');
 }
 
 const installExtensions = async () => {
   const installer = require('electron-devtools-installer');
   const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
-  const extensions = [
-    'REACT_DEVELOPER_TOOLS',
-    'REDUX_DEVTOOLS'
-  ];
+  const extensions = ['REACT_DEVELOPER_TOOLS', 'REDUX_DEVTOOLS'];
 
-  return Promise
-    .all(extensions.map(name => installer.default(installer[name], forceDownload)))
-    .catch(console.log);
+  return Promise.all(
+    extensions.map(name => installer.default(installer[name], forceDownload))
+  ).catch(console.log);
 };
 
 /**
@@ -49,7 +46,6 @@ app.on('window-all-closed', () => {
     app.quit();
   }
 });
-
 
 const setupWindow = () => {
   let win = new BrowserWindow({

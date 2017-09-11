@@ -4,13 +4,10 @@ import { AppContainer } from 'react-hot-loader';
 import Root from './containers/Root';
 import * as cfgStore from './store/configureStore';
 import './app.global.css';
-import { getRootDir } from "utils/path";
-import { steamworks } from "steam";
+import { steamworks } from 'steam';
 
 const electron = window.require('electron');
 const process = window.require('process');
-
-(global as any).ROOT_DIR = getRootDir();
 
 let store: any;
 
@@ -63,7 +60,7 @@ function init() {
       <Root store={store} history={history} />
     </AppContainer>,
     document.getElementById('root'),
-    function () {
+    function() {
       console.info('Render complete', arguments);
     }
   );
