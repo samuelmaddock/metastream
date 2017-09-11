@@ -1,9 +1,9 @@
 import { NetConnection, NetUniqueId } from 'lobby/types';
+import { PlatformService } from 'platform';
 
 class LocalHostConnection extends NetConnection {
   constructor() {
-    // TODO: get from platform
-    const id = new NetUniqueId('0');
+    const id = PlatformService.getLocalId();
     super(id);
   }
   send(data: Buffer): void {

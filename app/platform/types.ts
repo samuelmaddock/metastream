@@ -1,4 +1,5 @@
 import { IRTCPeerCoordinator } from 'lobby/rtc';
+import { NetUniqueId } from 'lobby/types';
 
 export const enum LobbyType {
   Private,
@@ -28,5 +29,6 @@ export abstract class Platform {
   abstract createPeerCoordinator(): IRTCPeerCoordinator;
 
   // Users
-  abstract getUserName(platformId: string): string;
+  abstract getLocalId(): NetUniqueId;
+  abstract getUserName(id: NetUniqueId): string;
 }

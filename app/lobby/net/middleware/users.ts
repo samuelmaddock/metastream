@@ -29,7 +29,7 @@ export const usersMiddleware = (options: NetMiddlewareOptions): Middleware => {
       dispatch(
         addUser({
           conn: localUser(),
-          name: PlatformService.getUserName(localUser().id.toString())
+          name: PlatformService.getUserName(localUser().id)
         })
       );
 
@@ -37,7 +37,7 @@ export const usersMiddleware = (options: NetMiddlewareOptions): Middleware => {
         dispatch(
           addUser({
             conn,
-            name: PlatformService.getUserName(conn.id.toString())
+            name: PlatformService.getUserName(conn.id)
           })
         );
       });

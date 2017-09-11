@@ -1,13 +1,15 @@
 import { hostname } from 'os';
-import { ipcRenderer } from 'electron';
+import { ipcRenderer, remote } from 'electron';
 
 import { Platform, ILobbyOptions, ILobbySession } from 'platform/types';
 import { IRTCPeerCoordinator } from 'lobby/rtc';
 import { Deferred } from 'utils/async';
 import { ElectronRTCPeerCoordinator } from 'platform/electron/peer-coordinator';
 import { ElectronLobby } from 'platform/electron/lobby';
+import { NetUniqueId } from 'lobby/types';
 
 export class ElectronPlatform extends Platform {
+  private id: NetUniqueId<number>;
   private currentSession: ElectronLobby | null;
 
   async createLobby(opts: ILobbyOptions): Promise<boolean> {
@@ -50,7 +52,16 @@ export class ElectronPlatform extends Platform {
     return new ElectronRTCPeerCoordinator(this.currentSession);
   }
 
-  getUserName(platformId: string): string {
-    return `${hostname()}-${platformId}`;
+  getUserName(userId: NetUniqueId): string {
+    return `${hostname()}-${userId.toString()}`;
+  }
+
+  getLocalId(): NetUniqueId {
+    if (!this.id) {
+      const win = remote.getCurrentWindow();
+      const id = win.id;
+      this.id = new NetUniqueId(id);
+    }
+    return this.id;
   }
 }

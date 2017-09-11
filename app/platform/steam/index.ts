@@ -14,6 +14,7 @@ import { getLobbyData } from 'utils/steamworks';
 import { Deferred } from 'utils/async';
 
 export class SteamPlatform extends Platform {
+  private id: NetUniqueId<Steamworks.SteamID>;
   private lobby: SteamMatchmakingLobby | null;
 
   async createLobby(opts: ILobbyOptions): Promise<boolean> {
@@ -43,7 +44,11 @@ export class SteamPlatform extends Platform {
     steamworks.requestLobbyList(
       {
         filters: [
-          { key: 'game', value: LOBBY_GAME_GUID, comparator: steamworks.LobbyComparison.Equal }
+          {
+            key: 'game',
+            value: LOBBY_GAME_GUID,
+            comparator: steamworks.LobbyComparison.Equal
+          }
         ],
         distance: steamworks.LobbyDistanceFilter.Worldwide,
         count: 50
@@ -83,8 +88,16 @@ export class SteamPlatform extends Platform {
     }
   }
 
-  getUserName(platformId: string): string {
-    // TODO: hold copy of SteamID in UniqueNetId, pass that into this function
-    return platformId;
+  getUserName(userId: NetUniqueId): string {
+    // TODO: get from SteamID
+    return userId.toString();
+  }
+
+  getLocalId(): NetUniqueId {
+    if (!this.id) {
+      const steamId = steamworks.getSteamId();
+      this.id = new NetUniqueId(steamId);
+    }
+    return this.id;
   }
 }
