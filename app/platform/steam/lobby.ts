@@ -6,7 +6,6 @@ import { LOBBY_GAME_GUID } from 'constants/steamworks';
 import { Deferred } from 'utils/async';
 
 type SteamID64 = Steamworks.SteamID64;
-type SteamUniqueId = NetUniqueId<Steamworks.SteamID64>;
 
 interface SteamMatchmakingLobbyOptions {
   // Join options

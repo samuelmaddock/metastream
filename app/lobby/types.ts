@@ -4,7 +4,7 @@ import { EventEmitter } from 'events';
 export type ReplicatedState<T> = { [key in keyof T]?: boolean | ReplicatedState<T[keyof T]> };
 
 export class NetUniqueId<T = any> {
-  private id: T;
+  id: T;
 
   constructor(id: T) {
     this.id = id;

@@ -12,6 +12,7 @@ import { Platform, ILobbyOptions, ILobbySession } from 'platform/types';
 import { steamworks } from 'steam';
 import { getLobbyData } from 'utils/steamworks';
 import { Deferred } from 'utils/async';
+import { SteamUniqueId } from 'platform/steam/steamid';
 
 export class SteamPlatform extends Platform {
   private id: NetUniqueId<Steamworks.SteamID>;
@@ -89,14 +90,19 @@ export class SteamPlatform extends Platform {
   }
 
   getUserName(userId: NetUniqueId): string {
-    // TODO: get from SteamID
-    return userId.toString();
+    if (!(userId instanceof SteamUniqueId)) {
+      throw new Error(
+        '[SteamPlatform.getUserName] Received NetUniqueId not an instance of SteamUniqueId'
+      );
+    }
+    const steamId = (userId as SteamUniqueId).id;
+    return steamId.getPersonaName();
   }
 
   getLocalId(): NetUniqueId {
     if (!this.id) {
       const steamId = steamworks.getSteamId();
-      this.id = new NetUniqueId(steamId);
+      this.id = new SteamUniqueId(steamId);
     }
     return this.id;
   }

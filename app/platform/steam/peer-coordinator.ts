@@ -6,6 +6,7 @@ import { NetUniqueId } from 'lobby/types';
 import { IRTCPeerCoordinator, RTCPeerConn, SignalData } from 'lobby/rtc';
 
 import { SteamMatchmakingLobby, ISteamLobbyChatEnvelope } from './lobby';
+import { SteamUniqueId } from 'platform/steam/steamid';
 
 const iceServers = [{ url: 'stun:stun3.l.google.com:19302' }];
 
@@ -58,7 +59,7 @@ export class SteamRTCPeerCoordinator extends EventEmitter implements IRTCPeerCoo
       }
     });
 
-    const netId = new NetUniqueId(steamId);
+    const netId = new SteamUniqueId(steamId);
     const userId = steamId.getRawSteamID();
 
     const conn = new RTCPeerConn(netId, peer);
