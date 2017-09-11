@@ -17,8 +17,7 @@ export class NetUniqueId<T = any> {
 
 export abstract class NetConnection extends EventEmitter {
   id: NetUniqueId;
-
-  protected connected: boolean;
+  connected: boolean;
 
   constructor(id: NetUniqueId) {
     super();
@@ -95,7 +94,7 @@ export abstract class NetServer extends EventEmitter implements INetServerEvents
   protected forEachClient(func: (conn: NetConnection) => void) {
     for (let id in this.connections) {
       const conn = this.connections[id];
-      if (this.connections.hasOwnProperty(id) && conn) {
+      if (this.connections.hasOwnProperty(id) && conn && conn.connected) {
         func(conn);
       }
     }
