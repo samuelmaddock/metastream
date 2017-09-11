@@ -13,12 +13,12 @@ const dispatch: any = () => {};
 type Thunk<T> = any;
 
 interface IRPCOptions {
-	realm: 'client' | 'server' | 'multicast';
-	action: (...args: any[]) => void;
-	validate?: (...args: any[]) => boolean;
+  realm: 'client' | 'server' | 'multicast';
+  action: (...args: any[]) => void;
+  validate?: (...args: any[]) => boolean;
 }
 
-const rpcMap: {[key: string]: IRPCOptions} = {};
+const rpcMap: { [key: string]: IRPCOptions } = {};
 
 export const execRpc = (name: string, ...args: any[]): void => {
   if (!rpcMap.hasOwnProperty(name)) {
@@ -35,9 +35,9 @@ export const execRpc = (name: string, ...args: any[]): void => {
 };
 
 export const rpc = (
-	realm: 'client' | 'server' | 'multicast',
-	action: (...args: any[]) => void,
-	validate?: (...args: any[]) => boolean
+  realm: 'client' | 'server' | 'multicast',
+  action: (...args: any[]) => void,
+  validate?: (...args: any[]) => boolean
 ): Function => {
   const { name } = action;
 
@@ -54,13 +54,13 @@ export const rpc = (
 
   // Return Redux action creator;
   // intercepted by redux-rpc middleware
-	return (...args: any[]) => ({
-		type: '@@RPC',
-		rpc: {
-			name: name,
-			args: args
-		}
-	});
+  return (...args: any[]) => ({
+    type: '@@RPC',
+    rpc: {
+      name: name,
+      args: args
+    }
+  });
 };
 
 /** Usage example */
@@ -68,7 +68,7 @@ const sendChatMessage = (msg: string): Thunk<void> => {
   return (dispatch: any, getState: any): void => {
     // ...
   };
-}
+};
 
 export const server_sendChatMessage = rpc('server', sendChatMessage);
 
@@ -87,13 +87,13 @@ multicast_addChat([
 
 // @RPC('Server')
 class ServerSendChat {
-	validate() {
-		return true;
-	}
+  validate() {
+    return true;
+  }
 
-	action() {
+  action() {
     console.log('foobar');
-	}
+  }
 }
 
 /* Networked action creator
