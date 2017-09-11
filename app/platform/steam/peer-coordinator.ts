@@ -5,7 +5,7 @@ import { steamworks } from 'steam';
 import { NetUniqueId } from 'lobby/types';
 import { IRTCPeerCoordinator, RTCPeerConn, SignalData } from 'lobby/rtc';
 
-import { SteamMatchmakingLobby } from './lobby';
+import { SteamMatchmakingLobby, ISteamLobbyChatEnvelope } from './lobby';
 
 const iceServers = [{ url: 'stun:stun3.l.google.com:19302' }];
 
@@ -49,7 +49,7 @@ export class SteamRTCPeerCoordinator extends EventEmitter implements IRTCPeerCoo
     throw new Error('Method not implemented.');
   }
 
-  private createPeer(userId: string): RTCPeerConn {
+  private createPeer(steamId: Steamworks.SteamID): RTCPeerConn {
     const peer = new SimplePeer({
       initiator: this.isLobbyOwner,
       trickle: false,
@@ -58,7 +58,9 @@ export class SteamRTCPeerCoordinator extends EventEmitter implements IRTCPeerCoo
       }
     });
 
-    const netId = new NetUniqueId(userId);
+    const netId = new NetUniqueId(steamId);
+    const userId = steamId.getRawSteamID();
+
     const conn = new RTCPeerConn(netId, peer);
     this.connecting[userId] = conn;
 
@@ -81,7 +83,7 @@ export class SteamRTCPeerCoordinator extends EventEmitter implements IRTCPeerCoo
     }
   };
 
-  private onReceive = (entry: Steamworks.ILobbyChatEntry) => {
+  private onReceive = ({ entry, userId }: ISteamLobbyChatEnvelope) => {
     const { message, steamId } = entry;
 
     // Ignore messages from self
@@ -102,7 +104,7 @@ export class SteamRTCPeerCoordinator extends EventEmitter implements IRTCPeerCoo
     switch (msg.type) {
       case MessageType.RequestJoin:
         if (this.isLobbyOwner) {
-          const conn = this.createPeer(steamId);
+          const conn = this.createPeer(userId);
           conn.getSignal().then(signal => {
             this.sendOffer(signal, steamId);
           });

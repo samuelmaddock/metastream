@@ -20,10 +20,15 @@ interface SteamMatchmakingLobbyOptions {
   maxMembers?: number;
 }
 
+export interface ISteamLobbyChatEnvelope {
+  entry: Steamworks.ILobbyChatEntry;
+  userId: Steamworks.SteamID;
+}
+
 export class SteamMatchmakingLobby extends EventEmitter {
   private steamId: SteamID64;
 
-  ownerSteamId: SteamID64;
+  ownerSteamId: Steamworks.SteamID;
   isOwner: boolean = false;
 
   private constructor(lobbyId: string) {
@@ -37,8 +42,8 @@ export class SteamMatchmakingLobby extends EventEmitter {
     const ownerSteamId = steamworks.getLobbyOwner(this.steamId);
     const localSteamId = steamworks.getSteamId();
 
-    this.ownerSteamId = ownerSteamId.getRawSteamID();
-    this.isOwner = this.ownerSteamId === localSteamId.getRawSteamID();
+    this.ownerSteamId = ownerSteamId;
+    this.isOwner = ownerSteamId.getRawSteamID() === localSteamId.getRawSteamID();
 
     if (this.isOwner) {
       steamworks.setLobbyData(this.steamId, 'name', `${localSteamId.getPersonaName()}'s Lobby`);
@@ -62,8 +67,11 @@ export class SteamMatchmakingLobby extends EventEmitter {
     chatId: number
   ): void => {
     const entry = steamworks.getLobbyChatEntry(lobbyId.getRawSteamID(), chatId);
-    console.log('Received Steam lobby message', entry);
-    this.emit('message', entry);
+    console.log('Received Steam lobby message', entry, userId);
+    this.emit('message', {
+      entry,
+      userId
+    } as ISteamLobbyChatEnvelope);
   };
 
   close = (): void => {
@@ -71,7 +79,7 @@ export class SteamMatchmakingLobby extends EventEmitter {
   };
 
   getOwner(): SteamID64 {
-    return this.ownerSteamId;
+    return this.ownerSteamId.getRawSteamID();
   }
 
   sendChatMessage(message: Buffer) {
