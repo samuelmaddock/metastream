@@ -4,6 +4,7 @@ import { NetUniqueId } from 'lobby/types';
 
 import { LOBBY_GAME_GUID } from 'constants/steamworks';
 import { Deferred } from 'utils/async';
+import { SessionKey } from 'platform/types';
 
 type SteamID64 = Steamworks.SteamID64;
 
@@ -45,8 +46,9 @@ export class SteamMatchmakingLobby extends EventEmitter {
     this.isOwner = ownerSteamId.getRawSteamID() === localSteamId.getRawSteamID();
 
     if (this.isOwner) {
-      steamworks.setLobbyData(this.steamId, 'name', `${localSteamId.getPersonaName()}'s Lobby`);
-      steamworks.setLobbyData(this.steamId, 'game', LOBBY_GAME_GUID);
+      const lobbyName = `${localSteamId.getPersonaName()}'s Lobby`;
+      steamworks.setLobbyData(this.steamId, SessionKey.Name, lobbyName);
+      steamworks.setLobbyData(this.steamId, SessionKey.Guid, LOBBY_GAME_GUID);
     }
 
     steamworks.on('lobby-chat-message', this.onMessage);

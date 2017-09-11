@@ -32,3 +32,19 @@ export abstract class Platform {
   abstract getLocalId(): NetUniqueId;
   abstract getUserName(id: NetUniqueId): string;
 }
+
+export const enum SessionKey {
+  /** Session name */
+  Name = 'name',
+
+  /** Session GUID for filtering - remove when we have our own App ID */
+  Guid = 'guid',
+
+  MaxPlayers = 'maxplayers',
+  NumPlayers = 'numplayers',
+
+  // Dedicated = 'dedi',
+
+  /** Boolean value indicating the session is password protected */
+  PasswordProtected = 'pw'
+}

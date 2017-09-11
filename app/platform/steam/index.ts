@@ -7,7 +7,7 @@ import { LOBBY_GAME_GUID } from 'constants/steamworks';
 
 import { SteamMatchmakingLobby } from './lobby';
 import { SteamRTCPeerCoordinator } from './peer-coordinator';
-import { Platform, ILobbyOptions, ILobbySession } from 'platform/types';
+import { Platform, ILobbyOptions, ILobbySession, SessionKey } from 'platform/types';
 
 import { steamworks } from 'steam';
 import { getLobbyData } from 'utils/steamworks';
@@ -46,7 +46,7 @@ export class SteamPlatform extends Platform {
       {
         filters: [
           {
-            key: 'game',
+            key: SessionKey.Guid,
             value: LOBBY_GAME_GUID,
             comparator: steamworks.LobbyComparison.Equal
           }
