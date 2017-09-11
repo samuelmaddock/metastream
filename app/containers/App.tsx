@@ -4,12 +4,8 @@ interface IProps {
   children?: React.ReactNode;
 }
 
-export default class App extends Component<IProps,{}> {
+export default class App extends Component<IProps, {}> {
   render() {
-    return (
-      <div>
-        {this.props.children}
-      </div>
-    );
+    return <div>{this.props.children}</div>;
   }
 }

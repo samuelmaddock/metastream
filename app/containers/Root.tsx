@@ -8,7 +8,7 @@ import Routes from '../routes';
 interface IProps {
   store: Store<any>; // TODO: type this
   history: History;
-};
+}
 
 export default function Root({ store, history }: IProps) {
   return (

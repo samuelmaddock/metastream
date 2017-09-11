@@ -2,7 +2,7 @@
  * Greenworks
  * https://github.com/greenheartgames/greenworks/tree/master/docs
  */
-declare module Steamworks {
+declare namespace Steamworks {
   interface API {
     _version: string;
 
@@ -10,7 +10,11 @@ declare module Steamworks {
     // https://github.com/greenheartgames/greenworks/blob/master/docs/authentication.md
     getAuthSessionTicket(success: (ticket: IAuthSessionTicket) => void, error: ErrorCallback): void;
     cancelAuthTicket(ticket_handle: Handle): void;
-    getEncryptedAppTicket(user_data: string, success: (encrypted_ticket: Buffer) => void, error: ErrorCallback): void;
+    getEncryptedAppTicket(
+      user_data: string,
+      success: (encrypted_ticket: Buffer) => void,
+      error: ErrorCallback
+    ): void;
     decryptAppTicket(encrypted_ticket: Buffer, decryption_key: Buffer): Buffer | null;
     isTicketForApp(decrypted_ticket: Buffer, app_id: number): boolean;
     getTicketIssueTime(decrypted_ticket: Buffer): number;
@@ -33,7 +37,7 @@ declare module Steamworks {
     isGameOverlayEnabled(): boolean;
     activateGameOverlayToWebPage(url: string): void;
     isSubscribedApp(appId: number): boolean;
-    getImageSize(handle: number): { width: number; height: number; }; // TODO: verify return type
+    getImageSize(handle: number): { width: number; height: number }; // TODO: verify return type
     getImageRGBA(handle: number): Buffer;
 
     // FRIENDS
@@ -50,7 +54,11 @@ declare module Steamworks {
     getLargeFriendAvatar(raw_steam_id: SteamID64): Handle;
     setListenForFriendsMessage(intercept_enabled: boolean): boolean;
     replyToFriendMessage(raw_steam_id: SteamID64, message: string): boolean;
-    getFriendMessage(raw_steam_id: SteamID64, message_id: number, maximum_message_size: number): string;
+    getFriendMessage(
+      raw_steam_id: SteamID64,
+      message_id: number,
+      maximum_message_size: number
+    ): string;
 
     // MATCHMAKING
     LobbyType: typeof LobbyType;
@@ -58,7 +66,11 @@ declare module Steamworks {
     LobbyDistanceFilter: typeof LobbyDistanceFilter;
     requestLobbyList(options: ILobbyListRequest, success: (count: number) => void): void;
     getLobbyByIndex(lobby_idx: number): SteamID;
-    createLobby(lobby_type: LobbyType, max_members: number, success: (lobby_id: SteamID64) => void): void;
+    createLobby(
+      lobby_type: LobbyType,
+      max_members: number,
+      success: (lobby_id: SteamID64) => void
+    ): void;
     joinLobby(lobby_id: SteamID64, success: (lobby_id: SteamID64) => void): void;
     leaveLobby(lobby_id: SteamID64): void;
     inviteUserToLobby(lobby_id: SteamID64, user_id: SteamID64): boolean;
@@ -206,7 +218,14 @@ declare module Steamworks {
   // SETTING
   //
 
-  type OverlayOption = 'Friends' | 'Community' | 'Players' | 'Settings' | 'OfficialGameGroup' | 'Stats' | 'Achievements';
+  type OverlayOption =
+    | 'Friends'
+    | 'Community'
+    | 'Players'
+    | 'Settings'
+    | 'OfficialGameGroup'
+    | 'Stats'
+    | 'Achievements';
 
   //
   // MATCHMAKING
@@ -273,14 +292,25 @@ declare module Steamworks {
     on(eventName: 'steam-shutdown', callback: Function): void;
     on(eventName: 'persona-state-change', callback: Function): void;
     on(eventName: 'avatar-image-loaded', callback: Function): void;
-    on(eventName: 'game-connected-friend-chat-message', callback: (steam_id: SteamID, message_id: number) => void): void;
+    on(
+      eventName: 'game-connected-friend-chat-message',
+      callback: (steam_id: SteamID, message_id: number) => void
+    ): void;
     on(eventName: 'dlc-installed', callback: (dlc_app_id: number) => void): void;
-    on(eventName: 'lobby-chat-message', callback: (lobby_steam_id: SteamID, user_steam_id: SteamID, type: any, chat_id: number) => void): void;
+    on(
+      eventName: 'lobby-chat-message',
+      callback: (
+        lobby_steam_id: SteamID,
+        user_steam_id: SteamID,
+        type: any,
+        chat_id: number
+      ) => void
+    ): void;
 
     removeListener(eventName: string, callback: Function): void;
   }
 }
 
 interface NodeRequireFunction {
-	(moduleName: 'greenworks'): Steamworks.API;
+  (moduleName: 'greenworks'): Steamworks.API;
 }

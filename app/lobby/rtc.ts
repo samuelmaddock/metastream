@@ -1,8 +1,8 @@
-import SimplePeer, { SignalData } from "simple-peer";
+import SimplePeer, { SignalData } from 'simple-peer';
 import { EventEmitter } from 'events';
-import { steamworks } from "steam";
-import { NetUniqueId, NetConnection, NetServer, INetServerOptions } from "lobby/types";
-import { Deferred } from "utils/async";
+import { steamworks } from 'steam';
+import { NetUniqueId, NetConnection, NetServer, INetServerOptions } from 'lobby/types';
+import { Deferred } from 'utils/async';
 
 export type SignalData = SignalData;
 
@@ -23,14 +23,13 @@ export class RTCServer extends NetServer {
 
   private onConnection = (peer: RTCPeerConn): void => {
     this.connect(peer);
-  }
+  };
 
   close(): void {
     this.peerCoord.removeListener('connection', this.onConnection);
     super.close();
   }
 }
-
 
 /** WebRTC peer connection. */
 export class RTCPeerConn extends NetConnection {
@@ -54,7 +53,7 @@ export class RTCPeerConn extends NetConnection {
   private onSignal = (signal: SignalData) => {
     this.signalData = signal;
     this.signalDeferred.resolve(signal);
-  }
+  };
 
   private onData = (data: Buffer): void => {
     // HACK: Workaround simple-peer bug where data is received before
@@ -65,7 +64,7 @@ export class RTCPeerConn extends NetConnection {
     }
 
     this.receive(data);
-  }
+  };
 
   protected onClose(): void {
     this.peer.removeAllListeners();

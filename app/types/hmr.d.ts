@@ -1,3 +1,3 @@
 interface NodeModule {
-    hot: any;
+  hot: any;
 }

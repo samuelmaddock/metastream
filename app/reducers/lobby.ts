@@ -1,9 +1,9 @@
-import { Reducer } from "redux";
-import { NetworkState } from "types/network";
-import { isType } from "utils/redux";
+import { Reducer } from 'redux';
+import { NetworkState } from 'types/network';
+import { isType } from 'utils/redux';
 
-import { loadLobbies, setLobbies } from "actions/steamworks";
-import { ILobbySession } from "platform/types";
+import { loadLobbies, setLobbies } from 'actions/steamworks';
+import { ILobbySession } from 'platform/types';
 
 export interface ILobbyState {
   network: NetworkState;
@@ -16,12 +16,14 @@ const initial: ILobbyState = {
 
 export const lobby: Reducer<ILobbyState> = (state: ILobbyState, action: any) => {
   if (isType(action, loadLobbies)) {
-    return {...state,
+    return {
+      ...state,
       network: NetworkState.Loading,
       list: undefined
     };
   } else if (isType(action, setLobbies)) {
-    return {...state,
+    return {
+      ...state,
       network: NetworkState.Ready,
       list: action.payload
     };

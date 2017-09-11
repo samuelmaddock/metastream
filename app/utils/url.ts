@@ -1,4 +1,4 @@
-type QueryParams = {[key: string]: any}
+type QueryParams = { [key: string]: any };
 
 const esc = encodeURIComponent;
 
@@ -10,4 +10,4 @@ export const encodeQueryParams = (params: QueryParams): string => {
 
 export const buildUrl = (url: string, params: QueryParams): string => {
   return url + encodeQueryParams(params);
-}
+};

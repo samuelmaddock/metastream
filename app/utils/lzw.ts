@@ -9,23 +9,27 @@ let _lzwLoggingEnabled = false;
 
 const _lzwLog = (message: string) => {
   try {
-    console.log('lzwCompress: ' +
-      (new Date()).toISOString() + ' : ' + (typeof(message) === 'object' ? JSON.stringify(message) : message));
+    console.log(
+      'lzwCompress: ' +
+        new Date().toISOString() +
+        ' : ' +
+        (typeof message === 'object' ? JSON.stringify(message) : message)
+    );
   } catch (e) {}
 };
 
 // KeyOptimize
 // http://stackoverflow.com/questions/4433402/replace-keys-json-in-javascript
 class KeyOptimize {
-  _keys: {[key: string]: any};
+  _keys: { [key: string]: any };
 
   constructor() {
     this._keys = [];
   }
 
   comparer(key: any) {
-    return function (e: any) {
-        return e === key;
+    return function(e: any) {
+      return e === key;
     };
   }
 
@@ -39,7 +43,7 @@ class KeyOptimize {
   }
 
   pushNew(array: any, element: any, comparer: any) {
-    if (!this.inArray(array,comparer)) {
+    if (!this.inArray(array, comparer)) {
       array.push(element);
     }
   }
@@ -76,7 +80,7 @@ class KeyOptimize {
     if (typeof obj !== 'object') {
       return obj;
     }
-    for (var prop in (obj as any)) {
+    for (var prop in obj as any) {
       if (!Array.isArray(obj)) {
         if (obj.hasOwnProperty(prop) && this._keys[prop]) {
           obj[this._keys[prop]] = this._decode(obj[prop]);
@@ -93,7 +97,7 @@ class KeyOptimize {
     const ko = new KeyOptimize();
     var jsonObj = JSON.parse(json);
     ko._extractKeys(jsonObj);
-    return JSON.stringify({ __k : ko._keys, __v : ko._encode(jsonObj) });
+    return JSON.stringify({ __k: ko._keys, __v: ko._encode(jsonObj) });
   }
 
   static decompress(minifiedJson: any) {
@@ -115,16 +119,16 @@ class KeyOptimize {
 // http://rosettacode.org/wiki/LZW_compression#JavaScript
 class LZWCompress {
   static compress(uncompressed: any): string[] | string {
-    if (typeof(uncompressed) !== 'string') {
+    if (typeof uncompressed !== 'string') {
       return uncompressed;
     }
     var i,
-        dictionary: {[key: string]: any} = {},
-        c,
-        wc,
-        w = '',
-        result = [],
-        dictSize = 256;
+      dictionary: { [key: string]: any } = {},
+      c,
+      wc,
+      w = '',
+      result = [],
+      dictSize = 256;
     for (i = 0; i < 256; i += 1) {
       dictionary[String.fromCharCode(i)] = i;
     }
@@ -153,12 +157,12 @@ class LZWCompress {
       return compressed;
     }
     var i,
-        dictionary = [],
-        w,
-        result,
-        k,
-        entry = '',
-        dictSize = 256;
+      dictionary = [],
+      w,
+      result,
+      k,
+      entry = '',
+      dictSize = 256;
     for (i = 0; i < 256; i += 1) {
       dictionary[i] = String.fromCharCode(i);
     }
@@ -196,14 +200,15 @@ export const pack = (obj: Object) => {
   var packedObj = LZWCompress.compress(result);
   _lzwLoggingEnabled && _lzwLog('packed   (compressed)   : ' + packedObj);
   return packedObj;
-}
+};
 
 export const unpack = (compressedObj: Object) => {
   _lzwLoggingEnabled && _lzwLog('original (compressed)   : ' + compressedObj);
   if (!compressedObj || compressedObj === true || compressedObj instanceof Date) {
     return compressedObj;
   }
-  var probableJSON, result = LZWCompress.decompress(compressedObj);
+  var probableJSON,
+    result = LZWCompress.decompress(compressedObj);
   try {
     probableJSON = JSON.parse(result!);
   } catch (e) {
@@ -215,4 +220,4 @@ export const unpack = (compressedObj: Object) => {
   }
   _lzwLoggingEnabled && _lzwLog('unpacked (uncompressed) : ' + result);
   return result;
-}
+};

@@ -1,4 +1,4 @@
-declare module Electron {
+declare namespace Electron {
   export interface BrowserWindow {
     openDevTools(): void;
     toggleDevTools(): void;

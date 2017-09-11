@@ -17,7 +17,7 @@ export interface IMediaMetadataResult {
   /** Map of thumbnail sizes to URLs */
   // TODO: Use MediaThumbnailSize as key when TS supports it
   // https://github.com/Microsoft/TypeScript/issues/13042
-  thumbnails: {[key: number]: string};
+  thumbnails: { [key: number]: string };
 }
 
 /**

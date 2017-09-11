@@ -1,7 +1,7 @@
 /** Wrapper around social user IDs. */
-import { EventEmitter } from "events";
+import { EventEmitter } from 'events';
 
-export type ReplicatedState<T> = {[key in keyof T]?: boolean | ReplicatedState<T[keyof T]>};
+export type ReplicatedState<T> = { [key in keyof T]?: boolean | ReplicatedState<T[keyof T]> };
 
 export class NetUniqueId<T = any> {
   private id: T;
@@ -29,12 +29,12 @@ export abstract class NetConnection extends EventEmitter {
 
   receive = (data: Buffer): void => {
     this.emit('data', data);
-  }
+  };
 
   close = (): void => {
     this.connected = false;
     this.onClose();
-  }
+  };
 
   protected onClose(): void {
     this.emit('close');
@@ -43,7 +43,7 @@ export abstract class NetConnection extends EventEmitter {
   protected onConnect = (): void => {
     this.connected = true;
     this.emit('connect');
-  }
+  };
 
   abstract getIP(): string;
   abstract getPort(): string;
@@ -63,7 +63,7 @@ export interface INetServerOptions {
 }
 
 export abstract class NetServer extends EventEmitter implements INetServerEvents {
-  protected connections: {[key: string]: NetConnection | undefined } = {};
+  protected connections: { [key: string]: NetConnection | undefined } = {};
   protected isHost: boolean;
 
   constructor(opts: INetServerOptions) {
@@ -111,7 +111,7 @@ export abstract class NetServer extends EventEmitter implements INetServerEvents
 
   protected receive(conn: NetConnection, data: Buffer) {
     this.emit('data', conn, data);
-  };
+  }
 
   send(data: Buffer): void {
     this.forEachClient(conn => {

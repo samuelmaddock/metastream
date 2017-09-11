@@ -3,15 +3,14 @@ import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { IReactReduxProps } from 'types/redux';
 
-import { IAppState } from "reducers";
+import { IAppState } from 'reducers';
 
 import { ServerBrowser } from 'components/ServerBrowser';
 import { requestLobbies } from 'actions/steamworks';
-import { NetworkState } from "types/network";
-import { ILobbySession } from "platform/types";
+import { NetworkState } from 'types/network';
+import { ILobbySession } from 'platform/types';
 
-interface IProps extends RouteComponentProps<void> {
-}
+interface IProps extends RouteComponentProps<void> {}
 
 interface IConnectedProps {
   network: NetworkState;
@@ -42,13 +41,10 @@ export class _ServerBrowserPage extends Component<PrivateProps> {
 
   render() {
     const { network, lobbies } = this.props;
-    return (
-      <ServerBrowser
-        network={network}
-        list={lobbies}
-        refresh={() => {}} />
-    );
+    return <ServerBrowser network={network} list={lobbies} refresh={() => {}} />;
   }
 }
 
-export const ServerBrowserPage = connect<IConnectedProps, {}, IProps>(mapStateToProps)(_ServerBrowserPage);
+export const ServerBrowserPage = connect<IConnectedProps, {}, IProps>(mapStateToProps)(
+  _ServerBrowserPage
+);

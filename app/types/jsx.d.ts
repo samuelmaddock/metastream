@@ -1,6 +1,6 @@
 // import * as Electron from 'electron';
 
-declare module JSX {
+declare namespace JSX {
   interface IntrinsicElements {
     webview: any;
   }

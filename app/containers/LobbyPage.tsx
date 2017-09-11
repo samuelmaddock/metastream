@@ -4,27 +4,25 @@ import { RouteComponentProps } from 'react-router';
 import { createStore, Store } from 'redux';
 import { IReactReduxProps } from 'types/redux';
 
-import { IAppState } from "reducers";
+import { IAppState } from 'reducers';
 
 import { requestLobbies } from 'actions/steamworks';
-import { NetworkState } from "types/network";
-import { Lobby } from "components/Lobby";
-import { RTCServer, IRTCPeerCoordinator } from "lobby/rtc";
-import { NetServer } from "lobby/types";
-import { netReducer, ILobbyNetState, NetProvider, LobbyReplicatedState } from "lobby/net";
-import { createNetStore } from "lobby/net/redux";
-import { GameLobby } from "components/GameLobby";
-import { PlatformService } from "platform";
+import { NetworkState } from 'types/network';
+import { Lobby } from 'components/Lobby';
+import { RTCServer, IRTCPeerCoordinator } from 'lobby/rtc';
+import { NetServer } from 'lobby/types';
+import { netReducer, ILobbyNetState, NetProvider, LobbyReplicatedState } from 'lobby/net';
+import { createNetStore } from 'lobby/net/redux';
+import { GameLobby } from 'components/GameLobby';
+import { PlatformService } from 'platform';
 
 interface IRouteParams {
   lobbyId: string;
 }
 
-interface IProps extends RouteComponentProps<IRouteParams> {
-}
+interface IProps extends RouteComponentProps<IRouteParams> {}
 
-interface IConnectedProps {
-}
+interface IConnectedProps {}
 
 function mapStateToProps(state: IAppState): IConnectedProps {
   return {};
@@ -94,16 +92,9 @@ export class _LobbyPage extends Component<PrivateProps, {}> {
       return <div>Connecting...</div>;
     }
 
-    const child = (
-      <GameLobby
-        host={this.host} />
-    );
+    const child = <GameLobby host={this.host} />;
 
-    return (
-      <NetProvider store={this.netStore}>
-        {child}
-      </NetProvider>
-    );
+    return <NetProvider store={this.netStore}>{child}</NetProvider>;
   }
 }
 

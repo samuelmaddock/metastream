@@ -2,7 +2,7 @@ export const sleep = (time: number) => {
   return new Promise(resolve => {
     setTimeout(resolve, time);
   });
-}
+};
 
 /**
  * Wraps a promise to be resolved at a later time.

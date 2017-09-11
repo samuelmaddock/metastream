@@ -6,7 +6,6 @@ import { createLogger } from 'redux-logger';
 import rootReducer from '../reducers';
 import { IExtra } from 'types/thunk';
 
-
 const history = createHashHistory();
 
 const configureStore = (extra: IExtra, initialState?: {}) => {
@@ -36,9 +35,9 @@ const configureStore = (extra: IExtra, initialState?: {}) => {
   // If Redux DevTools Extension is installed use it, otherwise use Redux compose
   const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
     ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
-      // Options: http://zalmoxisus.github.io/redux-devtools-extension/API/Arguments.html
-      actionCreators,
-    })
+        // Options: http://zalmoxisus.github.io/redux-devtools-extension/API/Arguments.html
+        actionCreators
+      })
     : compose;
 
   // Apply Middleware & Compose Enhancers
@@ -49,9 +48,7 @@ const configureStore = (extra: IExtra, initialState?: {}) => {
   const store = createStore(rootReducer, initialState, enhancer);
 
   if (module.hot) {
-    module.hot.accept('../reducers', () =>
-      store.replaceReducer(require('../reducers'))
-    );
+    module.hot.accept('../reducers', () => store.replaceReducer(require('../reducers')));
   }
 
   return store;

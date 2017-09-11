@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './ServerBrowser.css';
-import { NetworkState } from "types/network";
-import { ILobbySession } from "platform/types";
+import { NetworkState } from 'types/network';
+import { ILobbySession } from 'platform/types';
 
 interface IProps {
   network: NetworkState;
@@ -10,7 +10,7 @@ interface IProps {
   list?: ILobbySession[];
 }
 
-export class ServerBrowser extends Component<IProps,{}> {
+export class ServerBrowser extends Component<IProps, {}> {
   render(): JSX.Element | null {
     return (
       <div className={styles.container} data-tid="container">
@@ -33,17 +33,17 @@ export class ServerBrowser extends Component<IProps,{}> {
       default:
     }
 
-    const lobbies = list!.map((result) => {
+    const lobbies = list!.map(result => {
       return (
         <li key={result.id}>
-          <Link to={`/lobby/${result.id}`}>{result.name} ({result.id})</Link>
+          <Link to={`/lobby/${result.id}`}>
+            {result.name} ({result.id})
+          </Link>
         </li>
-      )
+      );
     });
 
-    return (
-      <ul>{lobbies}</ul>
-    );
+    return <ul>{lobbies}</ul>;
   }
 
   private renderRefresh(): JSX.Element {

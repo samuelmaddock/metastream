@@ -3,30 +3,27 @@ import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { IReactReduxProps } from 'types/redux';
 
-import SimplePeer from "simple-peer";
+import SimplePeer from 'simple-peer';
 import { pack, unpack } from 'utils/lzw';
 
-import { IAppState } from "reducers";
+import { IAppState } from 'reducers';
 
 import { requestLobbies } from 'actions/steamworks';
-import { NetworkState } from "types/network";
-import { Lobby } from "components/Lobby";
+import { NetworkState } from 'types/network';
+import { Lobby } from 'components/Lobby';
 
 interface IRouteParams {
   lobbyId: string;
 }
 
-interface IProps extends RouteComponentProps<IRouteParams> {
-}
+interface IProps extends RouteComponentProps<IRouteParams> {}
 
 interface IState {
   isOwner: boolean;
   signal?: Object;
 }
 
-const iceServers = [
-  { url: 'stun:stun3.l.google.com:19302' }
-];
+const iceServers = [{ url: 'stun:stun3.l.google.com:19302' }];
 
 const encode = (signal: Object) => btoa(JSON.stringify(signal));
 const decode = (signal: string) => JSON.parse(atob(signal));
@@ -39,7 +36,7 @@ export class _LobbyPage extends Component<IProps, IState> {
     super();
     this.state = {
       isOwner: window.location.href.endsWith('owner')
-    }
+    };
   }
 
   componentDidMount(): void {
@@ -62,9 +59,7 @@ export class _LobbyPage extends Component<IProps, IState> {
     return (
       <main>
         <h1>P2P Lobby</h1>
-        {this.state.isOwner ?
-          this.renderServer() :
-          this.renderClient()}
+        {this.state.isOwner ? this.renderServer() : this.renderClient()}
       </main>
     );
   }
@@ -72,9 +67,7 @@ export class _LobbyPage extends Component<IProps, IState> {
   private renderServer(): JSX.Element {
     return (
       <div>
-        <div style={{wordWrap: 'break-word'}}>
-          {this.state.signal}
-        </div>
+        <div style={{ wordWrap: 'break-word' }}>{this.state.signal}</div>
       </div>
     );
   }
@@ -84,11 +77,16 @@ export class _LobbyPage extends Component<IProps, IState> {
   private renderClient(): JSX.Element {
     return (
       <div>
-        <input ref={e => { this.joinInput = e; }}
-               type="text"
-               placeholder="Enter signal" />
-        <button type="button"
-                onClick={this.joinLobby.bind(this)}>Connect</button>
+        <input
+          ref={e => {
+            this.joinInput = e;
+          }}
+          type="text"
+          placeholder="Enter signal"
+        />
+        <button type="button" onClick={this.joinLobby.bind(this)}>
+          Connect
+        </button>
       </div>
     );
   }
@@ -111,7 +109,9 @@ export class _LobbyPage extends Component<IProps, IState> {
 
   private createLobby(): void {
     const { isOwner } = this.state;
-    if (!isOwner) { return; }
+    if (!isOwner) {
+      return;
+    }
 
     console.log('CREATE LOBBY OWNER');
 

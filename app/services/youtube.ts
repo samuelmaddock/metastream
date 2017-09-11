@@ -1,5 +1,5 @@
-import { buildUrl } from "utils/url";
-import { MediaMetadataService, IMediaMetadataResult } from "services/types";
+import { buildUrl } from 'utils/url';
+import { MediaMetadataService, IMediaMetadataResult } from 'services/types';
 
 const API_URL = 'https://www.googleapis.com/youtube/v3/videos';
 
@@ -11,15 +11,15 @@ const DEFAULT_QUERY = {
   type: 'video',
   part: 'contentDetails,snippet,status',
   videoEmbeddable: true,
-  videoSyndicated: true,
+  videoSyndicated: true
 };
 
 const URL_PATTERNS = [
-  /youtu\.be\/([^#\&\?]{11})/,  // youtu.be/<id>
-  /\?v=([^#\&\?]{11})/,         // ?v=<id>
-  /\&v=([^#\&\?]{11})/,         // &v=<id>
-  /embed\/([^#\&\?]{11})/,      // embed/<id>
-  /\/v\/([^#\&\?]{11})/         // /v/<id>
+  /youtu\.be\/([^#\&\?]{11})/, // youtu.be/<id>
+  /\?v=([^#\&\?]{11})/, // ?v=<id>
+  /\&v=([^#\&\?]{11})/, // &v=<id>
+  /embed\/([^#\&\?]{11})/, // embed/<id>
+  /\/v\/([^#\&\?]{11})/ // /v/<id>
 ];
 
 class YouTubeClient {
@@ -37,7 +37,9 @@ class YouTubeClient {
 
     for (let i = 0; i < URL_PATTERNS.length; i++) {
       match = URL_PATTERNS[i].exec(url);
-      if (match) { break; }
+      if (match) {
+        break;
+      }
     }
 
     return match ? match[1] : null;

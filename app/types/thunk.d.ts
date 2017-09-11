@@ -1,5 +1,5 @@
 import { ThunkAction } from 'redux-thunk';
-import { IAppState } from "reducers";
+import { IAppState } from 'reducers';
 
 interface IExtra {
   steamworks: Steamworks.API;

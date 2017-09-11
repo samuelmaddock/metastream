@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './ServerBrowser.css';
-import { NetworkState } from "types/network";
+import { NetworkState } from 'types/network';
 
 interface IChatMessage {
   sender: string;
@@ -33,7 +33,9 @@ export class Lobby extends Component<IProps> {
     const messages = (this.props.messages || []).map((msg, idx) => {
       return (
         <li key={idx}>
-          <div><b title={msg.sender}>{msg.name}</b>: {msg.message}</div>
+          <div>
+            <b title={msg.sender}>{msg.name}</b>: {msg.message}
+          </div>
         </li>
       );
     });
@@ -43,10 +45,13 @@ export class Lobby extends Component<IProps> {
         <ul>{messages}</ul>
         <div>
           <input
-            ref={e => { this.chatInput = e; }}
+            ref={e => {
+              this.chatInput = e;
+            }}
             type="text"
             placeholder="Message"
-            onKeyPress={this.onChatKeyPress} />
+            onKeyPress={this.onChatKeyPress}
+          />
         </div>
       </div>
     );
@@ -63,5 +68,5 @@ export class Lobby extends Component<IProps> {
 
       target.value = '';
     }
-  }
+  };
 }
