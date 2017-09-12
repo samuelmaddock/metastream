@@ -27,7 +27,7 @@ interface NetPayload {
   v: number;
 
   /** Diff */
-  d: deepDiff.IDiff;
+  d: deepDiff.IDiff[];
 }
 
 const SYNC_HEADER = 'SYNC';
@@ -90,7 +90,7 @@ export const netSyncMiddleware = (options: NetMiddlewareOptions): Middleware => 
       const action: NetPayload = {
         type: NetActionTypes.UPDATE,
         v: COMMIT_NUMBER,
-        d: delta[0]
+        d: delta
       };
       console.info(`[Net] Sending update #${COMMIT_NUMBER}`, action);
       const jsonStr = JSON.stringify(action);
@@ -127,9 +127,12 @@ export const netSyncMiddleware = (options: NetMiddlewareOptions): Middleware => 
           dispatch({ type: NetReduxActionTypes.UPDATE });
           break;
         case NetActionTypes.UPDATE:
+          const diffs = action.d as deepDiff.IDiff[];
           // apply diff to local state
           let state = clone(getState());
-          deepDiff.applyChange(state, state, action.d);
+          diffs.forEach(diff => {
+            deepDiff.applyChange(state, state, diff);
+          });
           Object.assign(getState(), state);
 
           // TODO: Write a redux middleware to apply minimal changes of state tree.
