@@ -1,8 +1,8 @@
 import { Reducer } from 'redux';
 import { isType } from 'utils/redux';
-import { ILobbyNetState } from 'lobby/net/reducers';
+import { ILobbyNetState } from './';
 import { ILobbyData, SessionKey } from 'platform/types';
-import { setSessionData } from 'lobby/net/middleware/session';
+import { setSessionData } from 'lobby/middleware/session';
 
 export type ISessionState = ILobbyData;
 

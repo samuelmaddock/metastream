@@ -2,11 +2,9 @@ import SimplePeer from 'simple-peer';
 import { EventEmitter } from 'events';
 import { steamworks } from 'steam';
 
-import { NetUniqueId } from 'lobby/types';
-import { IRTCPeerCoordinator, RTCPeerConn, SignalData } from 'lobby/rtc';
-
 import { SteamMatchmakingLobby, ISteamLobbyChatEnvelope } from './lobby';
 import { SteamUniqueId } from 'platform/steam/steamid';
+import { RTCPeerConn, IRTCPeerCoordinator, SignalData } from 'network/rtc';
 
 const iceServers = [{ url: 'stun:stun3.l.google.com:19302' }];
 

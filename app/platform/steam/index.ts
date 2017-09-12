@@ -1,7 +1,5 @@
 import { EventEmitter } from 'events';
 
-import { NetUniqueId } from 'lobby/types';
-import { IRTCPeerCoordinator, RTCPeerConn, SignalData } from 'lobby/rtc';
 import SimplePeer from 'simple-peer';
 import { LOBBY_GAME_GUID } from 'constants/steamworks';
 
@@ -13,6 +11,8 @@ import { steamworks } from 'steam';
 import { getLobbyData } from 'utils/steamworks';
 import { Deferred } from 'utils/async';
 import { SteamUniqueId } from 'platform/steam/steamid';
+import { NetUniqueId } from 'network';
+import { IRTCPeerCoordinator } from 'network/rtc';
 
 export class SteamPlatform extends Platform {
   private id: NetUniqueId<Steamworks.SteamID>;

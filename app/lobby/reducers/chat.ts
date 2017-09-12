@@ -1,7 +1,7 @@
 import { Reducer } from 'redux';
 import { NetworkState } from 'types/network';
 import { isType } from 'utils/redux';
-import { addChat } from 'lobby/net/actions/chat';
+import { addChat } from 'lobby/actions/chat';
 
 export interface IChatEntry {
   sender: string;

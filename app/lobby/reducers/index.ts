@@ -3,12 +3,12 @@ import { routerReducer as router } from 'react-router-redux';
 import { lobby, ILobbyState } from 'reducers/lobby';
 import { Reducer, AnyAction } from 'redux';
 
-import { NetReduxActionTypes } from 'lobby/net/middleware/sync';
-import { ReplicatedState } from 'lobby/types';
+import { ReplicatedState } from 'network/types';
+import { NetReduxActionTypes } from 'network/middleware/sync';
 
 import { chat, IChatState } from './chat';
-import { users, IUsersState } from 'lobby/net/reducers/users';
-import { session, ISessionState } from 'lobby/net/reducers/session';
+import { users, IUsersState } from './users';
+import { session, ISessionState } from './session';
 
 export interface ILobbyNetState {
   chat: IChatState;

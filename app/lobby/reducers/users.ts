@@ -1,9 +1,7 @@
 import { Reducer } from 'redux';
-import { NetworkState } from 'types/network';
 import { isType } from 'utils/redux';
-import { addChat } from 'lobby/net/actions/chat';
-import { addUser, removeUser } from 'lobby/net/middleware/users';
-import { ILobbyNetState } from 'lobby/net/reducers';
+import { addUser, removeUser } from '../middleware/users';
+import { ILobbyNetState } from './';
 
 export interface IUser {
   id: string;

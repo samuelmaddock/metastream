@@ -1,4 +1,4 @@
-import { NetConnection, NetUniqueId } from 'lobby/types';
+import NetConnection from './connection';
 import { PlatformService } from 'platform';
 
 class LocalHostConnection extends NetConnection {
@@ -19,9 +19,11 @@ class LocalHostConnection extends NetConnection {
 
 let client: LocalHostConnection;
 
-export const localUser = (): NetConnection => {
+const localUser = (): NetConnection => {
   if (!client) {
     client = new LocalHostConnection();
   }
   return client;
 };
+
+export default localUser;

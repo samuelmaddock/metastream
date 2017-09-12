@@ -1,4 +1,4 @@
-import { NetUniqueId } from 'lobby/types';
+import { NetUniqueId } from 'network';
 
 export class SteamUniqueId extends NetUniqueId<Steamworks.SteamID> {
   toString(): string {

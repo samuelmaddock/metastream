@@ -1,8 +1,11 @@
 import SimplePeer, { SignalData } from 'simple-peer';
 import { EventEmitter } from 'events';
 import { steamworks } from 'steam';
-import { NetUniqueId, NetConnection, NetServer, INetServerOptions } from 'lobby/types';
 import { Deferred } from 'utils/async';
+
+import NetConnection, { NetUniqueId } from './connection';
+import { NetServer } from 'network';
+import { INetServerOptions } from 'network/server';
 
 export type SignalData = SignalData;
 

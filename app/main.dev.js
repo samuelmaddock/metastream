@@ -22,7 +22,7 @@ if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true')
 }
 
 if (process.env.NODE_ENV === 'development' && !process.env.WITH_STEAM) {
-  window.require('./platform/electron/main-backend.js');
+  require('./platform/electron/main-backend.js');
 }
 
 const installExtensions = async () => {

@@ -1,12 +1,12 @@
 import * as React from 'react';
 
 import { Lobby } from 'components/Lobby';
-import { netConnect, ILobbyNetState } from 'lobby/net';
 import { IReactReduxProps } from 'types/redux';
-import { server_addChat } from 'lobby/net/actions/chat';
-import { IChatEntry } from 'lobby/net/reducers/chat';
-import { IUsersState } from 'lobby/net/reducers/users';
-import { getSessionName } from 'lobby/net/reducers/session';
+import { IChatEntry } from 'lobby/reducers/chat';
+import { IUsersState } from 'lobby/reducers/users';
+import { server_addChat } from 'lobby/actions/chat';
+import { netConnect, ILobbyNetState } from 'lobby';
+import { getSessionName } from 'lobby/reducers/session';
 
 interface IProps {
   host: boolean;

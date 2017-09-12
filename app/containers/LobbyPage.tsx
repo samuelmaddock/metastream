@@ -9,12 +9,12 @@ import { IAppState } from 'reducers';
 import { requestLobbies } from 'actions/steamworks';
 import { NetworkState } from 'types/network';
 import { Lobby } from 'components/Lobby';
-import { RTCServer, IRTCPeerCoordinator } from 'lobby/rtc';
-import { NetServer } from 'lobby/types';
-import { netReducer, ILobbyNetState, NetProvider, LobbyReplicatedState } from 'lobby/net';
-import { createNetStore } from 'lobby/net/redux';
 import { GameLobby } from 'components/GameLobby';
 import { PlatformService } from 'platform';
+import { NetServer } from 'network';
+import { ILobbyNetState, LobbyReplicatedState, NetProvider } from 'lobby';
+import { RTCServer } from 'network/rtc';
+import { createNetStore } from 'lobby/redux';
 
 interface IRouteParams {
   lobbyId: string;

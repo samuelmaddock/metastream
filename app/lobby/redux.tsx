@@ -1,12 +1,13 @@
 import React, { PropTypes, ReactNode } from 'react';
-import { connect, Provider, Store } from 'react-redux';
 import { createStore, Middleware, applyMiddleware } from 'redux';
-import { netReducer, ILobbyNetState } from 'lobby/net';
-import { netSyncMiddleware, NetMiddlewareOptions } from 'lobby/net/middleware/sync';
-import { netRpcMiddleware, NetRpcMiddlewareOptions } from 'lobby/net/middleware/rpc';
-import { NetServer } from 'lobby/types';
-import { usersMiddleware } from 'lobby/net/middleware/users';
-import { sessionMiddleware } from 'lobby/net/middleware/session';
+import { connect, Provider, Store } from 'react-redux';
+
+import { NetMiddlewareOptions, netSyncMiddleware } from 'network/middleware/sync';
+import { netRpcMiddleware } from 'network/middleware/rpc';
+
+import { netReducer, ILobbyNetState } from './';
+import { usersMiddleware } from './middleware/users';
+import { sessionMiddleware } from './middleware/session';
 
 export const NET_STORE_NAME = 'netStore';
 

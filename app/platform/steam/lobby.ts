@@ -1,7 +1,5 @@
 import { EventEmitter } from 'events';
 import { steamworks } from 'steam';
-import { NetUniqueId } from 'lobby/types';
-
 import { LOBBY_GAME_GUID } from 'constants/steamworks';
 import { Deferred } from 'utils/async';
 import { SessionKey } from 'platform/types';

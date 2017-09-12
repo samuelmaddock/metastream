@@ -1,9 +1,8 @@
 import { Middleware, MiddlewareAPI, Action, Dispatch } from 'redux';
-import { NetServer, NetConnection } from 'lobby/types';
+import { NetServer, NetConnection, localUser } from 'network';
 import { actionCreator } from 'utils/redux';
 import { Platform, ILobbyData } from 'platform/types';
 import { PlatformService } from 'platform';
-import { localUser } from 'lobby/net/localhost';
 
 interface ISessionMiddlewareOptions {
   host: boolean;
