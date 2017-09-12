@@ -50,7 +50,7 @@ app.on('window-all-closed', () => {
 const setupWindow = () => {
   let win = new BrowserWindow({
     show: false,
-    width: 1024,
+    width: 1400,
     height: 728
   });
 
