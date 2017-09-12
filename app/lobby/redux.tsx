@@ -1,6 +1,7 @@
 import React, { PropTypes, ReactNode } from 'react';
 import { createStore, Middleware, applyMiddleware } from 'redux';
 import { connect, Provider, Store } from 'react-redux';
+import thunkMiddleware from 'redux-thunk';
 
 import { NetMiddlewareOptions, netSyncMiddleware } from 'network/middleware/sync';
 import { netRpcMiddleware } from 'network/middleware/rpc';
@@ -41,7 +42,8 @@ export function createNetStore(opts: NetMiddlewareOptions): Store<ILobbyNetState
     netRpcMiddleware(opts),
     netSyncMiddleware(opts),
     usersMiddleware(opts),
-    sessionMiddleware(opts)
+    sessionMiddleware(opts),
+    thunkMiddleware
   ];
 
   const store = createStore(netReducer, applyMiddleware(...middleware));
