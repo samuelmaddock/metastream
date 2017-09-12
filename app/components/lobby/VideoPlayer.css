@@ -1,0 +1,20 @@
+.container {
+  position: relative;
+  width: 100%;
+  max-width: 720px;
+}
+
+.container:before {
+  display: block;
+  content: '';
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 */
+}
+
+.container > .content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}

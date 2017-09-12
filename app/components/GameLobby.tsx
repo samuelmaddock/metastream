@@ -7,6 +7,7 @@ import { IUsersState } from 'lobby/reducers/users';
 import { server_addChat } from 'lobby/actions/chat';
 import { netConnect, ILobbyNetState } from 'lobby';
 import { getSessionName } from 'lobby/reducers/session';
+import { VideoPlayer } from 'components/lobby/VideoPlayer';
 
 interface IProps {
   host: boolean;
@@ -24,6 +25,7 @@ class _GameLobby extends React.Component<PrivateProps> {
   render(): JSX.Element {
     return (
       <div>
+        <VideoPlayer />
         <Lobby
           name={this.props.sessionName || 'Connecting'}
           messages={this.props.chat}
