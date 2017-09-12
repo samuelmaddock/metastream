@@ -13,15 +13,6 @@ export default class Home extends Component<IProps> {
           <li>
             <Link to="/servers">Server browser</Link>
           </li>
-          <li>
-            <Link to="/lobby/dev">Join dev lobby</Link>
-          </li>
-          <li>
-            <Link to="/lobby/dev?owner">Create dev lobby</Link>
-          </li>
-          <li>
-            <Link to="/mptest">Multiplayer Test</Link>
-          </li>
         </ul>
       </div>
     );
