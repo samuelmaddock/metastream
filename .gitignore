@@ -33,6 +33,8 @@ app/main.prod.js
 app/main.prod.js.map
 app/bundle.js
 app/bundle.js.map
+app/preload.js
+app/preload.js.map
 app/style.css
 app/style.css.map
 dist

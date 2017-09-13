@@ -1,34 +1,47 @@
 {
   "name": "tv",
   "productName": "TV",
+  "private": true,
   "version": "0.11.0",
   "description": "",
   "main": "main.js",
   "scripts": {
-    "test": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 node --trace-warnings ./test/runTests.js",
+    "test":
+      "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 node --trace-warnings ./test/runTests.js",
     "test-all": "npm run lint && npm run test && npm run build && npm run test-e2e",
     "test-watch": "npm test -- --watch",
-    "test-e2e": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 node --trace-warnings ./test/runTests.js e2e",
+    "test-e2e":
+      "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 node --trace-warnings ./test/runTests.js e2e",
     "lint": "echo \"todo\"",
     "lint-fix": "npm run lint -- --fix",
     "lint-styles": "stylelint app/*.css app/components/*.css --syntax scss",
     "lint-styles-fix": "stylefmt -r app/*.css app/components/*.css",
-    "hot-updates-server": "cross-env NODE_ENV=development node --trace-warnings -r babel-register ./node_modules/webpack-dev-server/bin/webpack-dev-server --config webpack.config.renderer.dev.js",
-    "build": "concurrently \"npm run build-main\" \"npm run build-renderer\"",
-    "build-dll": "cross-env NODE_ENV=development node --trace-warnings -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.renderer.dev.dll.js --progress --profile --colors",
-    "build-main": "cross-env NODE_ENV=production node --trace-warnings -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.main.prod.js --progress --profile --colors",
-    "build-renderer": "cross-env NODE_ENV=production node --trace-warnings -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.renderer.prod.js --progress --profile --colors",
+    "hot-updates-server":
+      "cross-env NODE_ENV=development node --trace-warnings -r babel-register ./node_modules/webpack-dev-server/bin/webpack-dev-server --config webpack.config.renderer.dev.js",
+    "build":
+      "concurrently \"npm run build-main\" \"npm run build-renderer\" \"npm run build-preload\"",
+    "build-dll":
+      "cross-env NODE_ENV=development node --trace-warnings -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.renderer.dev.dll.js --progress --profile --colors",
+    "build-main":
+      "cross-env NODE_ENV=production node --trace-warnings -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.main.prod.js --progress --profile --colors",
+    "build-renderer":
+      "cross-env NODE_ENV=production node --trace-warnings -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.renderer.prod.js --progress --profile --colors",
+    "build-preload":
+      "cross-env node --trace-warnings -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.preload.dev.js --progress --profile --colors",
     "start": "cross-env NODE_ENV=production electron ./app/",
     "prestart": "npm run build",
-    "start-hot-renderer": "cross-env HOT=1 NODE_ENV=development electron -r babel-register -r babel-polyfill ./app/main.dev",
-    "postinstall": "concurrently \"npm run build-dll\" \"install-app-deps\" \"node node_modules/fbjs-scripts/node/check-dev-engines.js package.json\"",
+    "start-hot-renderer":
+      "cross-env HOT=1 NODE_ENV=development electron -r babel-register -r babel-polyfill ./app/main.dev",
+    "postinstall":
+      "concurrently \"npm run build-dll\" \"install-app-deps\" \"node node_modules/fbjs-scripts/node/check-dev-engines.js package.json\"",
     "dev": "cross-env START_HOT=1 npm run hot-updates-server",
     "package": "npm run build && build --publish never",
     "package-win": "npm run build && build --win --x64",
     "package-linux": "npm run build && build --linux",
     "package-all": "npm run build && build -mwl",
     "steam:appid": "echo 480 > app/steam_appid.txt",
-    "greenworks:rebuild": "HOME=~/.electron-gyp node-gyp rebuild --target=1.6.11 --arch=x64 --dist-url=https://atom.io/download/electron"
+    "greenworks:rebuild":
+      "HOME=~/.electron-gyp node-gyp rebuild --target=1.6.11 --arch=x64 --dist-url=https://atom.io/download/electron"
   },
   "browserslist": "electron 1.4",
   "build": {
@@ -40,6 +53,8 @@
       "app.html",
       "main.prod.js",
       "main.prod.js.map",
+      "preload.js",
+      "preload.js.map",
       "package.json",
       "steamworks.js"
     ],
@@ -65,15 +80,10 @@
       ]
     },
     "win": {
-      "target": [
-        "dir"
-      ]
+      "target": ["dir"]
     },
     "linux": {
-      "target": [
-        "deb",
-        "AppImage"
-      ]
+      "target": ["deb", "AppImage"]
     },
     "directories": {
       "buildResources": "resources",
@@ -86,16 +96,12 @@
   },
   "jest": {
     "moduleNameMapper": {
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/mocks/fileMock.js",
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$":
+        "<rootDir>/mocks/fileMock.js",
       "\\.(css|less|sass|scss)$": "identity-obj-proxy"
     },
-    "moduleFileExtensions": [
-      "js"
-    ],
-    "moduleDirectories": [
-      "node_modules",
-      "app/node_modules"
-    ],
+    "moduleFileExtensions": ["js"],
+    "moduleDirectories": ["node_modules", "app/node_modules"],
     "transform": {
       "^.+\\.js$": "babel-jest"
     }

@@ -1,17 +1,17 @@
-.container {
+.video {
   position: relative;
   width: 100%;
   max-width: 720px;
 }
 
-.container:before {
+.video:before {
   display: block;
   content: '';
   width: 100%;
   padding-top: 56.25%; /* 16:9 */
 }
 
-.container > .content {
+.video > .content {
   position: absolute;
   top: 0;
   left: 0;
