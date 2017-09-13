@@ -17,6 +17,7 @@ interface IProps {
 interface IConnectedProps {
   chat: IChatEntry[];
   currentMedia?: IMediaItem;
+  mediaStartTime?: number;
   users: IUsersState;
   sessionName?: string;
 }
@@ -25,11 +26,14 @@ type PrivateProps = IProps & IConnectedProps & IReactReduxProps;
 
 class _GameLobby extends React.Component<PrivateProps> {
   render(): JSX.Element {
-    const { currentMedia } = this.props;
+    const { currentMedia, mediaStartTime } = this.props;
 
     return (
       <div>
-        <VideoPlayer src={currentMedia && currentMedia.url} />
+        <VideoPlayer
+          src={currentMedia && currentMedia.url}
+          time={mediaStartTime && Date.now() - mediaStartTime}
+        />
         <Lobby
           name={this.props.sessionName || 'Connecting'}
           messages={this.props.chat}
@@ -52,6 +56,7 @@ export const GameLobby = netConnect<{}, {}, IProps>((state: ILobbyNetState): ICo
   return {
     chat: state.chat.entries,
     currentMedia: state.mediaPlayer.current,
+    mediaStartTime: state.mediaPlayer.startTime,
     users: state.users,
     sessionName: getSessionName(state)
   };

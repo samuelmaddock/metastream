@@ -30,7 +30,8 @@ class HTMLVideoPlayer implements IMediaPlayer {
     return this.video.duration;
   }
   seek(time: number): void {
-    this.video.currentTime = time;
+    const sec = time / 1000;
+    this.video.currentTime = sec;
   }
   setVolume(vol: number): void {
     this.video.volume = vol;
@@ -48,6 +49,7 @@ const detectPlayer = () => {
   if (video) {
     player = new HTMLVideoPlayer(video);
     console.log(`Found video element!`, player, video);
+    ipcRenderer.sendToHost('media-ready');
   } else {
     setTimeout(detectPlayer, 2000);
     console.info(`Couldn't find video element on page, trying again in 2 sec.`);
