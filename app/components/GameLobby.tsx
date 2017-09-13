@@ -29,11 +29,10 @@ type PrivateProps = IProps & IConnectedProps & IReactReduxProps;
 class _GameLobby extends React.Component<PrivateProps> {
   render(): JSX.Element {
     const { currentMedia, mediaStartTime } = this.props;
-    const mediaCurTime = mediaStartTime && Date.now() - mediaStartTime;
 
     return (
       <div>
-        <VideoPlayer media={currentMedia} time={mediaCurTime} />
+        <VideoPlayer media={currentMedia} startTime={mediaStartTime} />
         <Lobby
           name={this.props.sessionName || 'Connecting'}
           messages={this.props.chat}

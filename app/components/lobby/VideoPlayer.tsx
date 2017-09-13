@@ -5,7 +5,7 @@ import { IMediaItem } from 'lobby/reducers/mediaPlayer';
 
 interface IProps {
   media?: IMediaItem;
-  time?: number;
+  startTime?: number;
 }
 
 export class VideoPlayer extends Component<IProps> {
@@ -31,9 +31,11 @@ export class VideoPlayer extends Component<IProps> {
   };
 
   private onMediaReady = (event: Electron.IpcMessageEvent) => {
-    if (this.props.time) {
-      console.log('Sending seek IPC message', this.props.time);
-      this.webview!.send('media-seek', this.props.time);
+    const { startTime } = this.props;
+    if (startTime) {
+      const time = Date.now() - startTime;
+      console.log('Sending seek IPC message', time);
+      this.webview!.send('media-seek', time);
     }
   };
 
