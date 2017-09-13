@@ -13,6 +13,7 @@ yarn
 ### App
 ```bash
 # Run in development
+npm run build-preload
 npm run dev
 
 # Run multiple windows of the app; doesn't work with Steam
