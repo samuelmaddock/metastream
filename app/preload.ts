@@ -1,5 +1,8 @@
 import { ipcRenderer } from 'electron';
 
+/** Interval time (ms) to detect video element. */
+const DETECT_INTERVAL = 500;
+
 const OldAudio = (window as any).Audio;
 
 /** Proxy `new Audio` to trap audio elements created in-memory. */
@@ -84,7 +87,7 @@ const detectPlayer = () => {
     console.log(`Found video element!`, player, video);
     ipcRenderer.sendToHost('media-ready');
   } else {
-    setTimeout(detectPlayer, 2000);
+    setTimeout(detectPlayer, DETECT_INTERVAL);
     console.info(`Couldn't find video element on page, trying again in 2 sec.`);
   }
 };
