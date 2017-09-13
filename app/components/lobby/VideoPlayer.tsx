@@ -62,18 +62,21 @@ export class VideoPlayer extends Component<IProps> {
       </ul>
     );
 
+    // TODO: Remove `is` attribute from webview when React 16 is out
+    // https://stackoverflow.com/a/33860892/1490006
     return (
       <div>
         {metadata}
         <div className={styles.video}>
           <webview
+            is="is"
             ref={this.setupWebview}
             src={src}
-            className={styles.content}
+            class={styles.content}
             /* Some website embeds are disabled without an HTTP referrer */
-            /* httpreferrer="http://samuelmaddock.com/" */
+            httpreferrer="http://mediaplayer.samuelmaddock.com/"
             /* Disable plugins until we know we need them */
-            /* plugins="false" */
+            plugins="false"
             preload={preload}
           />
         </div>

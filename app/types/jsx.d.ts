@@ -2,10 +2,11 @@
 
 declare namespace JSX {
   interface IntrinsicElements {
-    webview: React.DetailedHTMLProps<
-      WebviewHTMLAttributes<Electron.WebviewTag>,
-      Electron.WebviewTag
-    >;
+    // webview: React.DetailedHTMLProps<
+    //   WebviewHTMLAttributes<Electron.WebviewTag>,
+    //   Electron.WebviewTag
+    // >;
+    webview: any;
   }
 
   // See Electron type definitions
