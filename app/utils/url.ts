@@ -9,7 +9,7 @@ export const encodeQueryParams = (params: QueryParams): string => {
 };
 
 export const buildUrl = (url: string, params: QueryParams): string => {
-  return url + encodeQueryParams(params);
+  return `${url}?${encodeQueryParams(params)}`;
 };
 
 /** Determine if the string is a valid URL. */

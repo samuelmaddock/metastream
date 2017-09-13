@@ -1,4 +1,4 @@
-const enum MediaThumbnailSize {
+export const enum MediaThumbnailSize {
   Default,
   Small,
   Medium,
