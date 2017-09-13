@@ -9,6 +9,8 @@ import { netConnect, ILobbyNetState } from 'lobby';
 import { getSessionName } from 'lobby/reducers/session';
 import { VideoPlayer } from 'components/lobby/VideoPlayer';
 import { IMediaItem } from 'lobby/reducers/mediaPlayer';
+import { isUrl } from 'utils/url';
+import { server_requestMedia } from 'lobby/actions/mediaPlayer';
 
 interface IProps {
   host: boolean;
@@ -27,13 +29,11 @@ type PrivateProps = IProps & IConnectedProps & IReactReduxProps;
 class _GameLobby extends React.Component<PrivateProps> {
   render(): JSX.Element {
     const { currentMedia, mediaStartTime } = this.props;
+    const mediaCurTime = mediaStartTime && Date.now() - mediaStartTime;
 
     return (
       <div>
-        <VideoPlayer
-          src={currentMedia && currentMedia.url}
-          time={mediaStartTime && Date.now() - mediaStartTime}
-        />
+        <VideoPlayer media={currentMedia} time={mediaCurTime} />
         <Lobby
           name={this.props.sessionName || 'Connecting'}
           messages={this.props.chat}
@@ -47,8 +47,12 @@ class _GameLobby extends React.Component<PrivateProps> {
     );
   }
 
-  private sendChat = (msg: string): void => {
-    this.props.dispatch(server_addChat(msg));
+  private sendChat = (text: string): void => {
+    if (isUrl(text)) {
+      this.props.dispatch(server_requestMedia(text));
+    } else {
+      this.props.dispatch(server_addChat(text));
+    }
   };
 }
 
