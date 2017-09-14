@@ -1,5 +1,5 @@
 import { actionCreator } from 'utils/redux';
-import { IMediaItem } from 'lobby/reducers/mediaPlayer';
+import { IMediaItem, PlaybackState } from 'lobby/reducers/mediaPlayer';
 import { Thunk } from 'types/thunk';
 import { ThunkAction } from 'redux-thunk';
 import { ILobbyNetState } from 'lobby';
@@ -8,7 +8,9 @@ import { RpcThunk } from 'lobby/types';
 import { PlatformService } from 'platform';
 import { getServiceForUrl } from 'media';
 import { MediaThumbnailSize } from 'services/types';
+import { getCurrentMedia, getPlaybackState } from 'lobby/reducers/mediaPlayer.helpers';
 
+export const playPauseMedia = actionCreator<void>('PLAY_PAUSE_MEDIA');
 export const setMedia = actionCreator<IMediaItem>('SET_MEDIA');
 export const endMedia = actionCreator<void>('END_MEDIA');
 
@@ -45,3 +47,16 @@ const requestMedia = (url: string): RpcThunk<void> => async (dispatch, getState,
   dispatch(setMedia(media));
 };
 export const server_requestMedia = rpc(RpcRealm.Server, requestMedia);
+
+const requestPlayPause = (): RpcThunk<void> => async (dispatch, getState, context) => {
+  const state = getState();
+  const playback = getPlaybackState(state);
+
+  switch (playback) {
+    case PlaybackState.Playing:
+    case PlaybackState.Paused:
+      dispatch(playPauseMedia());
+      break;
+  }
+};
+export const server_requestPlayPause = rpc(RpcRealm.Server, requestPlayPause);

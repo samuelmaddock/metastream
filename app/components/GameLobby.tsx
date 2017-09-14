@@ -7,7 +7,7 @@ import { server_addChat } from 'lobby/actions/chat';
 import { netConnect, ILobbyNetState } from 'lobby';
 import { getSessionName } from 'lobby/reducers/session';
 import { VideoPlayer } from 'components/lobby/VideoPlayer';
-import { IMediaItem } from 'lobby/reducers/mediaPlayer';
+import { IMediaItem, PlaybackState } from 'lobby/reducers/mediaPlayer';
 import { isUrl } from 'utils/url';
 import { server_requestMedia } from 'lobby/actions/mediaPlayer';
 import { IMessage } from 'lobby/reducers/chat';
@@ -25,6 +25,7 @@ interface IProps {
 interface IConnectedProps {
   messages: IMessage[];
   currentMedia?: IMediaItem;
+  mediaPlayback: PlaybackState;
   mediaStartTime?: number;
   users: IUsersState;
   sessionName?: string;
@@ -39,12 +40,17 @@ const NO_MEDIA: IMediaItem = {
 
 class _GameLobby extends React.Component<PrivateProps> {
   render(): JSX.Element {
-    const { currentMedia, mediaStartTime } = this.props;
+    const { currentMedia, mediaStartTime, mediaPlayback } = this.props;
 
     return (
       <div className={styles.container}>
         <section className={styles.browser}>
-          <VideoPlayer media={currentMedia} startTime={mediaStartTime} />
+          <VideoPlayer
+            media={currentMedia}
+            startTime={mediaStartTime}
+            playback={mediaPlayback}
+            dispatch={this.props.dispatch}
+          />
         </section>
         <section className={styles.sidebar}>
           <header>
@@ -77,6 +83,7 @@ export const GameLobby = netConnect<{}, {}, IProps>((state: ILobbyNetState): ICo
   return {
     messages: state.chat.messages,
     currentMedia: state.mediaPlayer.current,
+    mediaPlayback: state.mediaPlayer.playback,
     mediaStartTime: state.mediaPlayer.startTime,
     users: state.users,
     sessionName: getSessionName(state)

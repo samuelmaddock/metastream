@@ -2,7 +2,8 @@ import { Reducer } from 'redux';
 import { NetworkState } from 'types/network';
 import { isType } from 'utils/redux';
 import { addChat } from 'lobby/actions/chat';
-import { setMedia, endMedia } from 'lobby/actions/mediaPlayer';
+import { setMedia, endMedia, playPauseMedia } from 'lobby/actions/mediaPlayer';
+import { ILobbyNetState } from 'lobby/reducers';
 
 export const enum PlaybackState {
   Idle,
@@ -50,6 +51,21 @@ export const mediaPlayer: Reducer<IMediaPlayerState> = (
     };
   } else if (isType(action, endMedia)) {
     return { ...state, playback: PlaybackState.Idle, current: undefined, startTime: undefined };
+  } else if (isType(action, playPauseMedia)) {
+    let newPlayback;
+
+    switch (state.playback) {
+      case PlaybackState.Playing:
+        newPlayback = PlaybackState.Paused;
+        break;
+      case PlaybackState.Paused:
+        newPlayback = PlaybackState.Playing;
+        break;
+    }
+
+    if (newPlayback) {
+      return { ...state, playback: newPlayback };
+    }
   }
 
   return state;
