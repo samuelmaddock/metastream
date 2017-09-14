@@ -1,6 +1,7 @@
 .container {
   display: flex;
   height: 40px;
+  user-select: none;
 }
 
 .button {

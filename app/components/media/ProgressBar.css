@@ -1,0 +1,29 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  align-items: center;
+}
+
+.time {
+  flex-shrink: 0;
+  padding: 0 6px;
+  font-size: 14px;
+  font-family: monospace;
+}
+
+.progress {
+  flex-grow: 1;
+}
+
+.progressTrack {
+  width: 100%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.33);
+}
+
+.progressBar {
+  width: 50%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.66);
+}

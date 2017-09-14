@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import styles from './MediaControls.css';
-import { PlaybackState } from 'lobby/reducers/mediaPlayer';
+import { PlaybackState, IMediaItem } from 'lobby/reducers/mediaPlayer';
 import { ProgressBar } from 'components/media/ProgressBar';
 
 interface IProps {
+  media?: IMediaItem;
+  startTime?: number;
   playback: PlaybackState;
   playPause?: React.MouseEventHandler<HTMLButtonElement>;
   reload?: React.MouseEventHandler<HTMLButtonElement>;
@@ -12,7 +14,8 @@ interface IProps {
 
 export class MediaControls extends Component<IProps> {
   render(): JSX.Element | null {
-    const playbackIcon = this.props.playback === PlaybackState.Playing ? '⏸️' : '▶️';
+    const { playback, media } = this.props;
+    const playbackIcon = playback === PlaybackState.Playing ? '⏸️' : '▶️';
 
     return (
       <div className={styles.container}>
@@ -22,7 +25,11 @@ export class MediaControls extends Component<IProps> {
         <button type="button" title="Next" className={styles.button}>
           ⏭️
         </button>
-        <ProgressBar startTime={Date.now()} duration={3600} />
+        <ProgressBar
+          startTime={(media && this.props.startTime) || 0}
+          duration={(media && media.duration) || 0}
+          disabled={playback === PlaybackState.Idle}
+        />
         <button type="button" className={styles.button} title="Reload" onClick={this.props.reload}>
           🔄
         </button>

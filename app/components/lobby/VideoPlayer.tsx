@@ -1,21 +1,26 @@
 import React, { Component } from 'react';
 import styles from './VideoPlayer.css';
 import { MediaControls } from 'components/lobby/MediaControls';
-import { IMediaItem, PlaybackState } from 'lobby/reducers/mediaPlayer';
+import { IMediaItem, PlaybackState, IMediaPlayerState } from 'lobby/reducers/mediaPlayer';
 import { Dispatch } from 'redux';
 import { server_requestPlayPause } from 'lobby/actions/mediaPlayer';
+import { netConnect, ILobbyNetState } from 'lobby';
+import { DispatchProp } from 'react-redux';
 
-interface IProps {
-  media?: IMediaItem;
-  startTime?: number;
-  dispatch: Dispatch<{}>;
-  playback: PlaybackState;
-}
+interface IProps {}
 
-export class VideoPlayer extends Component<IProps> {
+interface IConnectedProps extends IMediaPlayerState {}
+
+const mapStateToProps = (state: ILobbyNetState): IConnectedProps => {
+  return state.mediaPlayer;
+};
+
+type PrivateProps = IProps & IConnectedProps & DispatchProp<ILobbyNetState>;
+
+class _VideoPlayer extends Component<PrivateProps> {
   private webview: Electron.WebviewTag | null;
 
-  componentDidUpdate(prevProps: IProps): void {
+  componentDidUpdate(prevProps: PrivateProps): void {
     if (this.props.playback !== prevProps.playback) {
       this.updatePlayback(this.props.playback);
     }
@@ -67,7 +72,7 @@ export class VideoPlayer extends Component<IProps> {
   }
 
   private renderBrowser(): JSX.Element {
-    const { media } = this.props;
+    const { current: media } = this.props;
     const src = media ? media.url : 'https://www.google.com/';
 
     return (
@@ -93,9 +98,11 @@ export class VideoPlayer extends Component<IProps> {
 
     return (
       <MediaControls
+        media={this.props.current}
+        startTime={this.props.startTime}
         playback={this.props.playback}
         playPause={() => {
-          this.props.dispatch(server_requestPlayPause());
+          this.props.dispatch!(server_requestPlayPause());
         }}
         reload={() => {
           if (this.webview) {
@@ -111,3 +118,5 @@ export class VideoPlayer extends Component<IProps> {
     );
   }
 }
+
+export const VideoPlayer = netConnect<{}, {}, IProps>(mapStateToProps)(_VideoPlayer);

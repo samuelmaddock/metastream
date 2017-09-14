@@ -23,10 +23,8 @@ interface IProps {
 }
 
 interface IConnectedProps {
-  messages: IMessage[];
   currentMedia?: IMediaItem;
-  mediaPlayback: PlaybackState;
-  mediaStartTime?: number;
+  messages: IMessage[];
   users: IUsersState;
   sessionName?: string;
 }
@@ -40,17 +38,10 @@ const NO_MEDIA: IMediaItem = {
 
 class _GameLobby extends React.Component<PrivateProps> {
   render(): JSX.Element {
-    const { currentMedia, mediaStartTime, mediaPlayback } = this.props;
-
     return (
       <div className={styles.container}>
         <section className={styles.browser}>
-          <VideoPlayer
-            media={currentMedia}
-            startTime={mediaStartTime}
-            playback={mediaPlayback}
-            dispatch={this.props.dispatch}
-          />
+          <VideoPlayer />
         </section>
         <section className={styles.sidebar}>
           <header>
@@ -63,7 +54,7 @@ class _GameLobby extends React.Component<PrivateProps> {
               })}
             </div>
           </header>
-          <MediaItem media={currentMedia || NO_MEDIA} />
+          <MediaItem media={this.props.currentMedia || NO_MEDIA} />
           <Chat messages={this.props.messages} sendMessage={this.sendChat} />
         </section>
       </div>
@@ -81,10 +72,8 @@ class _GameLobby extends React.Component<PrivateProps> {
 
 export const GameLobby = netConnect<{}, {}, IProps>((state: ILobbyNetState): IConnectedProps => {
   return {
-    messages: state.chat.messages,
     currentMedia: state.mediaPlayer.current,
-    mediaPlayback: state.mediaPlayer.playback,
-    mediaStartTime: state.mediaPlayer.startTime,
+    messages: state.chat.messages,
     users: state.users,
     sessionName: getSessionName(state)
   };
