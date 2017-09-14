@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import styles from './MediaControls.css';
 import { PlaybackState, IMediaItem } from 'lobby/reducers/mediaPlayer';
-import { ProgressBar } from 'components/media/ProgressBar';
+import { Time } from 'components/media/Time';
+import { ProgressSlider } from 'components/media/ProgressSlider';
 
 interface IProps {
   media?: IMediaItem;
@@ -15,8 +16,11 @@ interface IProps {
 
 export class MediaControls extends Component<IProps> {
   render(): JSX.Element | null {
-    const { playback, media } = this.props;
+    const { playback, media, startTime } = this.props;
     const playbackIcon = playback === PlaybackState.Playing ? '⏸️' : '▶️';
+
+    const disabled = playback === PlaybackState.Idle;
+    const duration = (media && media.duration) || 0;
 
     return (
       <div className={styles.container}>
@@ -26,11 +30,9 @@ export class MediaControls extends Component<IProps> {
         <button type="button" title="Next" className={styles.button} onClick={this.props.next}>
           ⏭️
         </button>
-        <ProgressBar
-          startTime={(media && this.props.startTime) || 0}
-          duration={(media && media.duration) || 0}
-          disabled={playback === PlaybackState.Idle}
-        />
+        {!disabled && <Time className={styles.time} time={startTime || 0} realTime />}
+        <ProgressSlider startTime={startTime || 0} duration={duration} disabled={disabled} />
+        {!disabled && <Time className={styles.time} time={(media && media.duration) || 0} />}
         <button type="button" className={styles.button} title="Reload" onClick={this.props.reload}>
           🔄
         </button>

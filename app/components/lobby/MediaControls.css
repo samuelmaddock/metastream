@@ -2,6 +2,7 @@
   display: flex;
   height: 40px;
   user-select: none;
+  align-items: center;
 }
 
 .button {
@@ -25,4 +26,11 @@
 
 .seekbar {
   flex-grow: 1;
+}
+
+.time {
+  flex-shrink: 0;
+  padding: 0 6px;
+  font-size: 14px;
+  font-family: monospace;
 }
