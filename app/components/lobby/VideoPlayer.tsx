@@ -87,9 +87,9 @@ export class VideoPlayer extends Component<IProps> {
   }
 
   private renderControls(): JSX.Element | null {
-    if (this.props.playback === PlaybackState.Idle) {
-      return null;
-    }
+    // if (this.props.playback === PlaybackState.Idle) {
+    //   return null;
+    // }
 
     return (
       <MediaControls
