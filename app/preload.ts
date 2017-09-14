@@ -1,5 +1,35 @@
 import { ipcRenderer } from 'electron';
 
+const OldAudio = (window as any).Audio;
+
+/** Proxy `new Audio` to trap audio elements created in-memory. */
+var ProxyAudio = new Proxy(function() {}, {
+  construct: function(target, argumentsList, newTarget) {
+    console.log('Audio constructor called: ' + argumentsList.join(', '));
+    return new OldAudio(...argumentsList);
+  }
+});
+(window as any).Audio = ProxyAudio;
+
+const origCreateElement = document.createElement;
+
+/** Proxy document.createElement to trap audio tags created in-memory. */
+const proxyCreateElement = (tagName: string) => {
+  const element = origCreateElement.call(document, tagName);
+
+  const name = tagName.toLowerCase();
+  switch (name) {
+    case 'audio':
+      console.log('CREATED AUDIO ELEMENT');
+      console.trace();
+      (window as any).TEST = element;
+      break;
+  }
+
+  return element;
+};
+(document as any).createElement = proxyCreateElement;
+
 interface IMediaPlayer {
   play(): void;
   pause(): void;
