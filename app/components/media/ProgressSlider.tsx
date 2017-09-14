@@ -6,6 +6,7 @@ interface IProps {
   disabled?: boolean;
   startTime: number;
   duration: number;
+  onChange?: (progress: number) => void;
 }
 
 interface IState {
@@ -54,11 +55,23 @@ export class ProgressSlider extends Component<IProps> {
     };
 
     return (
-      <div className={styles.progress}>
+      <div className={styles.progress} onClick={this.onClick}>
         <div className={styles.progressTrack}>
           <div className={styles.progressBar} style={progressStyle} />
         </div>
       </div>
     );
   }
+
+  private onClick = (event: React.MouseEvent<HTMLElement>) => {
+    const target = event.target as HTMLElement;
+    const bbox = target.getBoundingClientRect();
+    const width = bbox.width;
+    const x = event.pageX - target.offsetLeft;
+    const progress = x / (width || 1);
+
+    if (this.props.onChange) {
+      this.props.onChange(progress);
+    }
+  };
 }

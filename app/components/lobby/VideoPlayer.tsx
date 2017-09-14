@@ -2,7 +2,11 @@ import React, { Component } from 'react';
 import styles from './VideoPlayer.css';
 import { IMediaItem, PlaybackState, IMediaPlayerState } from 'lobby/reducers/mediaPlayer';
 import { Dispatch } from 'redux';
-import { server_requestPlayPause, server_requestNextMedia } from 'lobby/actions/mediaPlayer';
+import {
+  server_requestPlayPause,
+  server_requestNextMedia,
+  server_requestSeek
+} from 'lobby/actions/mediaPlayer';
 import { netConnect, ILobbyNetState } from 'lobby';
 import { DispatchProp } from 'react-redux';
 import { PlaybackControls } from 'components/media/PlaybackControls';
@@ -20,9 +24,25 @@ type PrivateProps = IProps & IConnectedProps & DispatchProp<ILobbyNetState>;
 class _VideoPlayer extends Component<PrivateProps> {
   private webview: Electron.WebviewTag | null;
 
+  get isPlaying() {
+    return this.props.playback === PlaybackState.Playing;
+  }
+
+  get isPaused() {
+    return this.props.playback === PlaybackState.Paused;
+  }
+
   componentDidUpdate(prevProps: PrivateProps): void {
     if (this.props.playback !== prevProps.playback) {
       this.updatePlayback(this.props.playback);
+    }
+
+    if (this.isPlaying && this.props.startTime !== prevProps.startTime) {
+      this.updatePlaybackTime();
+    }
+
+    if (this.isPaused && this.props.pauseTime !== prevProps.pauseTime) {
+      this.updatePlaybackTime();
     }
   }
 
@@ -46,9 +66,19 @@ class _VideoPlayer extends Component<PrivateProps> {
   };
 
   private onMediaReady = (event: Electron.IpcMessageEvent) => {
-    const { startTime } = this.props;
-    if (startTime) {
-      const time = Date.now() - startTime;
+    this.updatePlaybackTime();
+  };
+
+  private updatePlaybackTime = () => {
+    let time;
+
+    if (this.isPlaying) {
+      time = Date.now() - this.props.startTime!;
+    } else if (this.isPaused) {
+      time = this.props.pauseTime!;
+    }
+
+    if (time) {
       console.log('Sending seek IPC message', time);
       this.webview!.send('media-seek', time);
     }
@@ -106,6 +136,9 @@ class _VideoPlayer extends Component<PrivateProps> {
         }}
         next={() => {
           this.props.dispatch!(server_requestNextMedia());
+        }}
+        seek={time => {
+          this.props.dispatch!(server_requestSeek(time));
         }}
         reload={() => {
           if (this.webview) {

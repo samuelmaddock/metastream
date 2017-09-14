@@ -16,6 +16,7 @@ import {
 
 export const playPauseMedia = actionCreator<number>('PLAY_PAUSE_MEDIA');
 export const nextMedia = actionCreator<void>('NEXT_MEDIA');
+export const seekMedia = actionCreator<number>('SEEK_MEDIA');
 export const setMedia = actionCreator<IMediaItem>('SET_MEDIA');
 export const endMedia = actionCreator<void>('END_MEDIA');
 
@@ -83,7 +84,7 @@ const requestMedia = (url: string): RpcThunk<void> => async (dispatch, getState,
 };
 export const server_requestMedia = rpc(RpcRealm.Server, requestMedia);
 
-const requestPlayPause = (): RpcThunk<void> => async (dispatch, getState, context) => {
+const requestPlayPause = (): RpcThunk<void> => (dispatch, getState, context) => {
   const state = getState();
   const playback = getPlaybackState(state);
   const curTime = getPlaybackTime(state);
@@ -98,7 +99,7 @@ const requestPlayPause = (): RpcThunk<void> => async (dispatch, getState, contex
 };
 export const server_requestPlayPause = rpc(RpcRealm.Server, requestPlayPause);
 
-const requestNextMedia = (): RpcThunk<void> => async (dispatch, getState, context) => {
+const requestNextMedia = (): RpcThunk<void> => (dispatch, getState, context) => {
   const state = getState();
   const media = getCurrentMedia(state);
 
@@ -108,3 +109,20 @@ const requestNextMedia = (): RpcThunk<void> => async (dispatch, getState, contex
   }
 };
 export const server_requestNextMedia = rpc(RpcRealm.Server, requestNextMedia);
+
+const requestSeek = (time: number): RpcThunk<void> => (dispatch, getState, context) => {
+  const state = getState();
+  const media = getCurrentMedia(state);
+
+  if (!media || !media.duration) {
+    return;
+  }
+
+  if (time < 0 || time > media.duration) {
+    return;
+  }
+
+  dispatch(seekMedia(time));
+  dispatch(updatePlaybackTimer());
+};
+export const server_requestSeek = rpc(RpcRealm.Server, requestSeek);
