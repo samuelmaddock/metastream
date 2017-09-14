@@ -131,6 +131,31 @@ table {
 }
 
 /*
+Fonts
+*/
+
+@font-face {
+  font-family: 'Karla';
+  src: url('./fonts/Karla-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Karla';
+  src: url('./fonts/Karla-Bold.ttf') format('truetype');
+  font-weight: bold;
+}
+@font-face {
+  font-family: 'Karla';
+  src: url('./fonts/Karla-BoldItalic.ttf') format('truetype');
+  font-weight: bold;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'Karla';
+  src: url('./fonts/Karla-Italic.ttf') format('truetype');
+  font-style: italic;
+}
+
+/*
 Default styles
 */
 
@@ -154,7 +179,7 @@ body,
 body,
 input,
 textarea {
-  font-family: sans-serif;
+  font-family: 'Karla', sans-serif;
   font-size: 16px;
 }
 
