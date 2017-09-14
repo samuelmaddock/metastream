@@ -120,18 +120,22 @@ class YouTubeClient {
     let duration = -1;
 
     if (snippet.liveBroadcastContent === 'none') {
-      // TODO: parse duration time
       const str = item.contentDetails.duration;
       duration = parseTime(str);
     }
 
-    const embedUrl = buildUrl(`https://www.youtube.com/embed/${videoId}`, {
-      autoplay: 1,
-      controls: 0,
-      fs: 0,
-      rel: 0,
-      showinfo: 0
-    });
+    // TODO: how to handle paid content?
+
+    // Show fullscreen embed if video supports it
+    const embedUrl = item.status.embeddable
+      ? buildUrl(`https://www.youtube.com/embed/${videoId}`, {
+          autoplay: 1,
+          controls: 0,
+          fs: 0,
+          rel: 0,
+          showinfo: 0
+        })
+      : url;
 
     return {
       url: embedUrl,
