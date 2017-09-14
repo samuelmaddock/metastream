@@ -3,7 +3,7 @@ import styles from './VideoPlayer.css';
 import { MediaControls } from 'components/lobby/MediaControls';
 import { IMediaItem, PlaybackState, IMediaPlayerState } from 'lobby/reducers/mediaPlayer';
 import { Dispatch } from 'redux';
-import { server_requestPlayPause } from 'lobby/actions/mediaPlayer';
+import { server_requestPlayPause, server_requestNextMedia } from 'lobby/actions/mediaPlayer';
 import { netConnect, ILobbyNetState } from 'lobby';
 import { DispatchProp } from 'react-redux';
 
@@ -103,6 +103,9 @@ class _VideoPlayer extends Component<PrivateProps> {
         playback={this.props.playback}
         playPause={() => {
           this.props.dispatch!(server_requestPlayPause());
+        }}
+        next={() => {
+          this.props.dispatch!(server_requestNextMedia());
         }}
         reload={() => {
           if (this.webview) {

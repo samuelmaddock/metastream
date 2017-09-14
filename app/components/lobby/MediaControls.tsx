@@ -8,6 +8,7 @@ interface IProps {
   startTime?: number;
   playback: PlaybackState;
   playPause?: React.MouseEventHandler<HTMLButtonElement>;
+  next?: React.MouseEventHandler<HTMLButtonElement>;
   reload?: React.MouseEventHandler<HTMLButtonElement>;
   debug?: React.MouseEventHandler<HTMLButtonElement>;
 }
@@ -22,7 +23,7 @@ export class MediaControls extends Component<IProps> {
         <button type="button" className={styles.button} onClick={this.props.playPause}>
           {playbackIcon}
         </button>
-        <button type="button" title="Next" className={styles.button}>
+        <button type="button" title="Next" className={styles.button} onClick={this.props.next}>
           ⏭️
         </button>
         <ProgressBar

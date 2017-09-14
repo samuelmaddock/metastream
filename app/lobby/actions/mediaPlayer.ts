@@ -11,6 +11,7 @@ import { MediaThumbnailSize } from 'services/types';
 import { getCurrentMedia, getPlaybackState } from 'lobby/reducers/mediaPlayer.helpers';
 
 export const playPauseMedia = actionCreator<void>('PLAY_PAUSE_MEDIA');
+export const nextMedia = actionCreator<void>('NEXT_MEDIA');
 export const setMedia = actionCreator<IMediaItem>('SET_MEDIA');
 export const endMedia = actionCreator<void>('END_MEDIA');
 
@@ -60,3 +61,13 @@ const requestPlayPause = (): RpcThunk<void> => async (dispatch, getState, contex
   }
 };
 export const server_requestPlayPause = rpc(RpcRealm.Server, requestPlayPause);
+
+const requestNextMedia = (): RpcThunk<void> => async (dispatch, getState, context) => {
+  const state = getState();
+  const media = getCurrentMedia(state);
+
+  if (media) {
+    dispatch(nextMedia());
+  }
+};
+export const server_requestNextMedia = rpc(RpcRealm.Server, requestNextMedia);
