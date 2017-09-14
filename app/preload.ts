@@ -1,4 +1,5 @@
 import { ipcRenderer } from 'electron';
+import { PlaybackState } from 'lobby/reducers/mediaPlayer';
 
 /** Interval time (ms) to detect video element. */
 const DETECT_INTERVAL = 500;
@@ -98,6 +99,20 @@ const setupListeners = () => {
     console.info(`Received seek command [time=${time}]`);
     if (player) {
       player.seek(time);
+    }
+  });
+
+  ipcRenderer.on('media-playback', (event: Electron.IpcMessageEvent, state: PlaybackState) => {
+    console.info(`Received playback command [state=${state}]`);
+    if (player) {
+      switch (state) {
+        case PlaybackState.Playing:
+          player.play();
+          break;
+        case PlaybackState.Paused:
+          player.pause();
+          break;
+      }
     }
   });
 };

@@ -56,13 +56,11 @@ class _VideoPlayer extends Component<PrivateProps> {
 
   private updatePlayback = (state: PlaybackState) => {
     if (this.webview) {
-      // TODO: send IPC
+      this.webview.send('media-playback', state);
     }
   };
 
   render(): JSX.Element | null {
-    // TODO: Remove `is` attribute from webview when React 16 is out
-    // https://stackoverflow.com/a/33860892/1490006
     return (
       <div className={styles.container}>
         {this.renderBrowser()}
@@ -75,6 +73,8 @@ class _VideoPlayer extends Component<PrivateProps> {
     const { current: media } = this.props;
     const src = media ? media.url : 'https://www.google.com/';
 
+    // TODO: Remove `is` attribute from webview when React 16 is out
+    // https://stackoverflow.com/a/33860892/1490006
     return (
       <webview
         is="is"
