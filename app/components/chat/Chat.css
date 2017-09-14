@@ -6,17 +6,20 @@
 
 .messages {
   flex-grow: 1;
+  overflow-y: auto;
 }
 
 .message {
   width: 100%;
   padding: 2px 8px;
+  word-wrap: break-word;
 }
 
 .username {
   color: #00bfff;
   font-weight: bold;
   margin-right: 5px;
+  white-space: nowrap;
 }
 
 .form {

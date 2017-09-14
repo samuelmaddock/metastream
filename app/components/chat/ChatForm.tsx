@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { IMessage } from 'lobby/reducers/chat';
 
 import styles from './Chat.css';
+import { CHAT_MAX_MESSAGE_LENGTH } from 'constants/chat';
 
 interface IProps {
   send: (text: string) => void;
@@ -29,6 +30,7 @@ export class ChatForm extends Component<IProps> {
           className={styles.messageInput}
           placeholder="Message"
           onKeyPress={this.submitText}
+          maxLength={CHAT_MAX_MESSAGE_LENGTH}
         />
       </div>
     );

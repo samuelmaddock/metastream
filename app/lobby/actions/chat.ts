@@ -3,6 +3,7 @@ import { RpcThunk } from 'lobby/types';
 import { getUserName } from 'lobby/reducers/users';
 import { rpc, RpcRealm } from 'network/middleware/rpc';
 import { IMessage } from 'lobby/reducers/chat';
+import { CHAT_MAX_MESSAGE_LENGTH } from 'constants/chat';
 
 export const addChat = actionCreator<IMessage>('ADD_CHAT');
 
@@ -26,6 +27,10 @@ export const multi_broadcastChat = rpc(RpcRealm.Multicast, broadcastChat);
 
 const rpcAddChat = (text: string): RpcThunk<void> => (dispatch, getState, context) => {
   const userId = context.client.id.toString();
+
+  if (text.length > CHAT_MAX_MESSAGE_LENGTH) {
+    text = text.substr(0, CHAT_MAX_MESSAGE_LENGTH);
+  }
 
   dispatch(multi_broadcastChat(userId, text));
 };
