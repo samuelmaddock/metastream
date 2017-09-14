@@ -61,7 +61,12 @@ export class VideoPlayer extends Component<IProps> {
           preload={preload}
         />
         <MediaControls
-          onDebug={() => {
+          reload={() => {
+            if (this.webview) {
+              this.webview.reload();
+            }
+          }}
+          debug={() => {
             if (this.webview) {
               this.webview.openDevTools();
             }
