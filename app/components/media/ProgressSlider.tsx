@@ -19,7 +19,7 @@ export class ProgressSlider extends Component<IProps> {
   private frameId?: number;
 
   private calcProgress() {
-    const time = (Date.now() - this.props.startTime) / 1000;
+    const time = Date.now() - this.props.startTime;
     return clamp(time / (this.props.duration || 1), 0, 1);
   }
 

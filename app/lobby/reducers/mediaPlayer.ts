@@ -22,6 +22,8 @@ export interface IMediaItem {
 
   // TODO: Make the following non-optional
   title?: string;
+
+  /** Duration in ms */
   duration?: number;
 
   /** Thumbnail image */

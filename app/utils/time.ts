@@ -1,4 +1,4 @@
-export const formatSeconds = (sec: number): string => {
+const formatSeconds = (sec: number): string => {
   sec = Math.round(sec);
 
   let hours: string | number = Math.floor(sec / 3600);
@@ -14,4 +14,8 @@ export const formatSeconds = (sec: number): string => {
   }
 
   return hours > 0 ? `${hours}:${minutes}:${seconds}` : `${minutes}:${seconds}`;
+};
+
+export const formatMs = (ms: number): string => {
+  return formatSeconds(ms / 1000);
 };

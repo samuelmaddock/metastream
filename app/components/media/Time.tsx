@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import styles from './ProgressBar.css';
-import { formatSeconds } from 'utils/time';
+import { formatMs } from 'utils/time';
 
 interface IProps {
   className?: string;
@@ -18,7 +18,7 @@ export class Time extends Component<IProps, IState> {
   private timerId?: number;
 
   private calcTime() {
-    const time = Math.floor((Date.now() - this.props.time) / 1000);
+    const time = Date.now() - this.props.time;
     return time;
   }
 
@@ -51,6 +51,6 @@ export class Time extends Component<IProps, IState> {
 
   render(): JSX.Element {
     const time = this.props.realTime ? this.state.time : this.props.time;
-    return <span className={this.props.className}>{formatSeconds(time)}</span>;
+    return <span className={this.props.className}>{formatMs(time)}</span>;
   }
 }

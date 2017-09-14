@@ -39,7 +39,7 @@ const updatePlaybackTimer = (): ThunkAction<void, ILobbyNetState, void> => {
       const duration = media && media.duration;
 
       if (duration && duration > 0) {
-        const elapsed = duration * 1000 - curTime;
+        const elapsed = duration - curTime;
 
         mediaTimeoutId = setTimeout(() => {
           dispatch(endMedia());

@@ -11,7 +11,7 @@ export interface IMediaMetadataResult {
 
   title: string;
 
-  /** Duration in seconds */
+  /** Duration in ms */
   duration?: number;
 
   /** Map of thumbnail sizes to URLs */
