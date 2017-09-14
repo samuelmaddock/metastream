@@ -1,0 +1,34 @@
+.container {
+  width: 400px;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.messages {
+  flex-grow: 1;
+}
+
+.message {
+  width: 100%;
+  padding: 2px 8px;
+}
+
+.username {
+  color: #00bfff;
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+.form {
+  width: 100%;
+}
+
+.messageInput {
+  width: 100%;
+  height: 40px;
+  padding: 8px 12px;
+  border: none;
+  outline: none;
+}

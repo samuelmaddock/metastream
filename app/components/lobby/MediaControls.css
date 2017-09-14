@@ -1,1 +1,25 @@
+.container {
+  display: flex;
+  height: 40px;
+}
 
+.button {
+  min-width: 40px;
+  height: 40px;
+  padding: 8px 12px;
+  border: none;
+  outline: none;
+
+  color: white;
+  background: transparent;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.44);
+}
+
+.button:hover {
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.11);
+}
+
+.seekbar {
+  flex-grow: 1;
+}

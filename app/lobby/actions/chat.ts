@@ -2,12 +2,9 @@ import { actionCreator } from 'utils/redux';
 import { RpcThunk } from 'lobby/types';
 import { getUserName } from 'lobby/reducers/users';
 import { rpc, RpcRealm } from 'network/middleware/rpc';
+import { IMessage } from 'lobby/reducers/chat';
 
-export const addChat = actionCreator<{
-  sender: string;
-  name: string;
-  message: string;
-}>('ADD_CHAT');
+export const addChat = actionCreator<IMessage>('ADD_CHAT');
 
 const broadcastChat = (userId: string, text: string): RpcThunk<void> => (
   dispatch,
@@ -16,9 +13,12 @@ const broadcastChat = (userId: string, text: string): RpcThunk<void> => (
 ) => {
   dispatch(
     addChat({
-      sender: userId,
-      name: getUserName(getState(), userId),
-      message: text
+      author: {
+        id: userId,
+        username: getUserName(getState(), userId)
+      },
+      content: text,
+      timestamp: Date.now()
     })
   );
 };

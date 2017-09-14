@@ -3,25 +3,37 @@ import { NetworkState } from 'types/network';
 import { isType } from 'utils/redux';
 import { addChat } from 'lobby/actions/chat';
 
-export interface IChatEntry {
-  sender: string;
-  name: string;
-  message: string;
+export interface IMessageAuthor {
+  id: string;
+  avatar?: string;
+  username: string;
+}
+
+export interface IMessage {
+  // id: string;
+
+  author: IMessageAuthor;
+
+  /** Raw markdown content. */
+  content: string;
+
+  /** Unix timestamp */
+  timestamp: number;
 }
 
 export interface IChatState {
-  entries: IChatEntry[];
+  messages: IMessage[];
 }
 
 const initialState: IChatState = {
-  entries: []
+  messages: []
 };
 
 export const chat: Reducer<IChatState> = (state: IChatState = initialState, action: any) => {
   if (isType(action, addChat)) {
     return {
       ...state,
-      entries: [...state.entries, action.payload]
+      messages: [...state.messages, action.payload]
     };
   }
 

@@ -2,7 +2,6 @@ import * as React from 'react';
 
 import { Lobby } from 'components/Lobby';
 import { IReactReduxProps } from 'types/redux';
-import { IChatEntry } from 'lobby/reducers/chat';
 import { IUsersState } from 'lobby/reducers/users';
 import { server_addChat } from 'lobby/actions/chat';
 import { netConnect, ILobbyNetState } from 'lobby';
@@ -11,13 +10,18 @@ import { VideoPlayer } from 'components/lobby/VideoPlayer';
 import { IMediaItem } from 'lobby/reducers/mediaPlayer';
 import { isUrl } from 'utils/url';
 import { server_requestMedia } from 'lobby/actions/mediaPlayer';
+import { IMessage } from 'lobby/reducers/chat';
+import { Messages } from 'components/chat/Messages';
+import { Chat } from 'components/chat';
+
+import styles from './GameLobby.css';
 
 interface IProps {
   host: boolean;
 }
 
 interface IConnectedProps {
-  chat: IChatEntry[];
+  messages: IMessage[];
   currentMedia?: IMediaItem;
   mediaStartTime?: number;
   users: IUsersState;
@@ -30,18 +34,28 @@ class _GameLobby extends React.Component<PrivateProps> {
   render(): JSX.Element {
     const { currentMedia, mediaStartTime } = this.props;
 
-    return (
+    /*return (
       <div>
-        <VideoPlayer media={currentMedia} startTime={mediaStartTime} />
+
         <Lobby
           name={this.props.sessionName || 'Connecting'}
-          messages={this.props.chat}
+          messages={this.props.messages}
           sendMessage={this.sendChat}
         />
         <h2>Users</h2>
         {Object.keys(this.props.users).map(userId => {
           return <div key={userId}>{this.props.users[userId]!.name}</div>;
         })}
+      </div>
+    );*/
+    return (
+      <div className={styles.container}>
+        <section className={styles.browser}>
+          <VideoPlayer media={currentMedia} startTime={mediaStartTime} />
+        </section>
+        <section className={styles.sidebar}>
+          <Chat messages={this.props.messages} sendMessage={this.sendChat} />
+        </section>
       </div>
     );
   }
@@ -57,7 +71,7 @@ class _GameLobby extends React.Component<PrivateProps> {
 
 export const GameLobby = netConnect<{}, {}, IProps>((state: ILobbyNetState): IConnectedProps => {
   return {
-    chat: state.chat.entries,
+    messages: state.chat.messages,
     currentMedia: state.mediaPlayer.current,
     mediaStartTime: state.mediaPlayer.startTime,
     users: state.users,
