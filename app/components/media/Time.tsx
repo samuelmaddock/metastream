@@ -27,6 +27,7 @@ export class Time extends Component<IProps, IState> {
   };
 
   private startTimer() {
+    // TODO: Use rAF in combination with setInterval
     this.timerId = setInterval(this.tick, 1000) as any;
     this.tick();
   }

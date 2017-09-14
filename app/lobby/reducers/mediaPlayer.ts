@@ -31,6 +31,7 @@ export interface IMediaItem {
 export interface IMediaPlayerState {
   playback: PlaybackState;
   startTime?: number;
+  pauseTime?: number;
   current?: IMediaItem;
 }
 
@@ -52,19 +53,20 @@ export const mediaPlayer: Reducer<IMediaPlayerState> = (
   } else if (isType(action, endMedia)) {
     return { ...state, playback: PlaybackState.Idle, current: undefined, startTime: undefined };
   } else if (isType(action, playPauseMedia)) {
-    let newPlayback;
-
     switch (state.playback) {
       case PlaybackState.Playing:
-        newPlayback = PlaybackState.Paused;
-        break;
+        return {
+          ...state,
+          playback: PlaybackState.Paused,
+          pauseTime: action.payload
+        };
       case PlaybackState.Paused:
-        newPlayback = PlaybackState.Playing;
-        break;
-    }
-
-    if (newPlayback) {
-      return { ...state, playback: newPlayback };
+        return {
+          ...state,
+          playback: PlaybackState.Playing,
+          startTime: Date.now() - state.pauseTime!,
+          pauseTime: undefined
+        };
     }
   } else if (isType(action, nextMedia)) {
     return { ...state, playback: PlaybackState.Idle, current: undefined, startTime: undefined };
