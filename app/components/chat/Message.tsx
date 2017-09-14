@@ -9,10 +9,13 @@ interface IProps {
 export class Message extends Component<IProps> {
   render(): JSX.Element | null {
     const { message } = this.props;
+    const { author } = message;
 
     return (
       <li className={styles.message}>
-        <span className={styles.username}>{message.author.username}</span>
+        <span className={styles.username} title={author.id}>
+          {author.username}
+        </span>
         <span>{message.content}</span>
       </li>
     );

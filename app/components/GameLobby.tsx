@@ -15,6 +15,8 @@ import { Messages } from 'components/chat/Messages';
 import { Chat } from 'components/chat';
 
 import styles from './GameLobby.css';
+import { MediaItem } from 'components/media/MediaItem';
+import { Link } from 'react-router-dom';
 
 interface IProps {
   host: boolean;
@@ -30,30 +32,32 @@ interface IConnectedProps {
 
 type PrivateProps = IProps & IConnectedProps & IReactReduxProps;
 
+const NO_MEDIA: IMediaItem = {
+  title: 'No media playing',
+  url: ''
+};
+
 class _GameLobby extends React.Component<PrivateProps> {
   render(): JSX.Element {
     const { currentMedia, mediaStartTime } = this.props;
 
-    /*return (
-      <div>
-
-        <Lobby
-          name={this.props.sessionName || 'Connecting'}
-          messages={this.props.messages}
-          sendMessage={this.sendChat}
-        />
-        <h2>Users</h2>
-        {Object.keys(this.props.users).map(userId => {
-          return <div key={userId}>{this.props.users[userId]!.name}</div>;
-        })}
-      </div>
-    );*/
     return (
       <div className={styles.container}>
         <section className={styles.browser}>
           <VideoPlayer media={currentMedia} startTime={mediaStartTime} />
         </section>
         <section className={styles.sidebar}>
+          <header>
+            <h3>{this.props.sessionName || 'Lobby'}</h3>
+            <Link to="/servers">Leave</Link>
+            <div>
+              <h2>Users</h2>
+              {Object.keys(this.props.users).map(userId => {
+                return <div key={userId}>{this.props.users[userId]!.name}</div>;
+              })}
+            </div>
+          </header>
+          <MediaItem media={currentMedia || NO_MEDIA} />
           <Chat messages={this.props.messages} sendMessage={this.sendChat} />
         </section>
       </div>

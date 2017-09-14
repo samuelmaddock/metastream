@@ -41,28 +41,9 @@ export class VideoPlayer extends Component<IProps> {
 
   render(): JSX.Element | null {
     const { media } = this.props;
-
-    const port = process.env.PORT || 1212;
     const preload = './preload.js';
 
     const src = media ? media.url : 'https://www.google.com/';
-
-    const metadata = media && (
-      <ul>
-        <li>
-          <h5>Title:</h5> {media.title}
-        </li>
-        <li>
-          <h5>Duration:</h5> {media.duration}
-        </li>
-        <li>
-          <h5>Requester:</h5> {media.ownerName} ({media.ownerId})
-        </li>
-        <li>
-          <h5>Thumb:</h5> <img src={media.imageUrl} width="80" />
-        </li>
-      </ul>
-    );
 
     // TODO: Remove `is` attribute from webview when React 16 is out
     // https://stackoverflow.com/a/33860892/1490006
