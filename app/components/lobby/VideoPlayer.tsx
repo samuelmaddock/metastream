@@ -67,6 +67,7 @@ class _VideoPlayer extends Component<PrivateProps> {
 
   private onMediaReady = (event: Electron.IpcMessageEvent) => {
     this.updatePlaybackTime();
+    this.updatePlayback(this.props.playback);
   };
 
   private updatePlaybackTime = () => {

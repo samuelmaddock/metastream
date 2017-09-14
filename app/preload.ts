@@ -66,9 +66,6 @@ class HTMLVideoPlayer implements IMediaPlayer {
   seek(time: number): void {
     const sec = time / 1000;
     this.video.currentTime = sec;
-
-    // Begin playback if not already started
-    this.video.play();
   }
   setVolume(vol: number): void {
     this.video.volume = vol;
