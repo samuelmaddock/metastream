@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import styles from './MediaControls.css';
+import styles from './PlaybackControls.css';
 import { PlaybackState, IMediaItem } from 'lobby/reducers/mediaPlayer';
 import { Time } from 'components/media/Time';
 import { ProgressSlider } from 'components/media/ProgressSlider';
@@ -14,7 +14,7 @@ interface IProps {
   debug?: React.MouseEventHandler<HTMLButtonElement>;
 }
 
-export class MediaControls extends Component<IProps> {
+export class PlaybackControls extends Component<IProps> {
   render(): JSX.Element | null {
     const { playback, media, startTime } = this.props;
     const playbackIcon = playback === PlaybackState.Playing ? '⏸️' : '▶️';

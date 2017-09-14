@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import styles from './VideoPlayer.css';
-import { MediaControls } from 'components/lobby/MediaControls';
 import { IMediaItem, PlaybackState, IMediaPlayerState } from 'lobby/reducers/mediaPlayer';
 import { Dispatch } from 'redux';
 import { server_requestPlayPause, server_requestNextMedia } from 'lobby/actions/mediaPlayer';
 import { netConnect, ILobbyNetState } from 'lobby';
 import { DispatchProp } from 'react-redux';
+import { PlaybackControls } from 'components/media/PlaybackControls';
 
 interface IProps {}
 
@@ -97,7 +97,7 @@ class _VideoPlayer extends Component<PrivateProps> {
     // }
 
     return (
-      <MediaControls
+      <PlaybackControls
         media={this.props.current}
         startTime={this.props.startTime}
         playback={this.props.playback}
