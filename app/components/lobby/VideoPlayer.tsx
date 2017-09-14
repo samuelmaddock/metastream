@@ -81,6 +81,7 @@ export class VideoPlayer extends Component<IProps> {
         /* Disable plugins until we know we need them */
         plugins="false"
         preload="./preload.js"
+        partition="custom"
       />
     );
   }
