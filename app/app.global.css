@@ -136,22 +136,26 @@ Fonts
 
 @font-face {
   font-family: 'Karla';
-  src: url('./fonts/Karla-Regular.ttf') format('truetype');
+  src: url('./fonts/karla-v5-latin-regular.woff2') format('woff2'),
+    url('./fonts/karla-v5-latin-regular.ttf') format('truetype');
 }
 @font-face {
   font-family: 'Karla';
-  src: url('./fonts/Karla-Bold.ttf') format('truetype');
+  src: url('./fonts/karla-v5-latin-700.woff2') format('woff2'),
+    url('./fonts/karla-v5-latin-700.ttf') format('truetype');
   font-weight: bold;
 }
 @font-face {
   font-family: 'Karla';
-  src: url('./fonts/Karla-BoldItalic.ttf') format('truetype');
+  src: url('./fonts/karla-v5-latin-700italic.woff2') format('woff2'),
+    url('./fonts/karla-v5-latin-700italic.ttf') format('truetype');
   font-weight: bold;
   font-style: italic;
 }
 @font-face {
   font-family: 'Karla';
-  src: url('./fonts/Karla-Italic.ttf') format('truetype');
+  src: url('./fonts/karla-v5-latin-italic.woff2') format('woff2'),
+    url('./fonts/karla-v5-latin-italic.ttf') format('truetype');
   font-style: italic;
 }
 
