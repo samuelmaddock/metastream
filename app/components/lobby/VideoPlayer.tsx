@@ -32,6 +32,11 @@ class _VideoPlayer extends Component<PrivateProps> {
     return this.props.playback === PlaybackState.Paused;
   }
 
+  get mediaUrl() {
+    const media = this.props.current;
+    return media ? media.url : 'https://www.google.com/';
+  }
+
   componentDidUpdate(prevProps: PrivateProps): void {
     if (this.props.playback !== prevProps.playback) {
       this.updatePlayback(this.props.playback);
@@ -101,16 +106,13 @@ class _VideoPlayer extends Component<PrivateProps> {
   }
 
   private renderBrowser(): JSX.Element {
-    const { current: media } = this.props;
-    const src = media ? media.url : 'https://www.google.com/';
-
     // TODO: Remove `is` attribute from webview when React 16 is out
     // https://stackoverflow.com/a/33860892/1490006
     return (
       <webview
         is="is"
         ref={this.setupWebview}
-        src={src}
+        src={this.mediaUrl}
         class={styles.video}
         /* Some website embeds are disabled without an HTTP referrer */
         httpreferrer="http://mediaplayer.samuelmaddock.com/"
@@ -143,7 +145,7 @@ class _VideoPlayer extends Component<PrivateProps> {
         }}
         reload={() => {
           if (this.webview) {
-            this.webview.reload();
+            this.webview.loadURL(this.mediaUrl);
           }
         }}
         debug={() => {
