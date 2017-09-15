@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import styles from './ProgressSlider.css';
 import { clamp } from 'utils/math';
+import { Slider } from 'components/media/Slider';
 
 interface IProps {
   disabled?: boolean;
@@ -48,30 +48,6 @@ export class ProgressSlider extends Component<IProps> {
   }
 
   render(): JSX.Element | null {
-    const { startTime, duration, disabled } = this.props;
-
-    const progressStyle = {
-      width: `${this.state.progress * 100}%`
-    };
-
-    return (
-      <div className={styles.progress} onClick={this.onClick}>
-        <div className={styles.progressTrack}>
-          <div className={styles.progressBar} style={progressStyle} />
-        </div>
-      </div>
-    );
+    return <Slider value={this.state.progress} onChange={this.props.onChange} />;
   }
-
-  private onClick = (event: React.MouseEvent<HTMLElement>) => {
-    const target = event.target as HTMLElement;
-    const bbox = target.getBoundingClientRect();
-    const width = bbox.width;
-    const x = event.pageX - target.offsetLeft;
-    const progress = x / (width || 1);
-
-    if (this.props.onChange) {
-      this.props.onChange(progress);
-    }
-  };
 }
