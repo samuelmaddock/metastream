@@ -1,3 +1,5 @@
+import { Url } from 'url';
+
 export const enum MediaThumbnailSize {
   Default,
   Small,
@@ -25,7 +27,7 @@ export interface IMediaMetadataResult {
  */
 export abstract class MediaMetadataService {
   /** Determine if the given URL is a match for the service. */
-  abstract match(url: string): boolean;
+  abstract match(url: Url): boolean;
 
   /** Resolve metadata for the given URL. */
   abstract async resolve(url: string): Promise<IMediaMetadataResult>;

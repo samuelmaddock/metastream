@@ -1,3 +1,4 @@
+import { Url } from 'url';
 import { buildUrl } from 'utils/url';
 import { MediaMetadataService, IMediaMetadataResult, MediaThumbnailSize } from 'services/types';
 import { nodeFetch } from 'utils/http';
@@ -15,7 +16,9 @@ const DEFAULT_QUERY = {
   videoSyndicated: true
 };
 
-const URL_PATTERNS = [
+const URL_PATTERN = /youtu\.?be(?:.com)?/i;
+
+const VIDEO_ID_PATTERNS = [
   /youtu\.be\/([^#\&\?]{11})/, // youtu.be/<id>
   /\?v=([^#\&\?]{11})/, // ?v=<id>
   /\&v=([^#\&\?]{11})/, // &v=<id>
@@ -76,10 +79,10 @@ class YouTubeClient {
   private static instance: YouTubeClient;
 
   getVideoId(url: string): string | null {
-    let match = URL_PATTERNS[1].exec(url);
+    let match;
 
-    for (let i = 0; i < URL_PATTERNS.length; i++) {
-      match = URL_PATTERNS[i].exec(url);
+    for (let i = 0; i < VIDEO_ID_PATTERNS.length; i++) {
+      match = VIDEO_ID_PATTERNS[i].exec(url);
       if (match) {
         break;
       }
@@ -156,8 +159,9 @@ export class YouTubeMetadataService extends MediaMetadataService {
     this.yt = YouTubeClient.getInstance();
   }
 
-  match(url: string): boolean {
-    return !!this.yt.getVideoId(url);
+  match(url: Url): boolean {
+    const { hostname = '', href = '' } = url;
+    return !!URL_PATTERN.exec(hostname) && !!this.yt.getVideoId(href);
   }
 
   async resolve(url: string): Promise<IMediaMetadataResult> {

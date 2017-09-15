@@ -2,10 +2,11 @@ import { load } from 'cheerio';
 import { buildUrl, isUrl } from 'utils/url';
 import { MediaMetadataService, IMediaMetadataResult, MediaThumbnailSize } from 'services/types';
 import { nodeFetch } from 'utils/http';
+import { Url } from 'url';
 
 export class WebMetadataService extends MediaMetadataService {
-  match(url: string): boolean {
-    return isUrl(url);
+  match({ protocol }: Url): boolean {
+    return protocol === 'http:' || protocol === 'https:';
   }
 
   async resolve(url: string): Promise<IMediaMetadataResult> {
