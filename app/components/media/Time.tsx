@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import styles from './ProgressBar.css';
 import { formatMs } from 'utils/time';
 
@@ -12,7 +12,7 @@ interface IState {
   time: number;
 }
 
-export class Time extends Component<IProps, IState> {
+export class Time extends PureComponent<IProps, IState> {
   state: IState = { time: 0 };
 
   private timerId?: number;
@@ -47,6 +47,12 @@ export class Time extends Component<IProps, IState> {
 
   componentWillUnmount(): void {
     this.stopTimer();
+  }
+
+  componentDidUpdate(prevProps: IProps): void {
+    if (this.props.time !== prevProps.time) {
+      this.tick();
+    }
   }
 
   render(): JSX.Element {
