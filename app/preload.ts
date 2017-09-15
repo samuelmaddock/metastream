@@ -4,6 +4,9 @@ import { PlaybackState } from 'lobby/reducers/mediaPlayer';
 /** Interval time (ms) to detect video element. */
 const DETECT_INTERVAL = 500;
 
+/** Threshold before we'll seek. */
+const SEEK_THRESHOLD = 1;
+
 const OldAudio = (window as any).Audio;
 
 /** Proxy `new Audio` to trap audio elements created in-memory. */
@@ -64,8 +67,14 @@ class HTMLVideoPlayer implements IMediaPlayer {
     return this.video.duration;
   }
   seek(time: number): void {
-    const sec = time / 1000;
-    this.video.currentTime = sec;
+    const targetTime = time / 1000;
+    const curTime = this.video.currentTime;
+    const dt = Math.abs(targetTime - curTime);
+
+    // Only seek if we're off by greater than our threshold
+    if (dt > SEEK_THRESHOLD) {
+      this.video.currentTime = targetTime;
+    }
   }
   setVolume(vol: number): void {
     this.video.volume = vol;
