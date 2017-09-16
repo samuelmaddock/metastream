@@ -3,6 +3,7 @@ import styles from './PlaybackControls.css';
 import { PlaybackState, IMediaItem } from 'lobby/reducers/mediaPlayer';
 import { Time } from 'components/media/Time';
 import { ProgressSlider } from 'components/media/ProgressSlider';
+import { VolumeSlider } from 'components/media/VolumeSlider';
 
 interface IProps {
   media?: IMediaItem;
@@ -39,6 +40,7 @@ export class PlaybackControls extends Component<IProps> {
           onChange={this.onSliderChange}
         />
         {!disabled && <Time className={styles.time} time={(media && media.duration) || 0} />}
+        <VolumeSlider volume={0.5} />
         <button type="button" className={styles.button} title="Reload" onClick={this.props.reload}>
           🔄
         </button>

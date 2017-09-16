@@ -1,0 +1,11 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0 8px;
+  height: 100%;
+}
+
+.slider {
+  width: 80px;
+}

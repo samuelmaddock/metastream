@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
+import cx from 'classnames';
 import styles from './Slider.css';
 import { clamp } from 'utils/math';
 
 interface IProps {
+  className?: string;
   value: number;
   max?: number;
   onChange?: (value: number) => void;
@@ -25,7 +27,7 @@ export class Slider extends Component<IProps> {
     };
 
     return (
-      <div className={styles.progress} onClick={this.onClick}>
+      <div className={cx(this.props.className, styles.progress)} onClick={this.onClick}>
         <div className={styles.progressTrack}>
           <div className={styles.progressBar} style={progressStyle} />
         </div>
