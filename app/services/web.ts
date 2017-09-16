@@ -25,20 +25,7 @@ export class WebMetadataService extends MediaMetadataService {
     return type;
   }
 
-  async resolve(url: string): Promise<IMediaMetadataResult> {
-    const contentType = await this.fetchContentType(url);
-
-    // Avoid GET requests to media
-    if (MIME_MEDIA_TYPES.has(contentType)) {
-      // TODO: get ID3 metadata from MP3s
-      return {
-        url,
-        title: url
-      };
-    }
-
-    const result = await fetch(url);
-    const text = await result.text();
+  private buildHTMLMetadata(url: string, text: string): IMediaMetadataResult {
     const $ = load(text);
 
     const title = $('meta[property="og:title"]').attr('content') || $('title').text();
@@ -58,5 +45,26 @@ export class WebMetadataService extends MediaMetadataService {
     };
 
     return meta;
+  }
+
+  private buildMediaMetadata(url: string): IMediaMetadataResult {
+    // TODO: get ID3 metadata from MP3s
+    return {
+      url,
+      title: url
+    };
+  }
+
+  async resolve(url: string): Promise<IMediaMetadataResult> {
+    const contentType = await this.fetchContentType(url);
+
+    // Avoid GET requests to media
+    if (MIME_MEDIA_TYPES.has(contentType)) {
+      return this.buildMediaMetadata(url);
+    }
+
+    const result = await fetch(url);
+    const text = await result.text();
+    return this.buildHTMLMetadata(url, text);
   }
 }
