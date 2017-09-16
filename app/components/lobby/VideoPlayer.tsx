@@ -48,12 +48,15 @@ class _VideoPlayer extends Component<PrivateProps> {
       this.updatePlayback(this.props.playback);
     }
 
-    if (this.isPlaying && this.props.startTime !== prevProps.startTime) {
+    if (
+      (this.isPlaying && this.props.startTime !== prevProps.startTime) ||
+      (this.isPaused && this.props.pauseTime !== prevProps.pauseTime)
+    ) {
       this.updatePlaybackTime();
     }
 
-    if (this.isPaused && this.props.pauseTime !== prevProps.pauseTime) {
-      this.updatePlaybackTime();
+    if (this.props.volume !== prevProps.volume) {
+      this.updateVolume();
     }
   }
 
@@ -79,6 +82,7 @@ class _VideoPlayer extends Component<PrivateProps> {
   private onMediaReady = (event: Electron.IpcMessageEvent) => {
     this.updatePlaybackTime();
     this.updatePlayback(this.props.playback);
+    this.updateVolume();
   };
 
   private updatePlaybackTime = () => {
@@ -99,6 +103,12 @@ class _VideoPlayer extends Component<PrivateProps> {
   private updatePlayback = (state: PlaybackState) => {
     if (this.webview) {
       this.webview.send('media-playback', state);
+    }
+  };
+
+  private updateVolume = () => {
+    if (this.webview) {
+      this.webview.send('media-volume', this.props.volume);
     }
   };
 

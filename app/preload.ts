@@ -121,6 +121,13 @@ const setupListeners = () => {
       }
     }
   });
+
+  ipcRenderer.on('media-volume', (event: Electron.IpcMessageEvent, volume: number) => {
+    console.info(`Received volume command [volume=${volume}]`);
+    if (player) {
+      player.setVolume(volume);
+    }
+  });
 };
 
 const init = () => {
