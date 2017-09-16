@@ -9,9 +9,11 @@ interface IProps {
   media?: IMediaItem;
   startTime?: number;
   playback: PlaybackState;
+  volume: number;
   playPause?: React.MouseEventHandler<HTMLButtonElement>;
   next?: React.MouseEventHandler<HTMLButtonElement>;
   seek?: (ms: number) => void;
+  setVolume?: (volume: number) => void;
   reload?: React.MouseEventHandler<HTMLButtonElement>;
   debug?: React.MouseEventHandler<HTMLButtonElement>;
 }
@@ -40,7 +42,7 @@ export class PlaybackControls extends Component<IProps> {
           onChange={this.onSliderChange}
         />
         {!disabled && <Time className={styles.time} time={(media && media.duration) || 0} />}
-        <VolumeSlider volume={0.5} />
+        <VolumeSlider volume={this.props.volume} onChange={this.props.setVolume} />
         <button type="button" className={styles.button} title="Reload" onClick={this.props.reload}>
           🔄
         </button>

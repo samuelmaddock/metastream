@@ -9,12 +9,14 @@ import { NetReduxActionTypes } from 'network/middleware/sync';
 import { chat, IChatState } from './chat';
 import { users, IUsersState } from './users';
 import { session, ISessionState } from './session';
-import { mediaPlayer, IMediaPlayerState } from 'lobby/reducers/mediaPlayer';
+import { mediaPlayer, IMediaPlayerState } from './mediaPlayer';
+import { settings, ISettingsState } from './settings';
 
 export interface ILobbyNetState {
   chat: IChatState;
   mediaPlayer: IMediaPlayerState;
   session: ISessionState;
+  settings: ISettingsState;
   users: IUsersState;
 }
 
@@ -28,6 +30,7 @@ const rootReducer = combineReducers<ILobbyNetState>({
   chat,
   mediaPlayer,
   session,
+  settings,
   users
 });
 

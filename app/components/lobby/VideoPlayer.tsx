@@ -10,13 +10,19 @@ import {
 import { netConnect, ILobbyNetState } from 'lobby';
 import { DispatchProp } from 'react-redux';
 import { PlaybackControls } from 'components/media/PlaybackControls';
+import { setVolume } from 'lobby/actions/settings';
 
 interface IProps {}
 
-interface IConnectedProps extends IMediaPlayerState {}
+interface IConnectedProps extends IMediaPlayerState {
+  volume: number;
+}
 
 const mapStateToProps = (state: ILobbyNetState): IConnectedProps => {
-  return state.mediaPlayer;
+  return {
+    ...state.mediaPlayer,
+    volume: state.settings.volume
+  };
 };
 
 type PrivateProps = IProps & IConnectedProps & DispatchProp<ILobbyNetState>;
@@ -134,6 +140,7 @@ class _VideoPlayer extends Component<PrivateProps> {
         media={this.props.current}
         startTime={this.props.startTime}
         playback={this.props.playback}
+        volume={this.props.volume}
         playPause={() => {
           this.props.dispatch!(server_requestPlayPause());
         }}
@@ -142,6 +149,9 @@ class _VideoPlayer extends Component<PrivateProps> {
         }}
         seek={time => {
           this.props.dispatch!(server_requestSeek(time));
+        }}
+        setVolume={volume => {
+          this.props.dispatch!(setVolume(volume));
         }}
         reload={() => {
           if (this.webview) {
