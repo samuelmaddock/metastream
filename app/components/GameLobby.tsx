@@ -17,6 +17,7 @@ import { Chat } from 'components/chat';
 import styles from './GameLobby.css';
 import { MediaItem } from 'components/media/MediaItem';
 import { Link } from 'react-router-dom';
+import { getCurrentMedia, getMediaQueue } from 'lobby/reducers/mediaPlayer.helpers';
 
 interface IProps {
   host: boolean;
@@ -24,6 +25,7 @@ interface IProps {
 
 interface IConnectedProps {
   currentMedia?: IMediaItem;
+  mediaQueue: IMediaItem[];
   messages: IMessage[];
   users: IUsersState;
   sessionName?: string;
@@ -55,6 +57,9 @@ class _GameLobby extends React.Component<PrivateProps> {
             </div>
           </header>
           <MediaItem media={this.props.currentMedia || NO_MEDIA} />
+          {this.props.mediaQueue.map((media, idx) => {
+            return <MediaItem key={idx} media={media} />;
+          })}
           <Chat messages={this.props.messages} sendMessage={this.sendChat} />
         </section>
       </div>
@@ -72,7 +77,8 @@ class _GameLobby extends React.Component<PrivateProps> {
 
 export const GameLobby = netConnect<{}, {}, IProps>((state: ILobbyNetState): IConnectedProps => {
   return {
-    currentMedia: state.mediaPlayer.current,
+    currentMedia: getCurrentMedia(state),
+    mediaQueue: getMediaQueue(state),
     messages: state.chat.messages,
     users: state.users,
     sessionName: getSessionName(state)

@@ -15,13 +15,25 @@ import {
 } from 'lobby/reducers/mediaPlayer.helpers';
 
 export const playPauseMedia = actionCreator<number>('PLAY_PAUSE_MEDIA');
-export const nextMedia = actionCreator<void>('NEXT_MEDIA');
 export const seekMedia = actionCreator<number>('SEEK_MEDIA');
 export const setMedia = actionCreator<IMediaItem>('SET_MEDIA');
 export const endMedia = actionCreator<void>('END_MEDIA');
+export const queueMedia = actionCreator<IMediaItem>('QUEUE_MEDIA');
 
 /** Media timer until playback ends. This assumes only one media player exists at a time.*/
 let mediaTimeoutId: number | null = null;
+
+const nextMedia = (): ThunkAction<void, ILobbyNetState, void> => {
+  return (dispatch, getState) => {
+    const state = getState();
+    const media = getCurrentMedia(state);
+
+    if (media) {
+      dispatch(endMedia());
+      dispatch(updatePlaybackTimer());
+    }
+  };
+};
 
 const updatePlaybackTimer = (): ThunkAction<void, ILobbyNetState, void> => {
   return (dispatch, getState) => {
@@ -41,10 +53,25 @@ const updatePlaybackTimer = (): ThunkAction<void, ILobbyNetState, void> => {
       if (duration && duration > 0) {
         const elapsed = duration - curTime;
 
+        // Media end callback
         mediaTimeoutId = setTimeout(() => {
-          dispatch(endMedia());
+          dispatch(nextMedia());
         }, elapsed) as any;
       }
+    }
+  };
+};
+
+const enqueueMedia = (media: IMediaItem): ThunkAction<void, ILobbyNetState, void> => {
+  return (dispatch, getState) => {
+    const state = getState();
+    const current = getCurrentMedia(state);
+
+    if (current) {
+      dispatch(queueMedia(media));
+    } else {
+      dispatch(setMedia(media));
+      dispatch(updatePlaybackTimer());
     }
   };
 };
@@ -79,8 +106,7 @@ const requestMedia = (url: string): RpcThunk<void> => async (dispatch, getState,
     ownerName: PlatformService.getUserName(userId)
   };
 
-  dispatch(setMedia(media));
-  dispatch(updatePlaybackTimer());
+  dispatch(enqueueMedia(media));
 };
 export const server_requestMedia = rpc(RpcRealm.Server, requestMedia);
 

@@ -24,3 +24,7 @@ export const getPlaybackTime = (state: ILobbyNetState) => {
 
   return -1;
 };
+
+export const getMediaQueue = (state: ILobbyNetState) => {
+  return state.mediaPlayer.queue;
+};

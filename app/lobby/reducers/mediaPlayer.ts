@@ -6,8 +6,8 @@ import {
   setMedia,
   endMedia,
   playPauseMedia,
-  nextMedia,
-  seekMedia
+  seekMedia,
+  queueMedia
 } from 'lobby/actions/mediaPlayer';
 import { ILobbyNetState } from 'lobby/reducers';
 
@@ -41,10 +41,12 @@ export interface IMediaPlayerState {
   startTime?: number;
   pauseTime?: number;
   current?: IMediaItem;
+  queue: IMediaItem[];
 }
 
 const initialState: IMediaPlayerState = {
-  playback: PlaybackState.Idle
+  playback: PlaybackState.Idle,
+  queue: []
 };
 
 export const mediaPlayer: Reducer<IMediaPlayerState> = (
@@ -59,7 +61,21 @@ export const mediaPlayer: Reducer<IMediaPlayerState> = (
       startTime: Date.now()
     };
   } else if (isType(action, endMedia)) {
-    return { ...state, playback: PlaybackState.Idle, current: undefined, startTime: undefined };
+    let next;
+    let queue = state.queue;
+
+    if (queue.length > 0) {
+      queue = [...queue];
+      next = queue.shift();
+    }
+
+    return {
+      ...state,
+      playback: next ? PlaybackState.Playing : PlaybackState.Idle,
+      current: next,
+      startTime: next ? Date.now() : undefined,
+      queue: queue
+    };
   } else if (isType(action, playPauseMedia)) {
     switch (state.playback) {
       case PlaybackState.Playing:
@@ -76,8 +92,6 @@ export const mediaPlayer: Reducer<IMediaPlayerState> = (
           pauseTime: undefined
         };
     }
-  } else if (isType(action, nextMedia)) {
-    return { ...state, playback: PlaybackState.Idle, current: undefined, startTime: undefined };
   } else if (isType(action, seekMedia)) {
     const time = action.payload;
     switch (state.playback) {
@@ -92,6 +106,11 @@ export const mediaPlayer: Reducer<IMediaPlayerState> = (
           pauseTime: time
         };
     }
+  } else if (isType(action, queueMedia)) {
+    return {
+      ...state,
+      queue: [...state.queue, action.payload]
+    };
   }
 
   return state;
