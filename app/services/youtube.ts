@@ -1,7 +1,7 @@
 import { Url } from 'url';
 import { buildUrl } from 'utils/url';
 import { MediaMetadataService, IMediaMetadataResult, MediaThumbnailSize } from 'services/types';
-import { nodeFetch } from 'utils/http';
+import { fetchText } from 'utils/http';
 
 const API_URL = 'https://www.googleapis.com/youtube/v3/videos';
 
@@ -98,7 +98,7 @@ class YouTubeClient {
       id: videoId
     });
 
-    const response = await nodeFetch<any>(apiUrl, {
+    const response = await fetchText<any>(apiUrl, {
       json: true,
       headers: {
         Referer: 'http://mediaplayer.samuelmaddock.com'
