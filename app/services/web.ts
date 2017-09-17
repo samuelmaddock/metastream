@@ -3,6 +3,7 @@ import { buildUrl, isUrl } from 'utils/url';
 import { MediaMetadataService, IMediaMetadataResult, MediaThumbnailSize } from 'services/types';
 import { fetchText, fetchResponse } from 'utils/http';
 import { Url } from 'url';
+import { basename } from 'path';
 
 const MIME_MEDIA_TYPES = new Set(['audio', 'image', 'video']);
 
@@ -51,7 +52,7 @@ export class WebMetadataService extends MediaMetadataService {
     // TODO: get ID3 metadata from MP3s
     return {
       url: url.href!,
-      title: url.pathname || url.href!
+      title: basename(url.pathname || url.href!)
     };
   }
 

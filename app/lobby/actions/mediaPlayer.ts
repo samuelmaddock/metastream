@@ -80,6 +80,8 @@ const enqueueMedia = (media: IMediaItem): ThunkAction<void, ILobbyNetState, void
 const requestMedia = (url: string): RpcThunk<void> => async (dispatch, getState, context) => {
   const urlObj = parseUrl(url);
 
+  console.info('Media request', urlObj);
+
   const service = getServiceForUrl(urlObj);
   if (!service) {
     // TODO: tell client the service is unsupported
