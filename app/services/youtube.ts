@@ -164,8 +164,8 @@ export class YouTubeMetadataService extends MediaMetadataService {
     return !!URL_PATTERN.exec(hostname) && !!this.yt.getVideoId(href);
   }
 
-  async resolve(url: string): Promise<IMediaMetadataResult> {
-    let metadata = await this.yt.getVideoMetadata(url);
+  async resolve(url: Url): Promise<IMediaMetadataResult> {
+    let metadata = await this.yt.getVideoMetadata(url.href!);
 
     return metadata;
   }

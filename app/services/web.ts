@@ -25,7 +25,7 @@ export class WebMetadataService extends MediaMetadataService {
     return type;
   }
 
-  private buildHTMLMetadata(url: string, text: string): IMediaMetadataResult {
+  private buildHTMLMetadata(url: Url, text: string): IMediaMetadataResult {
     const $ = load(text);
 
     const title = $('meta[property="og:title"]').attr('content') || $('title').text();
@@ -39,7 +39,7 @@ export class WebMetadataService extends MediaMetadataService {
       : undefined;
 
     const meta: IMediaMetadataResult = {
-      url,
+      url: url.href!,
       title,
       thumbnails
     };
@@ -47,23 +47,23 @@ export class WebMetadataService extends MediaMetadataService {
     return meta;
   }
 
-  private buildMediaMetadata(url: string): IMediaMetadataResult {
+  private buildMediaMetadata(url: Url): IMediaMetadataResult {
     // TODO: get ID3 metadata from MP3s
     return {
-      url,
-      title: url
+      url: url.href!,
+      title: url.pathname || url.href!
     };
   }
 
-  async resolve(url: string): Promise<IMediaMetadataResult> {
-    const contentType = await this.fetchContentType(url);
+  async resolve(url: Url): Promise<IMediaMetadataResult> {
+    const contentType = await this.fetchContentType(url.href!);
 
     // Avoid GET requests to media
     if (MIME_MEDIA_TYPES.has(contentType)) {
       return this.buildMediaMetadata(url);
     }
 
-    const result = await fetch(url);
+    const result = await fetch(url.href!);
     const text = await result.text();
     return this.buildHTMLMetadata(url, text);
   }

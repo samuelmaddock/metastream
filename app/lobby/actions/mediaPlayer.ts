@@ -1,3 +1,4 @@
+import { parse as parseUrl } from 'url';
 import { actionCreator } from 'utils/redux';
 import { IMediaItem, PlaybackState } from 'lobby/reducers/mediaPlayer';
 import { Thunk } from 'types/thunk';
@@ -77,7 +78,9 @@ const enqueueMedia = (media: IMediaItem): ThunkAction<void, ILobbyNetState, void
 };
 
 const requestMedia = (url: string): RpcThunk<void> => async (dispatch, getState, context) => {
-  const service = getServiceForUrl(url);
+  const urlObj = parseUrl(url);
+
+  const service = getServiceForUrl(urlObj);
   if (!service) {
     // TODO: tell client the service is unsupported
     console.error('Unsupported service for', url);
@@ -87,7 +90,7 @@ const requestMedia = (url: string): RpcThunk<void> => async (dispatch, getState,
   let result;
 
   try {
-    result = await service.resolve(url);
+    result = await service.resolve(urlObj);
   } catch (e) {
     console.error(`Failed to fetch media URL metadata`);
     console.error(e);
