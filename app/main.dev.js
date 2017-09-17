@@ -51,7 +51,10 @@ const setupWindow = () => {
   let win = new BrowserWindow({
     show: false,
     width: 1400,
-    height: 728
+    height: 728,
+    webPreferences: {
+      experimentalFeatures: true
+    }
     // frame: false,
     // titleBarStyle: 'hidden'
   });
