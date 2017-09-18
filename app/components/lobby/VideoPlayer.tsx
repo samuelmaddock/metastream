@@ -40,7 +40,7 @@ class _VideoPlayer extends Component<PrivateProps> {
 
   get mediaUrl() {
     const media = this.props.current;
-    return media ? media.url : 'https://www.google.com/';
+    return media ? media.url : './idlescreen.html';
   }
 
   componentDidUpdate(prevProps: PrivateProps): void {
