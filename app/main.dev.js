@@ -53,7 +53,7 @@ const setupWindow = () => {
     width: 1400,
     height: 728,
     webPreferences: {
-      experimentalFeatures: true
+      blinkFeatures: 'CSSBackdropFilter'
     }
     // frame: false,
     // titleBarStyle: 'hidden'
