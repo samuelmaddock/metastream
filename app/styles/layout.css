@@ -1,6 +1,6 @@
 .glass {
   background: rgba(120, 120, 120, 0.33);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(20px);
 
   /* blur seems to extend past edges */
   overflow: hidden;
