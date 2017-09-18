@@ -15,9 +15,11 @@ import { Messages } from 'components/chat/Messages';
 import { Chat } from 'components/chat';
 
 import styles from './GameLobby.css';
+import { UserItem } from 'components/lobby/UserItem';
 import { MediaItem } from 'components/media/MediaItem';
 import { Link } from 'react-router-dom';
 import { getCurrentMedia, getMediaQueue } from 'lobby/reducers/mediaPlayer.helpers';
+import { ListOverlay } from 'components/lobby/ListOverlay';
 
 interface IProps {
   host: boolean;
@@ -40,27 +42,35 @@ const NO_MEDIA: IMediaItem = {
 
 class _GameLobby extends React.Component<PrivateProps> {
   render(): JSX.Element {
+    //         <h3>{this.props.sessionName || 'Lobby'}</h3>
+    //         <Link to="/servers">Leave</Link>
+    const userIds = Object.keys(this.props.users);
     return (
       <div className={styles.container}>
         <section className={styles.browser}>
           <VideoPlayer />
         </section>
-        <section className={styles.sidebar}>
-          <header>
-            <h3>{this.props.sessionName || 'Lobby'}</h3>
-            <Link to="/servers">Leave</Link>
-            <div>
-              <h2>Users</h2>
-              {Object.keys(this.props.users).map(userId => {
-                return <div key={userId}>{this.props.users[userId]!.name}</div>;
-              })}
-            </div>
-          </header>
-          <MediaItem media={this.props.currentMedia || NO_MEDIA} />
-          {this.props.mediaQueue.map((media, idx) => {
-            return <MediaItem key={idx} media={media} />;
-          })}
-          <Chat messages={this.props.messages} sendMessage={this.sendChat} />
+        <section className={styles.overlay}>
+          <ListOverlay className={styles.users} title="Users" tagline={`${userIds.length} online`}>
+            {userIds.map((userId: string) => {
+              const user = this.props.users[userId]!;
+              return <UserItem key={userId} user={user} />;
+            })}
+          </ListOverlay>
+          <ListOverlay
+            className={styles.queue}
+            title="Next up"
+            tagline={`${this.props.mediaQueue.length} items`}
+          >
+            {this.props.mediaQueue.map((media, idx) => {
+              return <MediaItem key={idx} media={media} />;
+            })}
+          </ListOverlay>
+          <Chat
+            className={styles.chat}
+            messages={this.props.messages}
+            sendMessage={this.sendChat}
+          />
         </section>
       </div>
     );

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { IMediaItem } from 'lobby/reducers/mediaPlayer';
 import styles from './Media.css';
+import { formatMs } from 'utils/time';
 
 interface IProps {
   media: IMediaItem;
@@ -12,14 +13,14 @@ export class MediaItem extends Component<IProps> {
 
     return (
       <figure className={styles.media}>
-        {media.imageUrl && (
-          <div className={styles.thumbnail} style={{ backgroundImage: `url(${media.imageUrl})` }} />
+        <div className={styles.title}>{media.title}</div>
+        {media.duration && <span className={styles.duration}>{formatMs(media.duration)}</span>}
+        {media.ownerName && (
+          <div>
+            <span className={styles.authorLabel}>Added by</span>
+            <span className={styles.author}>{media.ownerName}</span>
+          </div>
         )}
-        <figcaption className={styles.caption}>
-          <span>{media.title}</span>
-          <span>{media.duration}</span>
-          <span>{media.ownerName}</span>
-        </figcaption>
       </figure>
     );
   }

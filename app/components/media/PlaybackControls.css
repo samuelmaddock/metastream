@@ -1,4 +1,13 @@
 .container {
+  /* TODO: move outside of component styles */
+  composes: glass rounded from 'styles/layout.css';
+  position: absolute;
+  --overlay-spacing: 50px;
+  left: var(--overlay-spacing);
+  right: var(--overlay-spacing);
+  bottom: var(--overlay-spacing);
+  z-index: 3;
+
   display: flex;
   height: 40px;
   user-select: none;

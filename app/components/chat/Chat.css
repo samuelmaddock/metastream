@@ -1,4 +1,5 @@
 .container {
+  composes: glass rounded from 'styles/layout.css';
   display: flex;
   flex-direction: column;
   flex-grow: 1;
@@ -32,4 +33,9 @@
   padding: 8px 12px;
   border: none;
   outline: none;
+  background: rgba(0, 0, 0, 0.11);
+}
+
+.messageInput::-webkit-input-placeholder {
+  opacity: 0.5;
 }

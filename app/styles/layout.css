@@ -1,0 +1,19 @@
+.glass {
+  background: rgba(120, 120, 120, 0.33);
+  backdrop-filter: blur(10px);
+
+  /* blur seems to extend past edges */
+  overflow: hidden;
+}
+
+.rounded {
+  border-radius: 8px;
+}
+
+.absolute-full {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}

@@ -1,0 +1,14 @@
+.container {
+  display: flex;
+  padding: 4px 10px;
+  flex-direction: row;
+  align-items: center;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #444;
+  margin-right: 10px;
+}

@@ -1,0 +1,33 @@
+.container {
+  composes: glass rounded from 'styles/layout.css';
+  width: 275px;
+  -webkit-mask-image: linear-gradient(180deg, white 0%, white 20%, transparent 100%);
+}
+
+.container:hover {
+  -webkit-mask-image: none;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 10px;
+}
+
+.title {
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-right: 10px;
+}
+
+.tagline {
+  font-size: 12px;
+  font-style: italic;
+}
+
+.list {
+  height: 200px;
+  overflow-y: auto;
+}

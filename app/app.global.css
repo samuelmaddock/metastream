@@ -131,6 +131,13 @@ table {
 }
 
 /*
+Variables
+*/
+body {
+  --app-text-color: #dadada;
+}
+
+/*
 Fonts
 */
 
@@ -182,9 +189,11 @@ body,
 
 body,
 input,
+input::-webkit-input-placeholder,
 textarea {
   font-family: 'Karla', sans-serif;
   font-size: 16px;
+  color: var(--app-text-color);
 }
 
 a,
