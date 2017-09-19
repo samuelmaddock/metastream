@@ -100,7 +100,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
     return (
       <div
         className={cx(styles.container, {
-          [styles.inactive]: this.state.inactive
+          lobbyInactive: this.state.inactive
         })}
       >
         <VideoPlayer

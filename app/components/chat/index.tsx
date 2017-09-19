@@ -29,8 +29,13 @@ export class Chat extends Component<IProps, IState> {
           [styles.focused]: this.state.focused
         })}
       >
-        <Messages messages={this.props.messages} />
-        <ChatForm send={this.props.sendMessage} onFocus={this.onFocus} onBlur={this.onBlur} />
+        <div className={styles.wrapper}>
+          <div className={styles.background} />
+          <div className={styles.foreground}>
+            <Messages messages={this.props.messages} />
+            <ChatForm send={this.props.sendMessage} onFocus={this.onFocus} onBlur={this.onBlur} />
+          </div>
+        </div>
       </div>
     );
   }

@@ -13,7 +13,7 @@
   transition: opacity 400ms ease-in; */
 }
 
-.inactive .overlay {
+:global(.lobbyInactive) .overlay {
   display: none;
 }
 
@@ -36,7 +36,8 @@
 }
 
 .chat {
-  composes: overlay;
+  position: absolute;
+  z-index: 2;
   right: var(--overlay-spacing);
   bottom: 150px;
   width: 450px;

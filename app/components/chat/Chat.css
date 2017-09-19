@@ -1,12 +1,27 @@
 .container {
-  composes: glass rounded from 'styles/layout.css';
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
+  display: block;
 }
 
-.focused {
-  display: flex !important;
+.wrapper {
+  position: relative;
+  height: 100%;
+}
+
+.background {
+  composes: glass rounded absolute-full from 'styles/layout.css';
+  z-index: 4;
+}
+
+:global(.lobbyInactive) .container:not(.focused) .background {
+  display: none;
+}
+
+.foreground {
+  composes: absolute-full from 'styles/layout.css';
+  z-index: 5;
+
+  display: flex;
+  flex-direction: column;
 }
 
 .messages {
@@ -29,6 +44,10 @@
 
 .form {
   width: 100%;
+}
+
+:global(.lobbyInactive) .container:not(.focused) .form {
+  display: none;
 }
 
 .messageInput {
