@@ -21,8 +21,20 @@ export class Messages extends Component<IProps, IState> {
     return this.list ? this.list.scrollHeight - this.list.clientHeight : 0;
   }
 
+  componentDidMount(): void {
+    if (this.list) {
+      this.list.addEventListener('scroll', this.handleScroll.bind(this));
+    }
+  }
+
   componentWillReceiveProps(nextProps: IProps): void {
     this.wasAtBottom = this.isScrolledToBottom();
+  }
+
+  componentWillUnmount() {
+    if (this.list) {
+      this.list.removeEventListener('scroll', this.handleScroll.bind(this));
+    }
   }
 
   componentDidUpdate(prevProps: IProps): void {
@@ -52,14 +64,20 @@ export class Messages extends Component<IProps, IState> {
     }
   }
 
+  handleScroll(): void {
+    if (this.isScrolledToBottom()) {
+      this.setState({ newMessage: false });
+    }
+  }
+
   render(): JSX.Element | null {
     const messages = this.props.messages.map((message, idx) => {
       return <Message key={idx} message={message} />;
     });
 
-    return <div className={styles.messages}>
-      <ul ref={el => this.list = el} className={styles.list}>{messages}</ul>
-      {this.state.newMessage && <div className={styles.newMessages}>You've got new MESSAGES!</div>}
-    </div>;
+    return <span className={styles.chatWrapper}>
+      <ul ref={el => this.list = el} className={styles.messages}>{messages}</ul>
+      {this.state.newMessage && <div className={styles.newMessages} onClick={this.scrollToBottom.bind(this)}>You've got new MESSAGES!</div>}
+    </span>;
   }
 }

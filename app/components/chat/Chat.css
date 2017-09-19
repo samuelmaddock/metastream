@@ -24,13 +24,15 @@
   flex-direction: column;
 }
 
-.list {
-  overflow-y: auto;
-  height: 100%;
+.chatWrapper {
+    display: flex;
+    flex-grow: 1;
 }
 
 .messages {
   flex-grow: 1;
+  overflow-y: auto;
+  position: relative;
 }
 
 .message {
@@ -42,11 +44,15 @@
 
 .newMessages {
   position: absolute;
-  bottom: 0;
+  padding: 7px;
+  bottom: 39px;
   z-index: 2;
   left: 0;
   width: 100%;
-  background-color: rgba(255,0,255, 0.1);
+  text-align: center;
+  background: linear-gradient(to bottom, rgba(125,185,232,0) 0%,rgba(0,0,0,0.5) 100%);
+  cursor: pointer;
+  text-shadow: 0px 2px 0px rgba(0,0,0,0.5);
 }
 
 .username {
