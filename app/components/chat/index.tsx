@@ -15,13 +15,31 @@ interface IProps {
   sendMessage: (text: string) => void;
 }
 
-export class Chat extends Component<IProps> {
+interface IState {
+  focused?: boolean;
+}
+
+export class Chat extends Component<IProps, IState> {
+  state: IState = {};
+
   render(): JSX.Element | null {
     return (
-      <div className={cx(this.props.className, styles.container)}>
+      <div
+        className={cx(this.props.className, styles.container, {
+          [styles.focused]: this.state.focused
+        })}
+      >
         <Messages messages={this.props.messages} />
-        <ChatForm send={this.props.sendMessage} />
+        <ChatForm send={this.props.sendMessage} onFocus={this.onFocus} onBlur={this.onBlur} />
       </div>
     );
   }
+
+  private onFocus = (): void => {
+    this.setState({ focused: true });
+  };
+
+  private onBlur = (): void => {
+    this.setState({ focused: false });
+  };
 }

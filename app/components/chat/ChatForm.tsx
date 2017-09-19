@@ -6,6 +6,8 @@ import { CHAT_MAX_MESSAGE_LENGTH } from 'constants/chat';
 
 interface IProps {
   send: (text: string) => void;
+  onFocus?: React.FocusEventHandler<HTMLInputElement>;
+  onBlur?: React.FocusEventHandler<HTMLInputElement>;
 }
 
 export class ChatForm extends Component<IProps> {
@@ -19,6 +21,7 @@ export class ChatForm extends Component<IProps> {
       this.props.send(text);
 
       target.value = '';
+      target.blur();
     }
   };
 
@@ -31,6 +34,8 @@ export class ChatForm extends Component<IProps> {
           placeholder="Message"
           onKeyPress={this.submitText}
           maxLength={CHAT_MAX_MESSAGE_LENGTH}
+          onFocus={this.props.onFocus}
+          onBlur={this.props.onBlur}
         />
       </div>
     );

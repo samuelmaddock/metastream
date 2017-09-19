@@ -5,6 +5,10 @@
   flex-grow: 1;
 }
 
+.focused {
+  display: flex !important;
+}
+
 .messages {
   flex-grow: 1;
   overflow-y: auto;
