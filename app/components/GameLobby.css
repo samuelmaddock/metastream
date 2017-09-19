@@ -16,6 +16,13 @@
   --overlay-spacing: 50px;
 }
 
+.titlebar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
 .chat {
   position: absolute;
   right: var(--overlay-spacing);
@@ -27,7 +34,7 @@
 .users,
 .queue {
   position: absolute;
-  top: var(--overlay-spacing);
+  top: calc(var(--overlay-spacing) + var(--app-titlebar-height));
 }
 
 .users {

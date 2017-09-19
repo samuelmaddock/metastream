@@ -1,0 +1,47 @@
+.container {
+  background: rgba(0, 0, 0, 0.33);
+  height: var(--app-titlebar-height);
+
+  /* https://github.com/electron/electron/blob/master/docs/api/frameless-window.md#draggable-region */
+  -webkit-app-region: drag;
+}
+
+.wrapper {
+  position: relative;
+  height: 100%;
+}
+
+.header-item {
+  position: absolute;
+  height: 100%;
+  line-height: var(--app-titlebar-height);
+}
+
+.header {
+  composes: header-item;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.actions {
+  composes: header-item;
+  -webkit-app-region: no-drag;
+  right: 0;
+}
+
+.actionButton {
+  /* Windows-only font */
+  font-family: Marlett;
+  font-size: 16px;
+  background: transparent;
+  border: none;
+  color: var(--app-text-color);
+  width: 40px;
+  height: 100%;
+  line-height: var(--app-titlebar-height);
+  outline: none;
+}
+
+.actionButton:hover {
+  background: rgba(255, 255, 255, 0.11);
+}

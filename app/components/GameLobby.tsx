@@ -20,6 +20,7 @@ import { MediaItem } from 'components/media/MediaItem';
 import { Link } from 'react-router-dom';
 import { getCurrentMedia, getMediaQueue } from 'lobby/reducers/mediaPlayer.helpers';
 import { ListOverlay } from 'components/lobby/ListOverlay';
+import { TitleBar } from 'components/lobby/TitleBar';
 
 interface IProps {
   host: boolean;
@@ -42,6 +43,7 @@ const NO_MEDIA: IMediaItem = {
 
 class _GameLobby extends React.Component<PrivateProps> {
   render(): JSX.Element {
+    const { currentMedia: media } = this.props;
     //         <h3>{this.props.sessionName || 'Lobby'}</h3>
     //         <Link to="/servers">Leave</Link>
     const userIds = Object.keys(this.props.users);
@@ -51,6 +53,7 @@ class _GameLobby extends React.Component<PrivateProps> {
           <VideoPlayer />
         </section>
         <section className={styles.overlay}>
+          <TitleBar className={styles.titlebar} title={media && media.title} />
           <ListOverlay className={styles.users} title="Users" tagline={`${userIds.length} online`}>
             {userIds.map((userId: string) => {
               const user = this.props.users[userId]!;

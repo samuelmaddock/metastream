@@ -54,9 +54,9 @@ const setupWindow = () => {
     height: 728,
     webPreferences: {
       blinkFeatures: 'CSSBackdropFilter'
-    }
-    // frame: false,
-    // titleBarStyle: 'hidden'
+    },
+    frame: false,
+    titleBarStyle: 'hidden'
   });
 
   win.loadURL(`file://${__dirname}/app.html`);

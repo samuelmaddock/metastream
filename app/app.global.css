@@ -135,6 +135,7 @@ Variables
 */
 body {
   --app-text-color: #dadada;
+  --app-titlebar-height: 30px;
 }
 
 /*
