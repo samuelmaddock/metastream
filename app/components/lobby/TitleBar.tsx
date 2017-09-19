@@ -52,8 +52,8 @@ export class TitleBar extends Component<IProps> {
 
     return (
       <div className={styles.actions}>
-        {buttons.map(btn => (
-          <button type="button" className={styles.actionButton} onClick={btn.action}>
+        {buttons.map((btn, idx) => (
+          <button key={idx} type="button" className={styles.actionButton} onClick={btn.action}>
             {btn.label}
           </button>
         ))}
