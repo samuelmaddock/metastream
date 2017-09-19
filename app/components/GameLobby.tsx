@@ -24,7 +24,11 @@ import styles from './GameLobby.css';
 import { UserItem } from 'components/lobby/UserItem';
 import { MediaItem } from 'components/media/MediaItem';
 import { Link } from 'react-router-dom';
-import { getCurrentMedia, getMediaQueue } from 'lobby/reducers/mediaPlayer.helpers';
+import {
+  getCurrentMedia,
+  getMediaQueue,
+  getPlaybackState
+} from 'lobby/reducers/mediaPlayer.helpers';
 import { ListOverlay } from 'components/lobby/ListOverlay';
 import { TitleBar } from 'components/lobby/TitleBar';
 import { PlaybackControls } from 'components/media/PlaybackControls';
@@ -42,6 +46,7 @@ interface IConnectedProps {
   currentMedia?: IMediaItem;
   mediaQueue: IMediaItem[];
   messages: IMessage[];
+  playback: PlaybackState;
   users: IUsersState;
   sessionName?: string;
 }
@@ -100,7 +105,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
     return (
       <div
         className={cx(styles.container, {
-          lobbyInactive: this.state.inactive
+          lobbyInactive: this.state.inactive && this.props.playback !== PlaybackState.Idle
         })}
       >
         <VideoPlayer
@@ -165,6 +170,7 @@ export const GameLobby = netConnect<{}, {}, IProps>((state: ILobbyNetState): ICo
     currentMedia: getCurrentMedia(state),
     mediaQueue: getMediaQueue(state),
     messages: state.chat.messages,
+    playback: getPlaybackState(state),
     users: state.users,
     sessionName: getSessionName(state)
   };
