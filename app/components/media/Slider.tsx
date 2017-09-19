@@ -39,7 +39,7 @@ export class Slider extends Component<IProps> {
     const target = event.target as HTMLElement;
     const bbox = target.getBoundingClientRect();
     const width = bbox.width;
-    const x = event.pageX - target.offsetLeft;
+    const x = event.clientX - bbox.left;
     const progress = x / (width || 1);
 
     if (this.props.onChange) {
