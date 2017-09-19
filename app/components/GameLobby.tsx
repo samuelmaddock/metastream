@@ -1,4 +1,5 @@
 import * as React from 'react';
+import cx from 'classnames';
 
 import { Lobby } from 'components/Lobby';
 import { IReactReduxProps } from 'types/redux';
@@ -33,6 +34,10 @@ interface IProps {
   host: boolean;
 }
 
+interface IState {
+  inactive: boolean;
+}
+
 interface IConnectedProps {
   currentMedia?: IMediaItem;
   mediaQueue: IMediaItem[];
@@ -48,8 +53,44 @@ const NO_MEDIA: IMediaItem = {
   url: ''
 };
 
-class _GameLobby extends React.Component<PrivateProps> {
+/** Time before user is considered inactive */
+const INACTIVE_DURATION = 3000;
+
+class _GameLobby extends React.Component<PrivateProps, IState> {
   private player: VideoPlayer | null;
+  private activityTimeoutId?: number;
+
+  state: IState = { inactive: false };
+
+  componentDidMount(): void {
+    document.addEventListener('mousemove', this.onMouseMove, false);
+  }
+
+  componentWillUnmount(): void {
+    document.removeEventListener('mousemove', this.onMouseMove, false);
+
+    if (this.activityTimeoutId) {
+      clearTimeout(this.activityTimeoutId);
+      this.activityTimeoutId = undefined;
+    }
+  }
+
+  private onMouseMove = (): void => {
+    if (this.state.inactive) {
+      this.setState({ inactive: false });
+    }
+
+    if (this.activityTimeoutId) {
+      clearTimeout(this.activityTimeoutId);
+    }
+
+    this.activityTimeoutId = setTimeout(this.onActivityTimeout, INACTIVE_DURATION) as any;
+  };
+
+  private onActivityTimeout = (): void => {
+    this.setState({ inactive: true });
+    this.activityTimeoutId = undefined;
+  };
 
   render(): JSX.Element {
     const { currentMedia: media } = this.props;
@@ -57,7 +98,11 @@ class _GameLobby extends React.Component<PrivateProps> {
     //         <Link to="/servers">Leave</Link>
     const userIds = Object.keys(this.props.users);
     return (
-      <div className={styles.container}>
+      <div
+        className={cx(styles.container, {
+          [styles.inactive]: this.state.inactive
+        })}
+      >
         <VideoPlayer
           theRef={el => {
             this.player = el;

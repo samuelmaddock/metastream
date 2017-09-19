@@ -8,10 +8,16 @@
 .overlay {
   position: absolute;
   z-index: 2;
+  /* backdrop-filter doesn't respect opacity :(
+  opacity: 1;
+  transition: opacity 400ms ease-in; */
+}
+
+.inactive .overlay {
+  display: none;
 }
 
 .video {
-  composes: overlay;
   composes: absolute-full from 'styles/layout.css';
 }
 
