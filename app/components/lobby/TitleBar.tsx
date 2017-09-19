@@ -34,7 +34,7 @@ export class TitleBar extends Component<IProps> {
         action: () => this.window.minimize()
       },
       {
-        label: this.window.isMaximized() ? '1' : '2', // 🗖
+        label: this.window.isMaximized() ? '2' : '1', // 🗖
         action: () => {
           if (this.window.isMaximized()) {
             this.window.restore();

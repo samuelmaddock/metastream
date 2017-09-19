@@ -22,6 +22,11 @@
   composes: header-item;
   left: 50%;
   transform: translateX(-50%);
+  max-width: 50%;
+}
+
+.title {
+  composes: single-line from 'styles/text.css';
 }
 
 .actions {
@@ -35,6 +40,7 @@
   font-family: Marlett;
   font-size: 16px;
   background: transparent;
+  transition: background-color 80ms ease;
   border: none;
   color: var(--app-text-color);
   width: 40px;
@@ -45,4 +51,8 @@
 
 .actionButton:hover {
   background: rgba(255, 255, 255, 0.11);
+}
+
+.actionButton:last-child:hover {
+  background: rgba(255, 0, 0, 0.22);
 }
