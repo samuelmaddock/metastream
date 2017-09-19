@@ -65,6 +65,10 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
   private player: VideoPlayer | null;
   private activityTimeoutId?: number;
 
+  private get isInactive() {
+    return this.state.inactive && this.props.playback !== PlaybackState.Idle;
+  }
+
   state: IState = { inactive: false };
 
   componentDidMount(): void {
@@ -105,7 +109,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
     return (
       <div
         className={cx(styles.container, {
-          lobbyInactive: this.state.inactive && this.props.playback !== PlaybackState.Idle
+          lobbyInactive: this.isInactive
         })}
       >
         <VideoPlayer
@@ -132,7 +136,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
           })}
         </ListOverlay>
         <Chat className={styles.chat} messages={this.props.messages} sendMessage={this.sendChat} />
-        {this.state.inactive && <div className={styles.inactiveOverlay} />}
+        {this.isInactive && <div className={styles.inactiveOverlay} />}
       </div>
     );
   }
