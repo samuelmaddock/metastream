@@ -1,6 +1,7 @@
 .container {
   background: rgba(0, 0, 0, 0.33);
   height: var(--app-titlebar-height);
+  user-select: none;
 
   /* https://github.com/electron/electron/blob/master/docs/api/frameless-window.md#draggable-region */
   -webkit-app-region: drag;
