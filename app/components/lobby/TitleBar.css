@@ -1,5 +1,5 @@
 .container {
-  background: rgba(0, 0, 0, 0.33);
+  background: rgba(0, 0, 0, 0.44);
   height: var(--app-titlebar-height);
   user-select: none;
 
@@ -43,7 +43,7 @@
   transition: background-color 80ms ease;
   border: none;
   color: var(--app-text-color);
-  width: 40px;
+  width: 45px;
   height: 100%;
   line-height: var(--app-titlebar-height);
   outline: none;
