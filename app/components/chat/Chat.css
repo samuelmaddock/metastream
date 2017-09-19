@@ -32,7 +32,7 @@
 .message {
   width: 100%;
   padding: 2px 8px;
-  word-wrap: break-word;
+  word-break: break-all;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.66);
 }
 
