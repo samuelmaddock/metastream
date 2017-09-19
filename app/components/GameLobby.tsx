@@ -127,6 +127,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
           })}
         </ListOverlay>
         <Chat className={styles.chat} messages={this.props.messages} sendMessage={this.sendChat} />
+        {this.state.inactive && <div className={styles.inactiveOverlay} />}
       </div>
     );
   }

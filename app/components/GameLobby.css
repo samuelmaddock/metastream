@@ -13,6 +13,13 @@
   transition: opacity 400ms ease-in; */
 }
 
+/* Force mouse cursor to be hidden */
+.inactiveOverlay {
+  composes: absolute-full from 'styles/layout.css';
+  z-index: 999;
+  cursor: none;
+}
+
 :global(.lobbyInactive) .overlay {
   display: none;
 }
