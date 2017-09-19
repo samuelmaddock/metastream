@@ -15,6 +15,13 @@
   composes: absolute-full from 'styles/layout.css';
 }
 
+.playbackControls {
+  composes: overlay;
+  left: var(--overlay-spacing);
+  right: var(--overlay-spacing);
+  bottom: var(--overlay-spacing);
+}
+
 .titlebar {
   composes: overlay;
   top: 0;

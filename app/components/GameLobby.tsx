@@ -89,6 +89,7 @@ class _GameLobby extends React.Component<PrivateProps> {
   private renderPlaybackControls(): JSX.Element {
     return (
       <PlaybackControls
+        className={styles.playbackControls}
         reload={() => {
           console.log('reload', this, this.player);
           if (this.player) {

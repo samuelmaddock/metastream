@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import cx from 'classnames';
 import styles from './PlaybackControls.css';
 import { PlaybackState, IMediaItem, IMediaPlayerState } from 'lobby/reducers/mediaPlayer';
 import { Time } from 'components/media/Time';
@@ -14,6 +15,7 @@ import {
 import { setVolume } from 'lobby/actions/settings';
 
 interface IProps {
+  className?: string;
   reload?: React.MouseEventHandler<HTMLButtonElement>;
   debug?: React.MouseEventHandler<HTMLButtonElement>;
 }
@@ -40,7 +42,7 @@ class _PlaybackControls extends Component<PrivateProps> {
     const duration = (media && media.duration) || 0;
 
     return (
-      <div className={styles.container}>
+      <div className={cx(this.props.className, styles.container)}>
         <button type="button" className={styles.button} onClick={this.playPause}>
           {playbackIcon}
         </button>
