@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import cx from 'classnames';
 import styles from './VideoPlayer.css';
 import { IMediaItem, PlaybackState, IMediaPlayerState } from 'lobby/reducers/mediaPlayer';
 import { Dispatch } from 'redux';
@@ -12,7 +13,10 @@ import { DispatchProp } from 'react-redux';
 import { PlaybackControls } from 'components/media/PlaybackControls';
 import { setVolume } from 'lobby/actions/settings';
 
-interface IProps {}
+interface IProps {
+  className?: string;
+  theRef?: (c: _VideoPlayer | null) => void;
+}
 
 interface IConnectedProps extends IMediaPlayerState {
   volume: number;
@@ -41,6 +45,18 @@ class _VideoPlayer extends Component<PrivateProps> {
   get mediaUrl() {
     const media = this.props.current;
     return media ? media.url : './idlescreen.html';
+  }
+
+  componentDidMount(): void {
+    if (this.props.theRef) {
+      this.props.theRef(this);
+    }
+  }
+
+  componentWillUnmount(): void {
+    if (this.props.theRef) {
+      this.props.theRef(null);
+    }
   }
 
   componentDidUpdate(prevProps: PrivateProps): void {
@@ -113,12 +129,7 @@ class _VideoPlayer extends Component<PrivateProps> {
   };
 
   render(): JSX.Element | null {
-    return (
-      <div className={styles.container}>
-        {this.renderBrowser()}
-        {this.renderControls()}
-      </div>
-    );
+    return <div className={cx(styles.container, this.props.className)}>{this.renderBrowser()}</div>;
   }
 
   private renderBrowser(): JSX.Element {
@@ -140,42 +151,19 @@ class _VideoPlayer extends Component<PrivateProps> {
     );
   }
 
-  private renderControls(): JSX.Element | null {
-    // if (this.props.playback === PlaybackState.Idle) {
-    //   return null;
-    // }
+  reload(): void {
+    console.log('reload');
+    if (this.webview) {
+      this.webview.loadURL(this.mediaUrl);
+    }
+  }
 
-    return (
-      <PlaybackControls
-        media={this.props.current}
-        startTime={this.props.startTime}
-        playback={this.props.playback}
-        volume={this.props.volume}
-        playPause={() => {
-          this.props.dispatch!(server_requestPlayPause());
-        }}
-        next={() => {
-          this.props.dispatch!(server_requestNextMedia());
-        }}
-        seek={time => {
-          this.props.dispatch!(server_requestSeek(time));
-        }}
-        setVolume={volume => {
-          this.props.dispatch!(setVolume(volume));
-        }}
-        reload={() => {
-          if (this.webview) {
-            this.webview.loadURL(this.mediaUrl);
-          }
-        }}
-        debug={() => {
-          if (this.webview) {
-            this.webview.openDevTools();
-          }
-        }}
-      />
-    );
+  debug(): void {
+    if (this.webview && !this.webview.isDevToolsOpened()) {
+      this.webview.openDevTools();
+    }
   }
 }
 
+export type VideoPlayer = _VideoPlayer;
 export const VideoPlayer = netConnect<{}, {}, IProps>(mapStateToProps)(_VideoPlayer);

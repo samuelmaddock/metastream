@@ -1,26 +1,39 @@
 import React, { Component } from 'react';
 import styles from './PlaybackControls.css';
-import { PlaybackState, IMediaItem } from 'lobby/reducers/mediaPlayer';
+import { PlaybackState, IMediaItem, IMediaPlayerState } from 'lobby/reducers/mediaPlayer';
 import { Time } from 'components/media/Time';
 import { ProgressSlider } from 'components/media/ProgressSlider';
 import { VolumeSlider } from 'components/media/VolumeSlider';
+import { netConnect, ILobbyNetState } from 'lobby';
+import { DispatchProp } from 'react-redux';
+import {
+  server_requestPlayPause,
+  server_requestNextMedia,
+  server_requestSeek
+} from 'lobby/actions/mediaPlayer';
+import { setVolume } from 'lobby/actions/settings';
 
 interface IProps {
-  media?: IMediaItem;
-  startTime?: number;
-  playback: PlaybackState;
-  volume: number;
-  playPause?: React.MouseEventHandler<HTMLButtonElement>;
-  next?: React.MouseEventHandler<HTMLButtonElement>;
-  seek?: (ms: number) => void;
-  setVolume?: (volume: number) => void;
   reload?: React.MouseEventHandler<HTMLButtonElement>;
   debug?: React.MouseEventHandler<HTMLButtonElement>;
 }
 
-export class PlaybackControls extends Component<IProps> {
+interface IConnectedProps extends IMediaPlayerState {
+  volume: number;
+}
+
+const mapStateToProps = (state: ILobbyNetState): IConnectedProps => {
+  return {
+    ...state.mediaPlayer,
+    volume: state.settings.volume
+  };
+};
+
+type PrivateProps = IProps & IConnectedProps & DispatchProp<ILobbyNetState>;
+
+class _PlaybackControls extends Component<PrivateProps> {
   render(): JSX.Element | null {
-    const { playback, media, startTime } = this.props;
+    const { current: media, playback, startTime } = this.props;
     const playbackIcon = playback === PlaybackState.Playing ? '⏸️' : '▶️';
 
     const disabled = playback === PlaybackState.Idle;
@@ -28,10 +41,10 @@ export class PlaybackControls extends Component<IProps> {
 
     return (
       <div className={styles.container}>
-        <button type="button" className={styles.button} onClick={this.props.playPause}>
+        <button type="button" className={styles.button} onClick={this.playPause}>
           {playbackIcon}
         </button>
-        <button type="button" title="Next" className={styles.button} onClick={this.props.next}>
+        <button type="button" title="Next" className={styles.button} onClick={this.next}>
           ⏭️
         </button>
         {!disabled && <Time className={styles.time} time={startTime || 0} realTime />}
@@ -42,7 +55,7 @@ export class PlaybackControls extends Component<IProps> {
           onChange={this.onSliderChange}
         />
         {!disabled && <Time className={styles.time} time={(media && media.duration) || 0} />}
-        <VolumeSlider volume={this.props.volume} onChange={this.props.setVolume} />
+        <VolumeSlider volume={this.props.volume} onChange={this.setVolume} />
         <button type="button" className={styles.button} title="Reload" onClick={this.props.reload}>
           🔄
         </button>
@@ -54,12 +67,28 @@ export class PlaybackControls extends Component<IProps> {
   }
 
   private onSliderChange = (progress: number): void => {
-    const { media } = this.props;
+    const { current: media } = this.props;
     const duration = (media && media.duration) || 0;
     const time = duration * progress;
 
-    if (this.props.seek) {
-      this.props.seek(time);
-    }
+    this.seek(time);
+  };
+
+  private playPause = () => {
+    this.props.dispatch!(server_requestPlayPause());
+  };
+
+  private next = () => {
+    this.props.dispatch!(server_requestNextMedia());
+  };
+
+  private seek = (time: number) => {
+    this.props.dispatch!(server_requestSeek(time));
+  };
+
+  private setVolume = (volume: number) => {
+    this.props.dispatch!(setVolume(volume));
   };
 }
+
+export const PlaybackControls = netConnect<{}, {}, IProps>(mapStateToProps)(_PlaybackControls);
