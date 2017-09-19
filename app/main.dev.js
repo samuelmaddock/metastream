@@ -50,8 +50,8 @@ app.on('window-all-closed', () => {
 const setupWindow = () => {
   let win = new BrowserWindow({
     show: false,
-    width: 1340,
-    height: 754,
+    width: 1280,
+    height: 720,
     webPreferences: {
       blinkFeatures: 'CSSBackdropFilter'
     },
