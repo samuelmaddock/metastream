@@ -13,6 +13,7 @@ import {
   server_requestSeek
 } from 'lobby/actions/mediaPlayer';
 import { setVolume } from 'lobby/actions/settings';
+import { Icon } from 'components/Icon';
 
 interface IProps {
   className?: string;
@@ -36,7 +37,7 @@ type PrivateProps = IProps & IConnectedProps & DispatchProp<ILobbyNetState>;
 class _PlaybackControls extends Component<PrivateProps> {
   render(): JSX.Element | null {
     const { current: media, playback, startTime } = this.props;
-    const playbackIcon = playback === PlaybackState.Playing ? '⏸️' : '▶️';
+    const playbackIcon = playback === PlaybackState.Playing ? 'pause' : 'play';
 
     const disabled = playback === PlaybackState.Idle;
     const duration = (media && media.duration) || 0;
@@ -44,10 +45,10 @@ class _PlaybackControls extends Component<PrivateProps> {
     return (
       <div className={cx(this.props.className, styles.container)}>
         <button type="button" className={styles.button} onClick={this.playPause}>
-          {playbackIcon}
+          <Icon name={playbackIcon} />
         </button>
         <button type="button" title="Next" className={styles.button} onClick={this.next}>
-          ⏭️
+          <Icon name="skip-forward" />
         </button>
         {!disabled && <Time className={styles.time} time={startTime || 0} realTime />}
         <ProgressSlider
@@ -59,10 +60,10 @@ class _PlaybackControls extends Component<PrivateProps> {
         {!disabled && <Time className={styles.time} time={(media && media.duration) || 0} />}
         <VolumeSlider volume={this.props.volume} onChange={this.setVolume} />
         <button type="button" className={styles.button} title="Reload" onClick={this.props.reload}>
-          🔄
+          <Icon name="rotate-cw" />
         </button>
         <button type="button" className={styles.button} title="Debug" onClick={this.props.debug}>
-          🛠️
+          <Icon name="settings" />
         </button>
       </div>
     );

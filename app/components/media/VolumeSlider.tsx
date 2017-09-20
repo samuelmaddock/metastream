@@ -3,6 +3,7 @@ import { clamp } from 'utils/math';
 import { Slider } from 'components/media/Slider';
 
 import styles from './VolumeSlider.css';
+import { Icon } from 'components/Icon';
 
 interface IProps {
   volume: number;
@@ -13,7 +14,7 @@ export class VolumeSlider extends Component<IProps> {
   render(): JSX.Element | null {
     return (
       <div className={styles.container}>
-        <div>🔊</div>
+        <Icon name="volume-2" />
         <Slider
           className={styles.slider}
           value={this.props.volume}
