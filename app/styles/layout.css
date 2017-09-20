@@ -1,9 +1,10 @@
 .glass {
-  background: rgba(120, 120, 120, 0.33);
-  backdrop-filter: blur(20px);
+  background: rgba(60, 60, 60, 0.44);
 
-  /* blur seems to extend past edges */
-  overflow: hidden;
+  /* TODO: Check back later to see if background blur is less buggy */
+  /* background: rgba(120, 120, 120, 0.33); */
+  /* backdrop-filter: blur(20px); */
+  /* overflow: hidden; */
 }
 
 .rounded {
