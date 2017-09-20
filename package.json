@@ -49,6 +49,10 @@
     ],
     "extraFiles": [
       {
+        "from": "app/assets/",
+        "to": "assets/"
+      },
+      {
         "from": "app/lib/",
         "to": "lib/"
       },
