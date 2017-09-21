@@ -48,13 +48,7 @@ export class Messages extends Component<IProps, IState> {
   }
 
   private isScrolledToBottom(): boolean {
-    if (this.list) {
-      if (this.list.scrollTop == this.scrollBottom) {
-        return true;
-      }
-    }
-
-    return false;
+    return !!(this.list && this.list.scrollTop === this.scrollBottom);
   }
 
   private scrollToBottom(): void {

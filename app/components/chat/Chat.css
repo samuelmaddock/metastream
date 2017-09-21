@@ -25,8 +25,8 @@
 }
 
 .chatWrapper {
-    display: flex;
-    flex-grow: 1;
+  display: flex;
+  flex-grow: 1;
 }
 
 .messages {
@@ -44,15 +44,15 @@
 
 .newMessages {
   position: absolute;
-  padding: 7px;
   bottom: 39px;
-  z-index: 2;
   left: 0;
+  z-index: 2;
   width: 100%;
+  padding: 7px;
   text-align: center;
   background: linear-gradient(to bottom, rgba(125,185,232,0) 0%,rgba(0,0,0,0.5) 100%);
-  cursor: pointer;
   text-shadow: 0px 2px 0px rgba(0,0,0,0.5);
+  cursor: pointer;
 }
 
 .username {
