@@ -7,12 +7,78 @@ interface IProps {
   messages: IMessage[];
 }
 
-export class Messages extends Component<IProps> {
+interface IState {
+  hasNewMessage: boolean;
+}
+
+export class Messages extends Component<IProps, IState> {
+  private list: HTMLElement | null;
+
+  private wasAtBottom: boolean;
+  state: IState = { hasNewMessage: false };
+
+  get scrollBottom() {
+    return this.list ? this.list.scrollHeight - this.list.clientHeight : 0;
+  }
+
+  componentDidMount(): void {
+    if (this.list) {
+      this.list.addEventListener('scroll', this.handleScroll);
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.list) {
+      this.list.removeEventListener('scroll', this.handleScroll);
+    }
+  }
+
+  componentWillReceiveProps(nextProps: IProps): void {
+    this.wasAtBottom = this.isScrolledToBottom();
+  }
+
+  componentDidUpdate(prevProps: IProps): void {
+    if (this.props.messages !== prevProps.messages) {
+      if (this.wasAtBottom) {
+        this.scrollToBottom();
+      } else {
+        this.setState({ hasNewMessage: true });
+      }
+    }
+  }
+
+  private isScrolledToBottom(): boolean {
+    return !!(this.list && this.list.scrollTop === this.scrollBottom);
+  }
+
+  private scrollToBottom(): void {
+    if (this.list) {
+      this.list.scrollTop = this.scrollBottom;
+    }
+  }
+
+  private handleScroll = (): void => {
+    if (this.isScrolledToBottom()) {
+      this.setState({ hasNewMessage: false });
+    }
+  };
+
   render(): JSX.Element | null {
     const messages = this.props.messages.map((message, idx) => {
       return <Message key={idx} message={message} />;
     });
 
-    return <ul className={styles.messages}>{messages}</ul>;
+    return (
+      <div className={styles.chatWrapper}>
+        <ul ref={el => (this.list = el)} className={styles.messages}>
+          {messages}
+        </ul>
+        {this.state.hasNewMessage && (
+          <div className={styles.newMessages} onClick={this.scrollToBottom.bind(this)}>
+            You've got new MESSAGES!
+          </div>
+        )}
+      </div>
+    );
   }
 }
