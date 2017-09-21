@@ -66,7 +66,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
   private activityTimeoutId?: number;
 
   private get isInactive() {
-    return this.state.inactive && this.props.playback !== PlaybackState.Idle;
+    return this.state.inactive && this.props.playback === PlaybackState.Playing;
   }
 
   state: IState = { inactive: false };
