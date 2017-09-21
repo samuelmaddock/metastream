@@ -1,4 +1,4 @@
-import * as React from 'React';
+import React from 'React';
 
 interface IProps {
   className?: string;
