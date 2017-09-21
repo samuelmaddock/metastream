@@ -10,6 +10,7 @@ const electron = window.require('electron');
 const process = window.require('process');
 
 let store: any;
+let history: any;
 
 function initSteam(): Steamworks.API | null {
   // Activate UV loop for async workers
@@ -52,8 +53,8 @@ function init() {
 
   const extra = { steamworks };
 
-  const { configureStore, history } = cfgStore;
-  store = configureStore(extra);
+  history = cfgStore.history;
+  store = cfgStore.configureStore(extra);
 
   render(
     <AppContainer>
