@@ -31,8 +31,8 @@ app/node_modules
 release
 app/main.prod.js
 app/main.prod.js.map
-app/bundle.js
-app/bundle.js.map
+app/renderer.prod.js
+app/renderer.prod.js.map
 app/preload.js
 app/preload.js.map
 app/style.css

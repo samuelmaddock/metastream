@@ -159,17 +159,14 @@ export default merge.smart(baseConfig, {
   },
 
   entry: {
-    vendor: [
-      'babel-polyfill',
-      ...Object.keys(dependencies)
-    ]
-    .filter(dependency => dependency !== 'font-awesome'),
+    renderer: Object.keys(dependencies)
+      .filter(dependency => dependency !== 'font-awesome'),
   },
 
   output: {
-    library: 'vendor',
+    library: 'renderer',
     path: dist,
-    filename: '[name].dll.js',
+    filename: '[name].dev.dll.js',
     libraryTarget: 'var'
   },
 

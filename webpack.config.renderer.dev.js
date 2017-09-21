@@ -17,7 +17,7 @@ import baseConfig from './webpack.config.base';
 const port = process.env.PORT || 1212;
 const publicPath = `http://localhost:${port}/dist`;
 const dll = path.resolve(process.cwd(), 'dll');
-const manifest = path.resolve(dll, 'vendor.json');
+const manifest = path.resolve(dll, 'renderer.json');
 
 /**
  * Warn if the DLL is not built
@@ -220,6 +220,7 @@ export default merge.smart(baseConfig, {
     contentBase: path.join(__dirname, 'dist'),
     watchOptions: {
       aggregateTimeout: 300,
+      ignored: /node_modules/,
       poll: 100
     },
     historyApiFallback: {
@@ -230,7 +231,7 @@ export default merge.smart(baseConfig, {
       if (process.env.START_HOT) {
         spawn(
           'npm',
-          ['run', 'start-hot-renderer'],
+          ['run', 'start-main-dev'],
           { shell: true, env: process.env, stdio: 'inherit' }
         )
         .on('close', code => process.exit(code))
