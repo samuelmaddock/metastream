@@ -7,13 +7,15 @@
   height: 100%;
 }
 
-.background {
-  composes: glass rounded absolute-full from 'styles/layout.css';
-  z-index: 4;
+.anim {
+  opacity: 1;
+  transition: opacity var(--overlay-anim-duration) ease-in;
 }
 
-:global(.lobbyInactive) .container:not(.focused) .background {
-  display: none;
+.background {
+  composes: glass rounded absolute-full from 'styles/layout.css';
+  composes: anim;
+  z-index: 4;
 }
 
 .foreground {
@@ -44,11 +46,13 @@
 }
 
 .form {
+  composes: anim;
   width: 100%;
 }
 
+:global(.lobbyInactive) .container:not(.focused) .background,
 :global(.lobbyInactive) .container:not(.focused) .form {
-  display: none;
+  opacity: 0;
 }
 
 .messageInput {
