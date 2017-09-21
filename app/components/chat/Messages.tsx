@@ -8,14 +8,14 @@ interface IProps {
 }
 
 interface IState {
-  newMessage: boolean;
+  hasNewMessage: boolean;
 }
 
 export class Messages extends Component<IProps, IState> {
   private list: HTMLElement | null;
 
   private wasAtBottom: boolean;
-  state: IState = { newMessage: false };
+  state: IState = { hasNewMessage: false };
 
   get scrollBottom() {
     return this.list ? this.list.scrollHeight - this.list.clientHeight : 0;
@@ -23,7 +23,13 @@ export class Messages extends Component<IProps, IState> {
 
   componentDidMount(): void {
     if (this.list) {
-      this.list.addEventListener('scroll', this.handleScroll.bind(this));
+      this.list.addEventListener('scroll', this.handleScroll);
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.list) {
+      this.list.removeEventListener('scroll', this.handleScroll);
     }
   }
 
@@ -31,24 +37,17 @@ export class Messages extends Component<IProps, IState> {
     this.wasAtBottom = this.isScrolledToBottom();
   }
 
-  componentWillUnmount() {
-    if (this.list) {
-      this.list.removeEventListener('scroll', this.handleScroll.bind(this));
-    }
-  }
-
   componentDidUpdate(prevProps: IProps): void {
     if (this.props.messages !== prevProps.messages) {
       if (this.wasAtBottom) {
         this.scrollToBottom();
-      }
-      else {
-        this.setState({ newMessage: true });
+      } else {
+        this.setState({ hasNewMessage: true });
       }
     }
   }
 
-  isScrolledToBottom(): boolean {
+  private isScrolledToBottom(): boolean {
     if (this.list) {
       if (this.list.scrollTop == this.scrollBottom) {
         return true;
@@ -58,26 +57,34 @@ export class Messages extends Component<IProps, IState> {
     return false;
   }
 
-  scrollToBottom(): void {
+  private scrollToBottom(): void {
     if (this.list) {
-      this.list.scrollTop = this.list.scrollHeight - this.list.clientHeight
+      this.list.scrollTop = this.scrollBottom;
     }
   }
 
-  handleScroll(): void {
+  private handleScroll = (): void => {
     if (this.isScrolledToBottom()) {
-      this.setState({ newMessage: false });
+      this.setState({ hasNewMessage: false });
     }
-  }
+  };
 
   render(): JSX.Element | null {
     const messages = this.props.messages.map((message, idx) => {
       return <Message key={idx} message={message} />;
     });
 
-    return <span className={styles.chatWrapper}>
-      <ul ref={el => this.list = el} className={styles.messages}>{messages}</ul>
-      {this.state.newMessage && <div className={styles.newMessages} onClick={this.scrollToBottom.bind(this)}>You've got new MESSAGES!</div>}
-    </span>;
+    return (
+      <div className={styles.chatWrapper}>
+        <ul ref={el => (this.list = el)} className={styles.messages}>
+          {messages}
+        </ul>
+        {this.state.hasNewMessage && (
+          <div className={styles.newMessages} onClick={this.scrollToBottom.bind(this)}>
+            You've got new MESSAGES!
+          </div>
+        )}
+      </div>
+    );
   }
 }
