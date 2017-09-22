@@ -33,6 +33,7 @@ import { ListOverlay } from 'components/lobby/ListOverlay';
 import { TitleBar } from 'components/lobby/TitleBar';
 import { PlaybackControls } from 'components/media/PlaybackControls';
 import { setVolume } from 'lobby/actions/settings';
+import { ActivityMonitor } from 'components/lobby/ActivityMonitor';
 
 interface IProps {
   host: boolean;
@@ -58,48 +59,14 @@ const NO_MEDIA: IMediaItem = {
   url: ''
 };
 
-/** Time before user is considered inactive */
-const INACTIVE_DURATION = 3000;
-
 class _GameLobby extends React.Component<PrivateProps, IState> {
   private player: VideoPlayer | null;
-  private activityTimeoutId?: number;
 
   private get isInactive() {
     return this.state.inactive && this.props.playback === PlaybackState.Playing;
   }
 
   state: IState = { inactive: false };
-
-  componentDidMount(): void {
-    document.addEventListener('mousemove', this.onMouseMove, false);
-  }
-
-  componentWillUnmount(): void {
-    document.removeEventListener('mousemove', this.onMouseMove, false);
-
-    if (this.activityTimeoutId) {
-      clearTimeout(this.activityTimeoutId);
-      this.activityTimeoutId = undefined;
-    }
-  }
-
-  private onMouseMove = (): void => {
-    if (this.state.inactive) {
-      this.setState({ inactive: false });
-    }
-
-    if (this.activityTimeoutId) {
-      clearTimeout(this.activityTimeoutId);
-    }
-
-    this.activityTimeoutId = setTimeout(this.onActivityTimeout, INACTIVE_DURATION) as any;
-  };
-
-  private onActivityTimeout = (): void => {
-    this.setState({ inactive: true });
-    this.activityTimeoutId = undefined;
-  };
 
   render(): JSX.Element {
     const { currentMedia: media } = this.props;
@@ -136,6 +103,8 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
           })}
         </ListOverlay>
         <Chat className={styles.chat} messages={this.props.messages} sendMessage={this.sendChat} />
+
+        <ActivityMonitor onChange={active => this.setState({ inactive: !active })} />
         {this.isInactive && <div className={styles.inactiveOverlay} />}
       </div>
     );
