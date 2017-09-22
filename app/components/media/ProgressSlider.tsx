@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { clamp } from 'utils/math';
 import { Slider } from 'components/media/Slider';
+import { Ticker } from 'components/Ticker';
+import styles from './Slider.css';
 
 interface IProps {
   disabled?: boolean;
@@ -25,29 +27,14 @@ export class ProgressSlider extends Component<IProps> {
 
   private tick = () => {
     this.setState({ progress: this.calcProgress() });
-    this.frameId = requestAnimationFrame(this.tick);
   };
 
-  private startTimer() {
-    this.frameId = requestAnimationFrame(this.tick);
-  }
-
-  private stopTimer() {
-    if (this.frameId) {
-      cancelAnimationFrame(this.frameId);
-      this.frameId = undefined;
-    }
-  }
-
-  componentDidMount(): void {
-    this.startTimer();
-  }
-
-  componentWillUnmount(): void {
-    this.stopTimer();
-  }
-
   render(): JSX.Element | null {
-    return <Slider value={this.state.progress} onChange={this.props.onChange} />;
+    return (
+      <div className={styles.progressSlider}>
+        <Slider value={this.state.progress} onChange={this.props.onChange} />
+        <Ticker onTick={this.tick} />
+      </div>
+    );
   }
 }

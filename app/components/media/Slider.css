@@ -2,7 +2,6 @@
   height: 100%;
   display: flex;
   align-items: center;
-  flex-grow: 1;
   cursor: pointer;
 }
 
@@ -17,4 +16,9 @@
   width: 50%;
   height: 100%;
   background: rgba(255, 255, 255, 0.66);
+}
+
+.progressSlider {
+  height: 100%;
+  flex-grow: 1;
 }
