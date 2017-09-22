@@ -27,11 +27,15 @@ export class ActivityMonitor extends Component<IProps> {
   }
 
   componentDidMount(): void {
-    document.addEventListener('mousemove', this.onMouseMove, false);
+    document.addEventListener('mousemove', this.onActivity, false);
+    document.addEventListener('mousewheel', this.onActivity, false);
+    document.addEventListener('keydown', this.onActivity, false);
   }
 
   componentWillUnmount(): void {
-    document.removeEventListener('mousemove', this.onMouseMove, false);
+    document.removeEventListener('mousemove', this.onActivity, false);
+    document.removeEventListener('mousewheel', this.onActivity, false);
+    document.removeEventListener('keydown', this.onActivity, false);
 
     if (this.activityTimeoutId) {
       clearTimeout(this.activityTimeoutId);
@@ -44,7 +48,7 @@ export class ActivityMonitor extends Component<IProps> {
     this.activityTimeoutId = undefined;
   };
 
-  private onMouseMove = (): void => {
+  private onActivity = (): void => {
     this.active = true;
 
     if (this.activityTimeoutId) {
