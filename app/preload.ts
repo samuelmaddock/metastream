@@ -67,6 +67,11 @@ class HTMLVideoPlayer implements IMediaPlayer {
     return this.video.duration;
   }
   seek(time: number): void {
+    // Ignore seek requests for live media
+    if (this.getDuration() === Infinity) {
+      return;
+    }
+
     const targetTime = time / 1000;
     const curTime = this.video.currentTime;
     const dt = Math.abs(targetTime - curTime);
