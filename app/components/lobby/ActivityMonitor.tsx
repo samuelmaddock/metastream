@@ -1,8 +1,4 @@
-import { platform } from 'os';
-import { remote } from 'electron';
 import React, { Component } from 'react';
-import cx from 'classnames';
-import styles from './TitleBar.css';
 
 /** Time before user is considered inactive */
 const INACTIVE_DURATION = 3000;
