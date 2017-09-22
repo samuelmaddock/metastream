@@ -18,3 +18,26 @@
   left: 0;
   right: 0;
 }
+
+/*
+  Custom Scrollbar
+*/
+
+.scroller::-webkit-scrollbar {
+  width: 12px;
+}
+
+.scroller:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.11);
+}
+
+.scroller::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.22);
+}
+
+.scroller::-webkit-scrollbar-thumb,
+.scroller::-webkit-scrollbar-track-piece {
+  background-clip: padding-box;
+  border: 3px solid transparent;
+  border-radius: 7px;
+}

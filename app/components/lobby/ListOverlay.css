@@ -28,6 +28,7 @@
 }
 
 .list {
+  composes: scroller from 'styles/layout.css';
   height: 200px;
   overflow-y: auto;
 }
