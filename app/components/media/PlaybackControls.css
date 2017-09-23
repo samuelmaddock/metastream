@@ -20,18 +20,15 @@
   /* box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.44); */
 }
 
-.button:hover {
+.button:not(:disabled):hover {
   cursor: pointer;
   background: rgba(255, 255, 255, 0.11);
 }
 
-.seekbar {
-  flex-grow: 1;
+.button:disabled {
+  opacity: 0.5;
 }
 
-.time {
-  flex-shrink: 0;
-  padding: 0 6px;
-  font-size: 14px;
-  font-family: monospace;
+.spacer {
+  flex-grow: 1;
 }

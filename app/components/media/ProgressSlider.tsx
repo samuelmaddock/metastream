@@ -33,7 +33,7 @@ export class ProgressSlider extends Component<IProps> {
     return (
       <div className={styles.progressSlider}>
         <Slider value={this.state.progress} onChange={this.props.onChange} />
-        <Ticker onTick={this.tick} />
+        <Ticker onTick={this.tick} disabled={this.props.disabled} />
       </div>
     );
   }

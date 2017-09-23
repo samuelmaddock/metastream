@@ -67,6 +67,7 @@ export class Ticker extends Component<IProps> {
     this.frameRate = this.calcframeRate();
 
     if (this.frameRate > 100) {
+      this.slowTick();
       this.intervalId = setInterval(this.slowTick, this.frameRate) as any;
     } else {
       this.rAFId = requestAnimationFrame(this.fastTick);

@@ -1,0 +1,14 @@
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.time {
+  flex: 0 0 auto;
+  flex-shrink: 0;
+  padding: 0 6px;
+  font-size: 14px;
+  font-family: monospace;
+}

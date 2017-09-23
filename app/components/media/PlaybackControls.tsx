@@ -14,6 +14,7 @@ import {
 } from 'lobby/actions/mediaPlayer';
 import { setVolume } from 'lobby/actions/settings';
 import { Icon } from 'components/Icon';
+import { Timeline } from 'components/media/Timeline';
 
 interface IProps {
   className?: string;
@@ -36,28 +37,38 @@ type PrivateProps = IProps & IConnectedProps & DispatchProp<ILobbyNetState>;
 
 class _PlaybackControls extends Component<PrivateProps> {
   render(): JSX.Element | null {
-    const { current: media, playback, startTime } = this.props;
+    const { current: media, playback, startTime, pauseTime } = this.props;
     const playbackIcon = playback === PlaybackState.Playing ? 'pause' : 'play';
 
-    const disabled = playback === PlaybackState.Idle;
+    const isIdle = playback === PlaybackState.Idle;
+    const isPaused = playback === PlaybackState.Paused;
     const duration = (media && media.duration) || 0;
 
     return (
       <div className={cx(this.props.className, styles.container)}>
-        <button type="button" className={styles.button} onClick={this.playPause}>
+        <button type="button" className={styles.button} disabled={isIdle} onClick={this.playPause}>
           <Icon name={playbackIcon} />
         </button>
-        <button type="button" title="Next" className={styles.button} onClick={this.next}>
+        <button
+          type="button"
+          title="Next"
+          className={styles.button}
+          disabled={isIdle}
+          onClick={this.next}
+        >
           <Icon name="skip-forward" />
         </button>
-        {!disabled && <Time className={styles.time} time={startTime || 0} realTime />}
-        <ProgressSlider
-          startTime={startTime || 0}
-          duration={duration}
-          disabled={disabled}
-          onChange={this.onSliderChange}
-        />
-        {!disabled && <Time className={styles.time} time={(media && media.duration) || 0} />}
+        {isIdle ? (
+          <span className={styles.spacer} />
+        ) : (
+          <Timeline
+            className={styles.spacer}
+            time={(isPaused ? pauseTime : startTime) || 0}
+            paused={isPaused}
+            duration={media && media.duration}
+            onSeek={this.seek}
+          />
+        )}
         <VolumeSlider volume={this.props.volume} onChange={this.setVolume} />
         <button type="button" className={styles.button} title="Reload" onClick={this.props.reload}>
           <Icon name="rotate-cw" />
@@ -68,14 +79,6 @@ class _PlaybackControls extends Component<PrivateProps> {
       </div>
     );
   }
-
-  private onSliderChange = (progress: number): void => {
-    const { current: media } = this.props;
-    const duration = (media && media.duration) || 0;
-    const time = duration * progress;
-
-    this.seek(time);
-  };
 
   private playPause = () => {
     this.props.dispatch!(server_requestPlayPause());
