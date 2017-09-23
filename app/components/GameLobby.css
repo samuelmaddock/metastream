@@ -49,7 +49,9 @@
   right: var(--overlay-spacing);
   bottom: 150px;
   width: 450px;
-  height: 185px;
+
+  --num-chat-lines: 6;
+  height: calc(40px + 20px * var(--num-chat-lines));
 }
 
 .users,
