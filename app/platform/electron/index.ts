@@ -69,4 +69,7 @@ export class ElectronPlatform extends Platform {
     }
     return this.id;
   }
+
+  async requestUserInfo(id: NetUniqueId | string): Promise<any> {}
+  async requestAvatarUrl(id: NetUniqueId | string): Promise<string | void> {}
 }

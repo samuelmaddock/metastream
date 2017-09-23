@@ -29,6 +29,6 @@ export class Deferred<T> {
 
   reject(reason: any): void {
     this.rejected = true;
-    this.reject(reason);
+    this._reject(reason);
   }
 }

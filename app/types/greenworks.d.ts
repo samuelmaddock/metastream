@@ -290,7 +290,10 @@ declare namespace Steamworks {
     on(eventName: 'game-servers-disconnected', callback: Function): void;
     on(eventName: 'game-server-connect-failure', callback: Function): void;
     on(eventName: 'steam-shutdown', callback: Function): void;
-    on(eventName: 'persona-state-change', callback: Function): void;
+    on(
+      eventName: 'persona-state-change',
+      callback: (steam_id: SteamID, persona_change_flag: typeof PersonaChange) => void
+    ): void;
     on(eventName: 'avatar-image-loaded', callback: Function): void;
     on(
       eventName: 'game-connected-friend-chat-message',

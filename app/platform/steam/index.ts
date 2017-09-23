@@ -13,6 +13,7 @@ import { Deferred } from 'utils/async';
 import { SteamUniqueId } from 'platform/steam/steamid';
 import { NetUniqueId } from 'network';
 import { IRTCPeerCoordinator } from 'network/rtc';
+import { rgba2url } from 'utils/image';
 
 export class SteamPlatform extends Platform {
   private id: NetUniqueId<Steamworks.SteamID>;
@@ -123,5 +124,35 @@ export class SteamPlatform extends Platform {
       this.id = new SteamUniqueId(steamId);
     }
     return this.id;
+  }
+
+  requestUserInfo(id: NetUniqueId | string): Promise<SteamUniqueId> {
+    const deferred = new Deferred<SteamUniqueId>();
+
+    function cb(steamId: Steamworks.SteamID, flags: typeof Steamworks.PersonaChange) {
+      const uid = new SteamUniqueId(steamId);
+      deferred.resolve(uid);
+      steamworks.removeListener('persona-state-change', cb);
+    }
+    steamworks.on('persona-state-change', cb);
+
+    const userId = typeof id === 'string' ? id : id.toString();
+    steamworks.requestUserInformation(userId, false);
+
+    return deferred.promise;
+  }
+
+  async requestAvatarUrl(id: NetUniqueId | string): Promise<string | void> {
+    const userId = await this.requestUserInfo(id);
+
+    const handle = steamworks.getMediumFriendAvatar(userId.toString());
+    if (handle <= 0) {
+      return;
+    }
+
+    const rgba = steamworks.getImageRGBA(handle);
+    const size = steamworks.getImageSize(handle);
+
+    return await rgba2url(rgba, size.width, size.height);
   }
 }
