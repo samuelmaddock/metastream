@@ -7,4 +7,5 @@
 
 .video {
   flex-grow: 1;
+  background: white;
 }
