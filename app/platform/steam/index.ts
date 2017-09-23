@@ -143,11 +143,16 @@ export class SteamPlatform extends Platform {
   }
 
   async requestAvatarUrl(id: NetUniqueId | string): Promise<string | void> {
-    const userId = await this.requestUserInfo(id);
+    const userId = typeof id === 'string' ? id : id.toString();
 
-    const handle = steamworks.getMediumFriendAvatar(userId.toString());
+    let handle = steamworks.getMediumFriendAvatar(userId.toString());
     if (handle <= 0) {
-      return;
+      // Attempt to request user info if we had no avatar data
+      await this.requestUserInfo(userId);
+      handle = steamworks.getMediumFriendAvatar(userId.toString());
+      if (handle == 0) {
+        return;
+      }
     }
 
     const rgba = steamworks.getImageRGBA(handle);
