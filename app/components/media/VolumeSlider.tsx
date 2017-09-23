@@ -15,7 +15,9 @@ const enum VolumeLevel {
 
 interface IProps {
   volume: number;
+  mute?: boolean;
   onChange?: (volume: number) => void;
+  onMute?: () => void;
 }
 
 interface IState {
@@ -28,10 +30,20 @@ export class VolumeSlider extends Component<IProps> {
 
   private slider: Slider | null;
 
+  componentDidUpdate(prevProps: IProps): void {
+    if (this.props.mute !== prevProps.mute || this.props.volume !== prevProps.volume) {
+      this.tick();
+    }
+  }
+
   private calcLevel(): VolumeLevel {
+    if (this.props.mute) {
+      return VolumeLevel.Mute;
+    }
+
     let volume;
 
-    if (this.slider) {
+    if (this.slider && this.slider.state.dragging) {
       const { dragProgress } = this.slider.state;
       volume = dragProgress!;
     } else {
@@ -51,7 +63,9 @@ export class VolumeSlider extends Component<IProps> {
 
     return (
       <div className={styles.container}>
-        <Icon name={icon} />
+        <button type="button" onClick={this.props.onMute}>
+          <Icon name={icon} />
+        </button>
         <Slider
           ref={el => {
             this.slider = el;

@@ -11,7 +11,7 @@ import {
   server_requestNextMedia,
   server_requestSeek
 } from 'lobby/actions/mediaPlayer';
-import { setVolume } from 'lobby/actions/settings';
+import { setVolume, setMute } from 'lobby/actions/settings';
 import { Icon } from 'components/Icon';
 import { Timeline } from 'components/media/Timeline';
 
@@ -22,12 +22,14 @@ interface IProps {
 }
 
 interface IConnectedProps extends IMediaPlayerState {
+  mute: boolean;
   volume: number;
 }
 
 const mapStateToProps = (state: ILobbyNetState): IConnectedProps => {
   return {
     ...state.mediaPlayer,
+    mute: state.settings.mute,
     volume: state.settings.volume
   };
 };
@@ -68,7 +70,12 @@ class _PlaybackControls extends Component<PrivateProps> {
             onSeek={this.seek}
           />
         )}
-        <VolumeSlider volume={this.props.volume} onChange={this.setVolume} />
+        <VolumeSlider
+          mute={this.props.mute}
+          volume={this.props.volume}
+          onChange={this.setVolume}
+          onMute={this.toggleMute}
+        />
         <button type="button" className={styles.button} title="Reload" onClick={this.props.reload}>
           <Icon name="rotate-cw" />
         </button>
@@ -93,6 +100,11 @@ class _PlaybackControls extends Component<PrivateProps> {
 
   private setVolume = (volume: number) => {
     this.props.dispatch!(setVolume(volume));
+  };
+
+  private toggleMute = () => {
+    const mute = !this.props.mute;
+    this.props.dispatch!(setMute(mute));
   };
 }
 
