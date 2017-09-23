@@ -31,7 +31,7 @@ export class ElectronLobby extends EventEmitter {
     this.isOwner = !!opts.host;
     this.ownerId = opts.host ? remote.getCurrentWindow().id + '' : opts.hostId!;
 
-    // window.addEventListener('beforeunload', this.close, false);
+    window.addEventListener('beforeunload', this.close, false);
 
     ipcRenderer.on(`platform-lobby-message-${this.id}`, this.onMessage);
     console.log(
@@ -40,6 +40,7 @@ export class ElectronLobby extends EventEmitter {
   }
 
   close = (): void => {
+    window.removeEventListener('beforeunload', this.close, false);
     ipcRenderer.removeListener(`platform-lobby-message-${this.id}`, this.onMessage);
     ipcRenderer.send('platform-leave-lobby', this.id);
   };

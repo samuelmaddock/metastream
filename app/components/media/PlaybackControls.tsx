@@ -14,6 +14,7 @@ import {
 import { setVolume, setMute } from 'lobby/actions/settings';
 import { Icon } from 'components/Icon';
 import { Timeline } from 'components/media/Timeline';
+import { push } from 'react-router-redux';
 
 interface IProps {
   className?: string;
@@ -82,6 +83,14 @@ class _PlaybackControls extends Component<PrivateProps> {
         <button type="button" className={styles.button} title="Debug" onClick={this.props.debug}>
           <Icon name="settings" />
         </button>
+        <button
+          type="button"
+          className={styles.button}
+          title="Disconnect"
+          onClick={this.disconnect}
+        >
+          <Icon name="log-out" />
+        </button>
       </div>
     );
   }
@@ -105,6 +114,12 @@ class _PlaybackControls extends Component<PrivateProps> {
   private toggleMute = () => {
     const mute = !this.props.mute;
     this.props.dispatch!(setMute(mute));
+  };
+
+  private disconnect = () => {
+    // TODO: Use react-router-redux actions after refactoring to not use
+    // multiple redux stores
+    window.location.hash = '#/';
   };
 }
 
