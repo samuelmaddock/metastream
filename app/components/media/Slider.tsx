@@ -11,7 +11,8 @@ interface IProps {
 }
 
 interface IState {
-  progress: number;
+  dragging?: boolean;
+  dragProgress?: number;
 }
 
 export class Slider extends Component<IProps> {
@@ -19,8 +20,14 @@ export class Slider extends Component<IProps> {
     max: 1
   };
 
+  state: IState = {};
+
+  private rootEl: HTMLElement | null;
+
   render(): JSX.Element | null {
-    const progress = clamp(this.props.value, 0, 1);
+    const { dragProgress } = this.state;
+    const progress =
+      typeof dragProgress === 'number' ? dragProgress : clamp(this.props.value, 0, 1);
 
     const progressStyle = {
       width: `${progress * 100}%`
@@ -31,24 +38,58 @@ export class Slider extends Component<IProps> {
     };
 
     return (
-      <div className={cx(this.props.className, styles.progress)} onClick={this.onClick}>
+      <div
+        ref={el => {
+          this.rootEl = el;
+        }}
+        className={cx(this.props.className, styles.progress)}
+        onMouseDown={this.onDragStart}
+      >
         <div className={styles.progressTrack}>
           <div className={styles.progressBar} style={progressStyle} />
-          <button type="button" className={styles.knob} style={knobStyle} />
+          <button
+            type="button"
+            className={cx(styles.knob, { active: this.state.dragging })}
+            style={knobStyle}
+          />
         </div>
       </div>
     );
   }
 
-  private onClick = (event: React.MouseEvent<HTMLElement>) => {
-    const target = event.target as HTMLElement;
-    const bbox = target.getBoundingClientRect();
-    const width = bbox.width;
-    const x = event.clientX - bbox.left;
-    const progress = x / (width || 1);
+  private onDragStart = (event: React.MouseEvent<HTMLElement>) => {
+    event.preventDefault();
 
-    if (this.props.onChange) {
-      this.props.onChange(progress);
+    this.setState({ dragging: true });
+
+    document.addEventListener('mouseup', this.onDragEnd, false);
+    document.addEventListener('mousemove', this.onDragging, false);
+  };
+
+  private onDragging = (event: MouseEvent) => {
+    const { rootEl } = this;
+    if (!rootEl) {
+      return;
     }
+
+    const bbox = rootEl.getBoundingClientRect();
+    const width = bbox.width;
+    const x = event.pageX - bbox.left;
+    const progress = clamp(x / (width || 1), 0, 1);
+
+    this.setState({ dragProgress: progress });
+  };
+
+  private onDragEnd = (event: MouseEvent) => {
+    event.preventDefault();
+
+    document.removeEventListener('mouseup', this.onDragEnd, false);
+    document.removeEventListener('mousemove', this.onDragging, false);
+
+    if (this.props.onChange && typeof this.state.dragProgress === 'number') {
+      this.props.onChange(this.state.dragProgress);
+    }
+
+    this.setState({ dragging: false, dragProgress: undefined });
   };
 }

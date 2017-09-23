@@ -3,9 +3,11 @@
   display: flex;
   align-items: center;
   cursor: pointer;
+  user-select: none;
 }
 
-.progress:hover .knob {
+.progress:hover .knob,
+.knob:global(.active) {
   opacity: 1;
 }
 
