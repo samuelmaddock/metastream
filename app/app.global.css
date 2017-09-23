@@ -130,10 +130,6 @@ table {
   border-spacing: 0;
 }
 
-button {
-  padding: 0;
-}
-
 /*
 Variables
 */
@@ -206,4 +202,12 @@ a:visited,
 a:hover,
 a:active {
   color: #00bfff;
+}
+
+button {
+  background: transparent;
+  padding: 0;
+  border: none;
+  outline: none;
+  color: var(--app-text-color);
 }
