@@ -100,7 +100,8 @@ export class Slider extends Component<IProps> {
   private onDragStart = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
 
-    this.setState({ dragging: true });
+    const progress = this.getMouseProgress(event);
+    this.setState({ dragging: true, dragProgress: progress });
 
     document.addEventListener('mouseup', this.onDragEnd, false);
     document.addEventListener('mousemove', this.onDragging, false);
