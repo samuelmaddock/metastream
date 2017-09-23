@@ -49,9 +49,13 @@ interface IMediaPlayer {
 /** Abstraction around HTML video tag. */
 class HTMLVideoPlayer implements IMediaPlayer {
   private video: HTMLVideoElement;
+  private volume?: number;
 
   constructor(video: HTMLVideoElement) {
     this.video = video;
+
+    this.video.addEventListener('play', this.onPlay, false);
+    this.video.addEventListener('volumechange', this.onVolumeChange, false);
   }
 
   play(): void {
@@ -81,9 +85,23 @@ class HTMLVideoPlayer implements IMediaPlayer {
       this.video.currentTime = targetTime;
     }
   }
-  setVolume(vol: number): void {
-    this.video.volume = vol;
+  setVolume(volume: number): void {
+    this.video.volume = this.volume = volume;
   }
+
+  /** Set volume as soon as playback begins */
+  private onPlay = (): void => {
+    this.setVolume(this.volume || 1);
+  };
+
+  /** Prevent third-party service from restoring cached volume */
+  private onVolumeChange = (): void => {
+    const { volume } = this;
+    if (volume && this.video.volume !== volume) {
+      console.log(`Volume changed internally (${this.video.volume}), reverting to ${volume}`);
+      this.setVolume(volume);
+    }
+  };
 }
 
 let player: IMediaPlayer;
