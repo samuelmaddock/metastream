@@ -96,8 +96,6 @@ export const netRpcMiddleware = (options: NetRpcMiddlewareOptions): Middleware =
         return next(action);
       }
 
-      console.log('RPC middleware', action);
-
       const rpcName = action.payload.name;
       const rpc = getRpc(rpcName);
 
