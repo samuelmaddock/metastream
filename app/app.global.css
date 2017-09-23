@@ -210,4 +210,9 @@ button {
   border: none;
   outline: none;
   color: var(--app-text-color);
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: auto;
 }

@@ -21,7 +21,6 @@
 }
 
 .button:not(:disabled):hover {
-  cursor: pointer;
   background: rgba(255, 255, 255, 0.11);
 }
 
