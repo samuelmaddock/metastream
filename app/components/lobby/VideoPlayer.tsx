@@ -62,6 +62,15 @@ class _VideoPlayer extends Component<PrivateProps> {
   }
 
   componentDidUpdate(prevProps: PrivateProps): void {
+    const { current } = this.props;
+    const { current: prevMedia } = prevProps;
+
+    // Force restart media if new media is the same URL
+    if (current && prevMedia && current !== prevMedia && current.url === prevMedia.url) {
+      this.onMediaReady();
+      return;
+    }
+
     if (this.props.playback !== prevProps.playback) {
       this.updatePlayback(this.props.playback);
     }
@@ -92,12 +101,12 @@ class _VideoPlayer extends Component<PrivateProps> {
 
     switch (event.channel) {
       case 'media-ready':
-        this.onMediaReady(event);
+        this.onMediaReady();
         break;
     }
   };
 
-  private onMediaReady = (event: Electron.IpcMessageEvent) => {
+  private onMediaReady = () => {
     this.updatePlaybackTime();
     this.updatePlayback(this.props.playback);
     this.updateVolume();
