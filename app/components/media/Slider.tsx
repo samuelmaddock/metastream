@@ -5,9 +5,15 @@ import { clamp } from 'utils/math';
 
 interface IProps {
   className?: string;
+
   value: number;
   max?: number;
+
   onChange?: (value: number) => void;
+
+  onDragStart?: () => void;
+  onDrag?: (value: number) => void;
+  onDragEnd?: () => void;
 }
 
 interface IState {
@@ -23,6 +29,12 @@ export class Slider extends Component<IProps> {
   state: IState = {};
 
   private rootEl: HTMLElement | null;
+
+  componentWillUnmount(): void {
+    if (this.state.dragging) {
+      this.onDragEnd();
+    }
+  }
 
   render(): JSX.Element | null {
     const { dragProgress } = this.state;
@@ -43,6 +55,7 @@ export class Slider extends Component<IProps> {
           this.rootEl = el;
         }}
         className={cx(this.props.className, styles.progress)}
+        onClick={this.onClick}
         onMouseDown={this.onDragStart}
       >
         <div className={styles.progressTrack}>
@@ -57,6 +70,33 @@ export class Slider extends Component<IProps> {
     );
   }
 
+  private getMouseProgress(event: { pageX: number }): number {
+    const { rootEl } = this;
+    if (!rootEl) {
+      return 0;
+    }
+
+    const bbox = rootEl.getBoundingClientRect();
+    const width = bbox.width;
+    const x = event.pageX - bbox.left;
+    const progress = clamp(x / (width || 1), 0, 1);
+    return progress;
+  }
+
+  private onClick = (event: React.MouseEvent<HTMLElement>) => {
+    if (this.state.dragging) {
+      return;
+    }
+
+    event.preventDefault();
+
+    const progress = this.getMouseProgress(event);
+
+    if (this.props.onChange) {
+      this.props.onChange(progress);
+    }
+  };
+
   private onDragStart = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
 
@@ -64,25 +104,22 @@ export class Slider extends Component<IProps> {
 
     document.addEventListener('mouseup', this.onDragEnd, false);
     document.addEventListener('mousemove', this.onDragging, false);
+
+    if (this.props.onDragStart) {
+      this.props.onDragStart();
+    }
   };
 
   private onDragging = (event: MouseEvent) => {
-    const { rootEl } = this;
-    if (!rootEl) {
-      return;
-    }
-
-    const bbox = rootEl.getBoundingClientRect();
-    const width = bbox.width;
-    const x = event.pageX - bbox.left;
-    const progress = clamp(x / (width || 1), 0, 1);
-
+    const progress = this.getMouseProgress(event);
     this.setState({ dragProgress: progress });
+
+    if (this.props.onDrag) {
+      this.props.onDrag(progress);
+    }
   };
 
-  private onDragEnd = (event: MouseEvent) => {
-    event.preventDefault();
-
+  private onDragEnd = () => {
     document.removeEventListener('mouseup', this.onDragEnd, false);
     document.removeEventListener('mousemove', this.onDragging, false);
 
@@ -91,5 +128,9 @@ export class Slider extends Component<IProps> {
     }
 
     this.setState({ dragging: false, dragProgress: undefined });
+
+    if (this.props.onDragEnd) {
+      this.props.onDragEnd();
+    }
   };
 }

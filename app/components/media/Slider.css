@@ -26,11 +26,6 @@
   will-change: width;
 }
 
-.progressSlider {
-  height: 100%;
-  flex-grow: 1;
-}
-
 .knob {
   display: block;
   width: 10px;
