@@ -19,12 +19,14 @@ interface IProps {
 }
 
 interface IConnectedProps extends IMediaPlayerState {
+  mute: boolean;
   volume: number;
 }
 
 const mapStateToProps = (state: ILobbyNetState): IConnectedProps => {
   return {
     ...state.mediaPlayer,
+    mute: state.settings.mute,
     volume: state.settings.volume
   };
 };
@@ -71,7 +73,7 @@ class _VideoPlayer extends Component<PrivateProps> {
       this.updatePlaybackTime();
     }
 
-    if (this.props.volume !== prevProps.volume) {
+    if (this.props.volume !== prevProps.volume || this.props.mute !== prevProps.mute) {
       this.updateVolume();
     }
   }
@@ -124,7 +126,8 @@ class _VideoPlayer extends Component<PrivateProps> {
 
   private updateVolume = () => {
     if (this.webview) {
-      this.webview.send('media-volume', this.props.volume);
+      const volume = this.props.mute ? 0 : this.props.volume;
+      this.webview.send('media-volume', volume);
     }
   };
 
