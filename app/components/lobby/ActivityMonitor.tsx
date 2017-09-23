@@ -23,12 +23,16 @@ export class ActivityMonitor extends Component<IProps> {
   }
 
   componentDidMount(): void {
+    document.addEventListener('mousedown', this.onMouseDown, false);
+    document.addEventListener('mouseup', this.onActivity, false);
     document.addEventListener('mousemove', this.onActivity, false);
     document.addEventListener('mousewheel', this.onActivity, false);
     document.addEventListener('keydown', this.onActivity, false);
   }
 
   componentWillUnmount(): void {
+    document.removeEventListener('mousedown', this.onMouseDown, false);
+    document.removeEventListener('mouseup', this.onActivity, false);
     document.removeEventListener('mousemove', this.onActivity, false);
     document.removeEventListener('mousewheel', this.onActivity, false);
     document.removeEventListener('keydown', this.onActivity, false);
@@ -52,6 +56,16 @@ export class ActivityMonitor extends Component<IProps> {
     }
 
     this.activityTimeoutId = setTimeout(this.onActivityTimeout, INACTIVE_DURATION) as any;
+  };
+
+  /** Don't go inactive while mouse is held down; useful for scrolling */
+  private onMouseDown = (): void => {
+    this.active = true;
+
+    if (this.activityTimeoutId) {
+      clearTimeout(this.activityTimeoutId!);
+      this.activityTimeoutId = undefined;
+    }
   };
 
   render(): JSX.Element | null {
