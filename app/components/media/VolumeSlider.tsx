@@ -63,7 +63,7 @@ export class VolumeSlider extends Component<IProps> {
 
     return (
       <div className={styles.container}>
-        <button type="button" onClick={this.props.onMute}>
+        <button type="button" className={styles.iconBtn} onClick={this.props.onMute}>
           <Icon name={icon} />
         </button>
         <Slider

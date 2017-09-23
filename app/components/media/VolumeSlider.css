@@ -6,6 +6,10 @@
   height: 100%;
 }
 
+.iconBtn {
+  margin-right: 10px;
+}
+
 .slider {
   width: 80px;
 }
