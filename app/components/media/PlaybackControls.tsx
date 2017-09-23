@@ -3,7 +3,6 @@ import cx from 'classnames';
 import styles from './PlaybackControls.css';
 import { PlaybackState, IMediaItem, IMediaPlayerState } from 'lobby/reducers/mediaPlayer';
 import { Time } from 'components/media/Time';
-import { ProgressSlider } from 'components/media/ProgressSlider';
 import { VolumeSlider } from 'components/media/VolumeSlider';
 import { netConnect, ILobbyNetState } from 'lobby';
 import { DispatchProp } from 'react-redux';
