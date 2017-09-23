@@ -121,7 +121,7 @@ class _VideoPlayer extends Component<PrivateProps> {
       time = this.props.pauseTime!;
     }
 
-    if (time) {
+    if (typeof time === 'number') {
       console.log('Sending seek IPC message', time);
       this.webview!.send('media-seek', time);
     }
