@@ -19,6 +19,7 @@ export const settings: Reducer<ISettingsState> = (
   if (isType(action, setVolume)) {
     return {
       ...state,
+      mute: false,
       volume: action.payload
     };
   } else if (isType(action, setMute)) {
