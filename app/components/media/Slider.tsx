@@ -26,10 +26,15 @@ export class Slider extends Component<IProps> {
       width: `${progress * 100}%`
     };
 
+    const knobStyle = {
+      left: `${progress * 100}%`
+    };
+
     return (
       <div className={cx(this.props.className, styles.progress)} onClick={this.onClick}>
         <div className={styles.progressTrack}>
           <div className={styles.progressBar} style={progressStyle} />
+          <button type="button" className={styles.knob} style={knobStyle} />
         </div>
       </div>
     );

@@ -5,20 +5,44 @@
   cursor: pointer;
 }
 
+.progress:hover .knob {
+  opacity: 1;
+}
+
 .progressTrack {
   width: 100%;
   height: 2px;
   background: rgba(255, 255, 255, 0.33);
   pointer-events: none;
+  position: relative;
 }
 
 .progressBar {
   width: 50%;
   height: 100%;
   background: rgba(255, 255, 255, 0.66);
+  will-change: width;
 }
 
 .progressSlider {
   height: 100%;
   flex-grow: 1;
+}
+
+.knob {
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+
+  background: #fff;
+  border: none;
+  opacity: 0;
+
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  will-change: left;
+
+  transition: opacity 80ms ease-in-out;
 }
