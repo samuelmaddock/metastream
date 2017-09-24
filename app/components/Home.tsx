@@ -26,8 +26,8 @@ export default class Home extends Component<IProps> {
           <ul>
             <li>
               <Link to="/lobby/create" className={styles.btn}>
-                <Icon name="plus" />
-                <span>Create Session</span>
+                <Icon name="play" />
+                <span>Start Session</span>
               </Link>
             </li>
             <li>
