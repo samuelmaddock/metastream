@@ -1,7 +1,17 @@
 .container {
   height: 100%;
+  position: relative;
+}
+
+.titleBar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
 }
 
 .content {
-  padding: 30px;
+  --content-spacing: 50px;
+  padding: var(--content-spacing);
+  padding-top: calc(var(--app-titlebar-height) + var(--content-spacing));
 }
