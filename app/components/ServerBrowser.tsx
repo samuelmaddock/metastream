@@ -4,6 +4,7 @@ import styles from './ServerBrowser.css';
 import { NetworkState } from 'types/network';
 import { ILobbySession } from 'platform/types';
 import LayoutMain from 'components/layout/Main';
+import { Icon } from 'components/Icon';
 
 interface IProps {
   network: NetworkState;
@@ -15,10 +16,23 @@ export class ServerBrowser extends Component<IProps, {}> {
   render(): JSX.Element | null {
     return (
       <LayoutMain className={styles.container}>
-        <Link to="/">Go back</Link>
-        <Link to="/lobby/create">Create lobby</Link>
-        <h1>Lobbies:</h1>
-        {this.renderList()}
+        <Link to="/" className={styles.goBack}>
+          <Icon name="arrow-left" />
+          Go back
+        </Link>
+        <section>
+          <header className={styles.header}>
+            <div className={styles.left}>
+              <h1>Lobbies</h1>
+            </div>
+            <div className={styles.right}>
+              <Link to="/lobby/create" className={styles.headerBtn}>
+                Create lobby
+              </Link>
+            </div>
+          </header>
+          {this.renderList()}
+        </section>
       </LayoutMain>
     );
   }
@@ -31,20 +45,32 @@ export class ServerBrowser extends Component<IProps, {}> {
         return <div>{this.renderRefresh()}</div>;
       case NetworkState.Loading:
         return <div>Loading...</div>;
-      default:
     }
 
     const lobbies = list!.map(result => {
       return (
-        <li key={result.id}>
-          <Link to={`/lobby/${result.id}`}>
-            {result.name} ({result.id})
-          </Link>
-        </li>
+        <tr key={result.id}>
+          <td>
+            <Link to={`/lobby/${result.id}`}>
+              {result.name} ({result.id})
+            </Link>
+          </td>
+          <td>0/4</td>
+        </tr>
       );
     });
 
-    return <ul>{lobbies}</ul>;
+    return (
+      <table className={styles.table}>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Users</th>
+          </tr>
+        </thead>
+        <tbody>{lobbies}</tbody>
+      </table>
+    );
   }
 
   private renderRefresh(): JSX.Element {

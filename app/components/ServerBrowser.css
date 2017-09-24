@@ -1,3 +1,66 @@
 .container {
-  width: auto;
+  background: linear-gradient(200deg, #42275a, #734b6d);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.header h1 {
+  font-size: 36px;
+  font-weight: bold;
+}
+
+.headerBtn {
+  display: inline-block;
+  padding: 8px 12px;
+  color: rgba(255, 255, 255, 0.7) !important;
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-right: 10px;
+}
+
+.headerBtn:last-child {
+  margin-right: 0;
+}
+
+.headerBtn:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.goBack {
+  position: absolute;
+  margin-top: -28px;
+  text-decoration: none;
+  line-height: 30px;
+  font-size: 14px;
+}
+
+.goBack svg {
+  width: 16px;
+  height: 16px;
+  vertical-align: text-bottom;
+  margin-right: 2px;
+}
+
+.table {
+  text-align: left;
+}
+
+.table td {
+  padding: 10px;
+  padding-left: 0;
+}
+.table td:last-child {
+  padding-right: 0;
 }

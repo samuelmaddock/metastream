@@ -16,7 +16,7 @@ interface IProps {
 
 // too lazy to move into css
 const DEFAULT_STYLE = {
-  display: 'block'
+  display: 'inline-block'
 };
 
 /** SVG icon component */
