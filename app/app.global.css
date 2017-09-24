@@ -197,6 +197,12 @@ textarea {
   color: var(--app-text-color);
 }
 
+body {
+  /** Make the app feel more native */
+  user-select: none;
+  cursor: default;
+}
+
 a,
 a:visited,
 a:hover,

@@ -36,6 +36,8 @@
   flex-grow: 1;
   overflow-y: auto;
   position: relative;
+  cursor: auto;
+  user-select: text;
 }
 
 .message {
