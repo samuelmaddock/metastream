@@ -13,7 +13,7 @@
   border: none;
   outline: none;
 
-  font-size: 22px;
+  font-size: 0;
 
   color: var(--app-text-color);
   background: transparent;
