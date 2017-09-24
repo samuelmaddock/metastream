@@ -45,6 +45,7 @@ class _PlaybackControls extends Component<PrivateProps> {
     const isIdle = playback === PlaybackState.Idle;
     const isPaused = playback === PlaybackState.Paused;
     const duration = (media && media.duration) || 0;
+    const isTimed = duration > 0;
 
     return (
       <div className={cx(this.props.className, styles.container)}>
@@ -60,7 +61,7 @@ class _PlaybackControls extends Component<PrivateProps> {
         >
           <Icon name="skip-forward" />
         </button>
-        {isIdle ? (
+        {isIdle || !isTimed ? (
           <span className={styles.spacer} />
         ) : (
           <Timeline
