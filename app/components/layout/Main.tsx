@@ -10,9 +10,9 @@ interface IProps {
 export default class LayoutMain extends Component<IProps> {
   render() {
     return (
-      <div className={this.props.className}>
+      <div className={styles.container}>
         <TitleBar />
-        <main className={styles.content}>{this.props.children}</main>
+        <main className={cx(this.props.className, styles.content)}>{this.props.children}</main>
       </div>
     );
   }

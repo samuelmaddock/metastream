@@ -1,6 +1,6 @@
 {
-  "name": "electron-react-boilerplate",
-  "productName": "electron-react-boilerplate",
+  "name": "media-player",
+  "productName": "Media Player",
   "version": "0.0.1",
   "description": "",
   "main": "./main.prod.js",

@@ -4,7 +4,11 @@
 
 import path from 'path';
 import webpack from 'webpack';
+import childProcess from 'child_process';
 import { dependencies as externals } from './app/package.json';
+
+const GIT_BRANCH = childProcess.execSync('git rev-parse --abbrev-ref HEAD').toString().trim();
+const GIT_COMMIT = childProcess.execSync('git rev-parse --short HEAD').toString().trim();
 
 export default {
   externals: Object.keys(externals || {}),
@@ -44,7 +48,9 @@ export default {
 
   plugins: [
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production')
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production'),
+      'process.env.GIT_BRANCH': JSON.stringify(GIT_BRANCH),
+      'process.env.GIT_COMMIT': JSON.stringify(GIT_COMMIT)
     }),
 
     new webpack.NamedModulesPlugin(),
