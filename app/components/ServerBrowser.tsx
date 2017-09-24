@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import styles from './ServerBrowser.css';
 import { NetworkState } from 'types/network';
 import { ILobbySession } from 'platform/types';
+import LayoutMain from 'components/layout/Main';
 
 interface IProps {
   network: NetworkState;
@@ -13,12 +14,12 @@ interface IProps {
 export class ServerBrowser extends Component<IProps, {}> {
   render(): JSX.Element | null {
     return (
-      <div className={styles.container} data-tid="container">
+      <LayoutMain className={styles.container}>
         <Link to="/">Go back</Link>
         <Link to="/lobby/create">Create lobby</Link>
         <h1>Lobbies:</h1>
         {this.renderList()}
-      </div>
+      </LayoutMain>
     );
   }
 

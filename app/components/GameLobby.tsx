@@ -30,7 +30,7 @@ import {
   getPlaybackState
 } from 'lobby/reducers/mediaPlayer.helpers';
 import { ListOverlay } from 'components/lobby/ListOverlay';
-import { TitleBar } from 'components/lobby/TitleBar';
+import { TitleBar } from 'components/TitleBar';
 import { PlaybackControls } from 'components/media/PlaybackControls';
 import { setVolume } from 'lobby/actions/settings';
 import { ActivityMonitor } from 'components/lobby/ActivityMonitor';
