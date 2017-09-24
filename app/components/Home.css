@@ -15,7 +15,7 @@
 }
 
 .header {
-  margin-bottom: 10px;
+  margin-bottom: 30px;
 }
 
 .header h1 {
@@ -24,12 +24,33 @@
 }
 
 .btn {
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 30px;
-  mix-blend-mode: overlay;
+  width: auto;
+  height: 60px;
+
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+
+  background: rgba(255, 255, 255, 0.3);
+  padding: 10px 16px;
+  border-radius: 4px;
+  font-size: 24px;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 15px;
 }
 
-.btn:hover,
-.btn:active {
-  color: rgba(255, 255, 255, 1);
+.btn:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.btn * {
+  mix-blend-mode: soft-light;
+  color: black;
+  vertical-align: middle;
+}
+
+.btn svg {
+  margin-right: 14px;
 }

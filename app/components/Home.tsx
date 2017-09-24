@@ -6,6 +6,7 @@ const { productName, version } = require('package.json');
 import styles from './Home.css';
 import { TitleBar } from 'components/TitleBar';
 import LayoutMain from 'components/layout/Main';
+import { Icon } from 'components/Icon';
 
 interface IProps {}
 
@@ -24,8 +25,15 @@ export default class Home extends Component<IProps> {
           </header>
           <ul>
             <li>
+              <Link to="/lobby/create" className={styles.btn}>
+                <Icon name="plus" />
+                <span>Create Session</span>
+              </Link>
+            </li>
+            <li>
               <Link to="/servers" className={styles.btn}>
-                Servers
+                <Icon name="search" />
+                <span>Find Session</span>
               </Link>
             </li>
           </ul>

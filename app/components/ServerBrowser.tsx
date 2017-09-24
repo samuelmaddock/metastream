@@ -23,12 +23,12 @@ export class ServerBrowser extends Component<IProps, {}> {
         <section>
           <header className={styles.header}>
             <div className={styles.left}>
-              <h1>Lobbies</h1>
+              <h1>Sessions</h1>
             </div>
             <div className={styles.right}>
-              <Link to="/lobby/create" className={styles.headerBtn}>
+              {/* <Link to="/lobby/create" className={styles.headerBtn}>
                 Create lobby
-              </Link>
+              </Link> */}
             </div>
           </header>
           {this.renderList()}

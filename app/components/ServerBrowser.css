@@ -18,26 +18,6 @@
   font-weight: bold;
 }
 
-.headerBtn {
-  display: inline-block;
-  padding: 8px 12px;
-  color: rgba(255, 255, 255, 0.7) !important;
-  background-color: rgba(255, 255, 255, 0.3);
-  border-radius: 4px;
-  text-decoration: none;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-right: 10px;
-}
-
-.headerBtn:last-child {
-  margin-right: 0;
-}
-
-.headerBtn:hover {
-  background-color: rgba(255, 255, 255, 0.4);
-}
-
 .goBack {
   position: absolute;
   margin-top: -28px;
