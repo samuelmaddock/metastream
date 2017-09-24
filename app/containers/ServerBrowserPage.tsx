@@ -24,25 +24,23 @@ function mapStateToProps(state: IAppState): IConnectedProps {
   };
 }
 
-interface IDispatchProps {
-  // refresh:
-}
-
-// function mapDispatchToProps(dispatch: any):
-
 type PrivateProps = IProps & IConnectedProps & IReactReduxProps;
 
 export class _ServerBrowserPage extends Component<PrivateProps> {
   componentDidMount(): void {
     if (this.props.network === NetworkState.Uninitialized) {
-      this.props.dispatch(requestLobbies());
+      this.refresh();
     }
   }
 
   render() {
     const { network, lobbies } = this.props;
-    return <ServerBrowser network={network} list={lobbies} refresh={() => {}} />;
+    return <ServerBrowser network={network} list={lobbies} refresh={this.refresh} />;
   }
+
+  private refresh = () => {
+    this.props.dispatch(requestLobbies());
+  };
 }
 
 export const ServerBrowserPage = connect<IConnectedProps, {}, IProps>(mapStateToProps)(

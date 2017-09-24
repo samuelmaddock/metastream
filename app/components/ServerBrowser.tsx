@@ -5,10 +5,11 @@ import { NetworkState } from 'types/network';
 import { ILobbySession } from 'platform/types';
 import LayoutMain from 'components/layout/Main';
 import { Icon } from 'components/Icon';
+import { MenuButton } from 'components/menu/MenuButton';
 
 interface IProps {
   network: NetworkState;
-  refresh: Function;
+  refresh: () => void;
   list?: ILobbySession[];
 }
 
@@ -26,9 +27,9 @@ export class ServerBrowser extends Component<IProps, {}> {
               <h1>Sessions</h1>
             </div>
             <div className={styles.right}>
-              {/* <Link to="/lobby/create" className={styles.headerBtn}>
-                Create lobby
-              </Link> */}
+              <MenuButton icon="refresh-cw" size="medium" onClick={this.props.refresh}>
+                Refresh
+              </MenuButton>
             </div>
           </header>
           {this.renderList()}
@@ -42,12 +43,15 @@ export class ServerBrowser extends Component<IProps, {}> {
 
     switch (network) {
       case NetworkState.Uninitialized:
-        return <div>{this.renderRefresh()}</div>;
       case NetworkState.Loading:
         return <div>Loading...</div>;
     }
 
-    const lobbies = list!.map(result => {
+    if (!list || list.length === 0) {
+      return <div>No sessions found</div>;
+    }
+
+    const lobbies = list.map(result => {
       return (
         <tr key={result.id}>
           <td>
@@ -55,7 +59,7 @@ export class ServerBrowser extends Component<IProps, {}> {
               {result.name} ({result.id})
             </Link>
           </td>
-          <td>0/4</td>
+          <td>1/4</td>
         </tr>
       );
     });
@@ -70,14 +74,6 @@ export class ServerBrowser extends Component<IProps, {}> {
         </thead>
         <tbody>{lobbies}</tbody>
       </table>
-    );
-  }
-
-  private renderRefresh(): JSX.Element {
-    return (
-      <button type="button" onClick={() => this.props.refresh}>
-        Refresh
-      </button>
     );
   }
 }

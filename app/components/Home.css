@@ -22,33 +22,6 @@
 }
 
 .btn {
-  width: auto;
-  height: 60px;
-
-  display: inline-flex;
-  flex-direction: row;
-  align-items: center;
-
-  background: rgba(255, 255, 255, 0.3);
-  padding: 10px 16px;
-  border-radius: 4px;
-  font-size: 24px;
-  text-decoration: none;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  display: block;
   margin-bottom: 15px;
-}
-
-.btn:hover {
-  background-color: rgba(255, 255, 255, 0.4);
-}
-
-.btn * {
-  mix-blend-mode: soft-light;
-  color: black;
-  vertical-align: middle;
-}
-
-.btn svg {
-  margin-right: 14px;
 }

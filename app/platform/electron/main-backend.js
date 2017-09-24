@@ -99,7 +99,7 @@ ipcMain.on('platform-query', (event, opts) => {
     const [id, session] = mapEntry;
     return {
       id: session.id,
-      name: 'Electron Lobby Foo',
+      name: 'Electron Session',
       data: {
         foo: 'bar'
       }

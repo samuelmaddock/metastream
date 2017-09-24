@@ -7,6 +7,7 @@ import styles from './Home.css';
 import { TitleBar } from 'components/TitleBar';
 import LayoutMain from 'components/layout/Main';
 import { Icon } from 'components/Icon';
+import { MenuButton } from 'components/menu/MenuButton';
 
 interface IProps {}
 
@@ -26,14 +27,12 @@ export default class Home extends Component<IProps> {
           <ul>
             <li>
               <Link to="/lobby/create" className={styles.btn}>
-                <Icon name="play" />
-                <span>Start Session</span>
+                <MenuButton icon="play">Start Session</MenuButton>
               </Link>
             </li>
             <li>
               <Link to="/servers" className={styles.btn}>
-                <Icon name="search" />
-                <span>Find Session</span>
+                <MenuButton icon="search">Find Session</MenuButton>
               </Link>
             </li>
           </ul>

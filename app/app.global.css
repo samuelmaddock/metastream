@@ -208,6 +208,7 @@ a:visited,
 a:hover,
 a:active {
   color: #00bfff;
+  text-decoration: none;
   -webkit-user-drag: none;
 }
 
@@ -216,7 +217,8 @@ button {
   padding: 0;
   border: none;
   outline: none;
-  color: var(--app-text-color);
+  color: inherit;
+  font: inherit;
   cursor: pointer;
 }
 
