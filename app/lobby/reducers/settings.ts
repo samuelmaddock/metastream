@@ -1,6 +1,7 @@
 import { Reducer } from 'redux';
 import { isType } from 'utils/redux';
 import { setVolume, setMute } from 'lobby/actions/settings';
+import { clamp } from 'utils/math';
 
 export interface ISettingsState {
   mute: boolean;
@@ -20,7 +21,7 @@ export const settings: Reducer<ISettingsState> = (
     return {
       ...state,
       mute: false,
-      volume: action.payload
+      volume: clamp(action.payload, 0, 1)
     };
   } else if (isType(action, setMute)) {
     return {

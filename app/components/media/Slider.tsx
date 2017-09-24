@@ -9,6 +9,9 @@ interface IProps {
   value: number;
   max?: number;
 
+  /** Allow scrolling */
+  scroll?: boolean;
+
   onChange?: (value: number) => void;
 
   onDragStart?: () => void;
@@ -30,7 +33,17 @@ export class Slider extends Component<IProps> {
 
   private rootEl: HTMLElement | null;
 
+  componentDidMount(): void {
+    if (this.rootEl && this.props.scroll) {
+      this.rootEl.addEventListener('wheel', this.onMouseWheel, false);
+    }
+  }
+
   componentWillUnmount(): void {
+    if (this.rootEl && this.props.scroll) {
+      this.rootEl.removeEventListener('wheel', this.onMouseWheel, false);
+    }
+
     if (this.state.dragging) {
       this.onDragEnd();
     }
@@ -132,6 +145,18 @@ export class Slider extends Component<IProps> {
 
     if (this.props.onDragEnd) {
       this.props.onDragEnd();
+    }
+  };
+
+  private onMouseWheel = (event: MouseWheelEvent) => {
+    event.preventDefault();
+
+    if (this.props.onChange) {
+      const dt = event.deltaY || event.deltaX;
+      const dir = dt === 0 ? 0 : dt > 0 ? -1 : 1;
+      const delta = 0.05;
+      const value = this.props.value + delta * dir;
+      this.props.onChange(value);
     }
   };
 }
