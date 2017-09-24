@@ -17,7 +17,7 @@ export class Messages extends Component<IProps, IState> {
   private wasAtBottom: boolean;
   state: IState = { hasNewMessage: false };
 
-  get scrollBottom() {
+  private get scrollBottom() {
     return this.list ? this.list.scrollHeight - this.list.clientHeight : 0;
   }
 
@@ -51,7 +51,7 @@ export class Messages extends Component<IProps, IState> {
     return !!(this.list && this.list.scrollTop === this.scrollBottom);
   }
 
-  private scrollToBottom(): void {
+  scrollToBottom(): void {
     if (this.list) {
       this.list.scrollTop = this.scrollBottom;
     }

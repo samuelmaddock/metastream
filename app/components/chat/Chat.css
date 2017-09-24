@@ -2,6 +2,15 @@
   display: block;
 }
 
+.container:not(.focused) {
+  pointer-events: none;
+}
+
+.container:not(.focused) .background,
+.container:not(.focused) .form {
+  opacity: 0;
+}
+
 .wrapper {
   position: relative;
   height: 100%;
@@ -36,6 +45,9 @@
   flex-grow: 1;
   overflow-y: auto;
   position: relative;
+}
+
+.container.focused .messages {
   cursor: auto;
   user-select: text;
 }
@@ -70,11 +82,6 @@
 .form {
   composes: anim;
   width: 100%;
-}
-
-:global(.lobbyInactive) .container:not(.focused) .background,
-:global(.lobbyInactive) .container:not(.focused) .form {
-  opacity: 0;
 }
 
 .messageInput {
