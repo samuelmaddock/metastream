@@ -11,7 +11,7 @@ interface IProps {}
 
 export default class Home extends Component<IProps> {
   render() {
-    const gitv = `${process.env.GIT_COMMIT}@${process.env.GIT_BRANCH}`;
+    const gitv = `${process.env.GIT_BRANCH}@${process.env.GIT_COMMIT}`;
     return (
       <LayoutMain className={styles.container}>
         <section>
