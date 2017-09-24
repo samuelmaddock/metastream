@@ -76,6 +76,7 @@ export class VolumeSlider extends Component<IProps> {
           onDragStart={() => {
             this.setState({ dragging: true });
           }}
+          onDrag={this.props.onChange}
           onDragEnd={() => {
             this.setState({ dragging: false });
           }}
