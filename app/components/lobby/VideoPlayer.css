@@ -10,3 +10,7 @@
   background: white;
   pointer-events: none;
 }
+
+.video.loading {
+  opacity: 0;
+}

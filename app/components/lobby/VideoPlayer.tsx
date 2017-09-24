@@ -23,6 +23,11 @@ interface IConnectedProps extends IMediaPlayerState {
   volume: number;
 }
 
+interface IState {
+  /** Webview is initializing, try to mitigate white flash */
+  initializing: boolean;
+}
+
 const mapStateToProps = (state: ILobbyNetState): IConnectedProps => {
   return {
     ...state.mediaPlayer,
@@ -33,8 +38,11 @@ const mapStateToProps = (state: ILobbyNetState): IConnectedProps => {
 
 type PrivateProps = IProps & IConnectedProps & DispatchProp<ILobbyNetState>;
 
-class _VideoPlayer extends Component<PrivateProps> {
+class _VideoPlayer extends Component<PrivateProps, IState> {
   private webview: Electron.WebviewTag | null;
+  private initTimeoutId?: number;
+
+  state: IState = { initializing: true };
 
   get isPlaying() {
     return this.props.playback === PlaybackState.Playing;
@@ -53,11 +61,20 @@ class _VideoPlayer extends Component<PrivateProps> {
     if (this.props.theRef) {
       this.props.theRef(this);
     }
+
+    this.initTimeoutId = setTimeout(() => {
+      this.initTimeoutId = undefined;
+      this.setState({ initializing: false });
+    }, 500) as any;
   }
 
   componentWillUnmount(): void {
     if (this.props.theRef) {
       this.props.theRef(null);
+    }
+
+    if (this.initTimeoutId) {
+      clearTimeout(this.initTimeoutId);
     }
   }
 
@@ -152,7 +169,9 @@ class _VideoPlayer extends Component<PrivateProps> {
         is="is"
         ref={this.setupWebview}
         src={this.mediaUrl}
-        class={styles.video}
+        class={cx(styles.video, {
+          [styles.loading]: this.state.initializing
+        })}
         /* Some website embeds are disabled without an HTTP referrer */
         httpreferrer="http://mediaplayer.samuelmaddock.com/"
         /* Disable plugins until we know we need them */
