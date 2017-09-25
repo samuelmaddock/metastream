@@ -37,9 +37,11 @@
     "productName": "DankApp",
     "appId": "dankapp",
     "files": [
+      "assets/",
       "dist/",
       "node_modules/",
       "app.html",
+      "idlescreen.html",
       "main.prod.js",
       "main.prod.js.map",
       "preload.js",
@@ -48,10 +50,6 @@
       "steamworks.js"
     ],
     "extraFiles": [
-      {
-        "from": "app/assets/",
-        "to": "assets/"
-      },
       {
         "from": "app/lib/",
         "to": "lib/"
