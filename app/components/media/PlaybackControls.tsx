@@ -38,6 +38,10 @@ const mapStateToProps = (state: ILobbyNetState): IConnectedProps => {
 type PrivateProps = IProps & IConnectedProps & DispatchProp<ILobbyNetState>;
 
 class _PlaybackControls extends Component<PrivateProps> {
+  private get canDebug() {
+    return process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
+  }
+
   render(): JSX.Element | null {
     const { current: media, playback, startTime, pauseTime } = this.props;
     const playbackIcon = playback === PlaybackState.Playing ? 'pause' : 'play';
@@ -81,9 +85,11 @@ class _PlaybackControls extends Component<PrivateProps> {
         <button type="button" className={styles.button} title="Reload" onClick={this.props.reload}>
           <Icon name="rotate-cw" />
         </button>
-        <button type="button" className={styles.button} title="Debug" onClick={this.props.debug}>
-          <Icon name="settings" />
-        </button>
+        {this.canDebug && (
+          <button type="button" className={styles.button} title="Debug" onClick={this.props.debug}>
+            <Icon name="settings" />
+          </button>
+        )}
         <button
           type="button"
           className={styles.button}
