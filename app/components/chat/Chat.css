@@ -52,11 +52,31 @@
   user-select: text;
 }
 
+@keyframes fadeout {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
 .message {
+  --chat-fade-delay: 10s;
   width: 100%;
   padding: 2px 8px;
   word-break: break-all;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.66);
+  animation: 1s ease-in var(--chat-fade-delay);
+  animation-name: fadeout;
+  /* Maintain transparency after animation finishes */
+  animation-fill-mode: forwards;
+}
+
+.container.focused .message {
+  /* Reveal chat on focus */
+  opacity: 1 !important;
+  animation-fill-mode: none;
 }
 
 .newMessages {
