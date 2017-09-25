@@ -6,6 +6,8 @@ import * as cfgStore from './store/configureStore';
 import './app.global.css';
 import { steamworks } from 'steam';
 
+const { productName } = require('./package.json');
+
 const electron = window.require('electron');
 const process = window.require('process');
 
@@ -50,6 +52,9 @@ function init() {
       return;
     }
   }
+
+  // Set default title
+  document.title = productName;
 
   const extra = { steamworks };
 
