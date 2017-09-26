@@ -136,7 +136,8 @@ class YouTubeClient {
           controls: 0,
           fs: 0,
           rel: 0,
-          showinfo: 0
+          showinfo: 0,
+          iv_load_policy: 3 // disable annotations
         })
       : url;
 
