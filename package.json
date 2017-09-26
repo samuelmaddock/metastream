@@ -34,8 +34,8 @@
   },
   "browserslist": "electron 1.4",
   "build": {
-    "productName": "DankApp",
-    "appId": "dankapp",
+    "productName": "MediaPlayer",
+    "appId": "mediaplayer",
     "files": [
       "assets/",
       "dist/",
