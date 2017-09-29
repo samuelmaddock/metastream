@@ -120,7 +120,7 @@ class YouTubeClient {
 
     const item = json.items[0];
     const { snippet } = item;
-    let duration = -1;
+    let duration = 0;
 
     if (snippet.liveBroadcastContent === 'none') {
       const str = item.contentDetails.duration;
