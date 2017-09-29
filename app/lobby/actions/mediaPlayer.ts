@@ -8,7 +8,7 @@ import { rpc, RpcRealm } from 'network/middleware/rpc';
 import { RpcThunk } from 'lobby/types';
 import { PlatformService } from 'platform';
 import { resolveMediaUrl } from 'media';
-import { MediaThumbnailSize } from 'services/types';
+import { MediaThumbnailSize } from 'media/types';
 import {
   getCurrentMedia,
   getPlaybackState,

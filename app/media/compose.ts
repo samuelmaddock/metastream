@@ -1,9 +1,4 @@
-import {
-  IMediaMiddleware,
-  IMediaRequest,
-  IMediaResponse,
-  IMediaMiddlewareResolve
-} from 'services/types';
+import { IMediaMiddleware, IMediaRequest, IMediaResponse, IMediaMiddlewareResolve } from './types';
 
 /**
  * Compose `middleware` returning

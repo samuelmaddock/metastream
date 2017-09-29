@@ -1,11 +1,6 @@
 import { Url } from 'url';
 import { buildUrl } from 'utils/url';
-import {
-  MediaThumbnailSize,
-  IMediaMiddleware,
-  IMediaRequest,
-  IMediaResponse
-} from 'services/types';
+import { MediaThumbnailSize, IMediaMiddleware, IMediaRequest, IMediaResponse } from '../types';
 import { fetchText } from 'utils/http';
 
 const API_URL = 'https://www.googleapis.com/youtube/v3/videos';

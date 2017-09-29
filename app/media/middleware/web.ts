@@ -1,10 +1,5 @@
 import { load } from 'cheerio';
-import {
-  MediaThumbnailSize,
-  IMediaRequest,
-  IMediaMiddleware,
-  IMediaResponse
-} from 'services/types';
+import { MediaThumbnailSize, IMediaRequest, IMediaMiddleware, IMediaResponse } from '../types';
 import { fetchText, fetchResponse } from 'utils/http';
 import { Url } from 'url';
 import { basename } from 'path';

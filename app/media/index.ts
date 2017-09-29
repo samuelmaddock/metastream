@@ -1,10 +1,10 @@
 import { Url, parse } from 'url';
-import { IMediaMiddleware, IMediaRequest, IMediaResponse } from 'services/types';
 
 import compose from './compose';
 
-import youTubeMiddleware from 'services/youtube';
-import webMiddleware from 'services/web';
+import { IMediaMiddleware, IMediaRequest, IMediaResponse } from './types';
+import youTubeMiddleware from './middleware/youtube';
+import webMiddleware from './middleware/web';
 
 // prettier-ignore
 const middlewares: IMediaMiddleware[] = [
