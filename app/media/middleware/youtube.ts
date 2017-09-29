@@ -108,7 +108,7 @@ class YouTubeClient {
     const json = response;
 
     if (json.error) {
-      throw new Error(json.error.message);
+      throw new Error(JSON.stringify(json.error));
     }
 
     const { pageInfo } = json;
@@ -155,13 +155,20 @@ class YouTubeClient {
 const yt = YouTubeClient.getInstance();
 
 const mware: IMediaMiddleware = {
-  match(url: Url) {
+  match(url) {
     const { hostname = '', href = '' } = url;
     return !!URL_PATTERN.exec(hostname) && !!yt.getVideoId(href);
   },
 
-  async resolve(req: IMediaRequest): Promise<IMediaResponse> {
-    let metadata = await yt.getVideoMetadata(req.url.href);
+  async resolve(req, res, next) {
+    let metadata;
+
+    try {
+      metadata = await yt.getVideoMetadata(req.url.href);
+    } catch (e) {
+      console.error('YouTube request failed', e.message);
+      return next();
+    }
 
     return metadata;
   }

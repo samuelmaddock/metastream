@@ -63,7 +63,7 @@ export interface IMediaResponse {
 }
 
 export interface IMediaMiddlewareResolve {
-  (req: IMediaRequest, res: IMediaResponse, next: IMediaMiddlewareResolve):
+  (req: IMediaRequest, res: IMediaResponse, next: () => PromiseLike<IMediaResponse | void>):
     | PromiseLike<IMediaResponse | void>
     | IMediaResponse
     | void;
