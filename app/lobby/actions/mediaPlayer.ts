@@ -7,7 +7,7 @@ import { ILobbyNetState } from 'lobby';
 import { rpc, RpcRealm } from 'network/middleware/rpc';
 import { RpcThunk } from 'lobby/types';
 import { PlatformService } from 'platform';
-import { getServiceForUrl } from 'media';
+import { resolveMediaUrl } from 'media';
 import { MediaThumbnailSize } from 'services/types';
 import {
   getCurrentMedia,
@@ -78,24 +78,21 @@ const enqueueMedia = (media: IMediaItem): ThunkAction<void, ILobbyNetState, void
 };
 
 const requestMedia = (url: string): RpcThunk<void> => async (dispatch, getState, context) => {
-  const urlObj = parseUrl(url);
-
-  console.info('Media request', urlObj);
-
-  const service = getServiceForUrl(urlObj);
-  if (!service) {
-    // TODO: tell client the service is unsupported
-    console.error('Unsupported service for', url);
-    return;
-  }
+  console.info('Media request', url, context);
 
   let result;
 
   try {
-    result = await service.resolve(urlObj);
+    result = await resolveMediaUrl(url);
   } catch (e) {
+    // TODO: Notify client
     console.error(`Failed to fetch media URL metadata`);
     console.error(e);
+    return;
+  }
+
+  if (!result) {
+    console.log(`Failed to fetch media for ${url}`);
     return;
   }
 

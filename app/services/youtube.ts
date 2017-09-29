@@ -1,6 +1,11 @@
 import { Url } from 'url';
 import { buildUrl } from 'utils/url';
-import { MediaMetadataService, IMediaMetadataResult, MediaThumbnailSize } from 'services/types';
+import {
+  MediaThumbnailSize,
+  IMediaMiddleware,
+  IMediaRequest,
+  IMediaResponse
+} from 'services/types';
 import { fetchText } from 'utils/http';
 
 const API_URL = 'https://www.googleapis.com/youtube/v3/videos';
@@ -91,7 +96,7 @@ class YouTubeClient {
     return match ? match[1] : null;
   }
 
-  async getVideoMetadata(url: string): Promise<IMediaMetadataResult> {
+  async getVideoMetadata(url: string): Promise<IMediaResponse> {
     const videoId = this.getVideoId(url);
     const apiUrl = buildUrl(API_URL, {
       ...DEFAULT_QUERY,
@@ -152,22 +157,19 @@ class YouTubeClient {
   }
 }
 
-export class YouTubeMetadataService extends MediaMetadataService {
-  private yt: YouTubeClient;
+const yt = YouTubeClient.getInstance();
 
-  constructor() {
-    super();
-    this.yt = YouTubeClient.getInstance();
-  }
-
-  match(url: Url): boolean {
+const mware: IMediaMiddleware = {
+  match(url: Url) {
     const { hostname = '', href = '' } = url;
-    return !!URL_PATTERN.exec(hostname) && !!this.yt.getVideoId(href);
-  }
+    return !!URL_PATTERN.exec(hostname) && !!yt.getVideoId(href);
+  },
 
-  async resolve(url: Url): Promise<IMediaMetadataResult> {
-    let metadata = await this.yt.getVideoMetadata(url.href!);
+  async resolve(req: IMediaRequest): Promise<IMediaResponse> {
+    let metadata = await yt.getVideoMetadata(req.url.href);
 
     return metadata;
   }
-}
+};
+
+export default mware;

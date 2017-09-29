@@ -7,28 +7,75 @@ export const enum MediaThumbnailSize {
   Large
 }
 
-export interface IMediaMetadataResult {
-  /** Request URL */
+export interface IMediaRequest {
+  /** Request URL object */
+  readonly url: Url & { href: string };
+
+  /** Media requester */
+  readonly user: any;
+
+  /**
+   * TODO
+   *
+   * Clients prerender HTML using hidden window with JavaScript enabled.
+   * Semantic HTML is extracted as hints for the backend.
+   *
+   * Full HTML is not sent to the server in case sensitive data is included.
+   */
+  readonly hints?: {
+    /**
+     * Open Graph
+     * http://ogp.me/
+     */
+    readonly og?: any;
+
+    /**
+     * JSON for Linking Data
+     * https://json-ld.org/
+     */
+    readonly jsonLD?: any;
+
+    /**
+     * Microdata
+     * https://html.spec.whatwg.org/multipage/microdata.html
+     */
+    readonly microdata?: any;
+  };
+}
+
+export interface IMediaResponse {
+  /** URL to display on client; defaults to request URL */
   url: string;
 
-  title: string;
+  /** Display title */
+  title?: string;
 
-  /** Duration in ms */
+  /** Milliseconds */
   duration?: number;
 
   /** Map of thumbnail sizes to URLs */
   // TODO: Use MediaThumbnailSize as key when TS supports it
   // https://github.com/Microsoft/TypeScript/issues/13042
   thumbnails?: { [key: number]: string };
+
+  /** Extra data used by middleware */
+  [key: string]: any;
+}
+
+export interface IMediaMiddlewareResolve {
+  (req: IMediaRequest, res: IMediaResponse, next: IMediaMiddlewareResolve):
+    | PromiseLike<IMediaResponse | void>
+    | IMediaResponse
+    | void;
 }
 
 /**
  * Service responsible for fetching metadata of third-party provider.
  */
-export abstract class MediaMetadataService {
+export interface IMediaMiddleware {
   /** Determine if the given URL is a match for the service. */
-  abstract match(url: Url): boolean;
+  match(url: Url & { href: string }): boolean;
 
   /** Resolve metadata for the given URL. */
-  abstract async resolve(url: Url): Promise<IMediaMetadataResult>;
+  resolve: IMediaMiddlewareResolve;
 }
