@@ -154,7 +154,11 @@ export class Slider extends Component<IProps> {
     if (this.props.onChange) {
       const dt = event.deltaY || event.deltaX;
       const dir = dt === 0 ? 0 : dt > 0 ? -1 : 1;
-      const delta = 0.05;
+
+      // Allow smoother scrolling on finer touchpads
+      const multiplier = Math.abs(dt) / 100;
+
+      const delta = 0.05 * multiplier;
       const value = this.props.value + delta * dir;
       this.props.onChange(value);
     }
