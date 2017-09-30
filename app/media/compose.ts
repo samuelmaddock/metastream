@@ -1,4 +1,10 @@
-import { IMediaMiddleware, IMediaRequest, IMediaResponse, IMediaMiddlewareResolve } from './types';
+import {
+  IMediaMiddleware,
+  IMediaRequest,
+  IMediaResponse,
+  IMediaMiddlewareResolve,
+  IMediaContext
+} from './types';
 
 /**
  * Compose `middleware` returning
@@ -22,7 +28,7 @@ function compose(middleware: IMediaMiddleware[]) {
    * @return {Promise}
    * @api public
    */
-  return function(req: IMediaRequest, res: IMediaResponse) {
+  return function(ctx: IMediaContext) {
     // last called middleware #
     let index = -1;
     return dispatch(0);
@@ -32,13 +38,13 @@ function compose(middleware: IMediaMiddleware[]) {
       let mware: IMediaMiddleware | undefined = middleware[i];
       if (!mware) return Promise.resolve();
 
-      if (!mware.match(req.url)) {
+      if (!mware.match(ctx.req.url)) {
         return Promise.resolve(dispatch(i + 1));
       }
 
       try {
         return Promise.resolve<any>(
-          mware.resolve(req, res, function next() {
+          mware.resolve(ctx, function next() {
             return dispatch(i + 1);
           })
         );

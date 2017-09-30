@@ -2,7 +2,7 @@ import { Url, parse } from 'url';
 
 import compose from './compose';
 
-import { IMediaMiddleware, IMediaRequest, IMediaResponse } from './types';
+import { IMediaMiddleware, IMediaRequest, IMediaResponse, IMediaContext } from './types';
 
 import subredditMware from './middleware/subreddit';
 import youTubeMware from './middleware/youtube';
@@ -38,7 +38,13 @@ export const resolveMediaUrl = async (url: string): Promise<Readonly<IMediaRespo
     url
   };
 
+  const ctx: IMediaContext = {
+    req,
+    res,
+    state: {}
+  };
+
   const fn = compose(middlewares);
-  const result = (await fn(req, res)) || null;
+  const result = (await fn(ctx)) || null;
   return result;
 };

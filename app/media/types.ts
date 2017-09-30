@@ -57,13 +57,18 @@ export interface IMediaResponse {
   // TODO: Use MediaThumbnailSize as key when TS supports it
   // https://github.com/Microsoft/TypeScript/issues/13042
   thumbnails?: { [key: number]: string };
+}
 
-  /** Extra data used by middleware */
-  [key: string]: any;
+export interface IMediaContext {
+  req: IMediaRequest;
+  res: IMediaResponse;
+
+  /** Object for passing information through middleware */
+  state: { [key: string]: any };
 }
 
 export interface IMediaMiddlewareResolve {
-  (req: IMediaRequest, res: IMediaResponse, next: () => PromiseLike<IMediaResponse | void>):
+  (ctx: IMediaContext, next: () => PromiseLike<IMediaResponse | void>):
     | PromiseLike<IMediaResponse | void>
     | IMediaResponse
     | void;

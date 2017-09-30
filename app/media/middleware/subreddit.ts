@@ -11,8 +11,8 @@ const mware: IMediaMiddleware = {
     return !!URL_PATTERN.exec(url.href);
   },
 
-  async resolve(req, res, next) {
-    const match = URL_PATTERN.exec(req.url.href);
+  async resolve(ctx, next) {
+    const match = URL_PATTERN.exec(ctx.req.url.href);
     if (!match) {
       return next();
     }
@@ -36,7 +36,7 @@ const mware: IMediaMiddleware = {
     const child = children[0];
     const url = parse(child.data.url);
     if (url && url.href) {
-      req.url = url as any;
+      ctx.req.url = url as any;
     }
 
     return next();

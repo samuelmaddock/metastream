@@ -13,8 +13,8 @@ const mware: IMediaMiddleware = {
     return protocol === 'http:' || protocol === 'https:';
   },
 
-  async resolve(req, res, next) {
-    const { url } = req;
+  async resolve(ctx, next) {
+    const { url } = ctx.req;
 
     // Request HEAD response to check MIME type
     const response = await fetchResponse(url.href, {
@@ -32,9 +32,9 @@ const mware: IMediaMiddleware = {
     const contentType: string | undefined = response.headers['content-type'];
     const type = getContentType(contentType);
 
-    res.responseCode = code;
-    res.contentType = contentType;
-    res.type = type;
+    ctx.state.responseCode = code;
+    ctx.state.contentType = contentType;
+    ctx.state.type = type;
 
     return next();
   }

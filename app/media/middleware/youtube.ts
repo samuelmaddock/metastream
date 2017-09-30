@@ -158,11 +158,11 @@ const mware: IMediaMiddleware = {
     return !!URL_PATTERN.exec(hostname) && !!yt.getVideoId(href);
   },
 
-  async resolve(req, res, next) {
+  async resolve(ctx, next) {
     let metadata;
 
     try {
-      metadata = await yt.getVideoMetadata(req.url.href);
+      metadata = await yt.getVideoMetadata(ctx.req.url.href);
     } catch (e) {
       console.error('YouTube request failed', e.message);
       return next();

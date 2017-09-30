@@ -18,9 +18,9 @@ const mware: IMediaMiddleware = {
     return protocol === 'http:' || protocol === 'https:';
   },
 
-  resolve(req, res, next) {
-    const { url } = req;
-    const { type } = res;
+  resolve(ctx, next) {
+    const { url } = ctx.req;
+    const { type } = ctx.state;
 
     // Avoid GET requests to media
     if (type && MIME_MEDIA_TYPES.has(type)) {
