@@ -3,13 +3,18 @@ import { Url, parse } from 'url';
 import compose from './compose';
 
 import { IMediaMiddleware, IMediaRequest, IMediaResponse } from './types';
-import youTubeMiddleware from './middleware/youtube';
-import webMiddleware from './middleware/web';
+
+import youTubeMware from './middleware/youtube';
+import httpHeadMware from './middleware/httpHead';
+import mediaMware from './middleware/media';
+import ogMware from './middleware/openGraph';
 
 // prettier-ignore
 const middlewares: IMediaMiddleware[] = [
-  youTubeMiddleware,
-  webMiddleware
+  youTubeMware,
+  httpHeadMware,
+  mediaMware,
+  ogMware
 ];
 
 export const resolveMediaUrl = async (url: string): Promise<Readonly<IMediaResponse> | null> => {

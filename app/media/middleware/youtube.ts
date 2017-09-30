@@ -98,14 +98,12 @@ class YouTubeClient {
       id: videoId
     });
 
-    const response = await fetchText<any>(apiUrl, {
+    const [json] = await fetchText<any>(apiUrl, {
       json: true,
       headers: {
         Referer: 'http://mediaplayer.samuelmaddock.com'
       }
     });
-
-    const json = response;
 
     if (json.error) {
       throw new Error(JSON.stringify(json.error));
