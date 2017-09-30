@@ -91,7 +91,7 @@ class YouTubeClient {
     return match ? match[1] : null;
   }
 
-  async getVideoMetadata(url: string): Promise<IMediaResponse> {
+  async getVideoMetadata(url: string): Promise<Partial<IMediaResponse>> {
     const videoId = this.getVideoId(url);
     const apiUrl = buildUrl(API_URL, {
       ...DEFAULT_QUERY,
@@ -168,7 +168,9 @@ const mware: IMediaMiddleware = {
       return next();
     }
 
-    return metadata;
+    Object.assign(ctx.res, metadata);
+
+    return ctx.res;
   }
 };
 

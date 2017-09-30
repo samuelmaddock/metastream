@@ -10,6 +10,7 @@ import {
   queueMedia
 } from 'lobby/actions/mediaPlayer';
 import { ILobbyNetState } from 'lobby/reducers';
+import { MediaType } from 'media/types';
 
 export const enum PlaybackState {
   Idle,
@@ -18,6 +19,8 @@ export const enum PlaybackState {
 }
 
 export interface IMediaItem {
+  type: MediaType;
+
   url: string;
 
   // TODO: Make the following non-optional
@@ -34,6 +37,9 @@ export interface IMediaItem {
 
   /** Requester name, in case they disconnect */
   ownerName?: string;
+
+  /** Middleware-specific state */
+  state?: { [key: string]: any };
 }
 
 export interface IMediaPlayerState {

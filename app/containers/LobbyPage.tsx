@@ -69,6 +69,10 @@ export class _LobbyPage extends Component<PrivateProps, {}> {
       replicated: LobbyReplicatedState
     });
 
+    if (process.env.NODE_ENV === 'development') {
+      (window as any).net = this.netStore;
+    }
+
     this.forceUpdate();
   }
 

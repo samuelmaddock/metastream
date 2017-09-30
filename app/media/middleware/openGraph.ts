@@ -6,7 +6,7 @@ import { MEDIA_USER_AGENT } from 'constants/http';
 
 import { parse } from './og';
 
-function buildHTMLMetadata(url: Url, body: string): IMediaResponse {
+function buildHTMLMetadata(url: Url, body: string): Partial<IMediaResponse> {
   const og = parse(body, {});
   console.log('og', og);
   const { ogTitle: title, ogImage: image } = og;
@@ -17,7 +17,7 @@ function buildHTMLMetadata(url: Url, body: string): IMediaResponse {
       }
     : undefined;
 
-  const meta: IMediaResponse = {
+  const meta: Partial<IMediaResponse> = {
     url: url.href!,
     title,
     thumbnails
@@ -44,7 +44,9 @@ const mware: IMediaMiddleware = {
       }
     });
 
-    return buildHTMLMetadata(url, text);
+    const meta = buildHTMLMetadata(url, text);
+    Object.assign(ctx.res, meta);
+    return ctx.res;
   }
 };
 

@@ -5,7 +5,7 @@ import { IMediaMiddleware, IMediaResponse } from '../types';
 
 const MIME_MEDIA_TYPES = new Set(['audio', 'image', 'video']);
 
-function buildMediaMetadata(url: Url): IMediaResponse {
+function buildMediaMetadata(url: Url): Partial<IMediaResponse> {
   // TODO: get ID3 metadata from MP3s
   return {
     url: url.href!,
@@ -24,7 +24,9 @@ const mware: IMediaMiddleware = {
 
     // Avoid GET requests to media
     if (type && MIME_MEDIA_TYPES.has(type)) {
-      return buildMediaMetadata(url);
+      const meta = buildMediaMetadata(url);
+      Object.assign(ctx.res, meta);
+      return ctx.res;
     }
 
     return next();

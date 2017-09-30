@@ -38,7 +38,7 @@ function compose(middleware: IMediaMiddleware[]) {
       let mware: IMediaMiddleware | undefined = middleware[i];
       if (!mware) return Promise.resolve();
 
-      if (!mware.match(ctx.req.url)) {
+      if (!mware.match(ctx.req.url, ctx)) {
         return Promise.resolve(dispatch(i + 1));
       }
 

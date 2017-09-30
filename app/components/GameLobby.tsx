@@ -34,6 +34,7 @@ import { TitleBar } from 'components/TitleBar';
 import { PlaybackControls } from 'components/media/PlaybackControls';
 import { setVolume } from 'lobby/actions/settings';
 import { ActivityMonitor } from 'components/lobby/ActivityMonitor';
+import { MediaType } from 'media/types';
 
 interface IProps {
   host: boolean;
@@ -55,6 +56,7 @@ interface IConnectedProps {
 type PrivateProps = IProps & IConnectedProps & IReactReduxProps;
 
 const NO_MEDIA: IMediaItem = {
+  type: MediaType.Item,
   title: 'No media playing',
   url: ''
 };

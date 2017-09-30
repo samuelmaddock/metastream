@@ -7,7 +7,14 @@ export const enum MediaThumbnailSize {
   Large
 }
 
+export const enum MediaType {
+  Item = 'item',
+  Playlist = 'playlist'
+}
+
 export interface IMediaRequest {
+  type: MediaType;
+
   /** Request URL object */
   url: Url & { href: string };
 
@@ -41,9 +48,14 @@ export interface IMediaRequest {
      */
     microdata?: any;
   };
+
+  /** Object for passing state to the frontend */
+  state?: { [key: string]: any };
 }
 
 export interface IMediaResponse {
+  type: MediaType;
+
   /** URL to display on client; defaults to request URL */
   url: string;
 
@@ -57,6 +69,9 @@ export interface IMediaResponse {
   // TODO: Use MediaThumbnailSize as key when TS supports it
   // https://github.com/Microsoft/TypeScript/issues/13042
   thumbnails?: { [key: number]: string };
+
+  /** Object for passing state to the frontend */
+  state: { [key: string]: any };
 }
 
 export interface IMediaContext {
@@ -79,7 +94,7 @@ export interface IMediaMiddlewareResolve {
  */
 export interface IMediaMiddleware {
   /** Determine if the given URL is a match for the service. */
-  match(url: Url & { href: string }): boolean;
+  match(url: Url & { href: string }, ctx: IMediaContext): boolean;
 
   /** Resolve metadata for the given URL. */
   resolve: IMediaMiddlewareResolve;

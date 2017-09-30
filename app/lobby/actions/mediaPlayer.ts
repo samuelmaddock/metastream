@@ -7,8 +7,8 @@ import { ILobbyNetState } from 'lobby';
 import { rpc, RpcRealm } from 'network/middleware/rpc';
 import { RpcThunk } from 'lobby/types';
 import { PlatformService } from 'platform';
-import { resolveMediaUrl } from 'media';
-import { MediaThumbnailSize } from 'media/types';
+import { resolveMediaUrl, resolveMediaPlaylist } from 'media';
+import { MediaThumbnailSize, MediaType } from 'media/types';
 import {
   getCurrentMedia,
   getPlaybackState,
@@ -30,9 +30,51 @@ const nextMedia = (): ThunkAction<void, ILobbyNetState, void> => {
     const media = getCurrentMedia(state);
 
     if (media) {
-      dispatch(endMedia());
-      dispatch(updatePlaybackTimer());
+      if (media.type === MediaType.Playlist) {
+        dispatch(advancePlaylist(media));
+      } else {
+        dispatch(endMedia());
+        dispatch(updatePlaybackTimer());
+      }
     }
+  };
+};
+
+const advancePlaylist = (playlist: IMediaItem): ThunkAction<void, ILobbyNetState, void> => {
+  return async (dispatch, getState) => {
+    console.info('Resolving playlist', playlist);
+
+    let res;
+
+    try {
+      res = await resolveMediaPlaylist(playlist);
+    } catch (e) {
+      console.error(e);
+    }
+
+    if (!res) {
+      // TODO: Notify clients
+      console.log(`Failed to resolve media playlist`);
+      return;
+    }
+
+    console.log('Media response', res);
+
+    const media: IMediaItem = {
+      ...playlist,
+      type: res.type,
+      url: res.url,
+      title: res.title,
+      duration: res.duration,
+      imageUrl: res.thumbnails && res.thumbnails[MediaThumbnailSize.Default]
+    };
+
+    if (res.state) {
+      media.state = res.state;
+    }
+
+    dispatch(setMedia(media));
+    dispatch(updatePlaybackTimer());
   };
 };
 
@@ -80,10 +122,10 @@ const enqueueMedia = (media: IMediaItem): ThunkAction<void, ILobbyNetState, void
 const requestMedia = (url: string): RpcThunk<void> => async (dispatch, getState, context) => {
   console.info('Media request', url, context);
 
-  let result;
+  let res;
 
   try {
-    result = await resolveMediaUrl(url);
+    res = await resolveMediaUrl(url);
   } catch (e) {
     // TODO: Notify client
     console.error(`Failed to fetch media URL metadata`);
@@ -91,22 +133,27 @@ const requestMedia = (url: string): RpcThunk<void> => async (dispatch, getState,
     return;
   }
 
-  if (!result) {
+  if (!res) {
     console.log(`Failed to fetch media for ${url}`);
     return;
   }
 
-  console.log('Service result', result);
+  console.log('Media response', res);
 
   const userId = context.client.id;
   const media: IMediaItem = {
-    url: result.url,
-    title: result.title,
-    duration: result.duration,
-    imageUrl: result.thumbnails && result.thumbnails[MediaThumbnailSize.Default],
+    type: res.type,
+    url: res.url,
+    title: res.title,
+    duration: res.duration,
+    imageUrl: res.thumbnails && res.thumbnails[MediaThumbnailSize.Default],
     ownerId: userId.toString(),
     ownerName: PlatformService.getUserName(userId)
   };
+
+  if (res.state) {
+    media.state = res.state;
+  }
 
   dispatch(enqueueMedia(media));
 };
