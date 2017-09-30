@@ -9,10 +9,12 @@ import { IMediaMiddleware, IMediaRequest, IMediaResponse, IMediaMiddlewareResolv
  * @return {Function}
  * @api public
  */
-function compose(middleware: IMediaMiddlewareResolve[]) {
+function compose(middleware: IMediaMiddleware[]) {
   if (!Array.isArray(middleware)) throw new TypeError('Middleware stack must be an array!');
-  for (const fn of middleware) {
-    if (typeof fn !== 'function') throw new TypeError('Middleware must be composed of functions!');
+  for (const mware of middleware) {
+    if (typeof mware.match !== 'function' || typeof mware.resolve !== 'function') {
+      throw new TypeError('Middleware must be composed of functions!');
+    }
   }
 
   /**
@@ -20,20 +22,23 @@ function compose(middleware: IMediaMiddlewareResolve[]) {
    * @return {Promise}
    * @api public
    */
-  return function(req: IMediaRequest, res: IMediaResponse, next?: IMediaMiddlewareResolve) {
+  return function(req: IMediaRequest, res: IMediaResponse) {
     // last called middleware #
     let index = -1;
     return dispatch(0);
     function dispatch(i: number): PromiseLike<IMediaResponse | void> {
       if (i <= index) return Promise.reject(new Error('next() called multiple times'));
       index = i;
-      let fn: IMediaMiddlewareResolve | undefined = middleware[i];
-      if (i === middleware.length) fn = next;
-      if (!fn) return Promise.resolve();
+      let mware: IMediaMiddleware | undefined = middleware[i];
+      if (!mware) return Promise.resolve();
+
+      if (!mware.match(req.url)) {
+        return Promise.resolve(dispatch(i + 1));
+      }
 
       try {
         return Promise.resolve<any>(
-          fn(req, res, function next() {
+          mware.resolve(req, res, function next() {
             return dispatch(i + 1);
           })
         );

@@ -4,6 +4,7 @@ import compose from './compose';
 
 import { IMediaMiddleware, IMediaRequest, IMediaResponse } from './types';
 
+import subredditMware from './middleware/subreddit';
 import youTubeMware from './middleware/youtube';
 import httpHeadMware from './middleware/httpHead';
 import mediaMware from './middleware/media';
@@ -11,7 +12,9 @@ import ogMware from './middleware/openGraph';
 
 // prettier-ignore
 const middlewares: IMediaMiddleware[] = [
+  subredditMware,
   youTubeMware,
+
   httpHeadMware,
   mediaMware,
   ogMware
@@ -35,12 +38,7 @@ export const resolveMediaUrl = async (url: string): Promise<Readonly<IMediaRespo
     url
   };
 
-  // prettier-ignore
-  const resolvers = middlewares
-    .filter(mware => mware.match(urlObj))
-    .map(mware => mware.resolve);
-
-  const fn = compose(resolvers);
+  const fn = compose(middlewares);
   const result = (await fn(req, res)) || null;
   return result;
 };
