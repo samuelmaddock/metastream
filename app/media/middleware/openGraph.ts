@@ -4,12 +4,12 @@ import { fetchText } from 'utils/http';
 import { Url } from 'url';
 import { MEDIA_USER_AGENT } from 'constants/http';
 
-function buildHTMLMetadata(url: Url, text: string): IMediaResponse {
-  const $ = load(text);
+import { parse } from './og';
 
-  const title = $('meta[property="og:title"]').attr('content') || $('title').text();
-  // const src = $('meta[property="og:url"]').attr('content') || url;
-  const image = $('meta[property="og:image"]').attr('content');
+function buildHTMLMetadata(url: Url, body: string): IMediaResponse {
+  const og = parse(body, {});
+  console.log('og', og);
+  const { ogTitle: title, ogImage: image } = og;
 
   const thumbnails = image
     ? {
@@ -22,6 +22,10 @@ function buildHTMLMetadata(url: Url, text: string): IMediaResponse {
     title,
     thumbnails
   };
+
+  if (og.ogVideo) {
+    meta.url = og.ogVideo.url || meta.url;
+  }
 
   return meta;
 }
