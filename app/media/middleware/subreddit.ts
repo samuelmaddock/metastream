@@ -22,7 +22,7 @@ const enum ObjectType {
 }
 
 const URL_PATTERN = /reddit\.com\/r\/([^\s/]+)\/?/i;
-const API_LIMIT = 2;
+const API_LIMIT = 5;
 
 const transformPost = ({ data }: any) => ({
   id: data.id,
@@ -100,7 +100,7 @@ const mware: IMediaMiddleware = {
       currentIdx = -1;
     }
 
-    const idx = currentIdx + 1;
+    let idx = currentIdx + 1;
     let child = children[idx];
 
     if (!child) {
@@ -111,8 +111,9 @@ const mware: IMediaMiddleware = {
         return next();
       }
 
+      idx = 0;
       children = posts;
-      child = children[0];
+      child = children[idx];
       after = json.data.after;
     }
 
