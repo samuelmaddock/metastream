@@ -21,7 +21,7 @@ export default {
         loader: 'awesome-typescript-loader',
         options: {
           silent: true,
-          useBabel: true,
+          useBabel: false,
           useCache: true
         }
       }
