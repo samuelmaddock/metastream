@@ -18,15 +18,16 @@ const mware: IMediaMiddleware = {
     return protocol === 'http:' || protocol === 'https:';
   },
 
-  resolve(ctx, next) {
-    const { url } = ctx.req;
-    const { type } = ctx.state;
+  resolve({ req, res, state }, next) {
+    const { url } = req;
+    const { type } = state;
 
     // Avoid GET requests to media
     if (type && MIME_MEDIA_TYPES.has(type)) {
       const meta = buildMediaMetadata(url);
-      Object.assign(ctx.res, meta);
-      return ctx.res;
+      res.url = meta.url || res.url;
+      res.title = res.title || meta.title;
+      return res;
     }
 
     return next();

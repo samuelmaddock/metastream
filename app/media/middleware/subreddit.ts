@@ -26,7 +26,8 @@ const API_LIMIT = 5;
 
 const transformPost = ({ data }: any) => ({
   id: data.id,
-  url: data.url
+  url: data.url,
+  title: data.title
 });
 
 const getListing = async (url: string, after?: string) => {
@@ -115,7 +116,13 @@ const mware: IMediaMiddleware = {
       children = posts;
       child = children[idx];
       after = json.data.after;
+
+      if (!child) {
+        return;
+      }
     }
+
+    ctx.res.title = child.title;
 
     // Overwrite request url with subreddit post
     const url = parse(child.url);
