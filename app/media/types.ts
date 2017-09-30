@@ -9,10 +9,10 @@ export const enum MediaThumbnailSize {
 
 export interface IMediaRequest {
   /** Request URL object */
-  readonly url: Url & { href: string };
+  url: Url & { href: string };
 
   /** Media requester */
-  readonly user: any;
+  user: any;
 
   /**
    * TODO
@@ -22,24 +22,24 @@ export interface IMediaRequest {
    *
    * Full HTML is not sent to the server in case sensitive data is included.
    */
-  readonly hints?: {
+  hints?: {
     /**
      * Open Graph
      * http://ogp.me/
      */
-    readonly og?: any;
+    og?: any;
 
     /**
      * JSON for Linking Data
      * https://json-ld.org/
      */
-    readonly jsonLD?: any;
+    jsonLD?: any;
 
     /**
      * Microdata
      * https://html.spec.whatwg.org/multipage/microdata.html
      */
-    readonly microdata?: any;
+    microdata?: any;
   };
 }
 
