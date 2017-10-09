@@ -30,8 +30,8 @@ const nextMedia = (): ThunkAction<void, ILobbyNetState, void> => {
     const media = getCurrentMedia(state);
 
     if (media) {
-      if (media.type === MediaType.Playlist) {
-        dispatch(advancePlaylist(media));
+      if (media.hasMore) {
+        dispatch(advanceMedia(media));
       } else {
         dispatch(endMedia());
         dispatch(updatePlaybackTimer());
@@ -40,9 +40,9 @@ const nextMedia = (): ThunkAction<void, ILobbyNetState, void> => {
   };
 };
 
-const advancePlaylist = (playlist: IMediaItem): ThunkAction<void, ILobbyNetState, void> => {
+const advanceMedia = (playlist: IMediaItem): ThunkAction<void, ILobbyNetState, void> => {
   return async (dispatch, getState) => {
-    console.info('Resolving playlist', playlist);
+    console.info('Advancing media', playlist);
 
     let res;
 
@@ -66,7 +66,8 @@ const advancePlaylist = (playlist: IMediaItem): ThunkAction<void, ILobbyNetState
       url: res.url,
       title: res.title,
       duration: res.duration,
-      imageUrl: res.thumbnails && res.thumbnails[MediaThumbnailSize.Default]
+      imageUrl: res.thumbnails && res.thumbnails[MediaThumbnailSize.Default],
+      hasMore: res.hasMore
     };
 
     if (res.state) {
@@ -148,7 +149,8 @@ const requestMedia = (url: string): RpcThunk<void> => async (dispatch, getState,
     duration: res.duration,
     imageUrl: res.thumbnails && res.thumbnails[MediaThumbnailSize.Default],
     ownerId: userId.toString(),
-    ownerName: PlatformService.getUserName(userId)
+    ownerName: PlatformService.getUserName(userId),
+    hasMore: res.hasMore
   };
 
   if (res.state) {

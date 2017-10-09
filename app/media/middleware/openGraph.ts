@@ -25,6 +25,7 @@ function buildHTMLMetadata(url: Url, body: string): Partial<IMediaResponse> {
 
   if (og.ogVideo) {
     meta.url = og.ogVideo.url || meta.url;
+    meta.duration = og.ogVideo.duration || 0;
   }
 
   return meta;

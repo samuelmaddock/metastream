@@ -18,6 +18,7 @@ const DEFAULT_QUERY = {
 
 const URL_PATTERN = /youtu\.?be(?:.com)?/i;
 
+// TODO: https://www.youtube.com/attribution_link?a=ShEHdkiTDq4&u=%2Fwatch%3Fv%3Dm-6zjXLPRHg%26feature%3Dshare
 const VIDEO_ID_PATTERNS = [
   /youtu\.be\/([^#\&\?]{11})/, // youtu.be/<id>
   /\?v=([^#\&\?]{11})/, // ?v=<id>

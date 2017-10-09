@@ -132,6 +132,7 @@ const mware: IMediaMiddleware = {
 
     // Save pagination info for resolving next playlist item
     ctx.res.type = MediaType.Playlist;
+    ctx.res.hasMore = true;
     ctx.res.state = {
       ...ctx.res.state,
       reddit: {

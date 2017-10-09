@@ -100,6 +100,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
           title="Next up"
           tagline={`${this.props.mediaQueue.length} items`}
         >
+          {media && media.hasMore && <MediaItem key="current" media={media} />}
           {this.props.mediaQueue.map((media, idx) => {
             return <MediaItem key={idx} media={media} />;
           })}

@@ -72,6 +72,8 @@ export interface IMediaResponse {
 
   /** Object for passing state to the frontend */
   state: { [key: string]: any };
+
+  hasMore?: boolean;
 }
 
 export interface IMediaContext {

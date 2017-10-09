@@ -40,6 +40,9 @@ export interface IMediaItem {
 
   /** Middleware-specific state */
   state?: { [key: string]: any };
+
+  /** Whether the item should continue as the next media */
+  hasMore?: boolean;
 }
 
 export interface IMediaPlayerState {
