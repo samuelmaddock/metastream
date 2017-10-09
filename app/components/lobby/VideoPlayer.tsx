@@ -26,6 +26,8 @@ interface IConnectedProps extends IMediaPlayerState {
 interface IState {
   /** Webview is initializing, try to mitigate white flash */
   initializing: boolean;
+
+  interacting: boolean;
 }
 
 const mapStateToProps = (state: ILobbyNetState): IConnectedProps => {
@@ -42,7 +44,7 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
   private webview: Electron.WebviewTag | null;
   private initTimeoutId?: number;
 
-  state: IState = { initializing: true };
+  state: IState = { initializing: true, interacting: false };
 
   get isPlaying() {
     return this.props.playback === PlaybackState.Playing;
@@ -158,7 +160,14 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
   };
 
   render(): JSX.Element | null {
-    return <div className={cx(styles.container, this.props.className)}>{this.renderBrowser()}</div>;
+    return (
+      <div
+        className={cx(styles.container, this.props.className)}
+        onDoubleClick={this.onDoubleClick}
+      >
+        {this.renderBrowser()}
+      </div>
+    );
   }
 
   private renderBrowser(): JSX.Element {
@@ -170,7 +179,8 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
         ref={this.setupWebview}
         src={this.mediaUrl}
         class={cx(styles.video, {
-          [styles.loading]: this.state.initializing
+          [styles.loading]: this.state.initializing,
+          [styles.interactive]: this.state.interacting
         })}
         /* Some website embeds are disabled without an HTTP referrer */
         httpreferrer="http://mediaplayer.samuelmaddock.com/"
@@ -178,6 +188,7 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
         plugins="false"
         preload="./preload.js"
         partition="custom"
+        ondblclick={this.onDoubleClick}
       />
     );
   }
@@ -194,6 +205,25 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
       this.webview.openDevTools();
     }
   }
+
+  private onExitInteractMode() {
+    document.removeEventListener('keydown', this.onKeyDown, false);
+    this.setState({ interacting: false });
+  }
+
+  private onDoubleClick = () => {
+    this.setState({ interacting: true }, () => {
+      document.addEventListener('keydown', this.onKeyDown, false);
+    });
+  };
+
+  private onKeyDown = (event: KeyboardEvent): void => {
+    switch (event.key) {
+      case 'Escape':
+        this.onExitInteractMode();
+        return;
+    }
+  };
 }
 
 export type VideoPlayer = _VideoPlayer;

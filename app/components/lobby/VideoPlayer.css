@@ -8,6 +8,9 @@
 .video {
   flex-grow: 1;
   background: white;
+}
+
+.video:not(.interactive) {
   pointer-events: none;
 }
 
