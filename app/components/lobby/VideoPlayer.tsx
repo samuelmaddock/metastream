@@ -153,10 +153,21 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
   };
 
   private updateVolume = () => {
-    if (this.webview) {
-      const volume = this.props.mute ? 0 : this.props.volume;
-      this.webview.send('media-volume', volume);
+    if (!this.webview) {
+      return;
     }
+
+    const { volume, mute } = this.props;
+    const isWebviewMuted = this.webview.isAudioMuted();
+
+    if (mute && !isWebviewMuted) {
+      this.webview.setAudioMuted(true);
+    } else if (!mute && isWebviewMuted) {
+      this.webview.setAudioMuted(false);
+    }
+
+    const newVolume = this.props.mute ? 0 : this.props.volume;
+    this.webview.send('media-volume', newVolume);
   };
 
   render(): JSX.Element | null {
