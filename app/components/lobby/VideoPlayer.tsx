@@ -158,12 +158,9 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
     }
 
     const { volume, mute } = this.props;
-    const isWebviewMuted = this.webview.isAudioMuted();
 
-    if (mute && !isWebviewMuted) {
-      this.webview.setAudioMuted(true);
-    } else if (!mute && isWebviewMuted) {
-      this.webview.setAudioMuted(false);
+    if (mute !== this.webview.isAudioMuted()) {
+      this.webview.setAudioMuted(mute);
     }
 
     const newVolume = this.props.mute ? 0 : this.props.volume;
