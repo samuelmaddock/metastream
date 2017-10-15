@@ -1,6 +1,10 @@
 import { ipcRenderer } from 'electron';
 import { PlaybackState } from 'lobby/reducers/mediaPlayer';
 
+if (process.env.NODE_ENV === 'development') {
+  (window as any).__devtron = { require: eval('require'), process };
+}
+
 /** Interval time (ms) to detect video element. */
 const DETECT_INTERVAL = 500;
 
