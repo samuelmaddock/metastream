@@ -25,11 +25,12 @@ const setMedia = (media: HTMLMediaElement) => {
   activeMedia = media;
   player = new HTMLMediaPlayer(media);
   ipcRenderer.sendToHost('media-ready');
-  console.debug('Set active media', media, media.duration);
+  console.debug('Set active media', media, media.src, media.duration);
   (window as any).MEDIA = media;
 };
 
 const addMedia = (media: HTMLMediaElement) => {
+  console.debug('Add media', media, media.src, media.duration);
   mediaList.push(media);
 
   const eventLogger = function(e: MediaStreamEvent) {
