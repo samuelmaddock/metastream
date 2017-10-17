@@ -24,8 +24,8 @@ var ProxyAudio = new Proxy(function() {}, {
 
 const origCreateElement = document.createElement;
 
-/** Proxy document.createElement to trap audio tags created in-memory. */
-const proxyCreateElement = (tagName: string) => {
+/** Proxy document.createElement to trap media elements created in-memory. */
+const proxyCreateElement = function(tagName: string) {
   const element = origCreateElement.call(document, tagName);
 
   const name = tagName.toLowerCase();
@@ -35,10 +35,21 @@ const proxyCreateElement = (tagName: string) => {
       console.trace();
       (window as any).TEST = element;
       break;
+    case 'video':
+      console.log('CREATED VIDEO ELEMENT');
+      console.trace();
+      (window as any).TEST = element;
+      break;
   }
 
   return element;
 };
+
+/** Sneaky beaky */
+proxyCreateElement.toString = function() {
+  return 'function createElement() { [native code] }';
+};
+
 (document as any).createElement = proxyCreateElement;
 
 interface IMediaPlayer {
