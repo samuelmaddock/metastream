@@ -122,6 +122,10 @@ export class Slider extends Component<IProps> {
     if (this.props.onDragStart) {
       this.props.onDragStart();
     }
+
+    if (this.props.onChange) {
+      this.props.onChange(progress);
+    }
   };
 
   private onDragging = (event: MouseEvent) => {
