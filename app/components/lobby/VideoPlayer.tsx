@@ -193,16 +193,15 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
         /* Some website embeds are disabled without an HTTP referrer */
         httpreferrer="http://mediaplayer.samuelmaddock.com/"
         /* Disable plugins until we know we need them */
-        plugins="false"
+        plugins="true"
         preload="./preload.js"
-        partition="custom"
+        partition="persist:mediaplayer"
         ondblclick={this.onDoubleClick}
       />
     );
   }
 
   reload(): void {
-    console.log('reload');
     if (this.webview) {
       this.webview.loadURL(this.mediaUrl);
     }

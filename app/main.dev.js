@@ -7,6 +7,7 @@
  * `./app/main.prod.js` using webpack. This gives us some performance wins.
  */
 import { app, BrowserWindow } from 'electron';
+import { join } from 'path';
 import MenuBuilder from './menu';
 
 if (process.env.NODE_ENV === 'production') {
@@ -34,6 +35,22 @@ const installExtensions = async () => {
     extensions.map(name => installer.default(installer[name], forceDownload))
   ).catch(console.log);
 };
+
+const setupPlugins = () => {
+  const dirname = process.env.NODE_ENV === 'development' ?
+    __dirname :
+    ROOT_DIR;
+
+  // You have to pass the filename of `widevinecdmadapter` here, it is
+  // * `widevinecdmadapter.plugin` on macOS,
+  // * `libwidevinecdmadapter.so` on Linux,
+  // * `widevinecdmadapter.dll` on Windows.
+  app.commandLine.appendSwitch('widevine-cdm-path', join(dirname, '/lib/widevinecdmadapter.dll'));
+  // The version of plugin can be got from `chrome://plugins` page in Chrome.
+  app.commandLine.appendSwitch('widevine-cdm-version', '1.4.8.1008');
+}
+
+setupPlugins();
 
 /**
  * Add event listeners...
