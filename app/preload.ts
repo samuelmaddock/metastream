@@ -5,6 +5,57 @@ if (process.env.NODE_ENV === 'development') {
   (window as any).__devtron = { require: eval('require'), process };
 }
 
+// HACK: Fix SoundCloud not autoplaying
+localStorage.clear();
+
+/** https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/readyState */
+const enum MediaReadyState {
+  HAVE_NOTHING,
+  HAVE_METADATA,
+  HAVE_CURRENT_DATA,
+  HAVE_FUTURE_DATA,
+  HAVE_ENOUGH_DATA
+}
+
+let player: IMediaPlayer;
+let mediaList: HTMLMediaElement[] = [];
+let activeMedia: HTMLMediaElement;
+
+const setMedia = (media: HTMLMediaElement) => {
+  activeMedia = media;
+  player = new HTMLMediaPlayer(media);
+  ipcRenderer.sendToHost('media-ready');
+  console.debug('Set active media', media, media.duration);
+  (window as any).MEDIA = media;
+};
+
+const addMedia = (media: HTMLMediaElement) => {
+  mediaList.push(media);
+
+  const eventLogger = function(e: MediaStreamEvent) {
+    console.debug(`Event: ${e.type}`, e);
+  };
+
+  const events = ['loadeddata', 'canplay', 'playing', 'play', 'pause', 'durationchange', 'seeking'];
+  events.forEach(eventName => {
+    media.addEventListener(eventName, eventLogger);
+  });
+
+  // Checks for media when it starts playing
+  function checkMediaReady() {
+    // Soundcloud fix
+    if (isNaN(media.duration)) {
+      return;
+    }
+
+    if (media.readyState >= MediaReadyState.HAVE_CURRENT_DATA) {
+      setMedia(media);
+      media.removeEventListener('playing', checkMediaReady);
+    }
+  }
+  media.addEventListener('playing', checkMediaReady);
+};
+
 /** Interval time (ms) to detect video element. */
 const DETECT_INTERVAL = 500;
 
@@ -16,7 +67,7 @@ const OldAudio = (window as any).Audio;
 /** Proxy `new Audio` to trap audio elements created in-memory. */
 var ProxyAudio = new Proxy(function() {}, {
   construct: function(target, argumentsList, newTarget) {
-    console.log('Audio constructor called: ' + argumentsList.join(', '));
+    console.debug('Audio constructor called: ' + argumentsList.join(', '));
     return new OldAudio(...argumentsList);
   }
 });
@@ -27,19 +78,27 @@ const origCreateElement = document.createElement;
 /** Proxy document.createElement to trap media elements created in-memory. */
 const proxyCreateElement = function(tagName: string) {
   const element = origCreateElement.call(document, tagName);
+  let track = false;
 
   const name = tagName.toLowerCase();
   switch (name) {
     case 'audio':
-      console.log('CREATED AUDIO ELEMENT');
+      console.debug('CREATED AUDIO ELEMENT');
       console.trace();
       (window as any).TEST = element;
+      track = true;
       break;
     case 'video':
-      console.log('CREATED VIDEO ELEMENT');
+      console.debug('CREATED VIDEO ELEMENT');
       console.trace();
       (window as any).TEST = element;
+      track = true;
       break;
+  }
+
+  if (track) {
+    // Wait for properties to be set
+    setTimeout(addMedia, 0, element);
   }
 
   return element;
@@ -62,28 +121,25 @@ interface IMediaPlayer {
 }
 
 /** Abstraction around HTML video tag. */
-class HTMLVideoPlayer implements IMediaPlayer {
-  private video: HTMLVideoElement;
+class HTMLMediaPlayer implements IMediaPlayer {
   private volume?: number;
 
-  constructor(video: HTMLVideoElement) {
-    this.video = video;
-
-    this.video.addEventListener('play', this.onPlay, false);
-    this.video.addEventListener('volumechange', this.onVolumeChange, false);
+  constructor(private media: HTMLMediaElement) {
+    this.media.addEventListener('play', this.onPlay, false);
+    this.media.addEventListener('volumechange', this.onVolumeChange, false);
   }
 
   play(): void {
-    this.video.play();
+    this.media.play();
   }
   pause(): void {
-    this.video.pause();
+    this.media.pause();
   }
   getCurrentTime(): number {
-    return this.video.currentTime;
+    return this.media.currentTime;
   }
   getDuration(): number {
-    return this.video.duration;
+    return this.media.duration;
   }
   seek(time: number): void {
     // Ignore seek requests for live media
@@ -92,16 +148,16 @@ class HTMLVideoPlayer implements IMediaPlayer {
     }
 
     const targetTime = time / 1000;
-    const curTime = this.video.currentTime;
+    const curTime = this.media.currentTime;
     const dt = Math.abs(targetTime - curTime);
 
     // Only seek if we're off by greater than our threshold
     if (dt > SEEK_THRESHOLD) {
-      this.video.currentTime = targetTime;
+      this.media.currentTime = targetTime;
     }
   }
   setVolume(volume: number): void {
-    this.video.volume = this.volume = volume;
+    this.media.volume = this.volume = volume;
   }
 
   /** Set volume as soon as playback begins */
@@ -112,28 +168,25 @@ class HTMLVideoPlayer implements IMediaPlayer {
   /** Prevent third-party service from restoring cached volume */
   private onVolumeChange = (): void => {
     const { volume } = this;
-    if (volume && this.video.volume !== volume) {
-      console.log(`Volume changed internally (${this.video.volume}), reverting to ${volume}`);
+    if (volume && this.media.volume !== volume) {
+      console.debug(`Volume changed internally (${this.media.volume}), reverting to ${volume}`);
       this.setVolume(volume);
     }
   };
 }
 
-let player: IMediaPlayer;
-
 /** Detect video content on page */
 const detectPlayer = () => {
-  console.info('Searching for video element...');
+  // console.info('Searching for video element...');
 
   const video = document.querySelector('video');
 
   if (video) {
-    player = new HTMLVideoPlayer(video);
-    console.log(`Found video element!`, player, video);
-    ipcRenderer.sendToHost('media-ready');
+    console.debug(`Found video element!`, player, video);
+    addMedia(video);
   } else {
     setTimeout(detectPlayer, DETECT_INTERVAL);
-    console.info(`Couldn't find video element on page, trying again in 2 sec.`);
+    // console.info(`Couldn't find video element on page, trying again in 2 sec.`);
   }
 };
 
@@ -169,9 +222,16 @@ const setupListeners = () => {
 };
 
 const init = () => {
+  console.info(`Preload init...`);
+  setupListeners();
+  console.info(`DONE`);
+};
+
+const pageloadInit = () => {
   console.info(`Preload 'onload'...`);
   detectPlayer();
-  setupListeners();
   console.info(`Ran preload 'onload' listener`);
 };
-window.onload = init;
+window.onload = pageloadInit;
+
+init();
