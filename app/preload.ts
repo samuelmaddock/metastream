@@ -61,7 +61,7 @@ const addMedia = (media: HTMLMediaElement) => {
 const DETECT_INTERVAL = 500;
 
 /** Threshold before we'll seek. */
-const SEEK_THRESHOLD = 1;
+const SEEK_THRESHOLD = 2000;
 
 const OldAudio = (window as any).Audio;
 
@@ -151,13 +151,9 @@ class HTMLMediaPlayer implements IMediaPlayer {
       return;
     }
 
-    const targetTime = time / 1000;
-    const curTime = this.media.currentTime;
-    const dt = Math.abs(targetTime - curTime);
-
     // Only seek if we're off by greater than our threshold
-    if (dt > SEEK_THRESHOLD) {
-      this.media.currentTime = targetTime;
+    if (this.timeExceedsThreshold(time)) {
+      this.media.currentTime = time / 1000;
     }
   }
   setVolume(volume: number): void {
@@ -166,11 +162,17 @@ class HTMLMediaPlayer implements IMediaPlayer {
 
   private seekFallback(time: number): void {
     // HACK: SoundCloud fallback
-    if (location.hostname.indexOf('soundcloud') >= 0) {
+    if (location.hostname.indexOf('soundcloud.com') >= 0 && this.timeExceedsThreshold(time)) {
       const action = { method: 'seekTo', value: time };
       const json = JSON.stringify(action);
       postMessage(json, location.origin);
     }
+  }
+
+  /** Only seek if we're off by greater than our threshold */
+  private timeExceedsThreshold(time: number): boolean {
+    const dt = Math.abs(time / 1000 - this.getCurrentTime()) * 1000;
+    return dt > SEEK_THRESHOLD;
   }
 
   /** Set volume as soon as playback begins */
