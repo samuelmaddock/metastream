@@ -16,6 +16,7 @@ import { Icon } from 'components/Icon';
 import { Timeline } from 'components/media/Timeline';
 import { push } from 'react-router-redux';
 import { openInBrowser } from 'utils/url';
+import { copyToClipboard } from 'utils/clipboard';
 
 interface IProps {
   className?: string;
@@ -109,6 +110,12 @@ class _PlaybackControls extends Component<PrivateProps> {
       </button>
     );
 
+    const copyLinkBtn = media && (
+      <button type="button" className={styles.button} title="Copy link" onClick={this.copyLink}>
+        <Icon name="copy" />
+      </button>
+    );
+
     const debugBtn = this.canDebug && (
       <button type="button" className={styles.button} title="Debug" onClick={this.props.debug}>
         <Icon name="settings" />
@@ -128,6 +135,7 @@ class _PlaybackControls extends Component<PrivateProps> {
         {timeline}
         {volumeSlider}
         {externalLinkBtn}
+        {copyLinkBtn}
         {reloadBtn}
         {debugBtn}
         {disconnectBtn}
@@ -160,6 +168,13 @@ class _PlaybackControls extends Component<PrivateProps> {
     const { current: media } = this.props;
     if (media) {
       openInBrowser(media.requestUrl);
+    }
+  };
+
+  private copyLink = () => {
+    const { current: media } = this.props;
+    if (media) {
+      copyToClipboard(media.requestUrl);
     }
   };
 
