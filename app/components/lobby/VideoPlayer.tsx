@@ -12,6 +12,7 @@ import { netConnect, ILobbyNetState } from 'lobby';
 import { DispatchProp } from 'react-redux';
 import { PlaybackControls } from 'components/media/PlaybackControls';
 import { setVolume } from 'lobby/actions/settings';
+import { clamp } from 'utils/math';
 
 interface IProps {
   className?: string;
@@ -164,8 +165,16 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
     }
 
     const newVolume = this.props.mute ? 0 : this.props.volume;
-    this.webview.send('media-volume', newVolume);
+    this.webview.send('media-volume', this.scaleVolume(newVolume));
   };
+
+  /**
+   * Use dB scale to convert linear volume to exponential.
+   * https://www.dr-lex.be/info-stuff/volumecontrols.html
+   */
+  private scaleVolume(volume: number): number {
+    return clamp(Math.exp(6.908 * volume) / 1000, 0, 1);
+  }
 
   render(): JSX.Element | null {
     return (
