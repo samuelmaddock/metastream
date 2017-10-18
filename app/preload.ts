@@ -8,6 +8,62 @@ if (process.env.NODE_ENV === 'development') {
 // HACK: Fix SoundCloud not autoplaying
 localStorage.clear();
 
+// HACK: netflix
+const customVideoSession = (VideoSession: any) => {
+  // class CustomVideoSession {
+  //   createPlayer: any;
+  //   private _createPlayer: any;
+
+  //   constructor() {
+  //     VideoSession.call(this);
+
+  this._createPlayer = this.createPlayer;
+  console.debug('CONSTRUCT CUSTOM VIDEO SESSION', this);
+
+  this.createPlayer = function() {
+    console.debug('CREATE PLAYER', this, arguments);
+    return this._createPlayer.apply(this, arguments);
+  };
+  //   }
+  // }
+  // return CustomVideoSession;
+
+  function CustomVideoSession() {
+    VideoSession.apply(this, arguments);
+
+    this._createPlayer = this.createPlayer;
+    console.debug('CONSTRUCT CUSTOM VIDEO SESSION', this);
+
+    this.createPlayer = function() {
+      console.debug('CREATE PLAYER', this, arguments);
+      const player = this._createPlayer.apply(this, arguments);
+      (window as any).PLAYER = player;
+      return player;
+    };
+  }
+
+  CustomVideoSession.prototype = VideoSession;
+
+  return CustomVideoSession;
+};
+
+var target = {};
+var handler = {
+  set: function(target: any, propertyName: any, value: any, receiver: any) {
+    if (propertyName === 'player') {
+      value.VideoSession = customVideoSession(value.VideoSession);
+      console.debug('ASSIGNED CUSTOM VIDEO SESSION');
+    }
+
+    target[propertyName] = value;
+    return true;
+  }
+};
+
+var p = new Proxy(target, handler);
+
+(window as any).netflix = p;
+
 /** https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/readyState */
 const enum MediaReadyState {
   HAVE_NOTHING,
@@ -24,9 +80,28 @@ let activeMedia: HTMLMediaElement;
 const setMedia = (media: HTMLMediaElement) => {
   activeMedia = media;
   player = new HTMLMediaPlayer(media);
-  ipcRenderer.sendToHost('media-ready');
   console.debug('Set active media', media, media.src, media.duration);
   (window as any).MEDIA = media;
+
+  ['seekable', 'seeked'].forEach(eventName => {
+    media.addEventListener(eventName, event => {
+      console.debug(`stopImmediate ${eventName} capture=false`);
+      event.stopImmediatePropagation();
+      event.stopPropagation();
+    });
+
+    media.addEventListener(
+      eventName,
+      event => {
+        console.debug(`stopImmediate ${eventName} capture=true`);
+        event.stopImmediatePropagation();
+        event.stopPropagation();
+      },
+      true
+    );
+  });
+
+  ipcRenderer.sendToHost('media-ready');
 };
 
 const addMedia = (media: HTMLMediaElement) => {
@@ -93,6 +168,7 @@ const proxyCreateElement = function(tagName: string) {
       console.debug('CREATED VIDEO ELEMENT');
       console.trace();
       (window as any).TEST = element;
+
       track = true;
       break;
   }
@@ -146,8 +222,7 @@ class HTMLMediaPlayer implements IMediaPlayer {
     // Infinity is generally used for a dynamically allocated media object
     // We might be boned unless we know api-specific methods
     // OR it could be live media
-    if (this.getDuration() === Infinity) {
-      this.seekFallback(time);
+    if (this.customSeek(time)) {
       return;
     }
 
@@ -160,13 +235,29 @@ class HTMLMediaPlayer implements IMediaPlayer {
     this.media.volume = this.volume = volume;
   }
 
-  private seekFallback(time: number): void {
+  private customSeek(time: number): boolean {
+    if (!this.timeExceedsThreshold(time)) {
+      return false;
+    }
+
     // HACK: SoundCloud fallback
-    if (location.hostname.indexOf('soundcloud.com') >= 0 && this.timeExceedsThreshold(time)) {
+    if (location.hostname.indexOf('soundcloud.com') >= 0) {
       const action = { method: 'seekTo', value: time };
       const json = JSON.stringify(action);
       postMessage(json, location.origin);
+      return true;
     }
+
+    if (location.hostname.indexOf('netflix.com') >= 0) {
+      const player = (window as any).PLAYER;
+      if (player) {
+        player.seek(time);
+        console.debug('Proxied netflix seek', time);
+      }
+      return true;
+    }
+
+    return false;
   }
 
   /** Only seek if we're off by greater than our threshold */
