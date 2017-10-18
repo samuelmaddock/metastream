@@ -12,6 +12,9 @@ interface IProps {
   /** Allow scrolling */
   scroll?: boolean;
 
+  /** Emit change event upon first drag event. */
+  changeOnStart?: boolean;
+
   onChange?: (value: number) => void;
 
   onDragStart?: () => void;
@@ -123,7 +126,7 @@ export class Slider extends Component<IProps> {
       this.props.onDragStart();
     }
 
-    if (this.props.onChange) {
+    if (this.props.changeOnStart && this.props.onChange) {
       this.props.onChange(progress);
     }
   };

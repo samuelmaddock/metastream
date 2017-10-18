@@ -73,6 +73,7 @@ export class VolumeSlider extends Component<IProps> {
           className={styles.slider}
           value={this.props.volume}
           scroll
+          changeOnStart
           onChange={this.props.onChange}
           onDragStart={() => {
             this.setState({ dragging: true });
