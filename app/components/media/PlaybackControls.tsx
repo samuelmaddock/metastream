@@ -15,6 +15,7 @@ import { setVolume, setMute } from 'lobby/actions/settings';
 import { Icon } from 'components/Icon';
 import { Timeline } from 'components/media/Timeline';
 import { push } from 'react-router-redux';
+import { openInBrowser } from 'utils/url';
 
 interface IProps {
   className?: string;
@@ -51,53 +52,85 @@ class _PlaybackControls extends Component<PrivateProps> {
     const duration = (media && media.duration) || 0;
     const isTimed = duration > 0;
 
+    const playPauseBtn = (
+      <button type="button" className={styles.button} disabled={isIdle} onClick={this.playPause}>
+        <Icon name={playbackIcon} />
+      </button>
+    );
+
+    const nextBtn = (
+      <button
+        type="button"
+        title="Next"
+        className={styles.button}
+        disabled={isIdle}
+        onClick={this.next}
+      >
+        <Icon name="skip-forward" />
+      </button>
+    );
+
+    const timeline =
+      isIdle || !isTimed ? (
+        <span className={styles.spacer} />
+      ) : (
+        <Timeline
+          className={styles.spacer}
+          time={(isPaused ? pauseTime : startTime) || 0}
+          paused={isPaused}
+          duration={media && media.duration}
+          onSeek={this.seek}
+        />
+      );
+
+    const volumeSlider = (
+      <VolumeSlider
+        mute={this.props.mute}
+        volume={this.props.volume}
+        onChange={this.setVolume}
+        onMute={this.toggleMute}
+      />
+    );
+
+    const reloadBtn = (
+      <button type="button" className={styles.button} title="Reload" onClick={this.props.reload}>
+        <Icon name="rotate-cw" />
+      </button>
+    );
+
+    const externalLinkBtn = media && (
+      <button
+        type="button"
+        className={styles.button}
+        title="Open in browser"
+        onClick={this.openLink}
+      >
+        <Icon name="external-link" />
+      </button>
+    );
+
+    const debugBtn = this.canDebug && (
+      <button type="button" className={styles.button} title="Debug" onClick={this.props.debug}>
+        <Icon name="settings" />
+      </button>
+    );
+
+    const disconnectBtn = (
+      <button type="button" className={styles.button} title="Disconnect" onClick={this.disconnect}>
+        <Icon name="log-out" />
+      </button>
+    );
+
     return (
       <div className={cx(this.props.className, styles.container)}>
-        <button type="button" className={styles.button} disabled={isIdle} onClick={this.playPause}>
-          <Icon name={playbackIcon} />
-        </button>
-        <button
-          type="button"
-          title="Next"
-          className={styles.button}
-          disabled={isIdle}
-          onClick={this.next}
-        >
-          <Icon name="skip-forward" />
-        </button>
-        {isIdle || !isTimed ? (
-          <span className={styles.spacer} />
-        ) : (
-          <Timeline
-            className={styles.spacer}
-            time={(isPaused ? pauseTime : startTime) || 0}
-            paused={isPaused}
-            duration={media && media.duration}
-            onSeek={this.seek}
-          />
-        )}
-        <VolumeSlider
-          mute={this.props.mute}
-          volume={this.props.volume}
-          onChange={this.setVolume}
-          onMute={this.toggleMute}
-        />
-        <button type="button" className={styles.button} title="Reload" onClick={this.props.reload}>
-          <Icon name="rotate-cw" />
-        </button>
-        {this.canDebug && (
-          <button type="button" className={styles.button} title="Debug" onClick={this.props.debug}>
-            <Icon name="settings" />
-          </button>
-        )}
-        <button
-          type="button"
-          className={styles.button}
-          title="Disconnect"
-          onClick={this.disconnect}
-        >
-          <Icon name="log-out" />
-        </button>
+        {playPauseBtn}
+        {nextBtn}
+        {timeline}
+        {volumeSlider}
+        {externalLinkBtn}
+        {reloadBtn}
+        {debugBtn}
+        {disconnectBtn}
       </div>
     );
   }
@@ -121,6 +154,13 @@ class _PlaybackControls extends Component<PrivateProps> {
   private toggleMute = () => {
     const mute = !this.props.mute;
     this.props.dispatch!(setMute(mute));
+  };
+
+  private openLink = () => {
+    const { current: media } = this.props;
+    if (media) {
+      openInBrowser(media.url);
+    }
   };
 
   private disconnect = () => {

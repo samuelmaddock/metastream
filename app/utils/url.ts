@@ -1,3 +1,5 @@
+import { shell } from 'electron';
+
 type QueryParams = { [key: string]: any };
 
 const esc = encodeURIComponent;
@@ -17,4 +19,8 @@ export const isUrl = (str: string): boolean => {
   // TODO: make this more robust
   // maybe use https://www.npmjs.com/package/valid-url
   return str.startsWith('http://') || str.startsWith('https://');
+};
+
+export const openInBrowser = (href: string): void => {
+  shell.openExternal(href);
 };
