@@ -5,9 +5,6 @@ if (process.env.NODE_ENV === 'development') {
   (window as any).__devtron = { require: eval('require'), process };
 }
 
-// HACK: Fix SoundCloud not autoplaying
-localStorage.clear();
-
 // HACK: netflix
 const customVideoSession = (VideoSession: any) => {
   // class CustomVideoSession {
