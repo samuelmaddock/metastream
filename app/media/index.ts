@@ -10,6 +10,7 @@ import httpHeadMware from './middleware/httpHead';
 import mediaMware from './middleware/media';
 import ogMware from './middleware/openGraph';
 import oEmbedMware from './middleware/oembed';
+import autoplayMware from './middleware/autoplay';
 
 import { IMediaItem } from 'lobby/reducers/mediaPlayer';
 
@@ -21,7 +22,8 @@ const middlewares: IMediaMiddleware[] = [
   httpHeadMware,
   mediaMware,
   ogMware,
-  oEmbedMware
+  oEmbedMware,
+  autoplayMware
 ];
 
 type MediaUrl = Url & { href: string };
