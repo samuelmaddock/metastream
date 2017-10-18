@@ -159,7 +159,7 @@ class _PlaybackControls extends Component<PrivateProps> {
   private openLink = () => {
     const { current: media } = this.props;
     if (media) {
-      openInBrowser(media.url);
+      openInBrowser(media.requestUrl);
     }
   };
 

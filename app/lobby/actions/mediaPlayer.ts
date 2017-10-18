@@ -148,6 +148,7 @@ const requestMedia = (url: string): RpcThunk<void> => async (dispatch, getState,
     title: res.title,
     duration: res.duration,
     imageUrl: res.thumbnails && res.thumbnails[MediaThumbnailSize.Default],
+    requestUrl: url,
     ownerId: userId.toString(),
     ownerName: PlatformService.getUserName(userId),
     hasMore: res.hasMore

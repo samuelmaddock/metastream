@@ -58,7 +58,8 @@ type PrivateProps = IProps & IConnectedProps & IReactReduxProps;
 const NO_MEDIA: IMediaItem = {
   type: MediaType.Item,
   title: 'No media playing',
-  url: ''
+  url: '',
+  requestUrl: ''
 };
 
 class _GameLobby extends React.Component<PrivateProps, IState> {
