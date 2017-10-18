@@ -143,8 +143,11 @@ class HTMLMediaPlayer implements IMediaPlayer {
     return this.media.duration;
   }
   seek(time: number): void {
-    // Ignore seek requests for live media
+    // Infinity is generally used for a dynamically allocated media object
+    // We might be boned unless we know api-specific methods
+    // OR it could be live media
     if (this.getDuration() === Infinity) {
+      this.seekFallback(time);
       return;
     }
 
@@ -159,6 +162,15 @@ class HTMLMediaPlayer implements IMediaPlayer {
   }
   setVolume(volume: number): void {
     this.media.volume = this.volume = volume;
+  }
+
+  private seekFallback(time: number): void {
+    // HACK: SoundCloud fallback
+    if (location.hostname.indexOf('soundcloud') >= 0) {
+      const action = { method: 'seekTo', value: time };
+      const json = JSON.stringify(action);
+      postMessage(json, location.origin);
+    }
   }
 
   /** Set volume as soon as playback begins */
