@@ -2,7 +2,11 @@ import { ipcRenderer } from 'electron';
 import { PlaybackState } from 'lobby/reducers/mediaPlayer';
 
 if (process.env.NODE_ENV === 'development') {
-  (window as any).__devtron = { require: eval('require'), process };
+  try {
+    (window as any).__devtron = { require: eval('require'), process };
+  } catch (e) {
+    // ignore
+  }
 }
 
 // HACK: netflix
