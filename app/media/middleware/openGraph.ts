@@ -45,6 +45,9 @@ const mware: IMediaMiddleware = {
       }
     });
 
+    ctx.state.body = text;
+    ctx.state.$ = load(text);
+
     const meta = buildHTMLMetadata(url, text);
     Object.assign(ctx.res, meta);
 
