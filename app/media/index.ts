@@ -9,6 +9,8 @@ import youTubeMware from './middleware/youtube';
 import httpHeadMware from './middleware/httpHead';
 import mediaMware from './middleware/media';
 import ogMware from './middleware/openGraph';
+import oEmbedMware from './middleware/oembed';
+
 import { IMediaItem } from 'lobby/reducers/mediaPlayer';
 
 // prettier-ignore
@@ -18,7 +20,8 @@ const middlewares: IMediaMiddleware[] = [
 
   httpHeadMware,
   mediaMware,
-  ogMware
+  ogMware,
+  oEmbedMware
 ];
 
 type MediaUrl = Url & { href: string };
