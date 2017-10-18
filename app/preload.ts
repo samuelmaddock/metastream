@@ -216,10 +216,13 @@ class HTMLMediaPlayer implements IMediaPlayer {
     return this.media.duration;
   }
   seek(time: number): void {
-    // Infinity is generally used for a dynamically allocated media object
-    // We might be boned unless we know api-specific methods
-    // OR it could be live media
     if (this.customSeek(time)) {
+      return;
+    }
+
+    // Infinity is generally used for a dynamically allocated media object
+    // or live media
+    if (this.getDuration() === Infinity) {
       return;
     }
 
