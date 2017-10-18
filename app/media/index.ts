@@ -11,6 +11,7 @@ import mediaMware from './middleware/media';
 import ogMware from './middleware/openGraph';
 import oEmbedMware from './middleware/oembed';
 import autoplayMware from './middleware/autoplay';
+import microdataMware from './middleware/microdata';
 
 import { IMediaItem } from 'lobby/reducers/mediaPlayer';
 
@@ -23,6 +24,7 @@ const middlewares: IMediaMiddleware[] = [
   mediaMware,
   ogMware,
   oEmbedMware,
+  microdataMware,
   autoplayMware
 ];
 
