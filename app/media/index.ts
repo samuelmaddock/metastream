@@ -56,7 +56,7 @@ export const resolveMediaUrl = async (url: string): Promise<Readonly<IMediaRespo
   const ctx = createContext(urlObj);
 
   const fn = compose(middlewares);
-  const result = (await fn(ctx)) || null;
+  const result = (await fn(ctx)) || ctx.res;
   return result;
 };
 
@@ -79,6 +79,6 @@ export const resolveMediaPlaylist = async (
   console.log('resolving playlist', ctx);
 
   const fn = compose(middlewares);
-  const result = (await fn(ctx)) || null;
+  const result = (await fn(ctx)) || ctx.res;
   return result;
 };

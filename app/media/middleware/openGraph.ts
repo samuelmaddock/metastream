@@ -36,7 +36,7 @@ const mware: IMediaMiddleware = {
     return protocol === 'http:' || protocol === 'https:';
   },
 
-  async resolve(ctx): Promise<IMediaResponse> {
+  async resolve(ctx, next) {
     const { url } = ctx.req;
 
     const [text, response] = await fetchText(url.href, {
@@ -47,7 +47,8 @@ const mware: IMediaMiddleware = {
 
     const meta = buildHTMLMetadata(url, text);
     Object.assign(ctx.res, meta);
-    return ctx.res;
+
+    return next();
   }
 };
 
