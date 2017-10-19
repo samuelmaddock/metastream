@@ -1,4 +1,5 @@
 .container {
+  z-index: 99;
   position: absolute;
   top: 50%;
 
@@ -9,5 +10,5 @@
 
   background: linear-gradient(0deg, transparent 0%, white 50%, transparent 100%);
 
-  pointer-events: none;
+  pointer-events: all;
 }

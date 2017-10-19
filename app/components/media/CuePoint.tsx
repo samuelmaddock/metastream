@@ -16,6 +16,8 @@ interface IProps {
 export class CuePoint extends Component<IProps> {
   render(): JSX.Element {
     // TODO: Reveal tooltip on hover
-    return <span className={styles.container} style={this.props.style} />;
+    return (
+      <span className={styles.container} style={this.props.style} title={this.props.value.label} />
+    );
   }
 }

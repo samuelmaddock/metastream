@@ -95,13 +95,15 @@ export class Slider extends Component<IProps> {
       return;
     }
 
-    return cuePoints.map((cue, idx) => {
+    const children = cuePoints.map((cue, idx) => {
       const p = clamp(cue.value, 0, 1);
       const style = {
         left: `${p * 100}%`
       };
       return <CuePoint key={idx} value={cue} style={style} />;
     });
+
+    return children;
   }
 
   render(): JSX.Element | null {

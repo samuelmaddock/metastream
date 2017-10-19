@@ -17,6 +17,8 @@ import { Timeline } from 'components/media/Timeline';
 import { push } from 'react-router-redux';
 import { openInBrowser } from 'utils/url';
 import { copyToClipboard } from 'utils/clipboard';
+import { timestampToMilliseconds, parseTimestampPairs } from 'utils/cuepoints';
+import { CuePointItem } from 'components/media/CuePoint';
 
 interface IProps {
   className?: string;
@@ -42,6 +44,20 @@ type PrivateProps = IProps & IConnectedProps & DispatchProp<ILobbyNetState>;
 class _PlaybackControls extends Component<PrivateProps> {
   private get canDebug() {
     return process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
+  }
+
+  private getCuePoints() {
+    const { current: media } = this.props;
+    if (media && media.description) {
+      let timestamps = parseTimestampPairs(media.description);
+      return timestamps.map((pair, idx) => {
+        const cue: CuePointItem = {
+          label: pair[1],
+          value: timestampToMilliseconds(pair[0])
+        };
+        return cue;
+      });
+    }
   }
 
   render(): JSX.Element | null {
@@ -81,6 +97,7 @@ class _PlaybackControls extends Component<PrivateProps> {
           paused={isPaused}
           duration={media && media.duration}
           onSeek={this.seek}
+          cuePoints={this.getCuePoints()}
         />
       );
 
