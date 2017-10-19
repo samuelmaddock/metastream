@@ -61,7 +61,7 @@ export class Slider extends Component<IProps> {
 
   /** Filter and sort cue points for efficient searching */
   private processCuePoints(cuePoints: CuePointItem[]) {
-    const results = cuePoints.filter(({ value }) => !isNaN(value) && value >= 0 && value <= 1);
+    const results = cuePoints.filter(({ value }) => !isNaN(value) && value > 0 && value <= 1);
 
     if (results.length === 0) {
       return;
