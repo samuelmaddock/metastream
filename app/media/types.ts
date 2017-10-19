@@ -65,6 +65,8 @@ export interface IMediaResponse {
   /** Milliseconds */
   duration?: number;
 
+  description?: string;
+
   /** Map of thumbnail sizes to URLs */
   // TODO: Use MediaThumbnailSize as key when TS supports it
   // https://github.com/Microsoft/TypeScript/issues/13042

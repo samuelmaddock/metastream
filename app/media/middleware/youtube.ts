@@ -106,6 +106,8 @@ class YouTubeClient {
       }
     });
 
+    console.debug('youtube', json);
+
     if (json.error) {
       throw new Error(JSON.stringify(json.error));
     }
@@ -143,6 +145,7 @@ class YouTubeClient {
     return {
       url: embedUrl,
       title: snippet.title,
+      description: snippet.description,
       duration,
       thumbnails: {
         [MediaThumbnailSize.Default]: snippet.thumbnails.medium.url
