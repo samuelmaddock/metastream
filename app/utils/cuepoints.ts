@@ -1,4 +1,4 @@
-const TIMESTAMP_REGEX = /(\d+:\d\d(?::\d\d)?)[^\d]([^\n]+)/g;
+const TIMESTAMP_REGEX = /(\d+:\d\d(?::\d\d)?)[^\d]([^\n]+)?/g;
 
 export const parseTimestampPairs = (str: string) => {
   const results = [];
@@ -7,8 +7,8 @@ export const parseTimestampPairs = (str: string) => {
   while ((match = TIMESTAMP_REGEX.exec(str))) {
     const time = match[1];
     const label = match[2];
-    if (time && label) {
-      results.push([time.trim(), label.trim()]);
+    if (time) {
+      results.push([time.trim(), (label || '').trim()]);
     }
   }
 
