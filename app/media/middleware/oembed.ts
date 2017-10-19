@@ -21,9 +21,11 @@ async function resolveOEmbed(url: string) {
     const src = $('iframe').attr('src');
 
     if (src) {
-      return src;
+      json.url = src;
     }
   }
+
+  return json;
 }
 
 const mware: IMediaMiddleware = {
@@ -37,9 +39,13 @@ const mware: IMediaMiddleware = {
     if (ctx.state.$) {
       const link = ctx.state.$(`link[type='text/json+oembed']`).attr('href');
       if (link) {
-        const url = await resolveOEmbed(link);
-        if (url) {
-          ctx.res.url = url;
+        const json = await resolveOEmbed(link);
+        if (json.url) {
+          ctx.res.url = json.url;
+        }
+
+        if (json.description) {
+          ctx.res.description = json.description;
         }
       }
     }
