@@ -237,6 +237,10 @@ class HTMLMediaPlayer implements IMediaPlayer {
   }
   setVolume(volume: number): void {
     this.media.volume = this.volume = volume;
+
+    if (this.media.muted && volume > 0) {
+      this.media.muted = false;
+    }
   }
 
   private customSeek(time: number): boolean {
