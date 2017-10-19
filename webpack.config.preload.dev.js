@@ -7,7 +7,7 @@ import merge from 'webpack-merge';
 import baseConfig from './webpack.config.base';
 
 export default merge.smart(baseConfig, {
-  devtool: 'source-map',
+  devtool: 'hidden-source-map',
 
   target: 'electron-renderer',
 
