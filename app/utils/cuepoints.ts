@@ -8,7 +8,7 @@ export const parseTimestampPairs = (str: string) => {
     const time = match[1];
     const label = match[2];
     if (time && label) {
-      results.push([time, label]);
+      results.push([time.trim(), label.trim()]);
     }
   }
 
