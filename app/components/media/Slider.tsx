@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import cx from 'classnames';
 import styles from './Slider.css';
 import { clamp } from 'utils/math';
+import { CuePointItem, CuePoint } from 'components/media/CuePoint';
+
+/** px */
+const CUE_GRAVITATE_THRESHOLD = 8;
 
 interface IProps {
   className?: string;
@@ -25,6 +29,7 @@ interface IProps {
 interface IState {
   dragging?: boolean;
   dragProgress?: number;
+  cuePoints?: CuePointItem[];
 }
 
 export class Slider extends Component<IProps> {
@@ -32,7 +37,10 @@ export class Slider extends Component<IProps> {
     max: 1
   };
 
-  state: IState = {};
+  state: IState = {
+    // TODO: remove placeholder cue points
+    cuePoints: [{ value: 0.33 }, { value: 0.66 }]
+  };
 
   private rootEl: HTMLElement | null;
 
@@ -50,6 +58,21 @@ export class Slider extends Component<IProps> {
     if (this.state.dragging) {
       this.onDragEnd();
     }
+  }
+
+  private renderCuePoints(): JSX.Element[] | undefined {
+    const { cuePoints } = this.state;
+    if (!cuePoints) {
+      return;
+    }
+
+    return cuePoints.map((cue, idx) => {
+      const p = clamp(cue.value, 0, 1);
+      const style = {
+        left: `${p * 100}%`
+      };
+      return <CuePoint key={idx} value={cue} style={style} />;
+    });
   }
 
   render(): JSX.Element | null {
@@ -81,12 +104,57 @@ export class Slider extends Component<IProps> {
             className={cx(styles.knob, { active: this.state.dragging })}
             style={knobStyle}
           />
+          {this.renderCuePoints()}
         </div>
       </div>
     );
   }
 
-  private getMouseProgress(event: { pageX: number }): number {
+  private findClosestCuePoint(value: number) {
+    const cuePoints = this.state.cuePoints!;
+    const len = cuePoints.length;
+
+    // TODO: assert(len !== 0)
+    // TODO: assert(isSorted(cuePoints))
+
+    let a = cuePoints;
+    let lo = 0;
+    let hi = len - 1;
+
+    while (lo <= hi) {
+      let mid = Math.floor((hi + lo) / 2);
+
+      if (value < a[mid].value) {
+        hi = mid - 1;
+      } else if (value > a[mid].value) {
+        lo = mid + 1;
+      } else {
+        return a[mid];
+      }
+    }
+
+    // lo == hi + 1
+    let lov = lo >= 0 && lo < len ? a[lo].value : Infinity;
+    let hiv = hi >= 0 && hi < len ? a[hi].value : Infinity;
+    const cp = lov - value < value - hiv ? a[lo] : a[hi];
+    return cp || a[lo] || a[hi];
+  }
+
+  /** Nudge progress to cue points */
+  private gravitate(progress: number, x: number, width: number): number {
+    const { cuePoints } = this.state;
+    if (!cuePoints || cuePoints.length === 0) {
+      return progress;
+    }
+
+    const cue = this.findClosestCuePoint(progress);
+    const cx = cue.value * width;
+    const dx = Math.abs(x - cx);
+
+    return dx <= CUE_GRAVITATE_THRESHOLD ? cue.value : progress;
+  }
+
+  private getMouseProgress(event: { pageX: number; altKey: boolean }): number {
     const { rootEl } = this;
     if (!rootEl) {
       return 0;
@@ -95,7 +163,12 @@ export class Slider extends Component<IProps> {
     const bbox = rootEl.getBoundingClientRect();
     const width = bbox.width;
     const x = event.pageX - bbox.left;
-    const progress = clamp(x / (width || 1), 0, 1);
+    let progress = clamp(x / (width || 1), 0, 1);
+
+    if (!event.altKey) {
+      progress = this.gravitate(progress, x, width);
+    }
+
     return progress;
   }
 

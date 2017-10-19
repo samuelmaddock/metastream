@@ -1,0 +1,13 @@
+.container {
+  position: absolute;
+  top: 50%;
+
+  display: inline-block;
+  width: 2px;
+  height: calc(100% + 8px);
+  transform: translate(-50%, -50%);
+
+  background: linear-gradient(0deg, transparent 0%, white 50%, transparent 100%);
+
+  pointer-events: none;
+}
