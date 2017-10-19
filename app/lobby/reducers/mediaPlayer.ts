@@ -32,6 +32,8 @@ export interface IMediaItem {
   /** Thumbnail image */
   imageUrl?: string;
 
+  description?: string;
+
   /** Original request URL */
   requestUrl: string;
 

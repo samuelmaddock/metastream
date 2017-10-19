@@ -99,6 +99,20 @@ class _PlaybackControls extends Component<PrivateProps> {
       </button>
     );
 
+    const infoBtn =
+      media && media.description ? (
+        <button
+          type="button"
+          className={styles.button}
+          title="Show description"
+          onClick={this.openLink}
+        >
+          <Icon name="info" />
+        </button>
+      ) : (
+        undefined
+      );
+
     const externalLinkBtn = media && (
       <button
         type="button"
@@ -134,6 +148,7 @@ class _PlaybackControls extends Component<PrivateProps> {
         {nextBtn}
         {timeline}
         {volumeSlider}
+        {infoBtn}
         {externalLinkBtn}
         {copyLinkBtn}
         {reloadBtn}
