@@ -9,7 +9,7 @@ export type CuePointItem = {
 };
 
 interface IProps {
-  value: CuePointItem;
+  value: Readonly<CuePointItem>;
   style?: React.CSSProperties;
 }
 

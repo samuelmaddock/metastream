@@ -6,6 +6,7 @@ import { Ticker } from 'components/Ticker';
 import { Time } from 'components/media/Time';
 import { clamp } from 'utils/math';
 import { Slider } from 'components/media/Slider';
+import { CuePointItem } from 'components/media/CuePoint';
 
 interface IProps {
   className?: string;
@@ -15,6 +16,13 @@ interface IProps {
 
   paused?: boolean;
   duration?: number;
+
+  /**
+   * Cue points with the number of seconds as the value.
+   * NOTE: Won't be used unless duration is also present.
+   */
+  cuePoints?: Readonly<CuePointItem>[];
+
   onSeek?: (time: number) => void;
 }
 
@@ -60,6 +68,18 @@ export class Timeline extends PureComponent<IProps, IState> {
     this.setState({ time: this.calcTime(), progress: this.calcProgress() });
   };
 
+  private getCuePoints() {
+    const { cuePoints, duration } = this.props;
+
+    if (cuePoints && duration) {
+      // TODO: store in state since this will be invoked often while scrubbing
+      return cuePoints.map(cue => ({
+        ...cue,
+        value: clamp(cue.value / duration, 0, 1)
+      }));
+    }
+  }
+
   render(): JSX.Element {
     const { time, paused, duration, onSeek } = this.props;
     return (
@@ -71,6 +91,7 @@ export class Timeline extends PureComponent<IProps, IState> {
           }}
           className={styles.progressSlider}
           value={this.state.progress}
+          cuePoints={this.getCuePoints()}
           onChange={progress => {
             if (onSeek) {
               onSeek(progress * (duration || 0));

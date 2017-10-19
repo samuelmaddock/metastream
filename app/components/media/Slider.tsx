@@ -13,6 +13,8 @@ interface IProps {
   value: number;
   max?: number;
 
+  cuePoints?: Readonly<CuePointItem>[];
+
   /** Allow scrolling */
   scroll?: boolean;
 
@@ -29,7 +31,7 @@ interface IProps {
 interface IState {
   dragging?: boolean;
   dragProgress?: number;
-  cuePoints?: CuePointItem[];
+  cuePoints?: Readonly<CuePointItem>[];
 }
 
 export class Slider extends Component<IProps> {
@@ -37,10 +39,7 @@ export class Slider extends Component<IProps> {
     max: 1
   };
 
-  state: IState = {
-    // TODO: remove placeholder cue points
-    cuePoints: [{ value: 0.33 }, { value: 0.66 }]
-  };
+  state: IState = {};
 
   private rootEl: HTMLElement | null;
 
@@ -57,6 +56,36 @@ export class Slider extends Component<IProps> {
 
     if (this.state.dragging) {
       this.onDragEnd();
+    }
+  }
+
+  /** Filter and sort cue points for efficient searching */
+  private processCuePoints(cuePoints: CuePointItem[]) {
+    const results = cuePoints.filter(({ value }) => !isNaN(value) && value >= 0 && value <= 1);
+
+    if (results.length === 0) {
+      return;
+    }
+
+    results.sort((a, b) => {
+      if (a.value > b.value) {
+        return 1;
+      } else if (a.value < b.value) {
+        return -1;
+      } else {
+        return 0;
+      }
+    });
+
+    return results;
+  }
+
+  componentWillReceiveProps(nextProps: IProps): void {
+    const { cuePoints } = nextProps;
+    if (cuePoints !== this.props.cuePoints) {
+      this.setState({
+        cuePoints: cuePoints && this.processCuePoints(cuePoints)
+      });
     }
   }
 
