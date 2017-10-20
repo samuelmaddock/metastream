@@ -4,11 +4,16 @@
   top: 50%;
 
   display: inline-block;
-  width: 2px;
+  width: 1px;
   height: calc(100% + 8px);
-  transform: translate(-50%, -50%);
+  transform: translateY(-50%);
 
   background: linear-gradient(0deg, transparent 0%, white 50%, transparent 100%);
 
   pointer-events: all;
+}
+
+/* DEBUG */
+.container:hover {
+  background: red;
 }
