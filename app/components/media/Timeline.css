@@ -18,6 +18,10 @@
   margin-right: var(--time-spacing);
 }
 
+.time :global(.lead) {
+  opacity: 0.2;
+}
+
 .progressSlider + .time {
   text-align: left;
   margin: 0 0 0 var(--time-spacing);

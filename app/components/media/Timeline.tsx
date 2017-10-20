@@ -84,7 +84,7 @@ export class Timeline extends PureComponent<IProps, IState> {
     const { time, paused, duration, onSeek } = this.props;
     return (
       <span className={cx(this.props.className, styles.container)}>
-        <Time className={styles.time} time={this.state.time} />
+        <Time className={styles.time} time={this.state.time} leading />
         <Slider
           ref={el => {
             this.slider = el;
@@ -104,7 +104,7 @@ export class Timeline extends PureComponent<IProps, IState> {
             this.setState({ seeking: false });
           }}
         />
-        <Time className={styles.time} time={duration!} />
+        <Time className={styles.time} time={duration!} leading />
         <Ticker onTick={this.tick} disabled={paused && !this.state.seeking} />
       </span>
     );
