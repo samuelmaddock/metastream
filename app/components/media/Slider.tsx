@@ -32,6 +32,7 @@ interface IState {
   dragging?: boolean;
   dragProgress?: number;
   cuePoints?: Readonly<CuePointItem>[];
+  activeCuePointIndex?: number;
 }
 
 export class Slider extends Component<IProps> {
@@ -90,7 +91,7 @@ export class Slider extends Component<IProps> {
   }
 
   private renderCuePoints(): JSX.Element[] | undefined {
-    const { cuePoints } = this.state;
+    const { cuePoints, activeCuePointIndex } = this.state;
     if (!cuePoints) {
       return;
     }
@@ -100,7 +101,7 @@ export class Slider extends Component<IProps> {
       const style = {
         left: `${p * 100}%`
       };
-      return <CuePoint key={idx} value={cue} style={style} />;
+      return <CuePoint key={idx} value={cue} active={idx === activeCuePointIndex} style={style} />;
     });
 
     return children;
@@ -141,13 +142,17 @@ export class Slider extends Component<IProps> {
     );
   }
 
-  private findClosestCuePoint(value: number) {
-    const cuePoints = this.state.cuePoints!;
-    const len = cuePoints.length;
+  private findClosestCuePointIndex(value: number) {
+    const cuePoints = this.state.cuePoints;
+
+    if (!cuePoints || cuePoints.length === 0) {
+      return;
+    }
 
     // TODO: assert(len !== 0)
     // TODO: assert(isSorted(cuePoints))
 
+    const len = cuePoints.length;
     let a = cuePoints;
     let lo = 0;
     let hi = len - 1;
@@ -160,32 +165,38 @@ export class Slider extends Component<IProps> {
       } else if (value > a[mid].value) {
         lo = mid + 1;
       } else {
-        return a[mid];
+        return mid;
       }
     }
 
     // lo == hi + 1
     let lov = lo >= 0 && lo < len ? a[lo].value : Infinity;
     let hiv = hi >= 0 && hi < len ? a[hi].value : Infinity;
-    const cp = lov - value < value - hiv ? a[lo] : a[hi];
-    return cp || a[lo] || a[hi];
+    const cp = lov - value < value - hiv ? lo : hi;
+    return a[cp] ? cp : (a[lo] && lo) || (a[hi] && hi);
   }
 
   /** Nudge progress to cue points */
-  private gravitate(progress: number, x: number, width: number): number {
-    const { cuePoints } = this.state;
-    if (!cuePoints || cuePoints.length === 0) {
-      return progress;
-    }
-
-    const cue = this.findClosestCuePoint(progress);
+  private maybeGravitate(
+    cue: Readonly<CuePointItem>,
+    x: number,
+    width: number
+  ): number | undefined {
     const cx = cue.value * width;
     const dx = Math.abs(x - cx);
 
-    return dx <= CUE_GRAVITATE_THRESHOLD ? cue.value : progress;
+    return dx <= CUE_GRAVITATE_THRESHOLD ? cue.value : undefined;
   }
 
-  private getMouseProgress(event: { pageX: number; altKey: boolean }): number {
+  /**
+   * Calculate progress and update related state.
+   *
+   * Shows cue point tooltips.
+   */
+  private updateProgress(
+    event: { pageX: number; altKey: boolean },
+    fireChange: boolean = true
+  ): number {
     const { rootEl } = this;
     if (!rootEl) {
       return 0;
@@ -196,8 +207,33 @@ export class Slider extends Component<IProps> {
     const x = event.pageX - bbox.left;
     let progress = clamp(x / (width || 1), 0, 1);
 
-    if (!event.altKey) {
-      progress = this.gravitate(progress, x, width);
+    {
+      const cueIdx = this.findClosestCuePointIndex(progress);
+
+      if (cueIdx) {
+        const { activeCuePointIndex } = this.state;
+
+        // Attempt to gravitate progress towards closest cue point
+        const cue = this.state.cuePoints![cueIdx];
+        const gravityProgress = this.maybeGravitate(cue, x, width);
+        const didGravitate = !!gravityProgress;
+
+        if (didGravitate) {
+          if (activeCuePointIndex !== cueIdx) {
+            this.setState({ activeCuePointIndex: cueIdx });
+          }
+
+          if (!event.altKey) {
+            progress = gravityProgress!;
+          }
+        } else if (activeCuePointIndex) {
+          this.setState({ activeCuePointIndex: undefined });
+        }
+      }
+    }
+
+    if (fireChange && this.props.onChange) {
+      this.props.onChange(progress);
     }
 
     return progress;
@@ -209,18 +245,13 @@ export class Slider extends Component<IProps> {
     }
 
     event.preventDefault();
-
-    const progress = this.getMouseProgress(event);
-
-    if (this.props.onChange) {
-      this.props.onChange(progress);
-    }
+    this.updateProgress(event);
   };
 
   private onDragStart = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
 
-    const progress = this.getMouseProgress(event);
+    const progress = this.updateProgress(event, this.props.changeOnStart);
     this.setState({ dragging: true, dragProgress: progress });
 
     document.addEventListener('mouseup', this.onDragEnd, false);
@@ -229,14 +260,10 @@ export class Slider extends Component<IProps> {
     if (this.props.onDragStart) {
       this.props.onDragStart();
     }
-
-    if (this.props.changeOnStart && this.props.onChange) {
-      this.props.onChange(progress);
-    }
   };
 
   private onDragging = (event: MouseEvent) => {
-    const progress = this.getMouseProgress(event);
+    const progress = this.updateProgress(event, false);
     this.setState({ dragProgress: progress });
 
     if (this.props.onDrag) {
