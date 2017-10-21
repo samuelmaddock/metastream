@@ -10,7 +10,7 @@
 
   background: linear-gradient(0deg, transparent 0%, white 50%, transparent 100%);
 
-  pointer-events: all;
+  pointer-events: none;
 }
 
 .container:global(.active):after {
