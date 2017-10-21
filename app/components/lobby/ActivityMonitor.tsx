@@ -9,6 +9,7 @@ interface IProps {
 
 export class ActivityMonitor extends Component<IProps> {
   private _active: boolean = true;
+  private isMouseDown?: boolean;
   private activityTimeoutId?: number;
 
   get active() {
@@ -24,7 +25,7 @@ export class ActivityMonitor extends Component<IProps> {
 
   componentDidMount(): void {
     document.addEventListener('mousedown', this.onMouseDown, false);
-    document.addEventListener('mouseup', this.onActivity, false);
+    document.addEventListener('mouseup', this.onMouseUp, false);
     document.addEventListener('mousemove', this.onActivity, false);
     document.addEventListener('mousewheel', this.onActivity, false);
     document.addEventListener('keydown', this.onActivity, false);
@@ -32,7 +33,7 @@ export class ActivityMonitor extends Component<IProps> {
 
   componentWillUnmount(): void {
     document.removeEventListener('mousedown', this.onMouseDown, false);
-    document.removeEventListener('mouseup', this.onActivity, false);
+    document.removeEventListener('mouseup', this.onMouseUp, false);
     document.removeEventListener('mousemove', this.onActivity, false);
     document.removeEventListener('mousewheel', this.onActivity, false);
     document.removeEventListener('keydown', this.onActivity, false);
@@ -55,17 +56,20 @@ export class ActivityMonitor extends Component<IProps> {
       clearTimeout(this.activityTimeoutId);
     }
 
-    this.activityTimeoutId = setTimeout(this.onActivityTimeout, INACTIVE_DURATION) as any;
+    if (!this.isMouseDown) {
+      this.activityTimeoutId = setTimeout(this.onActivityTimeout, INACTIVE_DURATION) as any;
+    }
   };
 
   /** Don't go inactive while mouse is held down; useful for scrolling */
   private onMouseDown = (): void => {
-    this.active = true;
+    this.isMouseDown = true;
+    this.onActivity();
+  };
 
-    if (this.activityTimeoutId) {
-      clearTimeout(this.activityTimeoutId!);
-      this.activityTimeoutId = undefined;
-    }
+  private onMouseUp = (): void => {
+    this.isMouseDown = false;
+    this.onActivity();
   };
 
   render(): JSX.Element | null {
