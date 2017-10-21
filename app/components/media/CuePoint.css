@@ -13,7 +13,23 @@
   pointer-events: all;
 }
 
-/* DEBUG */
-.container:global(.active) {
-  background: red;
+.container:global(.active):after {
+  content: attr(data-title);
+
+  display: block;
+  max-width: 300px;
+  padding: 8px 12px;
+
+  position: absolute;
+  top: -20px;
+  transform: translate(-50%, -100%);
+
+  background: rgba(60, 60, 60, 0.54);
+  border-radius: var(--rounded-radius);
+
+  font-size: 12px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

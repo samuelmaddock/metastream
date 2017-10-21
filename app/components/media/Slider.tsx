@@ -37,12 +37,14 @@ interface IState {
 
 export class Slider extends Component<IProps> {
   static defaultProps: Partial<IProps> = {
-    max: 1
+    max: 1,
+    changeOnStart: false
   };
 
   state: IState = {};
 
   private rootEl: HTMLElement | null;
+  private preventClick?: boolean;
 
   componentDidMount(): void {
     if (this.rootEl && this.props.scroll) {
@@ -240,11 +242,17 @@ export class Slider extends Component<IProps> {
   }
 
   private onClick = (event: React.MouseEvent<HTMLElement>) => {
+    event.preventDefault();
+
+    if (this.preventClick) {
+      this.preventClick = undefined;
+      return;
+    }
+
     if (this.state.dragging) {
       return;
     }
 
-    event.preventDefault();
     this.updateProgress(event);
   };
 
@@ -271,18 +279,25 @@ export class Slider extends Component<IProps> {
     }
   };
 
-  private onDragEnd = () => {
-    document.removeEventListener('mouseup', this.onDragEnd, false);
+  private onDragEnd = (event?: MouseEvent) => {
+    document.removeEventListener('mouseup', this.onDragEnd as any, false);
     document.removeEventListener('mousemove', this.onDragging, false);
 
     if (this.props.onChange && typeof this.state.dragProgress === 'number') {
       this.props.onChange(this.state.dragProgress);
     }
 
-    this.setState({ dragging: false, dragProgress: undefined });
+    this.setState({ dragging: false, dragProgress: undefined, activeCuePointIndex: undefined });
 
     if (this.props.onDragEnd) {
       this.props.onDragEnd();
+    }
+
+    if (event && event.target && this.rootEl) {
+      const target = event.target as HTMLElement;
+      if (target === this.rootEl || target.contains(this.rootEl)) {
+        this.preventClick = true;
+      }
     }
   };
 

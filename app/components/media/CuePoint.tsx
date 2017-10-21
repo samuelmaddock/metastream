@@ -25,7 +25,7 @@ export class CuePoint extends Component<IProps> {
           active: this.props.active
         })}
         style={this.props.style}
-        title={this.props.value.label}
+        data-title={this.props.value.label}
       />
     );
   }
