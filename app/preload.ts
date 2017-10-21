@@ -11,24 +11,6 @@ if (process.env.NODE_ENV === 'development') {
 
 // HACK: netflix
 const customVideoSession = (VideoSession: any) => {
-  // class CustomVideoSession {
-  //   createPlayer: any;
-  //   private _createPlayer: any;
-
-  //   constructor() {
-  //     VideoSession.call(this);
-
-  this._createPlayer = this.createPlayer;
-  console.debug('CONSTRUCT CUSTOM VIDEO SESSION', this);
-
-  this.createPlayer = function() {
-    console.debug('CREATE PLAYER', this, arguments);
-    return this._createPlayer.apply(this, arguments);
-  };
-  //   }
-  // }
-  // return CustomVideoSession;
-
   function CustomVideoSession() {
     VideoSession.apply(this, arguments);
 
@@ -38,7 +20,7 @@ const customVideoSession = (VideoSession: any) => {
     this.createPlayer = function() {
       console.debug('CREATE PLAYER', this, arguments);
       const player = this._createPlayer.apply(this, arguments);
-      (window as any).PLAYER = player;
+      (window as any).NETFLIXPLAYER = player;
       return player;
     };
   }
@@ -113,10 +95,21 @@ const addMedia = (media: HTMLMediaElement) => {
     console.debug(`Event: ${e.type}`, e);
   };
 
-  const events = ['loadeddata', 'canplay', 'playing', 'play', 'pause', 'durationchange', 'seeking'];
-  events.forEach(eventName => {
-    media.addEventListener(eventName, eventLogger);
-  });
+  if (process.env.NODE_ENV === 'development' && !(media as any).__debug__) {
+    const events = [
+      'loadeddata',
+      'canplay',
+      'playing',
+      'play',
+      'pause',
+      'durationchange',
+      'seeking'
+    ];
+    events.forEach(eventName => {
+      media.addEventListener(eventName, eventLogger);
+    });
+    (media as any).__debug__ = true;
+  }
 
   // Checks for media when it starts playing
   function checkMediaReady() {
@@ -203,6 +196,7 @@ class HTMLMediaPlayer implements IMediaPlayer {
   private volume?: number;
 
   constructor(private media: HTMLMediaElement) {
+    console.debug('Constructing HTMLMediaPlayer');
     this.media.addEventListener('play', this.onPlay, false);
     this.media.addEventListener('volumechange', this.onVolumeChange, false);
   }
@@ -236,7 +230,10 @@ class HTMLMediaPlayer implements IMediaPlayer {
     }
   }
   setVolume(volume: number): void {
-    this.media.volume = this.volume = volume;
+    // MUST SET THIS FIRST
+    this.volume = volume;
+
+    this.media.volume = volume;
 
     if (this.media.muted && volume > 0) {
       this.media.muted = false;
@@ -257,7 +254,7 @@ class HTMLMediaPlayer implements IMediaPlayer {
     }
 
     if (location.hostname.indexOf('netflix.com') >= 0) {
-      const player = (window as any).PLAYER;
+      const player = (window as any).NETFLIXPLAYER;
       if (player) {
         player.seek(time);
         console.debug('Proxied netflix seek', time);
@@ -276,7 +273,9 @@ class HTMLMediaPlayer implements IMediaPlayer {
 
   /** Set volume as soon as playback begins */
   private onPlay = (): void => {
-    this.setVolume(this.volume || 1);
+    if (typeof this.volume === 'number') {
+      this.setVolume(this.volume);
+    }
   };
 
   /** Prevent third-party service from restoring cached volume */
