@@ -19,6 +19,7 @@ import { openInBrowser } from 'utils/url';
 import { copyToClipboard } from 'utils/clipboard';
 import { timestampToMilliseconds, parseTimestampPairs } from 'utils/cuepoints';
 import { CuePointItem } from 'components/media/CuePoint';
+import { parseCuePoints } from 'media/utils';
 
 interface IProps {
   className?: string;
@@ -48,15 +49,9 @@ class _PlaybackControls extends Component<PrivateProps> {
 
   private getCuePoints() {
     const { current: media } = this.props;
-    if (media && media.description) {
-      let timestamps = parseTimestampPairs(media.description);
-      return timestamps.map((pair, idx) => {
-        const cue: CuePointItem = {
-          label: pair[1],
-          value: timestampToMilliseconds(pair[0])
-        };
-        return cue;
-      });
+    if (media) {
+      let cuePoints = parseCuePoints(media);
+      return cuePoints;
     }
   }
 
