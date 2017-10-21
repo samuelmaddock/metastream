@@ -28,6 +28,14 @@
   opacity: 0.5;
 }
 
+.button:first-child {
+  border-radius: var(--rounded-radius) 0 0 var(--rounded-radius);
+}
+
+.button:last-child {
+  border-radius: 0 var(--rounded-radius) var(--rounded-radius) 0;
+}
+
 .spacer {
   flex-grow: 1;
 }
