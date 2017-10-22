@@ -15,6 +15,10 @@
   border-radius: var(--rounded-radius);
 }
 
+.rounded-top {
+  border-radius: var(--rounded-radius) var(--rounded-radius) 0 0;
+}
+
 .absolute-full {
   position: absolute;
   top: 0;

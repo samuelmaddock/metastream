@@ -13,7 +13,7 @@
   border: none;
   outline: none;
 
-  font-size: 0;
+  /* font-size: 0; */
 
   color: var(--app-text-color);
   background: transparent;
@@ -34,6 +34,24 @@
 
 .button:last-child {
   border-radius: 0 var(--rounded-radius) var(--rounded-radius) 0;
+}
+
+.buttonListItem {
+  padding: 8px 12px;
+  color: var(--app-text-color);
+  background: transparent;
+  text-align: left;
+
+  display: flex;
+  align-items: center;
+}
+
+.buttonListItem svg {
+  margin-right: 10px;
+}
+
+.buttonListItem:hover {
+  background: rgba(255, 255, 255, 0.11);
 }
 
 .spacer {

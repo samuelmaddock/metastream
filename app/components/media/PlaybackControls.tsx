@@ -20,6 +20,43 @@ import { copyToClipboard } from 'utils/clipboard';
 import { timestampToMilliseconds, parseTimestampPairs } from 'utils/cuepoints';
 import { CuePointItem } from 'components/media/CuePoint';
 import { parseCuePoints } from 'media/utils';
+import { MoreButton } from 'components/media/MoreButton';
+
+const Button: React.SFC<{
+  icon: string;
+  title?: string;
+  disabled?: boolean;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+}> = props => {
+  return (
+    <button
+      type="button"
+      disabled={props.disabled}
+      className={styles.button}
+      title={props.title}
+      onClick={props.onClick}
+    >
+      <Icon name={props.icon} /> {props.children}
+    </button>
+  );
+};
+
+const ButtonListItem: React.SFC<{
+  icon: string;
+  title?: string;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+}> = props => {
+  return (
+    <button
+      type="button"
+      className={styles.buttonListItem}
+      title={props.title}
+      onClick={props.onClick}
+    >
+      <Icon name={props.icon} /> {props.children}
+    </button>
+  );
+};
 
 interface IProps {
   className?: string;
@@ -64,22 +101,10 @@ class _PlaybackControls extends Component<PrivateProps> {
     const duration = (media && media.duration) || 0;
     const isTimed = duration > 0;
 
-    const playPauseBtn = (
-      <button type="button" className={styles.button} disabled={isIdle} onClick={this.playPause}>
-        <Icon name={playbackIcon} />
-      </button>
-    );
+    const playPauseBtn = <Button icon={playbackIcon} disabled={isIdle} onClick={this.playPause} />;
 
     const nextBtn = (
-      <button
-        type="button"
-        title="Next"
-        className={styles.button}
-        disabled={isIdle}
-        onClick={this.next}
-      >
-        <Icon name="skip-forward" />
-      </button>
+      <Button icon="skip-forward" title="Next" disabled={isIdle} onClick={this.next} />
     );
 
     const timeline =
@@ -105,53 +130,41 @@ class _PlaybackControls extends Component<PrivateProps> {
       />
     );
 
-    const reloadBtn = (
-      <button type="button" className={styles.button} title="Reload" onClick={this.props.reload}>
-        <Icon name="rotate-cw" />
-      </button>
-    );
-
     const infoBtn =
       media && media.description ? (
-        <button
-          type="button"
-          className={styles.button}
-          title="Show description"
-          onClick={this.openLink}
-        >
-          <Icon name="info" />
-        </button>
+        <Button icon="info" title="Show description" onClick={this.openLink} />
       ) : (
         undefined
       );
 
+    const reloadBtn = (
+      <ButtonListItem icon="rotate-cw" title="Reload" onClick={this.props.reload}>
+        Reload
+      </ButtonListItem>
+    );
+
     const externalLinkBtn = media && (
-      <button
-        type="button"
-        className={styles.button}
-        title="Open in browser"
-        onClick={this.openLink}
-      >
-        <Icon name="external-link" />
-      </button>
+      <ButtonListItem icon="external-link" onClick={this.openLink}>
+        Open in browser
+      </ButtonListItem>
     );
 
     const copyLinkBtn = media && (
-      <button type="button" className={styles.button} title="Copy link" onClick={this.copyLink}>
-        <Icon name="copy" />
-      </button>
+      <ButtonListItem icon="copy" title="Copy link" onClick={this.copyLink}>
+        Copy link
+      </ButtonListItem>
     );
 
     const debugBtn = this.canDebug && (
-      <button type="button" className={styles.button} title="Debug" onClick={this.props.debug}>
-        <Icon name="settings" />
-      </button>
+      <ButtonListItem icon="settings" title="Debug" onClick={this.props.debug}>
+        Debug
+      </ButtonListItem>
     );
 
     const disconnectBtn = (
-      <button type="button" className={styles.button} title="Disconnect" onClick={this.disconnect}>
-        <Icon name="log-out" />
-      </button>
+      <ButtonListItem icon="log-out" title="Disconnect" onClick={this.disconnect}>
+        Disconnect
+      </ButtonListItem>
     );
 
     return (
@@ -161,11 +174,13 @@ class _PlaybackControls extends Component<PrivateProps> {
         {timeline}
         {volumeSlider}
         {infoBtn}
-        {externalLinkBtn}
-        {copyLinkBtn}
-        {reloadBtn}
-        {debugBtn}
-        {disconnectBtn}
+        <MoreButton buttonClassName={styles.button}>
+          {externalLinkBtn}
+          {copyLinkBtn}
+          {reloadBtn}
+          {debugBtn}
+          {disconnectBtn}
+        </MoreButton>
       </div>
     );
   }
