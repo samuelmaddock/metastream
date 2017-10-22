@@ -138,7 +138,7 @@ class _PlaybackControls extends Component<PrivateProps> {
       );
 
     const reloadBtn = (
-      <ButtonListItem icon="rotate-cw" title="Reload" onClick={this.props.reload}>
+      <ButtonListItem icon="rotate-cw" onClick={this.props.reload}>
         Reload
       </ButtonListItem>
     );
@@ -150,19 +150,19 @@ class _PlaybackControls extends Component<PrivateProps> {
     );
 
     const copyLinkBtn = media && (
-      <ButtonListItem icon="copy" title="Copy link" onClick={this.copyLink}>
+      <ButtonListItem icon="copy" onClick={this.copyLink}>
         Copy link
       </ButtonListItem>
     );
 
     const debugBtn = this.canDebug && (
-      <ButtonListItem icon="settings" title="Debug" onClick={this.props.debug}>
+      <ButtonListItem icon="settings" onClick={this.props.debug}>
         Debug
       </ButtonListItem>
     );
 
     const disconnectBtn = (
-      <ButtonListItem icon="log-out" title="Disconnect" onClick={this.disconnect}>
+      <ButtonListItem icon="log-out" onClick={this.disconnect}>
         Disconnect
       </ButtonListItem>
     );

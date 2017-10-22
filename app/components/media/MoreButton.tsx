@@ -15,13 +15,26 @@ interface IState {
 }
 
 export class MoreButton extends Component<IProps> {
+  private menu: HTMLElement | null;
+
   state: IState = {
     isOpen: false
   };
 
+  componentWillUnmount(): void {
+    if (this.state.isOpen) {
+      this.close();
+    }
+  }
+
   private renderMenu(): JSX.Element {
     return (
-      <div className={styles.menu} onClick={this.onClickMenu}>
+      <div
+        ref={e => {
+          this.menu = e;
+        }}
+        className={styles.menu}
+      >
         {this.props.children}
       </div>
     );
@@ -38,11 +51,21 @@ export class MoreButton extends Component<IProps> {
     );
   }
 
+  open() {
+    document.addEventListener('click', this.onDocumentClick, false);
+    this.setState({ isOpen: true });
+  }
+
+  close() {
+    document.removeEventListener('click', this.onDocumentClick, false);
+    this.setState({ isOpen: false });
+  }
+
   private toggleMenu = () => {
-    this.setState({ isOpen: !this.state.isOpen });
+    this.state.isOpen ? this.close() : this.open();
   };
 
-  private onClickMenu = () => {
-    this.setState({ isOpen: false });
+  private onDocumentClick = (event: MouseEvent) => {
+    this.close();
   };
 }
