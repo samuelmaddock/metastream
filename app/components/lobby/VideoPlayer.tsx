@@ -133,6 +133,13 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
   };
 
   private updatePlaybackTime = () => {
+    const { current: media } = this.props;
+
+    if (media && media.duration === 0) {
+      console.debug('Preventing updating playback since duration indicates livestream');
+      return; // live stream
+    }
+
     let time;
 
     if (this.isPlaying) {
@@ -211,6 +218,10 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
   }
 
   reload(): void {
+    // Sometimes loadURL won't work if media is still playing
+    // This happens with mixcloud.com
+    // this.updatePlayback(PlaybackState.Paused);
+
     if (this.webview) {
       this.webview.loadURL(this.mediaUrl);
     }

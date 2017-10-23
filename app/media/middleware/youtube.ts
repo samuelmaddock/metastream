@@ -126,6 +126,8 @@ class YouTubeClient {
     if (snippet.liveBroadcastContent === 'none') {
       const str = item.contentDetails.duration;
       duration = parseTime(str) * 1000; // sec to ms
+    } else {
+      duration = 0;
     }
 
     // TODO: how to handle paid content?
