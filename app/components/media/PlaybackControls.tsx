@@ -21,6 +21,7 @@ import { timestampToMilliseconds, parseTimestampPairs } from 'utils/cuepoints';
 import { CuePointItem } from 'components/media/CuePoint';
 import { parseCuePoints } from 'media/utils';
 import { MoreButton } from 'components/media/MoreButton';
+import { InfoButton } from 'components/media/buttons/InfoButton';
 
 const Button: React.SFC<{
   icon: string;
@@ -130,12 +131,7 @@ class _PlaybackControls extends Component<PrivateProps> {
       />
     );
 
-    const infoBtn =
-      media && media.description ? (
-        <Button icon="info" title="Show description" onClick={this.openLink} />
-      ) : (
-        undefined
-      );
+    const infoBtn = media && media.description ? <InfoButton media={media} /> : undefined;
 
     const reloadBtn = (
       <ButtonListItem icon="rotate-cw" onClick={this.props.reload}>
