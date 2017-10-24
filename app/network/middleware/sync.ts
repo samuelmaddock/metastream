@@ -41,7 +41,7 @@ const replicationPrefilter = <T>(state: ReplicatedState<T>): deepDiff.IPrefilter
   while (i < path.length) {
     const k = path[i];
     if (tree.hasOwnProperty(k)) {
-      const result = state[k]!;
+      const result = (state as any)[k]! as boolean | ReplicatedState<T>;
       if (typeof result === 'object') {
         tree = result;
       } else if (typeof result === 'boolean') {
