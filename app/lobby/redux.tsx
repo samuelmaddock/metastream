@@ -1,4 +1,5 @@
-import React, { PropTypes, ReactNode } from 'react';
+import React, { ReactNode } from 'react';
+import PropTypes from 'prop-types';
 import { createStore, Middleware, applyMiddleware } from 'redux';
 import { connect, Provider, Store } from 'react-redux';
 import thunkMiddleware from 'redux-thunk';
