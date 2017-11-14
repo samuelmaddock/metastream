@@ -107,7 +107,6 @@
     "@types/cheerio": "^0.22.3",
     "@types/classnames": "^2.2.3",
     "@types/deep-diff": "^0.0.31",
-    "@types/electron": "^1.4.37",
     "@types/history": "^4.6.1",
     "@types/node": "^8.0.46",
     "@types/prop-types": "^15.5.2",
