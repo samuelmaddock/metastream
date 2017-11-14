@@ -6,7 +6,7 @@ import { IReactReduxProps } from 'types/redux';
 import { IAppState } from 'reducers';
 
 import { ServerBrowser } from 'components/ServerBrowser';
-import { requestLobbies } from 'actions/steamworks';
+import { requestLobbies } from 'actions/lobby';
 import { NetworkState } from 'types/network';
 import { ILobbySession } from 'platform/types';
 

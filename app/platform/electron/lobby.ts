@@ -1,7 +1,6 @@
 import { EventEmitter } from 'events';
 import { ipcRenderer, remote } from 'electron';
 
-import { LOBBY_GAME_GUID } from 'constants/steamworks';
 import { Deferred } from 'utils/async';
 
 interface ElectronLobbyOptions {
