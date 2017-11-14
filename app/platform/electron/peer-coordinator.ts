@@ -99,7 +99,7 @@ export class ElectronRTCPeerCoordinator extends EventEmitter implements IRTCPeer
       return;
     }
 
-    // TODO: need to validate this by checking steam lobby owner
+    // TODO: need to validate this by checking lobby owner
     switch (msg.type) {
       case MessageType.RequestJoin:
         if (this.isLobbyOwner) {

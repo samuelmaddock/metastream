@@ -1,11 +1,8 @@
 import { EventEmitter } from 'events';
-import { steamworks } from 'steam';
 import { ipcRenderer, remote } from 'electron';
 
 import { LOBBY_GAME_GUID } from 'constants/steamworks';
 import { Deferred } from 'utils/async';
-
-type SteamID64 = Steamworks.SteamID64;
 
 interface ElectronLobbyOptions {
   id: string;
@@ -54,7 +51,7 @@ export class ElectronLobby extends EventEmitter {
     this.emit('message', entry);
   };
 
-  getOwner(): SteamID64 {
+  getOwner(): string {
     return this.ownerId;
   }
 

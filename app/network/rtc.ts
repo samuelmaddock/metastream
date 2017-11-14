@@ -1,6 +1,5 @@
 import SimplePeer, { SignalData } from 'simple-peer';
 import { EventEmitter } from 'events';
-import { steamworks } from 'steam';
 import { Deferred } from 'utils/async';
 
 import NetConnection, { NetUniqueId } from './connection';

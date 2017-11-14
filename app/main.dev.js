@@ -22,7 +22,8 @@ if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true')
   require('module').globalPaths.push(p);
 }
 
-if (process.env.NODE_ENV === 'development' && !process.env.WITH_STEAM) {
+const USE_ELECTRON_BACKEND = true;
+if (USE_ELECTRON_BACKEND) {
   require('./platform/electron/main-backend.js');
 }
 

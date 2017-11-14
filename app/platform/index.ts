@@ -1,5 +1,4 @@
 import { Platform } from 'platform/types';
-import { SteamPlatform } from 'platform/steam';
 import { ElectronPlatform } from 'platform/electron';
 
 class _PlatformService {
@@ -7,10 +6,7 @@ class _PlatformService {
 
   static get(): Platform {
     if (!this.platform) {
-      this.platform =
-        process.env.NODE_ENV === 'production' || process.env.WITH_STEAM
-          ? new SteamPlatform()
-          : new ElectronPlatform();
+      this.platform = new ElectronPlatform();
     }
 
     return this.platform;
