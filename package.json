@@ -26,7 +26,6 @@
     "start-main-dev": "cross-env HOT=1 NODE_ENV=development electron -r babel-register ./app/main.dev",
     "start-renderer-dev": "cross-env NODE_ENV=development node --trace-warnings -r babel-register ./node_modules/webpack-dev-server/bin/webpack-dev-server --config webpack.config.renderer.dev.js",
     "start": "cross-env NODE_ENV=production electron ./app/",
-    "steam:appid": "echo 480 > app/steam_appid.txt",
     "test-all": "npm run lint && npm run test && npm run build && npm run test-e2e",
     "test-e2e": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 node --trace-warnings ./test/runTests.js e2e",
     "test-watch": "npm test -- --watch",
@@ -46,15 +45,13 @@
       "main.prod.js.map",
       "preload.js",
       "preload.js.map",
-      "package.json",
-      "steamworks.js"
+      "package.json"
     ],
     "extraFiles": [
       {
         "from": "app/lib/",
         "to": "lib/"
-      },
-      "steam_appid.txt"
+      }
     ],
     "dmg": {
       "contents": [
