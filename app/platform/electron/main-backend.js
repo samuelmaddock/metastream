@@ -11,6 +11,8 @@ class Session {
     this.clients.add(hostClient.id);
     this.owner = hostClient.id;
 
+    this.receive = this.receive.bind(this);
+
     ipcMain.on(`platform-lobby-message-${this.id}`, this.receive);
   }
 
@@ -18,12 +20,12 @@ class Session {
     ipcMain.removeListener(`platform-lobby-message-${this.id}`, this.receive);
   }
 
-  receive = (event, targetId, msg) => {
+  receive(event, targetId, msg) {
     targetId = parseInt(targetId, 10);
     const senderId = event.sender.id;
     console.log(`[Session.receive][${this.id}] Received '${msg}' from ${senderId} for ${targetId}`);
     this.sendTo(targetId, senderId, msg);
-  };
+  }
 
   join(client) {
     this.clients.add(client.id);
