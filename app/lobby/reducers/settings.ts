@@ -10,7 +10,7 @@ export interface ISettingsState {
 
 const initialState: ISettingsState = {
   mute: false,
-  volume: 1
+  volume: 0.75
 };
 
 export const settings: Reducer<ISettingsState> = (
