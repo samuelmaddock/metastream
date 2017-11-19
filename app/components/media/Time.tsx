@@ -3,7 +3,8 @@ import styles from './ProgressBar.css';
 import { formatMs, formatShortMs } from 'utils/time';
 import { Ticker } from 'components/Ticker';
 
-const PLACEHOLDER = '00:00:00';
+const HHMMSS_PLACEHOLDER = '0:00:00';
+const MMSS_PLACEHOLDER = '00:00';
 
 interface IProps {
   className?: string;
@@ -12,6 +13,7 @@ interface IProps {
 
   /** Show leading zeros (e.g. 00:04:12) */
   leading?: boolean;
+  leadingHours?: boolean;
 }
 
 interface IState {
@@ -33,8 +35,9 @@ export class Time extends PureComponent<IProps, IState> {
     let lead;
 
     if (this.props.leading) {
-      const numLeadingChars = Math.max(0, PLACEHOLDER.length - timeStr.length);
-      lead = PLACEHOLDER.substr(0, numLeadingChars);
+      const placeholder = this.props.leadingHours ? HHMMSS_PLACEHOLDER : MMSS_PLACEHOLDER;
+      const numLeadingChars = Math.max(0, placeholder.length - timeStr.length);
+      lead = placeholder.substr(0, numLeadingChars);
     }
 
     return (

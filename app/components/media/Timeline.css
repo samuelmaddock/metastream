@@ -8,7 +8,7 @@
 }
 
 .time {
-  width: 64px;
+  width: auto;
   flex: 0 0 auto;
   flex-shrink: 0;
   font-size: 14px;

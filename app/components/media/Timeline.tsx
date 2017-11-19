@@ -32,6 +32,8 @@ interface IState {
   seeking?: boolean;
 }
 
+const HOUR_MS = 3600 * 1000;
+
 export class Timeline extends PureComponent<IProps, IState> {
   static defaultProps: Partial<IProps> = {
     duration: 0
@@ -82,9 +84,11 @@ export class Timeline extends PureComponent<IProps, IState> {
 
   render(): JSX.Element {
     const { time, paused, duration, onSeek } = this.props;
+    const exceedsHour = duration ? duration > HOUR_MS : false;
+
     return (
       <span className={cx(this.props.className, styles.container)}>
-        <Time className={styles.time} time={this.state.time} leading />
+        <Time className={styles.time} time={this.state.time} leading leadingHours={exceedsHour} />
         <Slider
           ref={el => {
             this.slider = el;
@@ -104,7 +108,7 @@ export class Timeline extends PureComponent<IProps, IState> {
             this.setState({ seeking: false });
           }}
         />
-        <Time className={styles.time} time={duration!} leading />
+        <Time className={styles.time} time={duration!} leading leadingHours={exceedsHour} />
         <Ticker onTick={this.tick} disabled={paused && !this.state.seeking} />
       </span>
     );
