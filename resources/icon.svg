@@ -1,24 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 15.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 width="417.022px" height="417.022px" viewBox="0 0 417.022 417.022" enable-background="new 0 0 417.022 417.022"
-	 xml:space="preserve">
-<defs>
-<mask id="play">
-	<circle fill="#FFFFFF" cx="208.511" cy="208.511" r="208.511"/>
-	<path fill="#000000" d="M140.057,344.595c-3.065,0-6.13-0.792-8.877-2.378c-5.493-3.172-8.877-9.032-8.877-15.375V92.543
-	c0-6.343,3.384-12.204,8.877-15.375c5.493-3.171,12.261-3.171,17.753,0l202.908,117.148c5.493,3.171,8.877,9.032,8.877,15.375
-	c0,6.343-3.384,12.204-8.877,15.375l-202.908,117.15C146.188,343.803,143.123,344.595,140.057,344.595z M157.811,123.293v172.798
-	l149.647-86.4L157.811,123.293z"/>
-	</mask>
-</defs>
-<radialGradient id="SVGID_1_" cx="78.0146" cy="613.71" r="559.6183" gradientTransform="matrix(1 0 0 -1 0 613)" gradientUnits="userSpaceOnUse">
-	<stop  offset="0" style="stop-color:#6F749E"/>
-	<stop  offset="0.2577" style="stop-color:#9A8DAF"/>
-	<stop  offset="0.4601" style="stop-color:#D0A8B9"/>
-	<stop  offset="0.6135" style="stop-color:#F8BBB1"/>
-	<stop  offset="1" style="stop-color:#FDE6B1"/>
-</radialGradient>
-<circle fill="url(#SVGID_1_)" mask="url(#play)" cx="208.511" cy="208.511" r="208.511"/>
+<svg width="417" height="417" viewBox="0 0 417 417"
+	xmlns="http://www.w3.org/2000/svg">
+	<defs>
+		<radialGradient id="exampleGradient" fx="0.5" fy="0.5" r="100%" gradientTransform="translate(-0.4 -0.4)">
+			<stop offset="0%" stop-color="#6f749e"/>
+			<stop offset="31%" stop-color="#9a8daf"/>
+			<stop offset="58%" stop-color="#d0a8b9"/>
+			<stop offset="80%" stop-color="#f8bbb1"/>
+			<stop offset="100%" stop-color="#fde6b1"/>
+		</radialGradient>
+		<mask id="play">
+			<circle fill="#FFFFFF" cx="208.511" cy="208.511" r="50%" />
+			<path fill="#000000" d="M140.057,344.595c-3.065,0-6.13-0.792-8.877-2.378c-5.493-3.172-8.877-9.032-8.877-15.375V92.543		c0-6.343,3.384-12.204,8.877-15.375c5.493-3.171,12.261-3.171,17.753,0l202.908,117.148c5.493,3.171,8.877,9.032,8.877,15.375		c0,6.343-3.384,12.204-8.877,15.375l-202.908,117.15C146.188,343.803,143.123,344.595,140.057,344.595z M157.811,123.293v172.798		l149.647-86.4L157.811,123.293z" />
+		</mask>
+	</defs>
+	<rect fill="#fff" width="100%" height="100%" />
+	<circle fill="url(#exampleGradient)" mask="url(#play)" cx="50%" cy="50%" r="50%" transform="scale(0.95) translate(11 11)"/>
 </svg>
