@@ -62,9 +62,15 @@ export class WebControls extends Component<IProps, IState> {
     this.webview = webview;
 
     if (this.webview) {
-      this.webview.addEventListener('dom-ready', () => {
+      this.webview.addEventListener('dom-ready', e => {
         if (this.addressInput && this.webview) {
           this.addressInput.value = this.webview.getURL();
+        }
+      });
+
+      this.webview.addEventListener('will-navigate', e => {
+        if (this.addressInput && this.webview) {
+          this.addressInput.value = e.url;
         }
       });
     }
@@ -84,7 +90,7 @@ export class WebControls extends Component<IProps, IState> {
 
   private onPlayClicked() {
     const { onRequestUrl } = this.props;
-    const url = this.addressInput && this.addressInput.value;
+    const url = this.webview && this.webview.getURL();
 
     if (onRequestUrl && url) {
       onRequestUrl(url);

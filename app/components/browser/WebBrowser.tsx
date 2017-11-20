@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
+import { DispatchProp } from 'react-redux';
 import cx from 'classnames';
 
 import styles from './WebBrowser.css';
 import { WEBVIEW_PARTITION } from 'constants/http';
 import { WebControls } from 'components/browser/Controls';
+import { netConnect } from 'lobby';
+import { ILobbyNetState } from 'lobby/reducers';
+import { server_requestMedia } from 'lobby/actions/mediaPlayer';
 
 const DEFAULT_URL = 'https://www.youtube.com/';
 // const DEFAULT_URL = 'https://www.google.com/';
@@ -15,7 +19,9 @@ interface IProps {
   onClose?: () => void;
 }
 
-export class WebBrowser extends Component<IProps> {
+type PrivateProps = IProps & DispatchProp<ILobbyNetState>;
+
+export class _WebBrowser extends Component<PrivateProps> {
   private webview?: Electron.WebviewTag | null;
   private controls?: WebControls | null;
 
@@ -42,6 +48,13 @@ export class WebBrowser extends Component<IProps> {
             this.setupControls();
           }}
           onClose={this.props.onClose}
+          onRequestUrl={url => {
+            this.props.dispatch!(server_requestMedia(url));
+
+            if (this.props.onClose) {
+              this.props.onClose();
+            }
+          }}
         />
         {this.renderContent()}
       </div>
@@ -68,3 +81,5 @@ export class WebBrowser extends Component<IProps> {
     );
   }
 }
+
+export const WebBrowser = netConnect<{}, {}, IProps>()(_WebBrowser);
