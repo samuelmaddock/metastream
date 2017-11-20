@@ -25,7 +25,7 @@ export const queueMedia = actionCreator<IMediaItem>('QUEUE_MEDIA');
 /** Media timer until playback ends. This assumes only one media player exists at a time.*/
 let mediaTimeoutId: number | null = null;
 
-const nextMedia = (): ThunkAction<void, ILobbyNetState, void> => {
+export const nextMedia = (): ThunkAction<void, ILobbyNetState, void> => {
   return (dispatch, getState) => {
     const state = getState();
     const media = getCurrentMedia(state);
@@ -180,13 +180,7 @@ const requestPlayPause = (): RpcThunk<void> => (dispatch, getState, context) => 
 export const server_requestPlayPause = rpc(RpcRealm.Server, requestPlayPause);
 
 const requestNextMedia = (): RpcThunk<void> => (dispatch, getState, context) => {
-  const state = getState();
-  const media = getCurrentMedia(state);
-
-  if (media) {
-    dispatch(nextMedia());
-    dispatch(updatePlaybackTimer());
-  }
+  dispatch(nextMedia());
 };
 export const server_requestNextMedia = rpc(RpcRealm.Server, requestNextMedia);
 

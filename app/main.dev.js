@@ -6,7 +6,7 @@
  * When running `npm run build` or `npm run build-main`, this file is compiled to
  * `./app/main.prod.js` using webpack. This gives us some performance wins.
  */
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, globalShortcut } from 'electron';
 import { join, dirname } from 'path';
 import MenuBuilder from './menu';
 
@@ -63,6 +63,21 @@ app.on('window-all-closed', () => {
   }
 });
 
+/** Relays global shortcuts to renderer windows via IPC */
+const registerMediaShortcuts = () => {
+  const relays = ['medianexttrack', 'mediaplaypause'];
+
+  const ipcShortcut = (shortcut) => {
+    BrowserWindow.getAllWindows().forEach(window => {
+      window.webContents.send(shortcut);
+    });
+  };
+
+  relays.forEach(shortcut => {
+    globalShortcut.register(shortcut, ipcShortcut.bind(null, shortcut));
+  });
+};
+
 const setupWindow = () => {
   let win = new BrowserWindow({
     show: false,
@@ -102,6 +117,8 @@ app.on('ready', async () => {
   if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
     await installExtensions();
   }
+
+  registerMediaShortcuts();
 
   let numWindows = 1;
 

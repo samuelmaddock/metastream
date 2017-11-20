@@ -1,4 +1,5 @@
 import React from 'react';
+import { DispatchProp } from 'react-redux';
 import cx from 'classnames';
 
 import { Lobby } from 'components/Lobby';
@@ -37,6 +38,7 @@ import { ActivityMonitor } from 'components/lobby/ActivityMonitor';
 import { MediaType } from 'media/types';
 import { WebBrowser } from 'components/browser/WebBrowser';
 import { Icon } from 'components/Icon';
+import { registerMediaShortcuts, unregisterMediaShortcuts } from 'lobby/actions/shortcuts';
 
 interface IProps {
   host: boolean;
@@ -56,7 +58,7 @@ interface IConnectedProps {
   sessionName?: string;
 }
 
-type PrivateProps = IProps & IConnectedProps & IReactReduxProps;
+type PrivateProps = IProps & IConnectedProps & DispatchProp<ILobbyNetState>;
 
 const NO_MEDIA: IMediaItem = {
   type: MediaType.Item,
@@ -73,6 +75,14 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
   }
 
   state: IState = { inactive: false };
+
+  componentDidMount() {
+    this.props.dispatch!(registerMediaShortcuts());
+  }
+
+  componentWillUnmount() {
+    this.props.dispatch!(unregisterMediaShortcuts());
+  }
 
   render(): JSX.Element {
     const { currentMedia: media } = this.props;
@@ -157,9 +167,9 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
 
   private sendChat = (text: string): void => {
     if (isUrl(text)) {
-      this.props.dispatch(server_requestMedia(text));
+      this.props.dispatch!(server_requestMedia(text));
     } else {
-      this.props.dispatch(server_addChat(text));
+      this.props.dispatch!(server_addChat(text));
     }
   };
 }

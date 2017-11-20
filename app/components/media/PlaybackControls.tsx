@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import cx from 'classnames';
+
 import styles from './PlaybackControls.css';
+
 import {
   PlaybackState,
   IMediaItem,
