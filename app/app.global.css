@@ -133,9 +133,13 @@ table {
 /*
 Variables
 */
-body {
+:root {
   --app-text-color: #dadada;
   --app-titlebar-height: 30px;
+
+  --color-nice-blue: #00bfff;
+  /* --color-highlight: #f8c0b1; */
+  --color-highlight: #f98673;
 }
 
 /*

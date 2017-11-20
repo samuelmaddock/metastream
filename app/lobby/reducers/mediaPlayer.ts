@@ -7,7 +7,8 @@ import {
   endMedia,
   playPauseMedia,
   seekMedia,
-  queueMedia
+  queueMedia,
+  repeatMedia
 } from 'lobby/actions/mediaPlayer';
 import { ILobbyNetState } from 'lobby/reducers';
 import { MediaType } from 'media/types';
@@ -50,8 +51,15 @@ export interface IMediaItem {
   hasMore?: boolean;
 }
 
+export const enum RepeatMode {
+  Off = 0,
+  On,
+  Count
+}
+
 export interface IMediaPlayerState {
   playback: PlaybackState;
+  repeatMode: RepeatMode;
   startTime?: number;
   pauseTime?: number;
   current?: IMediaItem;
@@ -60,6 +68,7 @@ export interface IMediaPlayerState {
 
 const initialState: IMediaPlayerState = {
   playback: PlaybackState.Idle,
+  repeatMode: RepeatMode.Off,
   queue: []
 };
 
@@ -77,8 +86,16 @@ export const mediaPlayer: Reducer<IMediaPlayerState> = (
   } else if (isType(action, endMedia)) {
     let next;
     let queue = state.queue;
+    const current = state.current;
 
+    // recycle current media while repeat is enabled
+    if (current && state.repeatMode === RepeatMode.On) {
+      queue = [...queue, current];
+    }
+
+    // get next item in the queue
     if (queue.length > 0) {
+      // create queue copy since `shift()` will mutate it
       queue = [...queue];
       next = queue.shift();
     }
@@ -124,6 +141,12 @@ export const mediaPlayer: Reducer<IMediaPlayerState> = (
     return {
       ...state,
       queue: [...state.queue, action.payload]
+    };
+  } else if (isType(action, repeatMedia)) {
+    return {
+      ...state,
+      // cycle through repeat modes
+      repeatMode: (state.repeatMode + 1) % RepeatMode.Count
     };
   }
 

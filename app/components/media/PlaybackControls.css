@@ -36,6 +36,10 @@
   border-radius: 0 var(--rounded-radius) var(--rounded-radius) 0;
 }
 
+.buttonEnabled {
+  color: var(--color-highlight);
+}
+
 .buttonListItem {
   padding: 8px 12px;
   color: var(--app-text-color);

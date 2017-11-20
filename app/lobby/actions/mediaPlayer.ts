@@ -16,6 +16,7 @@ import {
 } from 'lobby/reducers/mediaPlayer.helpers';
 
 export const playPauseMedia = actionCreator<number>('PLAY_PAUSE_MEDIA');
+export const repeatMedia = actionCreator<number>('REPEAT_MEDIA');
 export const seekMedia = actionCreator<number>('SEEK_MEDIA');
 export const setMedia = actionCreator<IMediaItem>('SET_MEDIA');
 export const endMedia = actionCreator<void>('END_MEDIA');
@@ -188,6 +189,11 @@ const requestNextMedia = (): RpcThunk<void> => (dispatch, getState, context) => 
   }
 };
 export const server_requestNextMedia = rpc(RpcRealm.Server, requestNextMedia);
+
+const requestRepeatMedia = (): RpcThunk<void> => (dispatch, getState, context) => {
+  dispatch(repeatMedia());
+};
+export const server_requestRepeatMedia = rpc(RpcRealm.Server, requestRepeatMedia);
 
 const requestSeek = (time: number): RpcThunk<void> => (dispatch, getState, context) => {
   const state = getState();

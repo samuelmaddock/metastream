@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
 import cx from 'classnames';
 import styles from './PlaybackControls.css';
-import { PlaybackState, IMediaItem, IMediaPlayerState } from 'lobby/reducers/mediaPlayer';
+import {
+  PlaybackState,
+  IMediaItem,
+  IMediaPlayerState,
+  RepeatMode
+} from 'lobby/reducers/mediaPlayer';
 import { Time } from 'components/media/Time';
 import { VolumeSlider } from 'components/media/VolumeSlider';
 import { netConnect, ILobbyNetState } from 'lobby';
@@ -9,7 +14,8 @@ import { DispatchProp } from 'react-redux';
 import {
   server_requestPlayPause,
   server_requestNextMedia,
-  server_requestSeek
+  server_requestSeek,
+  server_requestRepeatMedia
 } from 'lobby/actions/mediaPlayer';
 import { setVolume, setMute } from 'lobby/actions/settings';
 import { Icon } from 'components/Icon';
@@ -26,14 +32,22 @@ import { InfoButton } from 'components/media/buttons/InfoButton';
 const Button: React.SFC<{
   icon: string;
   title?: string;
+
+  /** Highlight button as turned on */
+  enabled?: boolean;
+
+  /** Disable button interaction */
   disabled?: boolean;
+
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }> = props => {
   return (
     <button
       type="button"
       disabled={props.disabled}
-      className={styles.button}
+      className={cx(styles.button, {
+        [styles.buttonEnabled]: props.enabled
+      })}
       title={props.title}
       onClick={props.onClick}
     >
@@ -108,6 +122,16 @@ class _PlaybackControls extends Component<PrivateProps> {
       <Button icon="skip-forward" title="Next" disabled={isIdle} onClick={this.next} />
     );
 
+    const repeatBtn = (
+      <Button
+        icon="repeat"
+        title="Repeat"
+        enabled={this.props.repeatMode === RepeatMode.On}
+        disabled={isIdle}
+        onClick={this.repeat}
+      />
+    );
+
     const timeline =
       isIdle || !isTimed ? (
         <span className={styles.spacer} />
@@ -167,6 +191,7 @@ class _PlaybackControls extends Component<PrivateProps> {
       <div className={cx(this.props.className, styles.container)}>
         {playPauseBtn}
         {nextBtn}
+        {repeatBtn}
         {timeline}
         {volumeSlider}
         {infoBtn}
@@ -187,6 +212,10 @@ class _PlaybackControls extends Component<PrivateProps> {
 
   private next = () => {
     this.props.dispatch!(server_requestNextMedia());
+  };
+
+  private repeat = () => {
+    this.props.dispatch!(server_requestRepeatMedia());
   };
 
   private seek = (time: number) => {

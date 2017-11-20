@@ -93,7 +93,7 @@
 }
 
 .username {
-  color: #00bfff;
+  color: var(--color-nice-blue);
   font-weight: bold;
   margin-right: 5px;
   white-space: nowrap;
