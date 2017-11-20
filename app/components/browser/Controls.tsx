@@ -6,9 +6,20 @@ import { Icon } from 'components/Icon';
 
 interface IProps {
   className?: string;
+  onRequestUrl?: (url: string) => void;
+  onClose?: () => {};
 }
 
-export class WebControls extends Component<IProps> {
+interface IState {
+  url?: string;
+}
+
+export class WebControls extends Component<IProps, IState> {
+  private webview: Electron.WebviewTag | null;
+  private addressInput: HTMLInputElement | null;
+
+  state: IState = {};
+
   render(): JSX.Element {
     // back, forward, location bar, play button, exit
 
@@ -19,8 +30,12 @@ export class WebControls extends Component<IProps> {
         <Icon name="refresh-cw" />
         <Icon name="home" />
         {this.renderLocation()}
-        <Icon name="play" />
-        <Icon name="x" />
+        <button onClick={this.onPlayClicked.bind(this)}>
+          <Icon name="play" />
+        </button>
+        <button onClick={this.onCloseClicked.bind(this)}>
+          <Icon name="x" />
+        </button>
       </div>
     );
   }
@@ -30,12 +45,57 @@ export class WebControls extends Component<IProps> {
       <div className={styles.locationContainer}>
         <div className={styles.locationBar}>
           <input
+            ref={el => {
+              this.addressInput = el;
+            }}
             type="text"
             className={styles.addressInput}
-            defaultValue="http://www.google.com/"
+            onKeyPress={this.onLocationKeyPress}
+            onChange={() => {}}
           />
         </div>
       </div>
     );
+  }
+
+  setWebview(webview: Electron.WebviewTag | null) {
+    this.webview = webview;
+
+    if (this.webview) {
+      this.webview.addEventListener('dom-ready', () => {
+        if (this.addressInput && this.webview) {
+          this.addressInput.value = this.webview.getURL();
+        }
+      });
+    }
+  }
+
+  private onLocationKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+
+      const target = event.target as HTMLInputElement;
+
+      if (this.webview && target) {
+        this.webview.loadURL(target.value);
+      }
+    }
+  };
+
+  private onPlayClicked() {
+    const { onRequestUrl } = this.props;
+    const url = this.addressInput && this.addressInput.value;
+
+    if (onRequestUrl && url) {
+      onRequestUrl(url);
+    }
+  }
+
+  private onCloseClicked() {
+    const { onClose } = this.props;
+
+    if (onClose) {
+      onClose();
+    }
   }
 }

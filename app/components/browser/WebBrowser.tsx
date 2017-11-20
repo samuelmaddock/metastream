@@ -5,7 +5,8 @@ import styles from './WebBrowser.css';
 import { WEBVIEW_PARTITION } from 'constants/http';
 import { WebControls } from 'components/browser/Controls';
 
-const DEFAULT_URL = 'https://www.google.com/';
+const DEFAULT_URL = 'https://www.youtube.com/';
+// const DEFAULT_URL = 'https://www.google.com/';
 // const DEFAULT_URL = 'data:text/html,<style>html{color:#fff;font-size:36px}</style>B R O W S E R';
 
 interface IProps {
@@ -14,20 +15,32 @@ interface IProps {
 }
 
 export class WebBrowser extends Component<IProps> {
-  private webview?: any | null;
+  private webview?: Electron.WebviewTag | null;
+  private controls?: WebControls | null;
+
+  private hasSetupControls?: boolean;
+
+  private setupControls() {
+    if (!this.hasSetupControls && this.controls && this.webview) {
+      this.controls.setWebview(this.webview);
+      this.hasSetupControls = true;
+    }
+  }
 
   private setupWebview = (webview: Electron.WebviewTag | null): void => {
     this.webview = webview;
-
-    if (this.webview) {
-      // TODO
-    }
+    this.setupControls();
   };
 
   render(): JSX.Element {
     return (
       <div className={cx(styles.container, this.props.className)}>
-        <WebControls />
+        <WebControls
+          ref={el => {
+            this.controls = el;
+            this.setupControls();
+          }}
+        />
         {this.renderContent()}
       </div>
     );
