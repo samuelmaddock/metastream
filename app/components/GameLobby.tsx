@@ -35,6 +35,7 @@ import { PlaybackControls } from 'components/media/PlaybackControls';
 import { setVolume } from 'lobby/actions/settings';
 import { ActivityMonitor } from 'components/lobby/ActivityMonitor';
 import { MediaType } from 'media/types';
+import { WebBrowser } from 'components/browser/WebBrowser';
 
 interface IProps {
   host: boolean;
@@ -110,6 +111,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
 
         <ActivityMonitor onChange={active => this.setState({ inactive: !active })} />
         {this.isInactive && <div className={styles.inactiveOverlay} />}
+        <WebBrowser className={styles.browser} />
       </div>
     );
   }

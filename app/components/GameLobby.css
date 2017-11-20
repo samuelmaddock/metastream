@@ -75,3 +75,12 @@
 .queue {
   right: var(--overlay-spacing);
 }
+
+.browser {
+  position: absolute;
+  top: var(--app-titlebar-height);
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--overlay-z-index);
+}

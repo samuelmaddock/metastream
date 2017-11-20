@@ -136,6 +136,7 @@ Variables
 :root {
   --app-text-color: #dadada;
   --app-titlebar-height: 30px;
+  --app-titlebar-background-color: rgba(0, 0, 0, 0.44);
 
   --color-nice-blue: #00bfff;
   /* --color-highlight: #f8c0b1; */

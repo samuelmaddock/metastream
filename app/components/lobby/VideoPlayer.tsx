@@ -13,6 +13,7 @@ import { DispatchProp } from 'react-redux';
 import { PlaybackControls } from 'components/media/PlaybackControls';
 import { setVolume } from 'lobby/actions/settings';
 import { clamp } from 'utils/math';
+import { WEBVIEW_PARTITION } from 'constants/http';
 
 interface IProps {
   className?: string;
@@ -211,7 +212,7 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
         /* Disable plugins until we know we need them */
         plugins="true"
         preload="./preload.js"
-        partition="persist:mediaplayer"
+        partition={WEBVIEW_PARTITION}
         ondblclick={this.onDoubleClick}
       />
     );
