@@ -9,7 +9,7 @@ import { netConnect } from 'lobby';
 import { ILobbyNetState } from 'lobby/reducers';
 import { server_requestMedia } from 'lobby/actions/mediaPlayer';
 
-const DEFAULT_URL = 'https://www.youtube.com/';
+const DEFAULT_URL = './homescreen.html';
 // const DEFAULT_URL = 'https://www.google.com/';
 // const DEFAULT_URL = 'data:text/html,<style>html{color:#fff;font-size:36px}</style>B R O W S E R';
 
