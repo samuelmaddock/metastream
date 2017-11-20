@@ -26,6 +26,15 @@
   opacity: 0;
 }
 
+:global(.browserVisible) .overlay {
+  opacity: 0;
+  transition: none;
+}
+
+:global(.browserVisible) .titlebar {
+  opacity: 1;
+}
+
 /* Force mouse cursor to be hidden */
 .inactiveOverlay {
   composes: absolute-full from 'styles/layout.css';

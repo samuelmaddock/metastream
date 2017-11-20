@@ -36,6 +36,7 @@ import { setVolume } from 'lobby/actions/settings';
 import { ActivityMonitor } from 'components/lobby/ActivityMonitor';
 import { MediaType } from 'media/types';
 import { WebBrowser } from 'components/browser/WebBrowser';
+import { Icon } from 'components/Icon';
 
 interface IProps {
   host: boolean;
@@ -43,6 +44,7 @@ interface IProps {
 
 interface IState {
   inactive: boolean;
+  showBrowser?: boolean;
 }
 
 interface IConnectedProps {
@@ -74,13 +76,12 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
 
   render(): JSX.Element {
     const { currentMedia: media } = this.props;
-    //         <h3>{this.props.sessionName || 'Lobby'}</h3>
-    //         <Link to="/servers">Leave</Link>
     const userIds = Object.keys(this.props.users);
     return (
       <div
         className={cx(styles.container, {
-          lobbyInactive: this.isInactive
+          lobbyInactive: this.isInactive,
+          browserVisible: this.state.showBrowser
         })}
       >
         <VideoPlayer
@@ -101,6 +102,18 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
           className={styles.queue}
           title="Next up"
           tagline={`${this.props.mediaQueue.length} items`}
+          action={
+            <button
+              style={{ backgroundColor: '#27ae60' }}
+              onClick={() => {
+                this.setState({
+                  showBrowser: true
+                });
+              }}
+            >
+              <Icon name="plus" /> Add
+            </button>
+          }
         >
           {media && media.hasMore && <MediaItem key="current" media={media} />}
           {this.props.mediaQueue.map((media, idx) => {
@@ -111,7 +124,14 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
 
         <ActivityMonitor onChange={active => this.setState({ inactive: !active })} />
         {this.isInactive && <div className={styles.inactiveOverlay} />}
-        <WebBrowser className={styles.browser} />
+        {this.state.showBrowser && (
+          <WebBrowser
+            className={styles.browser}
+            onClose={() => {
+              this.setState({ showBrowser: false });
+            }}
+          />
+        )}
       </div>
     );
   }

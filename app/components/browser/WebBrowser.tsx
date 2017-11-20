@@ -12,6 +12,7 @@ const DEFAULT_URL = 'https://www.youtube.com/';
 interface IProps {
   className?: string;
   initialUrl?: string;
+  onClose?: () => void;
 }
 
 export class WebBrowser extends Component<IProps> {
@@ -40,6 +41,7 @@ export class WebBrowser extends Component<IProps> {
             this.controls = el;
             this.setupControls();
           }}
+          onClose={this.props.onClose}
         />
         {this.renderContent()}
       </div>

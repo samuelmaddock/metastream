@@ -7,7 +7,7 @@ import { Icon } from 'components/Icon';
 interface IProps {
   className?: string;
   onRequestUrl?: (url: string) => void;
-  onClose?: () => {};
+  onClose?: () => void;
 }
 
 interface IState {
