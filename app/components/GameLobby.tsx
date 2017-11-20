@@ -114,7 +114,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
           tagline={`${this.props.mediaQueue.length} items`}
           action={
             <button
-              style={{ backgroundColor: '#27ae60' }}
+              style={{ backgroundColor: 'var(--color-highlight)' }}
               onClick={() => {
                 this.setState({
                   showBrowser: true
