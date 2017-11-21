@@ -113,6 +113,7 @@ export class WebControls extends Component<IProps, IState> {
           onRequestUrl(url);
         } else {
           this.loadURL(url);
+          this.webview!.focus();
         }
       }
     }
