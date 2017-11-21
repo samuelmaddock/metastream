@@ -66,7 +66,7 @@ app.on('window-all-closed', () => {
 
 /** Relays global shortcuts to renderer windows via IPC */
 const registerMediaShortcuts = () => {
-  const relays = ['medianexttrack', 'mediaplaypause'];
+  // TODO: why the fuck do these block commands elsewhere?
   const globalCommands = [
     ['medianexttrack', 'media:next'],
     ['mediaplaypause', 'media:playpause']
@@ -92,7 +92,7 @@ const registerMediaShortcuts = () => {
     ['Alt+Right', 'window:history-next'],
     ['Cmd+Right', 'window:history-next'],
     ['Cmd+Right', 'window:history-next'],
-    ['Space', 'media:playpause'],
+    // ['Space', 'media:playpause'],
   ];
 
   localCommands.forEach(cmd => {
