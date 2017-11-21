@@ -51,7 +51,10 @@ export class WebControls extends Component<IProps, IState> {
             type="text"
             className={styles.addressInput}
             onKeyPress={this.onLocationKeyPress}
-            onChange={() => {}}
+            onChange={() => {
+              /* force react controlled input */
+            }}
+            autoFocus
           />
         </div>
       </div>
@@ -63,16 +66,28 @@ export class WebControls extends Component<IProps, IState> {
 
     if (this.webview) {
       this.webview.addEventListener('dom-ready', e => {
-        if (this.addressInput && this.webview) {
-          this.addressInput.value = this.webview.getURL();
+        if (this.webview) {
+          this.updateURL(this.webview.getURL());
         }
       });
 
-      this.webview.addEventListener('will-navigate', e => {
-        if (this.addressInput && this.webview) {
-          this.addressInput.value = e.url;
-        }
-      });
+      const updateUrl = (e: { url: string }) => {
+        this.updateURL(e.url);
+      };
+
+      this.webview.addEventListener('will-navigate', updateUrl);
+      this.webview.addEventListener('did-navigate-in-page', updateUrl);
+    }
+  }
+
+  private updateURL(url: string) {
+    // TODO: add custom 'mediaplayer://' protocol for internal pages
+    if (url.startsWith('asar://') || url.endsWith('/homescreen.html')) {
+      url = '';
+    }
+
+    if (this.addressInput) {
+      this.addressInput.value = url;
     }
   }
 
@@ -80,10 +95,18 @@ export class WebControls extends Component<IProps, IState> {
     if (event.key === 'Enter') {
       event.preventDefault();
 
+      const { onRequestUrl } = this.props;
       const target = event.target as HTMLInputElement;
 
       if (this.webview && target) {
-        this.webview.loadURL(target.value);
+        const url = target.value;
+        const shouldRequest = event.ctrlKey || event.shiftKey || event.altKey;
+
+        if (onRequestUrl && shouldRequest) {
+          onRequestUrl(url);
+        } else {
+          this.webview.loadURL(url);
+        }
       }
     }
   };
