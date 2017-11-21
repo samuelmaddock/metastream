@@ -13,6 +13,7 @@ interface IProps {
   className?: string;
   messages: IMessage[];
   sendMessage: (text: string) => void;
+  disabled?: boolean;
 }
 
 interface IState {
@@ -26,13 +27,27 @@ export class Chat extends Component<IProps, IState> {
   state: IState = {};
 
   componentDidMount(): void {
-    document.addEventListener('keypress', this.onKeyPress, false);
-    document.addEventListener('keydown', this.onKeyDown, false);
+    this.setupListeners(!this.props.disabled);
   }
 
   componentWillUnmount(): void {
-    document.removeEventListener('keypress', this.onKeyPress, false);
-    document.removeEventListener('keydown', this.onKeyDown, false);
+    this.setupListeners(false);
+  }
+
+  componentDidUpdate(prevProps: IProps) {
+    if (this.props.disabled !== prevProps.disabled) {
+      this.setupListeners(!this.props.disabled);
+    }
+  }
+
+  private setupListeners(enabled: boolean) {
+    if (enabled) {
+      document.addEventListener('keypress', this.onKeyPress, false);
+      document.addEventListener('keydown', this.onKeyDown, false);
+    } else {
+      document.removeEventListener('keypress', this.onKeyPress, false);
+      document.removeEventListener('keydown', this.onKeyDown, false);
+    }
   }
 
   render(): JSX.Element | null {

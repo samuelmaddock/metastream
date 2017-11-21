@@ -129,7 +129,13 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
             return <MediaItem key={idx} media={media} />;
           })}
         </ListOverlay>
-        <Chat className={styles.chat} messages={this.props.messages} sendMessage={this.sendChat} />
+
+        <Chat
+          className={styles.chat}
+          messages={this.props.messages}
+          sendMessage={this.sendChat}
+          disabled={this.state.showBrowser}
+        />
 
         <ActivityMonitor onChange={active => this.setState({ inactive: !active })} />
         {this.isInactive && <div className={styles.inactiveOverlay} />}
