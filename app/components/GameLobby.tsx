@@ -1,6 +1,7 @@
 import React from 'react';
 import { DispatchProp } from 'react-redux';
 import cx from 'classnames';
+import { ipcRenderer } from 'electron';
 
 import { Lobby } from 'components/Lobby';
 import { IReactReduxProps } from 'types/redux';
@@ -77,10 +78,12 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
   state: IState = { inactive: false };
 
   componentDidMount() {
+    ipcRenderer.on('command', this.onWindowCommand);
     this.props.dispatch!(registerMediaShortcuts());
   }
 
   componentWillUnmount() {
+    ipcRenderer.removeListener('command', this.onWindowCommand);
     this.props.dispatch!(unregisterMediaShortcuts());
   }
 
@@ -115,11 +118,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
           action={
             <button
               style={{ backgroundColor: 'var(--color-highlight)' }}
-              onClick={() => {
-                this.setState({
-                  showBrowser: true
-                });
-              }}
+              onClick={this.openBrowser}
             >
               <Icon name="plus" /> Add
             </button>
@@ -165,12 +164,26 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
     );
   }
 
+  private onWindowCommand = (sender: Electron.WebContents, cmd: string) => {
+    switch (cmd) {
+      case 'window:new-tab':
+        this.openBrowser();
+        break;
+    }
+  };
+
   private sendChat = (text: string): void => {
     if (isUrl(text)) {
       this.props.dispatch!(server_requestMedia(text));
     } else {
       this.props.dispatch!(server_addChat(text));
     }
+  };
+
+  private openBrowser = () => {
+    this.setState({
+      showBrowser: true
+    });
   };
 }
 

@@ -8,6 +8,7 @@ import { WebControls } from 'components/browser/Controls';
 import { netConnect } from 'lobby';
 import { ILobbyNetState } from 'lobby/reducers';
 import { server_requestMedia } from 'lobby/actions/mediaPlayer';
+import { ipcRenderer } from 'electron';
 
 const DEFAULT_URL = './homescreen.html';
 // const DEFAULT_URL = 'https://www.google.com/';
@@ -27,6 +28,43 @@ export class _WebBrowser extends Component<PrivateProps> {
 
   private hasSetupControls?: boolean;
 
+  componentDidMount(): void {
+    ipcRenderer.on('command', this.dispatchCommand);
+  }
+
+  componentWillUnmount(): void {
+    ipcRenderer.removeListener('command', this.dispatchCommand);
+  }
+
+  private dispatchCommand = (sender: Electron.WebContents, cmd: string) => {
+    if (!this.webview) {
+      return;
+    }
+
+    switch (cmd) {
+      case 'window:close':
+        if (this.props.onClose) {
+          this.props.onClose();
+        }
+        break;
+      case 'window:focus-url':
+        if (this.controls) {
+          this.controls.focusURL();
+        }
+        break;
+      case 'window:history-prev':
+        if (this.webview.canGoBack()) {
+          this.webview.goBack();
+        }
+        break;
+      case 'window:history-next':
+        if (this.webview.canGoForward()) {
+          this.webview.goForward();
+        }
+        break;
+    }
+  };
+
   private setupControls() {
     if (!this.hasSetupControls && this.controls && this.webview) {
       this.controls.setWebview(this.webview);
@@ -37,6 +75,13 @@ export class _WebBrowser extends Component<PrivateProps> {
   private setupWebview = (webview: Electron.WebviewTag | null): void => {
     this.webview = webview;
     this.setupControls();
+
+    if (this.webview) {
+      this.webview.addEventListener('new-window', e => {
+        // TODO: security???
+        this.webview!.loadURL(e.url);
+      });
+    }
   };
 
   render(): JSX.Element {

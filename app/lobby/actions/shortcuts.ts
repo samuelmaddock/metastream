@@ -1,35 +1,38 @@
 import { ipcRenderer } from 'electron';
-
+import { Dispatch } from 'react-redux';
 import { ThunkAction } from 'redux-thunk';
-import { ILobbyNetState } from 'lobby';
 
+import { ILobbyNetState } from 'lobby';
 import { playPauseMedia, nextMedia } from 'lobby/actions/mediaPlayer';
 import { getPlaybackTime } from 'lobby/reducers/mediaPlayer.helpers';
 
-type Thunk = ThunkAction<void, ILobbyNetState, void>;
-
 let unregister: Function | undefined;
 
-const onNextTrack: Thunk = dispatch => {
-  dispatch(nextMedia());
-};
-
-const onPlayPause: Thunk = (dispatch, getState) => {
-  const curTime = getPlaybackTime(getState());
-  dispatch(playPauseMedia(curTime));
+const dispatchCommand = (
+  cmd: string,
+  dispatch: Dispatch<ILobbyNetState>,
+  getState: () => ILobbyNetState
+) => {
+  switch (cmd) {
+    case 'media:next':
+      dispatch(nextMedia());
+      break;
+    case 'media:playpause':
+      const curTime = getPlaybackTime(getState());
+      dispatch(playPauseMedia(curTime));
+      break;
+  }
 };
 
 export const registerMediaShortcuts = (): ThunkAction<void, ILobbyNetState, void> => {
   return (dispatch, getState, extra) => {
-    const next = () => dispatch(onNextTrack);
-    const playPause = () => dispatch(onPlayPause);
+    const onCommand = (sender: Electron.WebContents, cmd: string) =>
+      dispatch(dispatchCommand.bind(null, cmd));
 
-    ipcRenderer.on('medianexttrack', next);
-    ipcRenderer.on('mediaplaypause', playPause);
+    ipcRenderer.on('command', onCommand);
 
     unregister = () => {
-      ipcRenderer.removeListener('medianexttrack', next);
-      ipcRenderer.removeListener('mediaplaypause', playPause);
+      ipcRenderer.removeListener('command', onCommand);
     };
   };
 };

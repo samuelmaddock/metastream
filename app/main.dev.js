@@ -7,6 +7,7 @@
  * `./app/main.prod.js` using webpack. This gives us some performance wins.
  */
 import { app, BrowserWindow, globalShortcut } from 'electron';
+import { register as registerLocalShortcut } from 'electron-localshortcut';
 import { join, dirname } from 'path';
 import MenuBuilder from './menu';
 
@@ -66,15 +67,40 @@ app.on('window-all-closed', () => {
 /** Relays global shortcuts to renderer windows via IPC */
 const registerMediaShortcuts = () => {
   const relays = ['medianexttrack', 'mediaplaypause'];
+  const globalCommands = [
+    ['medianexttrack', 'media:next'],
+    ['mediaplaypause', 'media:playpause']
+  ];
 
   const ipcShortcut = (shortcut) => {
-    BrowserWindow.getAllWindows().forEach(window => {
-      window.webContents.send(shortcut);
+    BrowserWindow.getAllWindows().forEach(win => {
+      win.webContents.send('command', shortcut);
     });
   };
 
-  relays.forEach(shortcut => {
-    globalShortcut.register(shortcut, ipcShortcut.bind(null, shortcut));
+  globalCommands.forEach(cmd => {
+    globalShortcut.register(cmd[0], ipcShortcut.bind(null, cmd[1]));
+  });
+
+  const localCommands = [
+    ['CmdOrCtrl+T', 'window:new-tab'],
+    ['CmdOrCtrl+N', 'window:new-tab'],
+    ['CmdOrCtrl+L', 'window:focus-url'],
+    ['CmdOrCtrl+W', 'window:close'],
+    ['Alt+Left', 'window:history-prev'],
+    ['Cmd+Left', 'window:history-prev'],
+    ['Alt+Right', 'window:history-next'],
+    ['Cmd+Right', 'window:history-next'],
+    ['Cmd+Right', 'window:history-next'],
+    ['Space', 'media:playpause'],
+  ];
+
+  localCommands.forEach(cmd => {
+    BrowserWindow.getAllWindows().forEach(win => {
+      registerLocalShortcut(win, cmd[0], () => {
+        win.webContents.send('command', cmd[1]);
+      });
+    });
   });
 };
 
@@ -118,8 +144,6 @@ app.on('ready', async () => {
     await installExtensions();
   }
 
-  registerMediaShortcuts();
-
   let numWindows = 1;
 
   // Allow multiple windows for local testing
@@ -131,4 +155,6 @@ app.on('ready', async () => {
   for (let i = 0; i < numWindows; i++) {
     setupWindow();
   }
+
+  registerMediaShortcuts();
 });

@@ -80,6 +80,13 @@ export class WebControls extends Component<IProps, IState> {
     }
   }
 
+  focusURL() {
+    if (this.addressInput) {
+      this.addressInput.focus();
+      this.addressInput.select();
+    }
+  }
+
   private updateURL(url: string) {
     // TODO: add custom 'mediaplayer://' protocol for internal pages
     if (url.startsWith('asar://') || url.endsWith('/homescreen.html')) {
@@ -98,18 +105,29 @@ export class WebControls extends Component<IProps, IState> {
       const { onRequestUrl } = this.props;
       const target = event.target as HTMLInputElement;
 
-      if (this.webview && target) {
+      if (target) {
         const url = target.value;
         const shouldRequest = event.ctrlKey || event.shiftKey || event.altKey;
 
         if (onRequestUrl && shouldRequest) {
           onRequestUrl(url);
         } else {
-          this.webview.loadURL(url);
+          this.loadURL(url);
         }
       }
     }
   };
+
+  private loadURL(url: string) {
+    // TODO: make this robust
+    if (!url.match(/^https?:\/\//i)) {
+      url = `https://${url}`;
+    }
+
+    if (this.webview) {
+      this.webview.loadURL(url);
+    }
+  }
 
   private onPlayClicked() {
     const { onRequestUrl } = this.props;
