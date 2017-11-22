@@ -117,7 +117,16 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
           tagline={`${this.props.mediaQueue.length} items`}
           action={
             <button
-              style={{ backgroundColor: 'var(--color-highlight)' }}
+              style={{
+                backgroundColor: 'var(--color-highlight)',
+                padding: '0 5px',
+                marginLeft: 'auto',
+                borderRadius: '4px',
+                display: 'flex',
+                alignItems: 'center',
+                textTransform: 'uppercase',
+                letterSpacing: '1px'
+              }}
               onClick={this.openBrowser}
             >
               <Icon name="plus" /> Add
@@ -140,12 +149,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
         <ActivityMonitor onChange={active => this.setState({ inactive: !active })} />
         {this.isInactive && <div className={styles.inactiveOverlay} />}
         {this.state.showBrowser && (
-          <WebBrowser
-            className={styles.browser}
-            onClose={() => {
-              this.setState({ showBrowser: false });
-            }}
-          />
+          <WebBrowser className={styles.browser} onClose={this.closeBrowser} />
         )}
       </div>
     );
@@ -166,6 +170,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
             this.player.debug();
           }
         }}
+        openBrowser={this.openBrowser}
       />
     );
   }
@@ -187,9 +192,11 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
   };
 
   private openBrowser = () => {
-    this.setState({
-      showBrowser: true
-    });
+    this.setState({ showBrowser: true });
+  };
+
+  private closeBrowser = () => {
+    this.setState({ showBrowser: false });
   };
 }
 

@@ -32,6 +32,7 @@ import { MoreButton } from 'components/media/MoreButton';
 import { InfoButton } from 'components/media/buttons/InfoButton';
 
 const Button: React.SFC<{
+  className?: string;
   icon: string;
   title?: string;
 
@@ -47,7 +48,7 @@ const Button: React.SFC<{
     <button
       type="button"
       disabled={props.disabled}
-      className={cx(styles.button, {
+      className={cx(props.className, styles.button, {
         [styles.buttonEnabled]: props.enabled
       })}
       title={props.title}
@@ -79,6 +80,7 @@ interface IProps {
   className?: string;
   reload?: React.MouseEventHandler<HTMLButtonElement>;
   debug?: React.MouseEventHandler<HTMLButtonElement>;
+  openBrowser: Function;
 }
 
 interface IConnectedProps extends IMediaPlayerState {
@@ -118,10 +120,24 @@ class _PlaybackControls extends Component<PrivateProps> {
     const duration = (media && media.duration) || 0;
     const isTimed = duration > 0;
 
-    const playPauseBtn = <Button icon={playbackIcon} disabled={isIdle} onClick={this.playPause} />;
+    const addMediaBtn = (
+      <Button
+        className={styles.addMediaButton}
+        icon="plus"
+        onClick={e => {
+          this.props.openBrowser();
+        }}
+      >
+        <span>Add Media</span>
+      </Button>
+    );
+
+    const playPauseBtn = (
+      <Button key="playpause" icon={playbackIcon} disabled={isIdle} onClick={this.playPause} />
+    );
 
     const nextBtn = (
-      <Button icon="skip-forward" title="Next" disabled={isIdle} onClick={this.next} />
+      <Button key="next" icon="skip-forward" title="Next" disabled={isIdle} onClick={this.next} />
     );
 
     const repeatBtn = (
@@ -191,8 +207,7 @@ class _PlaybackControls extends Component<PrivateProps> {
 
     return (
       <div className={cx(this.props.className, styles.container)}>
-        {playPauseBtn}
-        {nextBtn}
+        {isIdle ? addMediaBtn : [playPauseBtn, nextBtn]}
         {repeatBtn}
         {timeline}
         {volumeSlider}
