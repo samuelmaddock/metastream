@@ -28,6 +28,10 @@ export class _WebBrowser extends Component<PrivateProps> {
 
   private hasSetupControls?: boolean;
 
+  private get initialUrl() {
+    return this.props.initialUrl || DEFAULT_URL;
+  }
+
   componentDidMount(): void {
     ipcRenderer.on('command', this.dispatchCommand);
   }
@@ -92,6 +96,7 @@ export class _WebBrowser extends Component<PrivateProps> {
             this.controls = el;
             this.setupControls();
           }}
+          initialUrl={this.initialUrl}
           onClose={this.props.onClose}
           onRequestUrl={url => {
             this.props.dispatch!(server_requestMedia(url));
@@ -107,15 +112,13 @@ export class _WebBrowser extends Component<PrivateProps> {
   }
 
   private renderContent() {
-    const src = this.props.initialUrl || DEFAULT_URL;
-
     // TODO: Remove `is` attribute from webview when React 16 is out
     // https://stackoverflow.com/a/33860892/1490006
     return (
       <webview
         is="is"
         ref={this.setupWebview}
-        src={src}
+        src={this.initialUrl}
         class={styles.content}
         /* Some website embeds are disabled without an HTTP referrer */
         httpreferrer="http://mediaplayer.samuelmaddock.com/"
