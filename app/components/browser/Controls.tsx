@@ -56,7 +56,7 @@ export class WebControls extends Component<IProps, IState> {
     const refreshBtn = (
       <IconButton
         className={styles.button}
-        icon={this.state.loading ? 'x' : 'refresh-cw'}
+        icon={this.state.loading ? 'x' : 'rotate-cw'}
         onClick={e => {
           if (this.webview) {
             if (this.state.loading) {
