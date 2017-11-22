@@ -190,7 +190,7 @@ export class WebControls extends Component<IProps, IState> {
 
   private loadURL(url: string) {
     // TODO: make this robust
-    if (!url.match(/^https?:\/\//i)) {
+    if (!url.match(/^\w+?:\/\//i)) {
       url = `http://${url}`;
     }
 
