@@ -15,6 +15,7 @@ interface IProps {
 
 interface IState {
   url?: string;
+  loading?: boolean;
 }
 
 export class WebControls extends Component<IProps, IState> {
@@ -55,10 +56,10 @@ export class WebControls extends Component<IProps, IState> {
     const refreshBtn = (
       <IconButton
         className={styles.button}
-        icon={this.webview && this.webview.isLoading() ? 'x' : 'refresh-cw'}
+        icon={this.state.loading ? 'x' : 'refresh-cw'}
         onClick={e => {
           if (this.webview) {
-            if (this.webview.isLoading()) {
+            if (this.state.loading) {
               this.webview.stop();
             } else if (e.shiftKey) {
               this.webview.reloadIgnoringCache();
@@ -131,17 +132,20 @@ export class WebControls extends Component<IProps, IState> {
       this.webview.addEventListener('dom-ready', e => {
         if (this.webview) {
           this.updateURL(this.webview.getURL());
-          this.forceUpdate();
         }
       });
 
       const updateUrl = (e: { url: string }) => {
         this.updateURL(e.url);
-        this.forceUpdate();
       };
 
       this.webview.addEventListener('will-navigate', updateUrl);
       this.webview.addEventListener('did-navigate-in-page', updateUrl);
+
+      const setLoading = (loading: boolean) => this.setState({ loading });
+      this.webview.addEventListener('did-start-loading', setLoading.bind(null, true));
+      this.webview.addEventListener('did-stop-loading', setLoading.bind(null, false));
+      this.webview.addEventListener('did-finish-load', setLoading.bind(null, false));
     }
   }
 
@@ -187,7 +191,7 @@ export class WebControls extends Component<IProps, IState> {
   private loadURL(url: string) {
     // TODO: make this robust
     if (!url.match(/^https?:\/\//i)) {
-      url = `https://${url}`;
+      url = `http://${url}`;
     }
 
     if (this.webview) {
