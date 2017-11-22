@@ -47,7 +47,7 @@ const setupPlugins = () => {
   // * `widevinecdmadapter.dll` on Windows.
   app.commandLine.appendSwitch('widevine-cdm-path', join(dirpath, '/lib/widevinecdmadapter.dll'));
   // The version of plugin can be got from `chrome://plugins` page in Chrome.
-  app.commandLine.appendSwitch('widevine-cdm-version', '1.4.8.1008');
+  app.commandLine.appendSwitch('widevine-cdm-version', '1.4.8.1029');
 }
 
 setupPlugins();
