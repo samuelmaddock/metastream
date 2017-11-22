@@ -32,7 +32,7 @@
   },
   "browserslist": "electron 1.7",
   "build": {
-    "productName": "MediaPlayer",
+    "productName": "Media Player",
     "appId": "mediaplayer",
     "files": [
       "assets/",
