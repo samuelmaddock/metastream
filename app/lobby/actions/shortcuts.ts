@@ -3,8 +3,7 @@ import { Dispatch } from 'react-redux';
 import { ThunkAction } from 'redux-thunk';
 
 import { ILobbyNetState } from 'lobby';
-import { playPauseMedia, nextMedia } from 'lobby/actions/mediaPlayer';
-import { getPlaybackTime } from 'lobby/reducers/mediaPlayer.helpers';
+import { server_requestNextMedia, server_requestPlayPause } from 'lobby/actions/mediaPlayer';
 
 let unregister: Function | undefined;
 
@@ -15,11 +14,10 @@ const dispatchCommand = (
 ) => {
   switch (cmd) {
     case 'media:next':
-      dispatch(nextMedia());
+      dispatch(server_requestNextMedia());
       break;
     case 'media:playpause':
-      const curTime = getPlaybackTime(getState());
-      dispatch(playPauseMedia(curTime));
+      dispatch(server_requestPlayPause());
       break;
   }
 };
