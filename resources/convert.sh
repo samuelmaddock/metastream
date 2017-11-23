@@ -10,6 +10,7 @@ do
 done
 
 # macOS iconset
+eval "mkdir ./icon.iconset"
 for Size in {16,32,128,256,512}
 do
 	let RetinaSize=Size*2
@@ -18,3 +19,4 @@ do
 done
 
 iconutil -c icns icon.iconset
+rm -rf ./icon.iconset
