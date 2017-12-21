@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Home from '../components/Home';
+import Home from 'components/Home';
 import { RouteComponentProps } from 'react-router';
 import { IReactReduxProps } from 'types/redux';
 import { connect } from 'react-redux';

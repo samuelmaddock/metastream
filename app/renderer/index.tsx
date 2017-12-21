@@ -1,11 +1,12 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
-import Root from './containers/Root';
-import * as cfgStore from 'renderer/store/configureStore';
-import './app.global.css';
 
-const { productName } = require('./package.json');
+import Root from './containers/Root';
+import * as cfgStore from './store/configureStore';
+import '../app.global.css';
+
+import * as packageJson from 'package.json';
 
 const electron = window.require('electron');
 const process = window.require('process');
@@ -15,7 +16,7 @@ let history: any;
 
 function init() {
   // Set default title
-  document.title = productName;
+  document.title = packageJson.productName;
 
   history = cfgStore.history;
   store = cfgStore.configureStore();

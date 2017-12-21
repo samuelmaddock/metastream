@@ -3,7 +3,7 @@ import { remote } from 'electron';
 
 import React, { Component } from 'react';
 
-const { productName } = require('package.json');
+import * as packageJson from 'package.json';
 
 import cx from 'classnames';
 import styles from './TitleBar.css';
@@ -23,7 +23,7 @@ export class TitleBar extends Component<IProps> {
       <div className={cx(this.props.className, styles.container)}>
         <div className={styles.wrapper}>
           <header className={styles.header}>
-            <h2 className={styles.title}>{this.props.title || productName}</h2>
+            <h2 className={styles.title}>{this.props.title || packageJson.productName}</h2>
           </header>
           {platform() === 'win32' && this.renderWin32Actions()}
         </div>

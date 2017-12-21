@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-const { productName, version } = require('package.json');
+import * as packageJson from 'package.json';
 
 import styles from './Home.css';
 import { TitleBar } from 'components/TitleBar';
@@ -18,9 +18,9 @@ export default class Home extends Component<IProps> {
       <LayoutMain className={styles.container}>
         <section>
           <header className={styles.header}>
-            <h1>{productName}</h1>
+            <h1>{packageJson.productName}</h1>
             <h3>
-              Pre-alpha v{version} ({gitv})
+              Pre-alpha v{packageJson.version} ({gitv})
             </h3>
             <h3>{process.env.NODE_ENV === 'production' ? 'Production' : 'Development'} build</h3>
           </header>
