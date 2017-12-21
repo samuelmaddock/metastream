@@ -4,10 +4,10 @@ import { Link } from 'react-router-dom';
 import * as packageJson from 'package.json';
 
 import styles from './Home.css';
-import { TitleBar } from 'components/TitleBar';
-import LayoutMain from 'components/layout/Main';
-import { Icon } from 'components/Icon';
-import { MenuButton } from 'components/menu/MenuButton';
+import { TitleBar } from 'renderer/components/TitleBar';
+import LayoutMain from 'renderer/components/layout/Main';
+import { Icon } from 'renderer/components/Icon';
+import { MenuButton } from 'renderer/components/menu/MenuButton';
 
 interface IProps {}
 

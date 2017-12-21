@@ -4,7 +4,7 @@ import cx from 'classnames';
 
 import styles from './WebBrowser.css';
 import { WEBVIEW_PARTITION } from 'constants/http';
-import { WebControls } from 'components/browser/Controls';
+import { WebControls } from 'renderer/components/browser/Controls';
 import { netConnect } from 'lobby';
 import { ILobbyNetState } from 'lobby/reducers';
 import { server_requestMedia } from 'lobby/actions/mediaPlayer';

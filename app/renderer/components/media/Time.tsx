@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import styles from './ProgressBar.css';
 import { formatMs, formatShortMs } from 'utils/time';
-import { Ticker } from 'components/Ticker';
+import { Ticker } from 'renderer/components/Ticker';
 
 const HHMMSS_PLACEHOLDER = '0:00:00';
 const MMSS_PLACEHOLDER = '00:00';

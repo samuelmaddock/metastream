@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { IUser } from 'lobby/reducers/users';
 import styles from './UserItem.css';
-import { UserAvatar } from 'components/lobby/UserAvatar';
+import { UserAvatar } from 'renderer/components/lobby/UserAvatar';
 
 interface IProps {
   user: IUser;

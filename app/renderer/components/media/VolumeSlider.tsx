@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { clamp } from 'utils/math';
-import { Slider } from 'components/media/Slider';
+import { Slider } from 'renderer/components/media/Slider';
 
 import styles from './VolumeSlider.css';
-import { Icon } from 'components/Icon';
-import { Ticker } from 'components/Ticker';
+import { Icon } from 'renderer/components/Icon';
+import { Ticker } from 'renderer/components/Ticker';
 
 const enum VolumeLevel {
   Mute = -1,

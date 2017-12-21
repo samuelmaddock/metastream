@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import cx from 'classnames';
-import { TitleBar } from 'components/TitleBar';
+import { TitleBar } from 'renderer/components/TitleBar';
 import styles from './Main.css';
 
 interface IProps {

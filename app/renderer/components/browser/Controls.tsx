@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import cx from 'classnames';
 
-import { Icon } from 'components/Icon';
-import { IconButton } from 'components/common/button';
+import { Icon } from 'renderer/components/Icon';
+import { IconButton } from 'renderer/components/common/button';
 
 import styles from './Controls.css';
 

@@ -2,7 +2,7 @@ import { IMediaItem } from 'lobby/reducers/mediaPlayer';
 import { parseTimestampPairs, timestampToMilliseconds } from 'utils/cuepoints';
 
 // TODO: don't import from component
-import { CuePointItem } from 'components/media/CuePoint';
+import { CuePointItem } from 'renderer/components/media/CuePoint';
 
 const cuePointMap = new WeakMap<IMediaItem, CuePointItem[]>();
 

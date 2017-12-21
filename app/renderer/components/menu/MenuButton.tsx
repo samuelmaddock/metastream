@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'React';
 import cx from 'classnames';
 
-import { Icon } from 'components/Icon';
+import { Icon } from 'renderer/components/Icon';
 import styles from './MenuButton.css';
 
 interface IProps {

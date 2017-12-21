@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import styles from './ServerBrowser.css';
 import { NetworkState } from 'types/network';
 import { ILobbySession } from 'platform/types';
-import LayoutMain from 'components/layout/Main';
-import { Icon } from 'components/Icon';
-import { MenuButton } from 'components/menu/MenuButton';
+import LayoutMain from 'renderer/components/layout/Main';
+import { Icon } from 'renderer/components/Icon';
+import { MenuButton } from 'renderer/components/menu/MenuButton';
 
 interface IProps {
   network: NetworkState;

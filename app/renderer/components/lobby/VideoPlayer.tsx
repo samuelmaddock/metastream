@@ -10,7 +10,7 @@ import {
 } from 'lobby/actions/mediaPlayer';
 import { netConnect, ILobbyNetState } from 'lobby';
 import { DispatchProp } from 'react-redux';
-import { PlaybackControls } from 'components/media/PlaybackControls';
+import { PlaybackControls } from 'renderer/components/media/PlaybackControls';
 import { setVolume } from 'lobby/actions/settings';
 import { clamp } from 'utils/math';
 import { WEBVIEW_PARTITION } from 'constants/http';

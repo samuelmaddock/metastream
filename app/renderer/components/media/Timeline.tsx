@@ -2,11 +2,11 @@ import React, { PureComponent } from 'react';
 import cx from 'classnames';
 import styles from './Timeline.css';
 import { formatMs } from 'utils/time';
-import { Ticker } from 'components/Ticker';
-import { Time } from 'components/media/Time';
+import { Ticker } from 'renderer/components/Ticker';
+import { Time } from 'renderer/components/media/Time';
 import { clamp } from 'utils/math';
-import { Slider } from 'components/media/Slider';
-import { CuePointItem } from 'components/media/CuePoint';
+import { Slider } from 'renderer/components/media/Slider';
+import { CuePointItem } from 'renderer/components/media/CuePoint';
 
 interface IProps {
   className?: string;

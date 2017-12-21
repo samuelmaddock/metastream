@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Icon } from 'components/Icon';
+import { Icon } from 'renderer/components/Icon';
 
 export interface IIconButtonProps {
   icon: string;

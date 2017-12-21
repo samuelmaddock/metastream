@@ -3,7 +3,7 @@ import cx from 'classnames';
 import { IMediaItem } from 'lobby/reducers/mediaPlayer';
 import styles from './InfoButton.css';
 
-import { Icon } from 'components/Icon';
+import { Icon } from 'renderer/components/Icon';
 
 interface IProps {
   className?: string;

@@ -3,13 +3,13 @@ import { DispatchProp } from 'react-redux';
 import cx from 'classnames';
 import { ipcRenderer } from 'electron';
 
-import { Lobby } from 'components/Lobby';
+import { Lobby } from 'renderer/components/Lobby';
 import { IReactReduxProps } from 'types/redux';
 import { IUsersState } from 'lobby/reducers/users';
 import { server_addChat } from 'lobby/actions/chat';
 import { netConnect, ILobbyNetState } from 'lobby';
 import { getSessionName } from 'lobby/reducers/session';
-import { VideoPlayer } from 'components/lobby/VideoPlayer';
+import { VideoPlayer } from 'renderer/components/lobby/VideoPlayer';
 import { IMediaItem, PlaybackState } from 'lobby/reducers/mediaPlayer';
 import { isUrl } from 'utils/url';
 import {
@@ -19,26 +19,26 @@ import {
   server_requestSeek
 } from 'lobby/actions/mediaPlayer';
 import { IMessage } from 'lobby/reducers/chat';
-import { Messages } from 'components/chat/Messages';
-import { Chat } from 'components/chat';
+import { Messages } from 'renderer/components/chat/Messages';
+import { Chat } from 'renderer/components/chat';
 
 import styles from './GameLobby.css';
-import { UserItem } from 'components/lobby/UserItem';
-import { MediaItem } from 'components/media/MediaItem';
+import { UserItem } from 'renderer/components/lobby/UserItem';
+import { MediaItem } from 'renderer/components/media/MediaItem';
 import { Link } from 'react-router-dom';
 import {
   getCurrentMedia,
   getMediaQueue,
   getPlaybackState
 } from 'lobby/reducers/mediaPlayer.helpers';
-import { ListOverlay } from 'components/lobby/ListOverlay';
-import { TitleBar } from 'components/TitleBar';
-import { PlaybackControls } from 'components/media/PlaybackControls';
+import { ListOverlay } from 'renderer/components/lobby/ListOverlay';
+import { TitleBar } from 'renderer/components/TitleBar';
+import { PlaybackControls } from 'renderer/components/media/PlaybackControls';
 import { setVolume } from 'lobby/actions/settings';
-import { ActivityMonitor } from 'components/lobby/ActivityMonitor';
+import { ActivityMonitor } from 'renderer/components/lobby/ActivityMonitor';
 import { MediaType } from 'media/types';
-import { WebBrowser } from 'components/browser/WebBrowser';
-import { Icon } from 'components/Icon';
+import { WebBrowser } from 'renderer/components/browser/WebBrowser';
+import { Icon } from 'renderer/components/Icon';
 import { registerMediaShortcuts, unregisterMediaShortcuts } from 'lobby/actions/shortcuts';
 
 interface IProps {

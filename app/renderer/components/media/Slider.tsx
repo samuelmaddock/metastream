@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import cx from 'classnames';
 import styles from './Slider.css';
 import { clamp } from 'utils/math';
-import { CuePointItem, CuePoint } from 'components/media/CuePoint';
+import { CuePointItem, CuePoint } from 'renderer/components/media/CuePoint';
 
 /** px */
 const CUE_GRAVITATE_THRESHOLD = 8;
