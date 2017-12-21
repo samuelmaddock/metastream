@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import cx from 'classnames';
 
-import { IMessage } from 'lobby/reducers/chat';
+import { IMessage } from 'renderer/lobby/reducers/chat';
 
 import { Message } from './Message';
 import { Messages } from './Messages';

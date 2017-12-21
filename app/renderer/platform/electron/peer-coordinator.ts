@@ -2,10 +2,10 @@ import SimplePeer from 'simple-peer';
 import { webContents, remote } from 'electron';
 import { EventEmitter } from 'events';
 
-import { NetUniqueId } from 'network';
-import { RTCPeerConn, IRTCPeerCoordinator, SignalData } from 'network/rtc';
+import { NetUniqueId } from 'renderer/network';
+import { RTCPeerConn, IRTCPeerCoordinator, SignalData } from 'renderer/network/rtc';
 
-import { ElectronLobby, IElectronLobbyMessage } from 'platform/electron/lobby';
+import { ElectronLobby, IElectronLobbyMessage } from 'renderer/platform/electron/lobby';
 
 const iceServers = [{ url: 'stun:stun3.l.google.com:19302' }];
 

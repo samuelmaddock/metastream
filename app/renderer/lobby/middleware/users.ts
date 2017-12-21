@@ -1,8 +1,8 @@
 import { Middleware, MiddlewareAPI, Action, Dispatch } from 'redux';
 import { actionCreator } from 'utils/redux';
-import { Platform } from 'platform/types';
-import { PlatformService } from 'platform';
-import { localUser, NetConnection, NetServer } from 'network';
+import { Platform } from 'renderer/platform/types';
+import { PlatformService } from 'renderer/platform';
+import { localUser, NetConnection, NetServer } from 'renderer/network';
 
 export interface NetMiddlewareOptions {
   server: NetServer;

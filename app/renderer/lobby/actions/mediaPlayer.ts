@@ -1,19 +1,19 @@
 import { parse as parseUrl } from 'url';
 import { actionCreator } from 'utils/redux';
-import { IMediaItem, PlaybackState } from 'lobby/reducers/mediaPlayer';
+import { IMediaItem, PlaybackState } from 'renderer/lobby/reducers/mediaPlayer';
 import { Thunk } from 'types/thunk';
 import { ThunkAction } from 'redux-thunk';
-import { ILobbyNetState } from 'lobby';
-import { rpc, RpcRealm } from 'network/middleware/rpc';
-import { RpcThunk } from 'lobby/types';
-import { PlatformService } from 'platform';
-import { resolveMediaUrl, resolveMediaPlaylist } from 'media';
-import { MediaThumbnailSize, MediaType } from 'media/types';
+import { ILobbyNetState } from 'renderer/lobby';
+import { rpc, RpcRealm } from 'renderer/network/middleware/rpc';
+import { RpcThunk } from 'renderer/lobby/types';
+import { PlatformService } from 'renderer/platform';
+import { resolveMediaUrl, resolveMediaPlaylist } from 'renderer/media';
+import { MediaThumbnailSize, MediaType } from 'renderer/media/types';
 import {
   getCurrentMedia,
   getPlaybackState,
   getPlaybackTime
-} from 'lobby/reducers/mediaPlayer.helpers';
+} from 'renderer/lobby/reducers/mediaPlayer.helpers';
 
 export const playPauseMedia = actionCreator<number>('PLAY_PAUSE_MEDIA');
 export const repeatMedia = actionCreator<number>('REPEAT_MEDIA');

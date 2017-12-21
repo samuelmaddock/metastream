@@ -1,6 +1,6 @@
 import { Reducer } from 'redux';
 import { isType } from 'utils/redux';
-import { setVolume, setMute } from 'lobby/actions/settings';
+import { setVolume, setMute } from 'renderer/lobby/actions/settings';
 import { clamp } from 'utils/math';
 
 export interface ISettingsState {

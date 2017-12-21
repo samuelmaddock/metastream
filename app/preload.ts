@@ -1,5 +1,5 @@
 import { ipcRenderer } from 'electron';
-import { PlaybackState } from 'lobby/reducers/mediaPlayer';
+import { PlaybackState } from 'renderer/lobby/reducers/mediaPlayer';
 
 if (process.env.NODE_ENV === 'development') {
   try {

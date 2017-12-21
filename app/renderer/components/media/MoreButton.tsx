@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import cx from 'classnames';
-import { IMediaItem } from 'lobby/reducers/mediaPlayer';
+import { IMediaItem } from 'renderer/lobby/reducers/mediaPlayer';
 import styles from './MoreButton.css';
 
 import { Icon } from 'renderer/components/Icon';

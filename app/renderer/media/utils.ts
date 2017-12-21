@@ -1,4 +1,4 @@
-import { IMediaItem } from 'lobby/reducers/mediaPlayer';
+import { IMediaItem } from 'renderer/lobby/reducers/mediaPlayer';
 import { parseTimestampPairs, timestampToMilliseconds } from 'utils/cuepoints';
 
 // TODO: don't import from component

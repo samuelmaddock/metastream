@@ -1,8 +1,8 @@
 import { actionCreator } from 'utils/redux';
-import { RpcThunk } from 'lobby/types';
-import { getUserName } from 'lobby/reducers/users';
-import { rpc, RpcRealm } from 'network/middleware/rpc';
-import { IMessage } from 'lobby/reducers/chat';
+import { RpcThunk } from 'renderer/lobby/types';
+import { getUserName } from 'renderer/lobby/reducers/users';
+import { rpc, RpcRealm } from 'renderer/network/middleware/rpc';
+import { IMessage } from 'renderer/lobby/reducers/chat';
 import { CHAT_MAX_MESSAGE_LENGTH } from 'constants/chat';
 
 export const addChat = actionCreator<IMessage>('ADD_CHAT');

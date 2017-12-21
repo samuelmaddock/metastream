@@ -2,8 +2,8 @@ import { Middleware, MiddlewareAPI, Action, Dispatch } from 'redux';
 import deepDiff from 'deep-diff';
 import { clone } from 'utils/object';
 
-import { NetServer, NetConnection } from 'network';
-import { ReplicatedState } from 'network/types';
+import { NetServer, NetConnection } from 'renderer/network';
+import { ReplicatedState } from 'renderer/network/types';
 
 export const NetReduxActionTypes = {
   UPDATE: '@@net/UPDATE'

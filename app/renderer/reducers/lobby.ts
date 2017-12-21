@@ -3,7 +3,7 @@ import { NetworkState } from 'types/network';
 import { isType } from 'utils/redux';
 
 import { loadLobbies, setLobbies } from 'renderer/actions/lobby';
-import { ILobbySession } from 'platform/types';
+import { ILobbySession } from 'renderer/platform/types';
 
 export interface ILobbyState {
   network: NetworkState;

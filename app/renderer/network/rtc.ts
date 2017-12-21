@@ -3,8 +3,8 @@ import { EventEmitter } from 'events';
 import { Deferred } from 'utils/async';
 
 import NetConnection, { NetUniqueId } from './connection';
-import { NetServer } from 'network';
-import { INetServerOptions } from 'network/server';
+import { NetServer } from 'renderer/network';
+import { INetServerOptions } from 'renderer/network/server';
 
 export type SignalData = SignalData;
 

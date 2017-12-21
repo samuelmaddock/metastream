@@ -9,11 +9,11 @@ import { IAppState } from 'renderer/reducers';
 import { NetworkState } from 'types/network';
 import { Lobby } from 'renderer/components/Lobby';
 import { GameLobby } from 'renderer/components/GameLobby';
-import { PlatformService } from 'platform';
-import { NetServer } from 'network';
-import { ILobbyNetState, LobbyReplicatedState, NetProvider } from 'lobby';
-import { RTCServer } from 'network/rtc';
-import { createNetStore } from 'lobby/redux';
+import { PlatformService } from 'renderer/platform';
+import { NetServer } from 'renderer/network';
+import { ILobbyNetState, LobbyReplicatedState, NetProvider } from 'renderer/lobby';
+import { RTCServer } from 'renderer/network/rtc';
+import { createNetStore } from 'renderer/lobby/redux';
 
 interface IRouteParams {
   lobbyId: string;

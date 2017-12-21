@@ -1,5 +1,5 @@
-import { NetUniqueId } from 'network';
-import { IRTCPeerCoordinator } from 'network/rtc';
+import { NetUniqueId } from 'renderer/network';
+import { IRTCPeerCoordinator } from 'renderer/network/rtc';
 
 export const enum LobbyType {
   Private,

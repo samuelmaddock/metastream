@@ -8,7 +8,7 @@ import { IAppState } from 'renderer/reducers';
 import { ServerBrowser } from 'renderer/components/ServerBrowser';
 import { requestLobbies } from 'renderer/actions/lobby';
 import { NetworkState } from 'types/network';
-import { ILobbySession } from 'platform/types';
+import { ILobbySession } from 'renderer/platform/types';
 
 interface IProps extends RouteComponentProps<void> {}
 

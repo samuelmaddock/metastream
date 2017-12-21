@@ -8,18 +8,18 @@ import {
   IMediaItem,
   IMediaPlayerState,
   RepeatMode
-} from 'lobby/reducers/mediaPlayer';
+} from 'renderer/lobby/reducers/mediaPlayer';
 import { Time } from 'renderer/components/media/Time';
 import { VolumeSlider } from 'renderer/components/media/VolumeSlider';
-import { netConnect, ILobbyNetState } from 'lobby';
+import { netConnect, ILobbyNetState } from 'renderer/lobby';
 import { DispatchProp } from 'react-redux';
 import {
   server_requestPlayPause,
   server_requestNextMedia,
   server_requestSeek,
   server_requestRepeatMedia
-} from 'lobby/actions/mediaPlayer';
-import { setVolume, setMute } from 'lobby/actions/settings';
+} from 'renderer/lobby/actions/mediaPlayer';
+import { setVolume, setMute } from 'renderer/lobby/actions/settings';
 import { Icon } from 'renderer/components/Icon';
 import { Timeline } from 'renderer/components/media/Timeline';
 import { push } from 'react-router-redux';
@@ -27,7 +27,7 @@ import { openInBrowser } from 'utils/url';
 import { copyToClipboard } from 'utils/clipboard';
 import { timestampToMilliseconds, parseTimestampPairs } from 'utils/cuepoints';
 import { CuePointItem } from 'renderer/components/media/CuePoint';
-import { parseCuePoints } from 'media/utils';
+import { parseCuePoints } from 'renderer/media/utils';
 import { MoreButton } from 'renderer/components/media/MoreButton';
 import { InfoButton } from 'renderer/components/media/buttons/InfoButton';
 

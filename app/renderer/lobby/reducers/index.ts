@@ -3,8 +3,8 @@ import { routerReducer as router } from 'react-router-redux';
 import { lobby, ILobbyState } from 'renderer/reducers/lobby';
 import { Reducer, AnyAction } from 'redux';
 
-import { ReplicatedState } from 'network/types';
-import { NetReduxActionTypes } from 'network/middleware/sync';
+import { ReplicatedState } from 'renderer/network/types';
+import { NetReduxActionTypes } from 'renderer/network/middleware/sync';
 
 import { chat, IChatState } from './chat';
 import { users, IUsersState } from './users';

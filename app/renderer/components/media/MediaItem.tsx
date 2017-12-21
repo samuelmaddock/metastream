@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { IMediaItem } from 'lobby/reducers/mediaPlayer';
+import { IMediaItem } from 'renderer/lobby/reducers/mediaPlayer';
 import styles from './Media.css';
 import { formatMs } from 'utils/time';
 import { isNumber } from 'utils/type';

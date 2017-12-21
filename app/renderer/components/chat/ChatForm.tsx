@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { IMessage } from 'lobby/reducers/chat';
+import { IMessage } from 'renderer/lobby/reducers/chat';
 
 import styles from './Chat.css';
 import { CHAT_MAX_MESSAGE_LENGTH } from 'constants/chat';

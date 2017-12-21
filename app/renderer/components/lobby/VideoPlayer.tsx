@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import cx from 'classnames';
 import styles from './VideoPlayer.css';
-import { IMediaItem, PlaybackState, IMediaPlayerState } from 'lobby/reducers/mediaPlayer';
+import { IMediaItem, PlaybackState, IMediaPlayerState } from 'renderer/lobby/reducers/mediaPlayer';
 import { Dispatch } from 'redux';
 import {
   server_requestPlayPause,
   server_requestNextMedia,
   server_requestSeek
-} from 'lobby/actions/mediaPlayer';
-import { netConnect, ILobbyNetState } from 'lobby';
+} from 'renderer/lobby/actions/mediaPlayer';
+import { netConnect, ILobbyNetState } from 'renderer/lobby';
 import { DispatchProp } from 'react-redux';
 import { PlaybackControls } from 'renderer/components/media/PlaybackControls';
-import { setVolume } from 'lobby/actions/settings';
+import { setVolume } from 'renderer/lobby/actions/settings';
 import { clamp } from 'utils/math';
 import { WEBVIEW_PARTITION } from 'constants/http';
 

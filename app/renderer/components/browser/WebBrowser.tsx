@@ -5,9 +5,9 @@ import cx from 'classnames';
 import styles from './WebBrowser.css';
 import { WEBVIEW_PARTITION } from 'constants/http';
 import { WebControls } from 'renderer/components/browser/Controls';
-import { netConnect } from 'lobby';
-import { ILobbyNetState } from 'lobby/reducers';
-import { server_requestMedia } from 'lobby/actions/mediaPlayer';
+import { netConnect } from 'renderer/lobby';
+import { ILobbyNetState } from 'renderer/lobby/reducers';
+import { server_requestMedia } from 'renderer/lobby/actions/mediaPlayer';
 import { ipcRenderer } from 'electron';
 
 const DEFAULT_URL = './homescreen.html';

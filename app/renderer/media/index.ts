@@ -13,7 +13,7 @@ import oEmbedMware from './middleware/oembed';
 import autoplayMware from './middleware/autoplay';
 import microdataMware from './middleware/microdata';
 
-import { IMediaItem } from 'lobby/reducers/mediaPlayer';
+import { IMediaItem } from 'renderer/lobby/reducers/mediaPlayer';
 
 // prettier-ignore
 const middlewares: IMediaMiddleware[] = [

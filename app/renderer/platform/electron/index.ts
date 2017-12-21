@@ -1,12 +1,12 @@
 import { hostname } from 'os';
 import { ipcRenderer, remote } from 'electron';
 
-import { Platform, ILobbyOptions, ILobbySession, ILobbyData } from 'platform/types';
+import { Platform, ILobbyOptions, ILobbySession, ILobbyData } from 'renderer/platform/types';
 import { Deferred } from 'utils/async';
-import { ElectronRTCPeerCoordinator } from 'platform/electron/peer-coordinator';
-import { ElectronLobby } from 'platform/electron/lobby';
-import { NetUniqueId } from 'network';
-import { IRTCPeerCoordinator } from 'network/rtc';
+import { ElectronRTCPeerCoordinator } from 'renderer/platform/electron/peer-coordinator';
+import { ElectronLobby } from 'renderer/platform/electron/lobby';
+import { NetUniqueId } from 'renderer/network';
+import { IRTCPeerCoordinator } from 'renderer/network/rtc';
 
 export class ElectronPlatform extends Platform {
   private id: NetUniqueId<number>;

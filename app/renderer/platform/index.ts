@@ -1,5 +1,5 @@
-import { Platform } from 'platform/types';
-import { ElectronPlatform } from 'platform/electron';
+import { Platform } from 'renderer/platform/types';
+import { ElectronPlatform } from 'renderer/platform/electron';
 
 class _PlatformService {
   private static platform: Platform;

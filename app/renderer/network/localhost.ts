@@ -1,5 +1,5 @@
 import NetConnection from './connection';
-import { PlatformService } from 'platform';
+import { PlatformService } from 'renderer/platform';
 
 class LocalHostConnection extends NetConnection {
   constructor() {

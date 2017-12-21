@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { IMessage } from 'lobby/reducers/chat';
+import { IMessage } from 'renderer/lobby/reducers/chat';
 import { Message } from './Message';
 import styles from './Chat.css';
 

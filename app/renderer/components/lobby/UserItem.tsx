@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { IUser } from 'lobby/reducers/users';
+import { IUser } from 'renderer/lobby/reducers/users';
 import styles from './UserItem.css';
 import { UserAvatar } from 'renderer/components/lobby/UserAvatar';
 

@@ -1,5 +1,5 @@
-import { ILobbyNetState } from 'lobby/reducers';
-import { PlaybackState } from 'lobby/reducers/mediaPlayer';
+import { ILobbyNetState } from 'renderer/lobby/reducers';
+import { PlaybackState } from 'renderer/lobby/reducers/mediaPlayer';
 
 export const getCurrentMedia = (state: ILobbyNetState) => {
   return state.mediaPlayer.current;

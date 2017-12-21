@@ -1,7 +1,7 @@
 import { Reducer } from 'redux';
 import { NetworkState } from 'types/network';
 import { isType } from 'utils/redux';
-import { addChat } from 'lobby/actions/chat';
+import { addChat } from 'renderer/lobby/actions/chat';
 import {
   setMedia,
   endMedia,
@@ -9,9 +9,9 @@ import {
   seekMedia,
   queueMedia,
   repeatMedia
-} from 'lobby/actions/mediaPlayer';
-import { ILobbyNetState } from 'lobby/reducers';
-import { MediaType } from 'media/types';
+} from 'renderer/lobby/actions/mediaPlayer';
+import { ILobbyNetState } from 'renderer/lobby/reducers';
+import { MediaType } from 'renderer/media/types';
 
 export const enum PlaybackState {
   Idle,

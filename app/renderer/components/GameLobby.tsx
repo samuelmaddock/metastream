@@ -5,20 +5,20 @@ import { ipcRenderer } from 'electron';
 
 import { Lobby } from 'renderer/components/Lobby';
 import { IReactReduxProps } from 'types/redux';
-import { IUsersState } from 'lobby/reducers/users';
-import { server_addChat } from 'lobby/actions/chat';
-import { netConnect, ILobbyNetState } from 'lobby';
-import { getSessionName } from 'lobby/reducers/session';
+import { IUsersState } from 'renderer/lobby/reducers/users';
+import { server_addChat } from 'renderer/lobby/actions/chat';
+import { netConnect, ILobbyNetState } from 'renderer/lobby';
+import { getSessionName } from 'renderer/lobby/reducers/session';
 import { VideoPlayer } from 'renderer/components/lobby/VideoPlayer';
-import { IMediaItem, PlaybackState } from 'lobby/reducers/mediaPlayer';
+import { IMediaItem, PlaybackState } from 'renderer/lobby/reducers/mediaPlayer';
 import { isUrl } from 'utils/url';
 import {
   server_requestMedia,
   server_requestPlayPause,
   server_requestNextMedia,
   server_requestSeek
-} from 'lobby/actions/mediaPlayer';
-import { IMessage } from 'lobby/reducers/chat';
+} from 'renderer/lobby/actions/mediaPlayer';
+import { IMessage } from 'renderer/lobby/reducers/chat';
 import { Messages } from 'renderer/components/chat/Messages';
 import { Chat } from 'renderer/components/chat';
 
@@ -30,16 +30,16 @@ import {
   getCurrentMedia,
   getMediaQueue,
   getPlaybackState
-} from 'lobby/reducers/mediaPlayer.helpers';
+} from 'renderer/lobby/reducers/mediaPlayer.helpers';
 import { ListOverlay } from 'renderer/components/lobby/ListOverlay';
 import { TitleBar } from 'renderer/components/TitleBar';
 import { PlaybackControls } from 'renderer/components/media/PlaybackControls';
-import { setVolume } from 'lobby/actions/settings';
+import { setVolume } from 'renderer/lobby/actions/settings';
 import { ActivityMonitor } from 'renderer/components/lobby/ActivityMonitor';
-import { MediaType } from 'media/types';
+import { MediaType } from 'renderer/media/types';
 import { WebBrowser } from 'renderer/components/browser/WebBrowser';
 import { Icon } from 'renderer/components/Icon';
-import { registerMediaShortcuts, unregisterMediaShortcuts } from 'lobby/actions/shortcuts';
+import { registerMediaShortcuts, unregisterMediaShortcuts } from 'renderer/lobby/actions/shortcuts';
 
 interface IProps {
   host: boolean;

@@ -25,7 +25,7 @@ if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true')
 
 const USE_ELECTRON_BACKEND = true;
 if (USE_ELECTRON_BACKEND) {
-  require('./platform/electron/main-backend.js');
+  require('./renderer/platform/electron/main-backend.js');
 }
 
 const installExtensions = async () => {

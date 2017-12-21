@@ -1,7 +1,7 @@
 import { Middleware, MiddlewareAPI, Action, Dispatch } from 'redux';
 import { ActionCreator } from 'redux';
 
-import { NetConnection, NetServer, localUser } from 'network';
+import { NetConnection, NetServer, localUser } from 'renderer/network';
 
 const RpcReduxActionTypes = {
   DISPATCH: '@@rpc/DISPATCH'

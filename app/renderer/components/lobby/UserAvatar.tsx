@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { IUser } from 'lobby/reducers/users';
+import { IUser } from 'renderer/lobby/reducers/users';
 import styles from './UserItem.css';
-import { PlatformService } from 'platform';
-import { NetUniqueId } from 'network';
+import { PlatformService } from 'renderer/platform';
+import { NetUniqueId } from 'renderer/network';
 
 interface IProps {
   className?: string;

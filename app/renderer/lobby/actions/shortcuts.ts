@@ -2,8 +2,8 @@ import { ipcRenderer } from 'electron';
 import { Dispatch } from 'react-redux';
 import { ThunkAction } from 'redux-thunk';
 
-import { ILobbyNetState } from 'lobby';
-import { server_requestNextMedia, server_requestPlayPause } from 'lobby/actions/mediaPlayer';
+import { ILobbyNetState } from 'renderer/lobby';
+import { server_requestNextMedia, server_requestPlayPause } from 'renderer/lobby/actions/mediaPlayer';
 
 let unregister: Function | undefined;
 

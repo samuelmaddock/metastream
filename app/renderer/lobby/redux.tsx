@@ -4,8 +4,8 @@ import { createStore, Middleware, applyMiddleware } from 'redux';
 import { connect, Provider, Store } from 'react-redux';
 import thunkMiddleware from 'redux-thunk';
 
-import { NetMiddlewareOptions, netSyncMiddleware } from 'network/middleware/sync';
-import { netRpcMiddleware } from 'network/middleware/rpc';
+import { NetMiddlewareOptions, netSyncMiddleware } from 'renderer/network/middleware/sync';
+import { netRpcMiddleware } from 'renderer/network/middleware/rpc';
 
 import { netReducer, ILobbyNetState } from './';
 import { usersMiddleware } from './middleware/users';
