@@ -2,7 +2,7 @@ import { Reducer } from 'redux';
 import { NetworkState } from 'types/network';
 import { isType } from 'utils/redux';
 
-import { loadLobbies, setLobbies } from 'actions/lobby';
+import { loadLobbies, setLobbies } from 'renderer/actions/lobby';
 import { ILobbySession } from 'platform/types';
 
 export interface ILobbyState {

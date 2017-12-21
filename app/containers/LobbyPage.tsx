@@ -4,7 +4,7 @@ import { RouteComponentProps } from 'react-router';
 import { createStore, Store } from 'redux';
 import { IReactReduxProps } from 'types/redux';
 
-import { IAppState } from 'reducers';
+import { IAppState } from 'renderer/reducers';
 
 import { NetworkState } from 'types/network';
 import { Lobby } from 'components/Lobby';
