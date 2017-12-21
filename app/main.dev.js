@@ -116,7 +116,7 @@ const setupWindow = () => {
     titleBarStyle: 'hidden'
   });
 
-  win.loadURL(`file://${__dirname}/app.html`);
+  win.loadURL(`file://${__dirname}/builtin-pages/app.html`);
 
   // @TODO: Use 'ready-to-show' event
   //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event
