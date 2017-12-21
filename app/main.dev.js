@@ -9,7 +9,7 @@
 import { app, BrowserWindow, globalShortcut } from 'electron';
 import { register as registerLocalShortcut } from 'electron-localshortcut';
 import { join, dirname } from 'path';
-import MenuBuilder from './menu';
+import MenuBuilder from './browser/menu';
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
