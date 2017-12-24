@@ -7,6 +7,7 @@
   "main": "main.js",
   "scripts": {
     "build-dll": "cross-env NODE_ENV=development node --trace-warnings -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.renderer.dev.dll.js --progress --profile --colors",
+    "build-main-dev": "cross-env NODE_ENV=development node --trace-warnings -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.main.dev.js --colors",
     "build-main": "cross-env NODE_ENV=production node --trace-warnings -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.main.prod.js --progress --profile --colors",
     "build-preload": "cross-env NODE_ENV=development node --trace-warnings -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.preload.dev.js",
     "build-renderer": "cross-env NODE_ENV=production node --trace-warnings -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.renderer.prod.js --progress --profile --colors",
@@ -22,7 +23,7 @@
     "package": "npm run build && build --publish never",
     "postinstall": "concurrently \"npm run build-dll\" \"install-app-deps\" \"node node_modules/fbjs-scripts/node/check-dev-engines.js package.json\"",
     "prestart": "npm run build",
-    "start-main-dev": "cross-env HOT=1 NODE_ENV=development electron -r babel-register ./app/main.dev",
+    "start-main-dev": "cross-env npm run build-main-dev && HOT=1 NODE_ENV=development electron -r babel-register ./app/main.dev.js",
     "start-renderer-dev": "cross-env NODE_ENV=development node --trace-warnings -r babel-register ./node_modules/webpack-dev-server/bin/webpack-dev-server --config webpack.config.renderer.dev.js",
     "start": "cross-env NODE_ENV=production electron ./app/",
     "test-all": "npm run lint && npm run test && npm run build && npm run test-e2e",
@@ -193,7 +194,8 @@
     "redux-thunk": "^2.2.0",
     "request": "^2.81.0",
     "simple-peer": "^8.1.1",
-    "source-map-support": "^0.4.14"
+    "source-map-support": "^0.4.14",
+    "webpack-node-externals": "^1.6.0"
   },
   "devEngines": {
     "node": ">=7.x",

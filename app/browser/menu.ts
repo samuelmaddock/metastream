@@ -1,9 +1,9 @@
 import { app, Menu, shell, BrowserWindow } from 'electron';
 
 export default class MenuBuilder {
-  constructor(mainWindow) {
-    this.mainWindow = mainWindow;
-  }
+  constructor(
+    private mainWindow: BrowserWindow
+  ) {}
 
   buildMenu() {
     if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
@@ -18,7 +18,7 @@ export default class MenuBuilder {
       template = this.buildDefaultTemplate();
     }
 
-    const menu = Menu.buildFromTemplate(template);
+    const menu = Menu.buildFromTemplate(template as any);
     Menu.setApplicationMenu(menu);
 
     return menu;

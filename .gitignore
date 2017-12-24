@@ -29,6 +29,8 @@ app/node_modules
 
 # App packaged
 release
+app/main.dev.js
+app/main.dev.js.map
 app/main.prod.js
 app/main.prod.js.map
 app/renderer.prod.js
