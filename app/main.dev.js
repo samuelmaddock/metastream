@@ -10,6 +10,7 @@ import { app, BrowserWindow, globalShortcut } from 'electron';
 import { register as registerLocalShortcut } from 'electron-localshortcut';
 import { join, dirname } from 'path';
 import MenuBuilder from './browser/menu';
+import { registerAssetProtocol } from './browser/asset-protocol';
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -143,6 +144,8 @@ app.on('ready', async () => {
   if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
     await installExtensions();
   }
+
+  registerAssetProtocol()
 
   let numWindows = 1;
 

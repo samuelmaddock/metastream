@@ -53,6 +53,6 @@ export class UserAvatar extends Component<IProps> {
   };
 
   render(): JSX.Element | null {
-    return <img src={this.state.src || 'assets/icons/avatar.svg'} onLoad={this.onImageLoad} className={this.props.className} />;
+    return <img src={this.state.src || 'asset://icons/avatar.svg'} onLoad={this.onImageLoad} className={this.props.className} />;
   }
 }

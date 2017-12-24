@@ -23,7 +23,7 @@ const DEFAULT_STYLE = {
 export const Icon = ({ name, ...rest }: IProps) => {
   return (
     <svg width="24" height="24" style={DEFAULT_STYLE} {...rest}>
-      <use xlinkHref={`assets/icons/${name}.svg#${name}`} />
+      <use xlinkHref={`asset://icons/${name}.svg#${name}`} />
     </svg>
   );
 };
