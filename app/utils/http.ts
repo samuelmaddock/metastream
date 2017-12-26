@@ -1,11 +1,15 @@
-import request, { CoreOptions, RequestResponse } from 'request';
+import { remote } from 'electron';
+import { CoreOptions, RequestResponse, RequestCallback } from 'request';
+
+let request: any;
 
 export const fetchText = <T = string>(
   url: string,
   options?: CoreOptions
 ): Promise<[T, RequestResponse]> => {
+  request = request || remote.require('request');
   return new Promise((resolve, reject) => {
-    request(url, options, (err, resp, body) => {
+    request(url, options, (err: any, resp: any, body: any) => {
       if (err) {
         reject();
       } else {
@@ -17,7 +21,8 @@ export const fetchText = <T = string>(
 
 export const fetchResponse = (url: string, options?: CoreOptions): Promise<RequestResponse> => {
   return new Promise((resolve, reject) => {
-    request(url, options, (err, resp, body) => {
+    request = request || remote.require('request');
+    request(url, options, (err: any, resp: any, body: any) => {
       if (err) {
         reject();
       } else {
