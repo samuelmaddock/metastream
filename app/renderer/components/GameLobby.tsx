@@ -1,7 +1,7 @@
 import React from 'react';
 import { DispatchProp } from 'react-redux';
 import cx from 'classnames';
-import { ipcRenderer } from 'electron';
+const { ipcRenderer } = chrome;
 
 import { Lobby } from 'renderer/components/Lobby';
 import { IReactReduxProps } from 'types/redux';

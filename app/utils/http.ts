@@ -1,4 +1,4 @@
-import { remote } from 'electron';
+const { remote } = chrome;
 import { CoreOptions, RequestResponse, RequestCallback } from 'request';
 
 let request: any;

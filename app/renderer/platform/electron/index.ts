@@ -1,4 +1,4 @@
-import { ipcRenderer, remote } from 'electron';
+const { ipcRenderer, remote } = chrome;
 
 import { Platform, ILobbyOptions, ILobbySession, ILobbyData } from 'renderer/platform/types';
 import { Deferred } from 'utils/async';

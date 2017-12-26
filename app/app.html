@@ -11,6 +11,9 @@
     </style>
     <script>
       (function() {
+        const env = chrome.remote.require('process').env;
+        process.env = Object.assign(process.env || {}, env);
+
         if (!process.env.HOT) {
           const link = document.createElement('link');
           link.rel = 'stylesheet';

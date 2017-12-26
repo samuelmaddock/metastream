@@ -1,4 +1,3 @@
-import request from 'request';
 import { load } from 'cheerio';
 import _ from 'lodash';
 

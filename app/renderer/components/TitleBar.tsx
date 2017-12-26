@@ -1,5 +1,4 @@
-import { platform } from 'os';
-import { remote } from 'electron';
+const { remote } = chrome;
 
 import React, { Component } from 'react';
 
@@ -14,8 +13,14 @@ interface IProps {
 }
 
 export class TitleBar extends Component<IProps> {
+  private _platform: string;
+
   get window() {
     return remote.getCurrentWindow();
+  }
+
+  get platform() {
+    return this._platform = this._platform || remote.require('os').platform();
   }
 
   render(): JSX.Element | null {
@@ -25,7 +30,7 @@ export class TitleBar extends Component<IProps> {
           <header className={styles.header}>
             <h2 className={styles.title}>{this.props.title || packageJson.productName}</h2>
           </header>
-          {platform() === 'win32' && this.renderWin32Actions()}
+          {this.platform === 'win32' && this.renderWin32Actions()}
         </div>
       </div>
     );

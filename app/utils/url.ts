@@ -1,4 +1,4 @@
-import { shell } from 'electron';
+const { remote } = chrome;
 
 type QueryParams = { [key: string]: any };
 
@@ -22,5 +22,5 @@ export const isUrl = (str: string): boolean => {
 };
 
 export const openInBrowser = (href: string): void => {
-  shell.openExternal(href);
+  remote.shell.openExternal(href);
 };

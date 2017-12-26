@@ -340,8 +340,13 @@ function init() {
         const webviewProtocol = ses.protocol;
         const protos = [__WEBPACK_IMPORTED_MODULE_0_electron__["protocol"], webviewProtocol];
         protos.forEach(proto => {
-            Object(__WEBPACK_IMPORTED_MODULE_2__asset_protocol__["a" /* registerAssetProtocol */])(proto);
-            Object(__WEBPACK_IMPORTED_MODULE_3__browser_protocol__["a" /* registerBrowserProtocol */])(proto);
+            if (proto.registerFileProtocol) {
+                Object(__WEBPACK_IMPORTED_MODULE_2__asset_protocol__["a" /* registerAssetProtocol */])(proto);
+                Object(__WEBPACK_IMPORTED_MODULE_3__browser_protocol__["a" /* registerBrowserProtocol */])(proto);
+            }
+            else {
+                console.error('Protocol not ready', proto);
+            }
         });
     });
 }
@@ -505,7 +510,7 @@ const setupWindow = () => {
         frame: false,
         titleBarStyle: 'hidden'
     });
-    win.loadURL(`file://${__dirname}/app.html`);
+    win.loadURL(`chrome://brave/${__dirname}/app.html`);
     // @TODO: Use 'ready-to-show' event
     //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event
     win.webContents.on('did-finish-load', () => {
@@ -527,7 +532,7 @@ const setupWindow = () => {
 };
 __WEBPACK_IMPORTED_MODULE_0_electron__["app"].on('ready', async () => {
     if (true) {
-        await installExtensions();
+        // await installExtensions();
     }
     let numWindows = 1;
     // Allow multiple windows for local testing

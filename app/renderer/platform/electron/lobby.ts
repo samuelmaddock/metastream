@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { ipcRenderer, remote } from 'electron';
+const { ipcRenderer, remote } = chrome;
 
 import { Deferred } from 'utils/async';
 

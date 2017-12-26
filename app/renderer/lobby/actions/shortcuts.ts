@@ -1,4 +1,4 @@
-import { ipcRenderer } from 'electron';
+const { ipcRenderer } = chrome;
 import { Dispatch } from 'react-redux';
 import { ThunkAction } from 'redux-thunk';
 

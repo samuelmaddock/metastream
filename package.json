@@ -141,12 +141,13 @@
     "cross-spawn": "^5.1.0",
     "css-loader": "^0.28.0",
     "devtron": "^1.4.0",
-    "electron": "^1.7.9",
+    "electron": "brave/electron-prebuilt",
     "electron-builder": "^19.45.4",
     "electron-devtools-installer": "^2.2.1",
     "electron-rebuild": "^1.5.7",
     "enzyme": "^3.1.0",
     "express": "^4.15.2",
+    "extract-text-webpack-plugin": "^3.0.2",
     "fbjs-scripts": "^0.7.1",
     "file-loader": "^0.11.1",
     "html-webpack-plugin": "^2.28.0",
@@ -170,7 +171,8 @@
     "webpack": "^3.5.6",
     "webpack-bundle-analyzer": "^2.9.0",
     "webpack-dev-server": "^2.8.1",
-    "webpack-merge": "^4.1.0"
+    "webpack-merge": "^4.1.0",
+    "webpack-node-externals": "^1.6.0"
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.2",
@@ -178,7 +180,6 @@
     "deep-diff": "^0.3.8",
     "electron-debug": "^1.4.0",
     "electron-localshortcut": "^2.0.2",
-    "extract-text-webpack-plugin": "^3.0.0",
     "font-awesome": "^4.7.0",
     "history": "^4.7.2",
     "iso8601-duration": "^1.1.1",
@@ -194,8 +195,7 @@
     "redux-thunk": "^2.2.0",
     "request": "^2.81.0",
     "simple-peer": "^8.1.1",
-    "source-map-support": "^0.4.14",
-    "webpack-node-externals": "^1.6.0"
+    "source-map-support": "^0.4.14"
   },
   "devEngines": {
     "node": ">=7.x",

@@ -14,8 +14,12 @@ export function init() {
 
     const protos = [protocol, webviewProtocol]
     protos.forEach(proto => {
-      registerAssetProtocol(proto)
-      registerBrowserProtocol(proto)
+      if (proto.registerFileProtocol) {
+        registerAssetProtocol(proto)
+        registerBrowserProtocol(proto)
+      } else {
+        console.error('Protocol not ready', proto)
+      }
     })
   })
 }

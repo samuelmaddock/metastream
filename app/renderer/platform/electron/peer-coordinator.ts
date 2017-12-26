@@ -1,5 +1,5 @@
 import SimplePeer from 'simple-peer';
-import { webContents, remote } from 'electron';
+const { remote } = chrome;
 import { EventEmitter } from 'events';
 
 import { NetUniqueId } from 'renderer/network';
