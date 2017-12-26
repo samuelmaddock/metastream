@@ -32,7 +32,7 @@ if (!(fs.existsSync(dll) && fs.existsSync(manifest))) {
 export default merge.smart(baseConfig, {
   devtool: 'inline-source-map',
 
-  target: 'electron-renderer',
+  target: 'web',
 
   entry: [
     'react-hot-loader/patch',
@@ -42,7 +42,8 @@ export default merge.smart(baseConfig, {
   ],
 
   output: {
-    publicPath: `http://localhost:${port}/dist/`
+    publicPath: `http://localhost:${port}/dist/`,
+    libraryTarget: 'var'
   },
 
   module: {

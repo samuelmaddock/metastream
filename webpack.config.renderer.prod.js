@@ -13,14 +13,15 @@ import baseConfig from './webpack.config.base';
 export default merge.smart(baseConfig, {
   devtool: 'source-map',
 
-  target: 'electron-renderer',
+  target: 'web',
 
   entry: './app/renderer/index',
 
   output: {
     path: path.join(__dirname, 'app/dist'),
     publicPath: '../dist/',
-    filename: 'renderer.prod.js'
+    filename: 'renderer.prod.js',
+    libraryTarget: 'var'
   },
 
   module: {

@@ -10,12 +10,20 @@ import { dependencies } from './package.json';
 
 const dist = path.resolve(process.cwd(), 'dll');
 
+const depExclude = new Set([
+  'font-awesome',
+  'request',
+  'electron',
+  'electron-debug',
+  'electron-localshortcut',
+])
+
 export default merge.smart(baseConfig, {
   context: process.cwd(),
 
   devtool: 'eval',
 
-  target: 'electron-renderer',
+  target: 'web',
 
   externals: ['fsevents', 'crypto-browserify'],
 
@@ -160,7 +168,7 @@ export default merge.smart(baseConfig, {
 
   entry: {
     renderer: Object.keys(dependencies)
-      .filter(dependency => dependency !== 'font-awesome'),
+      .filter(dependency => !depExclude.has(dependency)),
   },
 
   output: {
