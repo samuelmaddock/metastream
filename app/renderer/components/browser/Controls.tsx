@@ -157,8 +157,7 @@ export class WebControls extends Component<IProps, IState> {
   }
 
   private updateURL(url: string) {
-    // TODO: add custom 'mediaplayer://' protocol for internal pages
-    if (url.startsWith('asar://') || url.endsWith('/homescreen.html')) {
+    if (url === 'mp://new-tab/') {
       url = '';
     }
 
