@@ -19,10 +19,6 @@ export function registerBrowserProtocol(protocol: Electron.Protocol) {
   // TODO: deal with resource loading
   protocol.registerFileProtocol(PROTOCOL_PREFIX, (request, callback) => {
     let relativePath = path.normalize(request.url.substr(PREFIX_LENGTH))
-    let parsed = path.parse(relativePath)
-
-    console.log('TEST', parsed)
-
     if (relativePath.endsWith('/')) {
       relativePath = relativePath.substr(0, relativePath.length - 1)
     }
@@ -30,8 +26,7 @@ export function registerBrowserProtocol(protocol: Electron.Protocol) {
     console.log('RESOLVING', relativePath)
 
     if (resourceManifest.hasOwnProperty(relativePath)) {
-      let fileName = resourceManifest[relativePath].file
-      let filePath = path.join(SOURCE_PATH, 'builtin-pages', fileName)
+      let filePath = resourceManifest[relativePath].file
       callback(filePath)
       return
     }

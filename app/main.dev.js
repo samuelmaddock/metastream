@@ -303,15 +303,12 @@ function registerBrowserProtocol(protocol) {
     // TODO: deal with resource loading
     protocol.registerFileProtocol(PROTOCOL_PREFIX, (request, callback) => {
         let relativePath = __WEBPACK_IMPORTED_MODULE_0_path___default.a.normalize(request.url.substr(PREFIX_LENGTH));
-        let parsed = __WEBPACK_IMPORTED_MODULE_0_path___default.a.parse(relativePath);
-        console.log('TEST', parsed);
         if (relativePath.endsWith('/')) {
             relativePath = relativePath.substr(0, relativePath.length - 1);
         }
         console.log('RESOLVING', relativePath);
         if (resourceManifest.hasOwnProperty(relativePath)) {
-            let fileName = resourceManifest[relativePath].file;
-            let filePath = __WEBPACK_IMPORTED_MODULE_0_path___default.a.join(__WEBPACK_IMPORTED_MODULE_1_constants_path__["c" /* SOURCE_PATH */], 'builtin-pages', fileName);
+            let filePath = resourceManifest[relativePath].file;
             callback(filePath);
             return;
         }
@@ -384,7 +381,7 @@ const WEBVIEW_PARTITION = 'persist:mediaplayer';
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_path___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_path__);
 
 const SOURCE_PATH = __dirname;
-/* harmony export (immutable) */ __webpack_exports__["c"] = SOURCE_PATH;
+/* unused harmony export SOURCE_PATH */
 
 const ASSETS_PATH = __WEBPACK_IMPORTED_MODULE_0_path___default.a.join(SOURCE_PATH, 'assets');
 /* harmony export (immutable) */ __webpack_exports__["a"] = ASSETS_PATH;
