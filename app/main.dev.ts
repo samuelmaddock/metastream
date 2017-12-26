@@ -148,9 +148,6 @@ app.on('ready', async () => {
     await installExtensions();
   }
 
-  protocols.registerAssetProtocol()
-  protocols.registerBrowserProtocol()
-
   let numWindows = 1;
 
   // Allow multiple windows for local testing

@@ -263,16 +263,13 @@ class MenuBuilder {
 /* harmony export (immutable) */ __webpack_exports__["a"] = registerAssetProtocol;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_path__ = __webpack_require__("path");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_path___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_path__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_electron__ = __webpack_require__("electron");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_electron___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_electron__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_constants_path__ = __webpack_require__("./app/constants/path.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_constants_path__ = __webpack_require__("./app/constants/path.ts");
 
 
-
-function registerAssetProtocol() {
-    __WEBPACK_IMPORTED_MODULE_1_electron__["protocol"].registerFileProtocol('asset', (request, callback) => {
+function registerAssetProtocol(protocol) {
+    protocol.registerFileProtocol('asset', (request, callback) => {
         let relativePath = __WEBPACK_IMPORTED_MODULE_0_path___default.a.normalize(request.url.substr(7));
-        let filePath = __WEBPACK_IMPORTED_MODULE_0_path___default.a.join(__WEBPACK_IMPORTED_MODULE_2_constants_path__["a" /* ASSETS_PATH */], relativePath);
+        let filePath = __WEBPACK_IMPORTED_MODULE_0_path___default.a.join(__WEBPACK_IMPORTED_MODULE_1_constants_path__["a" /* ASSETS_PATH */], relativePath);
         filePath = filePath.split('#').shift();
         callback(filePath);
     });
@@ -288,32 +285,23 @@ function registerAssetProtocol() {
 /* harmony export (immutable) */ __webpack_exports__["a"] = registerBrowserProtocol;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_path__ = __webpack_require__("path");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_path___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_path__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_electron__ = __webpack_require__("electron");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_electron___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_electron__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_constants_path__ = __webpack_require__("./app/constants/path.ts");
-
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_constants_path__ = __webpack_require__("./app/constants/path.ts");
 
 
 const PROTOCOL_PREFIX = 'mp';
 const PREFIX_LENGTH = PROTOCOL_PREFIX.length + 3;
 const resourceManifest = {
-    menu: {
-        file: __WEBPACK_IMPORTED_MODULE_0_path___default.a.join(__WEBPACK_IMPORTED_MODULE_2_constants_path__["b" /* BUILTIN_PAGES_PATH */], 'app.html')
-    },
     'new-tab': {
-        file: __WEBPACK_IMPORTED_MODULE_0_path___default.a.join(__WEBPACK_IMPORTED_MODULE_2_constants_path__["b" /* BUILTIN_PAGES_PATH */], 'homescreen.html')
+        file: __WEBPACK_IMPORTED_MODULE_0_path___default.a.join(__WEBPACK_IMPORTED_MODULE_1_constants_path__["b" /* RESOURCES_PATH */], 'homescreen.html')
     },
     idlescreen: {
-        file: __WEBPACK_IMPORTED_MODULE_0_path___default.a.join(__WEBPACK_IMPORTED_MODULE_2_constants_path__["b" /* BUILTIN_PAGES_PATH */], 'idlescreen.html')
-    },
-    resources: {
-        file: __WEBPACK_IMPORTED_MODULE_2_constants_path__["c" /* RESOURCES_PATH */]
+        file: __WEBPACK_IMPORTED_MODULE_0_path___default.a.join(__WEBPACK_IMPORTED_MODULE_1_constants_path__["b" /* RESOURCES_PATH */], 'idlescreen.html')
     }
 };
-function registerBrowserProtocol() {
+function registerBrowserProtocol(protocol) {
     // TODO: don't allow referrer to nest in iframe
     // TODO: deal with resource loading
-    __WEBPACK_IMPORTED_MODULE_1_electron__["protocol"].registerFileProtocol(PROTOCOL_PREFIX, (request, callback) => {
+    protocol.registerFileProtocol(PROTOCOL_PREFIX, (request, callback) => {
         let relativePath = __WEBPACK_IMPORTED_MODULE_0_path___default.a.normalize(request.url.substr(PREFIX_LENGTH));
         let parsed = __WEBPACK_IMPORTED_MODULE_0_path___default.a.parse(relativePath);
         console.log('TEST', parsed);
@@ -323,7 +311,7 @@ function registerBrowserProtocol() {
         console.log('RESOLVING', relativePath);
         if (resourceManifest.hasOwnProperty(relativePath)) {
             let fileName = resourceManifest[relativePath].file;
-            let filePath = __WEBPACK_IMPORTED_MODULE_0_path___default.a.join(__WEBPACK_IMPORTED_MODULE_2_constants_path__["d" /* SOURCE_PATH */], 'builtin-pages', fileName);
+            let filePath = __WEBPACK_IMPORTED_MODULE_0_path___default.a.join(__WEBPACK_IMPORTED_MODULE_1_constants_path__["c" /* SOURCE_PATH */], 'builtin-pages', fileName);
             callback(filePath);
             return;
         }
@@ -341,16 +329,49 @@ function registerBrowserProtocol() {
 /* harmony export (immutable) */ __webpack_exports__["a"] = init;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_electron__ = __webpack_require__("electron");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_electron___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_electron__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__asset_protocol__ = __webpack_require__("./app/browser/protocols/asset-protocol.ts");
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return __WEBPACK_IMPORTED_MODULE_1__asset_protocol__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__browser_protocol__ = __webpack_require__("./app/browser/protocols/browser-protocol.ts");
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return __WEBPACK_IMPORTED_MODULE_2__browser_protocol__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_constants_http__ = __webpack_require__("./app/constants/http.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__asset_protocol__ = __webpack_require__("./app/browser/protocols/asset-protocol.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__browser_protocol__ = __webpack_require__("./app/browser/protocols/browser-protocol.ts");
+
 
 
 
 function init() {
     __WEBPACK_IMPORTED_MODULE_0_electron__["protocol"].registerStandardSchemes(['mp', 'asset'], { secure: true });
+    __WEBPACK_IMPORTED_MODULE_0_electron__["app"].once('ready', () => {
+        // BUG: types expect second option as non-optional
+        const ses = __WEBPACK_IMPORTED_MODULE_0_electron__["session"].fromPartition(__WEBPACK_IMPORTED_MODULE_1_constants_http__["a" /* WEBVIEW_PARTITION */]);
+        const webviewProtocol = ses.protocol;
+        const protos = [__WEBPACK_IMPORTED_MODULE_0_electron__["protocol"], webviewProtocol];
+        protos.forEach(proto => {
+            Object(__WEBPACK_IMPORTED_MODULE_2__asset_protocol__["a" /* registerAssetProtocol */])(proto);
+            Object(__WEBPACK_IMPORTED_MODULE_3__browser_protocol__["a" /* registerBrowserProtocol */])(proto);
+        });
+    });
 }
+
+
+/***/ }),
+
+/***/ "./app/constants/http.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/**
+ * Use bot UA to fetch prerendered webpages.
+ * Using Googlebot UA from a non-Google IP triggers Cloudflare's blocker.
+ *
+ * Twitch doesn't serve og:meta unless 'Googlebot' is in the UA :|
+ */
+const MEDIA_USER_AGENT = 'Mozilla/5.0 (compatible; Mediabot/1.0; Googlebot; +http://samuelmaddock.com/)';
+/* unused harmony export MEDIA_USER_AGENT */
+
+const MEDIA_REFERRER = 'http://mediaplayer.samuelmaddock.com/';
+/* unused harmony export MEDIA_REFERRER */
+
+const WEBVIEW_PARTITION = 'persist:mediaplayer';
+/* harmony export (immutable) */ __webpack_exports__["a"] = WEBVIEW_PARTITION;
+
 
 
 /***/ }),
@@ -363,16 +384,13 @@ function init() {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_path___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_path__);
 
 const SOURCE_PATH = __dirname;
-/* harmony export (immutable) */ __webpack_exports__["d"] = SOURCE_PATH;
+/* harmony export (immutable) */ __webpack_exports__["c"] = SOURCE_PATH;
 
 const ASSETS_PATH = __WEBPACK_IMPORTED_MODULE_0_path___default.a.join(SOURCE_PATH, 'assets');
 /* harmony export (immutable) */ __webpack_exports__["a"] = ASSETS_PATH;
 
-const BUILTIN_PAGES_PATH = __WEBPACK_IMPORTED_MODULE_0_path___default.a.join(SOURCE_PATH, 'builtin-pages');
-/* harmony export (immutable) */ __webpack_exports__["b"] = BUILTIN_PAGES_PATH;
-
-const RESOURCES_PATH = __WEBPACK_IMPORTED_MODULE_0_path___default.a.join(SOURCE_PATH, 'dist');
-/* harmony export (immutable) */ __webpack_exports__["c"] = RESOURCES_PATH;
+const RESOURCES_PATH = __WEBPACK_IMPORTED_MODULE_0_path___default.a.join(SOURCE_PATH, 'browser/resources');
+/* harmony export (immutable) */ __webpack_exports__["b"] = RESOURCES_PATH;
 
 
 
@@ -515,8 +533,6 @@ __WEBPACK_IMPORTED_MODULE_0_electron__["app"].on('ready', async () => {
     if (true) {
         await installExtensions();
     }
-    __WEBPACK_IMPORTED_MODULE_4__browser_protocols__["b" /* registerAssetProtocol */]();
-    __WEBPACK_IMPORTED_MODULE_4__browser_protocols__["c" /* registerBrowserProtocol */]();
     let numWindows = 1;
     // Allow multiple windows for local testing
     if (true) {

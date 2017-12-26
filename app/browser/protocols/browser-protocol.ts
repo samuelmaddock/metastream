@@ -1,27 +1,20 @@
 import fs from 'fs'
 import path from 'path'
-import { protocol } from 'electron'
-import { SOURCE_PATH, BUILTIN_PAGES_PATH, RESOURCES_PATH } from 'constants/path'
+import { SOURCE_PATH, RESOURCES_PATH } from 'constants/path'
 
 const PROTOCOL_PREFIX = 'mp'
 const PREFIX_LENGTH = PROTOCOL_PREFIX.length + 3
 
 const resourceManifest: any = {
-  menu: {
-    file: path.join(BUILTIN_PAGES_PATH, 'app.html')
-  },
   'new-tab': {
-    file: path.join(BUILTIN_PAGES_PATH, 'homescreen.html')
+    file: path.join(RESOURCES_PATH, 'homescreen.html')
   },
   idlescreen: {
-    file: path.join(BUILTIN_PAGES_PATH, 'idlescreen.html')
-  },
-  resources: {
-    file: RESOURCES_PATH
+    file: path.join(RESOURCES_PATH, 'idlescreen.html')
   }
 }
 
-export function registerBrowserProtocol() {
+export function registerBrowserProtocol(protocol: Electron.Protocol) {
   // TODO: don't allow referrer to nest in iframe
   // TODO: deal with resource loading
   protocol.registerFileProtocol(PROTOCOL_PREFIX, (request, callback) => {
