@@ -1,4 +1,4 @@
-const path = window.require('path');
+import path from 'path';
 
 export const getRootDir = () => {
   let dirpath;

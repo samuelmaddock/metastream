@@ -1,7 +1,6 @@
 import request from 'request';
 import { load } from 'cheerio';
-// import * as _ from 'lodash';
-const _ = require('lodash');
+import _ from 'lodash';
 
 const fieldsArray = [
   {

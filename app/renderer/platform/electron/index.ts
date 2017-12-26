@@ -1,4 +1,3 @@
-import { hostname } from 'os';
 import { ipcRenderer, remote } from 'electron';
 
 import { Platform, ILobbyOptions, ILobbySession, ILobbyData } from 'renderer/platform/types';
@@ -11,6 +10,8 @@ import { IRTCPeerCoordinator } from 'renderer/network/rtc';
 export class ElectronPlatform extends Platform {
   private id: NetUniqueId<number>;
   private currentSession: ElectronLobby | null;
+
+  private hostname: string = remote.require('os').hostname();
 
   async createLobby(opts: ILobbyOptions): Promise<boolean> {
     const lobby = await ElectronLobby.createLobby();
@@ -58,7 +59,7 @@ export class ElectronPlatform extends Platform {
   }
 
   getUserName(userId: NetUniqueId): string {
-    return `${hostname()}-${userId.toString()}`;
+    return `${this.hostname}-${userId.toString()}`;
   }
 
   getLocalId(): NetUniqueId {

@@ -8,9 +8,6 @@ import '../app.global.css';
 
 import * as packageJson from 'package.json';
 
-const electron = window.require('electron');
-const process = window.require('process');
-
 let store: any;
 let history: any;
 

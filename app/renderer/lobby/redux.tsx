@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import PropTypes from 'prop-types';
 import { createStore, Middleware, applyMiddleware } from 'redux';
-import { connect, Provider, Store } from 'react-redux';
+import { connect, Provider, Store, createProvider } from 'react-redux';
 import thunkMiddleware from 'redux-thunk';
 
 import { NetMiddlewareOptions, netSyncMiddleware } from 'renderer/network/middleware/sync';
@@ -35,7 +35,6 @@ function customConnect<TStateProps, TDispatchProps, TOwnProps>(...args: any[]) {
 
 export default customConnect;
 
-const createProvider = require('react-redux').createProvider;
 export const NetProvider = createProvider(NET_STORE_NAME) as typeof Provider;
 
 export function createNetStore(opts: NetMiddlewareOptions): Store<ILobbyNetState> {

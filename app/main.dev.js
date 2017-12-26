@@ -306,7 +306,6 @@ function registerBrowserProtocol(protocol) {
         if (relativePath.endsWith('/')) {
             relativePath = relativePath.substr(0, relativePath.length - 1);
         }
-        console.log('RESOLVING', relativePath);
         if (resourceManifest.hasOwnProperty(relativePath)) {
             let filePath = resourceManifest[relativePath].file;
             callback(filePath);
