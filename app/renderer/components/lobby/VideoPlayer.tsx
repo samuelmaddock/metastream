@@ -58,7 +58,7 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
 
   get mediaUrl() {
     const media = this.props.current;
-    return media ? media.url : './builtin-pages/idlescreen.html';
+    return media ? media.url : 'mp://idlescreen';
   }
 
   componentDidMount(): void {

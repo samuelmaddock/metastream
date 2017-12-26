@@ -6,11 +6,11 @@
  * When running `npm run build` or `npm run build-main`, this file is compiled to
  * `./app/main.prod.js` using webpack. This gives us some performance wins.
  */
-import { app, BrowserWindow, globalShortcut } from 'electron';
+import { app, BrowserWindow, globalShortcut, protocol } from 'electron';
 import { register as registerLocalShortcut } from 'electron-localshortcut';
 import { join, dirname } from 'path';
 import MenuBuilder from './browser/menu';
-import { registerAssetProtocol } from './browser/asset-protocol';
+import * as protocols from './browser/protocols';
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -52,6 +52,7 @@ const setupPlugins = () => {
 }
 
 setupPlugins();
+protocols.init();
 
 /**
  * Add event listeners...
@@ -117,7 +118,7 @@ const setupWindow = () => {
     titleBarStyle: 'hidden'
   });
 
-  win.loadURL(`file://${__dirname}/builtin-pages/app.html`);
+  win.loadURL(`file://${__dirname}/app.html`);
 
   // @TODO: Use 'ready-to-show' event
   //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event
@@ -147,7 +148,8 @@ app.on('ready', async () => {
     await installExtensions();
   }
 
-  registerAssetProtocol()
+  protocols.registerAssetProtocol()
+  protocols.registerBrowserProtocol()
 
   let numWindows = 1;
 

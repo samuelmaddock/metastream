@@ -66,31 +66,6 @@ module.exports =
 /************************************************************************/
 /******/ ({
 
-/***/ "./app/browser/asset-protocol.ts":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = registerAssetProtocol;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_path__ = __webpack_require__("path");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_path___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_path__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_electron__ = __webpack_require__("electron");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_electron___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_electron__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_constants_path__ = __webpack_require__("./app/constants/path.ts");
-
-
-
-function registerAssetProtocol() {
-    __WEBPACK_IMPORTED_MODULE_1_electron__["protocol"].registerFileProtocol('asset', (request, callback) => {
-        let relativePath = __WEBPACK_IMPORTED_MODULE_0_path___default.a.normalize(request.url.substr(7));
-        let filePath = __WEBPACK_IMPORTED_MODULE_0_path___default.a.join(__WEBPACK_IMPORTED_MODULE_2_constants_path__["a" /* ASSETS_PATH */], relativePath);
-        filePath = filePath.split('#').shift();
-        callback(filePath);
-    });
-}
-
-
-/***/ }),
-
 /***/ "./app/browser/menu.ts":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -281,6 +256,105 @@ class MenuBuilder {
 
 /***/ }),
 
+/***/ "./app/browser/protocols/asset-protocol.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = registerAssetProtocol;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_path__ = __webpack_require__("path");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_path___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_path__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_electron__ = __webpack_require__("electron");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_electron___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_electron__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_constants_path__ = __webpack_require__("./app/constants/path.ts");
+
+
+
+function registerAssetProtocol() {
+    __WEBPACK_IMPORTED_MODULE_1_electron__["protocol"].registerFileProtocol('asset', (request, callback) => {
+        let relativePath = __WEBPACK_IMPORTED_MODULE_0_path___default.a.normalize(request.url.substr(7));
+        let filePath = __WEBPACK_IMPORTED_MODULE_0_path___default.a.join(__WEBPACK_IMPORTED_MODULE_2_constants_path__["a" /* ASSETS_PATH */], relativePath);
+        filePath = filePath.split('#').shift();
+        callback(filePath);
+    });
+}
+
+
+/***/ }),
+
+/***/ "./app/browser/protocols/browser-protocol.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = registerBrowserProtocol;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_path__ = __webpack_require__("path");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_path___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_path__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_electron__ = __webpack_require__("electron");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_electron___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_electron__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_constants_path__ = __webpack_require__("./app/constants/path.ts");
+
+
+
+const PROTOCOL_PREFIX = 'mp';
+const PREFIX_LENGTH = PROTOCOL_PREFIX.length + 3;
+const resourceManifest = {
+    menu: {
+        file: __WEBPACK_IMPORTED_MODULE_0_path___default.a.join(__WEBPACK_IMPORTED_MODULE_2_constants_path__["b" /* BUILTIN_PAGES_PATH */], 'app.html')
+    },
+    'new-tab': {
+        file: __WEBPACK_IMPORTED_MODULE_0_path___default.a.join(__WEBPACK_IMPORTED_MODULE_2_constants_path__["b" /* BUILTIN_PAGES_PATH */], 'homescreen.html')
+    },
+    idlescreen: {
+        file: __WEBPACK_IMPORTED_MODULE_0_path___default.a.join(__WEBPACK_IMPORTED_MODULE_2_constants_path__["b" /* BUILTIN_PAGES_PATH */], 'idlescreen.html')
+    },
+    resources: {
+        file: __WEBPACK_IMPORTED_MODULE_2_constants_path__["c" /* RESOURCES_PATH */]
+    }
+};
+function registerBrowserProtocol() {
+    // TODO: don't allow referrer to nest in iframe
+    // TODO: deal with resource loading
+    __WEBPACK_IMPORTED_MODULE_1_electron__["protocol"].registerFileProtocol(PROTOCOL_PREFIX, (request, callback) => {
+        let relativePath = __WEBPACK_IMPORTED_MODULE_0_path___default.a.normalize(request.url.substr(PREFIX_LENGTH));
+        let parsed = __WEBPACK_IMPORTED_MODULE_0_path___default.a.parse(relativePath);
+        console.log('TEST', parsed);
+        if (relativePath.endsWith('/')) {
+            relativePath = relativePath.substr(0, relativePath.length - 1);
+        }
+        console.log('RESOLVING', relativePath);
+        if (resourceManifest.hasOwnProperty(relativePath)) {
+            let fileName = resourceManifest[relativePath].file;
+            let filePath = __WEBPACK_IMPORTED_MODULE_0_path___default.a.join(__WEBPACK_IMPORTED_MODULE_2_constants_path__["d" /* SOURCE_PATH */], 'builtin-pages', fileName);
+            callback(filePath);
+            return;
+        }
+        callback();
+    });
+}
+
+
+/***/ }),
+
+/***/ "./app/browser/protocols/index.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = init;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_electron__ = __webpack_require__("electron");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_electron___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_electron__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__asset_protocol__ = __webpack_require__("./app/browser/protocols/asset-protocol.ts");
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return __WEBPACK_IMPORTED_MODULE_1__asset_protocol__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__browser_protocol__ = __webpack_require__("./app/browser/protocols/browser-protocol.ts");
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return __WEBPACK_IMPORTED_MODULE_2__browser_protocol__["a"]; });
+
+
+
+function init() {
+    __WEBPACK_IMPORTED_MODULE_0_electron__["protocol"].registerStandardSchemes(['mp', 'asset'], { secure: true });
+}
+
+
+/***/ }),
+
 /***/ "./app/constants/path.ts":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -289,10 +363,16 @@ class MenuBuilder {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_path___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_path__);
 
 const SOURCE_PATH = __dirname;
-/* unused harmony export SOURCE_PATH */
+/* harmony export (immutable) */ __webpack_exports__["d"] = SOURCE_PATH;
 
 const ASSETS_PATH = __WEBPACK_IMPORTED_MODULE_0_path___default.a.join(SOURCE_PATH, 'assets');
 /* harmony export (immutable) */ __webpack_exports__["a"] = ASSETS_PATH;
+
+const BUILTIN_PAGES_PATH = __WEBPACK_IMPORTED_MODULE_0_path___default.a.join(SOURCE_PATH, 'builtin-pages');
+/* harmony export (immutable) */ __webpack_exports__["b"] = BUILTIN_PAGES_PATH;
+
+const RESOURCES_PATH = __WEBPACK_IMPORTED_MODULE_0_path___default.a.join(SOURCE_PATH, 'dist');
+/* harmony export (immutable) */ __webpack_exports__["c"] = RESOURCES_PATH;
 
 
 
@@ -310,7 +390,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_path__ = __webpack_require__("path");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_path___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_path__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__browser_menu__ = __webpack_require__("./app/browser/menu.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__browser_asset_protocol__ = __webpack_require__("./app/browser/asset-protocol.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__browser_protocols__ = __webpack_require__("./app/browser/protocols/index.ts");
 /**
  * This module executes inside of electron's main process. You can start
  * electron renderer process from here and communicate with the other processes
@@ -355,6 +435,7 @@ const setupPlugins = () => {
     __WEBPACK_IMPORTED_MODULE_0_electron__["app"].commandLine.appendSwitch('widevine-cdm-version', '1.4.8.1029');
 };
 setupPlugins();
+__WEBPACK_IMPORTED_MODULE_4__browser_protocols__["a" /* init */]();
 /**
  * Add event listeners...
  */
@@ -410,7 +491,7 @@ const setupWindow = () => {
         frame: false,
         titleBarStyle: 'hidden'
     });
-    win.loadURL(`file://${__dirname}/builtin-pages/app.html`);
+    win.loadURL(`file://${__dirname}/app.html`);
     // @TODO: Use 'ready-to-show' event
     //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event
     win.webContents.on('did-finish-load', () => {
@@ -434,7 +515,8 @@ __WEBPACK_IMPORTED_MODULE_0_electron__["app"].on('ready', async () => {
     if (true) {
         await installExtensions();
     }
-    Object(__WEBPACK_IMPORTED_MODULE_4__browser_asset_protocol__["a" /* registerAssetProtocol */])();
+    __WEBPACK_IMPORTED_MODULE_4__browser_protocols__["b" /* registerAssetProtocol */]();
+    __WEBPACK_IMPORTED_MODULE_4__browser_protocols__["c" /* registerBrowserProtocol */]();
     let numWindows = 1;
     // Allow multiple windows for local testing
     if (true) {
