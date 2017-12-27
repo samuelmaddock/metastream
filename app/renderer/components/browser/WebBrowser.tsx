@@ -24,7 +24,7 @@ type PrivateProps = IProps & DispatchProp<ILobbyNetState>;
 
 export class _WebBrowser extends Component<PrivateProps> {
   private webview?: Electron.WebviewTag | null;
-  private webviewContents: Electron.webContents;
+  private webContents: Electron.webContents;
   private controls?: WebControls | null;
 
   private hasSetupControls?: boolean;
@@ -58,21 +58,21 @@ export class _WebBrowser extends Component<PrivateProps> {
         }
         break;
       case 'window:history-prev':
-        if (this.webviewContents.canGoBack()) {
-          this.webviewContents.goBack();
+        if (this.webContents.canGoBack()) {
+          this.webContents.goBack();
         }
         break;
       case 'window:history-next':
-        if (this.webviewContents.canGoForward()) {
-          this.webviewContents.goForward();
+        if (this.webContents.canGoForward()) {
+          this.webContents.goForward();
         }
         break;
     }
   };
 
   private setupControls() {
-    if (!this.hasSetupControls && this.controls && this.webview && this.webviewContents) {
-      this.controls.setWebview(this.webview, this.webviewContents);
+    if (!this.hasSetupControls && this.controls && this.webview && this.webContents) {
+      this.controls.setWebview(this.webview, this.webContents);
       this.hasSetupControls = true;
     }
   }
@@ -89,10 +89,12 @@ export class _WebBrowser extends Component<PrivateProps> {
       const wv = this.webview as any;
       wv.addEventListener('did-attach', (e: any) => {
         (remote as any).getWebContents(e.tabId, (webContents: Electron.WebContents) => {
-          this.webviewContents = webContents;
+          this.webContents = webContents;
           this.setupControls();
         });
       });
+    } else {
+      this.webContents = undefined as any;
     }
   };
 

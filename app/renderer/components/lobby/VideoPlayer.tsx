@@ -13,7 +13,8 @@ import { DispatchProp } from 'react-redux';
 import { PlaybackControls } from 'renderer/components/media/PlaybackControls';
 import { setVolume } from 'renderer/lobby/actions/settings';
 import { clamp } from 'utils/math';
-import { WEBVIEW_PARTITION } from 'constants/http';
+import { WEBVIEW_PARTITION, MEDIA_REFERRER } from 'constants/http';
+const { remote } = chrome;
 
 interface IProps {
   className?: string;
@@ -44,7 +45,10 @@ type PrivateProps = IProps & IConnectedProps & DispatchProp<ILobbyNetState>;
 
 class _VideoPlayer extends Component<PrivateProps, IState> {
   private webview: Electron.WebviewTag | null;
+  private webContents: Electron.WebContents;
   private initTimeoutId?: number;
+
+  private httpReferrer = MEDIA_REFERRER;
 
   state: IState = { initializing: true, interacting: false };
 
@@ -110,11 +114,19 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
 
   private setupWebview = (webview: Electron.WebviewTag | null): void => {
     this.webview = webview;
-    if (!this.webview) {
-      return;
-    }
 
-    this.webview.addEventListener('ipc-message', this.onIpcMessage);
+    if (this.webview) {
+      this.webview.addEventListener('ipc-message', this.onIpcMessage);
+
+      const wv = this.webview as any;
+      wv.addEventListener('did-attach', (e: any) => {
+        (remote as any).getWebContents(e.tabId, (webContents: Electron.WebContents) => {
+          this.webContents = webContents;
+        });
+      });
+    } else {
+      this.webContents = undefined as any;
+    }
   };
 
   private onIpcMessage = (event: Electron.IpcMessageEvent) => {
@@ -168,8 +180,8 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
 
     const { volume, mute } = this.props;
 
-    if (mute !== this.webview.isAudioMuted()) {
-      this.webview.setAudioMuted(mute);
+    if (mute !== this.webContents.isAudioMuted()) {
+      this.webContents.setAudioMuted(mute);
     }
 
     const newVolume = this.props.mute ? 0 : this.props.volume;
@@ -208,7 +220,7 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
           [styles.interactive]: this.state.interacting
         })}
         /* Some website embeds are disabled without an HTTP referrer */
-        httpreferrer="http://mediaplayer.samuelmaddock.com/"
+        httpreferrer={this.httpReferrer}
         /* Disable plugins until we know we need them */
         plugins="true"
         preload="./preload.js"
@@ -224,13 +236,13 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
     // this.updatePlayback(PlaybackState.Paused);
 
     if (this.webview) {
-      this.webview.loadURL(this.mediaUrl);
+      this.webContents.loadURL(this.mediaUrl, { httpReferrer: this.httpReferrer });
     }
   }
 
   debug(): void {
-    if (this.webview && !this.webview.isDevToolsOpened()) {
-      this.webview.openDevTools();
+    if (this.webview && !this.webContents.isDevToolsOpened()) {
+      this.webContents.openDevTools();
     }
   }
 
