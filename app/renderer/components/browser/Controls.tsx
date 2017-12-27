@@ -20,6 +20,7 @@ interface IState {
 
 export class WebControls extends Component<IProps, IState> {
   private webview: Electron.WebviewTag | null;
+  private webContents: Electron.WebContents;
   private addressInput: HTMLInputElement | null;
 
   state: IState = {};
@@ -33,10 +34,10 @@ export class WebControls extends Component<IProps, IState> {
         icon="arrow-left"
         onClick={() => {
           if (this.webview) {
-            this.webview.goBack();
+            this.webContents.goBack();
           }
         }}
-        disabled={this.webview ? !this.webview.canGoBack() : true}
+        disabled={this.webview ? !this.webContents.canGoBack() : true}
       />
     );
 
@@ -46,10 +47,10 @@ export class WebControls extends Component<IProps, IState> {
         icon="arrow-right"
         onClick={() => {
           if (this.webview) {
-            this.webview.goForward();
+            this.webContents.goForward();
           }
         }}
-        disabled={this.webview ? !this.webview.canGoForward() : true}
+        disabled={this.webview ? !this.webContents.canGoForward() : true}
       />
     );
 
@@ -60,11 +61,11 @@ export class WebControls extends Component<IProps, IState> {
         onClick={e => {
           if (this.webview) {
             if (this.state.loading) {
-              this.webview.stop();
+              this.webContents.stop();
             } else if (e.shiftKey) {
-              this.webview.reloadIgnoringCache();
+              this.webContents.reloadIgnoringCache();
             } else {
-              this.webview.reload();
+              this.webContents.reload();
             }
           }
         }}
@@ -78,7 +79,7 @@ export class WebControls extends Component<IProps, IState> {
         onClick={e => {
           if (this.webview) {
             // TODO: navigate forward instead of back
-            this.webview.goToIndex(0);
+            this.webContents.goToIndex(0);
           }
         }}
       />
@@ -125,13 +126,14 @@ export class WebControls extends Component<IProps, IState> {
     );
   }
 
-  setWebview(webview: Electron.WebviewTag | null) {
+  setWebview(webview: Electron.WebviewTag | null, webContents: Electron.WebContents) {
     this.webview = webview;
+    this.webContents = webContents;
 
     if (this.webview) {
       this.webview.addEventListener('dom-ready', e => {
         if (this.webview) {
-          this.updateURL(this.webview.getURL());
+          this.updateURL(this.webContents.getURL());
         }
       });
 
@@ -194,13 +196,14 @@ export class WebControls extends Component<IProps, IState> {
     }
 
     if (this.webview) {
-      this.webview.loadURL(url);
+      const httpReferrer = this.webview.getAttribute('httpreferrer') || undefined;
+      this.webContents.loadURL(url, { httpReferrer });
     }
   }
 
   private onPlayClicked() {
     const { onRequestUrl } = this.props;
-    const url = this.webview && this.webview.getURL();
+    const url = this.webview && this.webContents.getURL();
 
     if (onRequestUrl && url) {
       onRequestUrl(url);
