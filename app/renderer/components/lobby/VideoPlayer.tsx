@@ -33,6 +33,8 @@ interface IState {
   interacting: boolean;
 }
 
+const DEFAULT_URL = 'http://samuelmaddock.com/'; // 'mp://idlescreen';
+
 const mapStateToProps = (state: ILobbyNetState): IConnectedProps => {
   return {
     ...state.mediaPlayer,
@@ -62,7 +64,7 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
 
   get mediaUrl() {
     const media = this.props.current;
-    return media ? media.url : 'mp://idlescreen';
+    return media ? media.url : DEFAULT_URL;
   }
 
   componentDidMount(): void {
@@ -90,9 +92,16 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
     const { current } = this.props;
     const { current: prevMedia } = prevProps;
 
-    // Force restart media if new media is the same URL
-    if (current && prevMedia && current !== prevMedia && current.url === prevMedia.url) {
-      this.onMediaReady();
+
+
+    if (current !== prevMedia) {
+      if (current && prevMedia && current.url === prevMedia.url) {
+        // Force restart media if new media is the same URL
+        this.onMediaReady();
+      } else {
+        // Update URL on webview otherwise
+        this.reload();
+      }
       return;
     }
 
@@ -214,7 +223,7 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
       <webview
         is="is"
         ref={this.setupWebview}
-        src={this.mediaUrl}
+        src={DEFAULT_URL}
         class={cx(styles.video, {
           [styles.loading]: this.state.initializing,
           [styles.interactive]: this.state.interacting
