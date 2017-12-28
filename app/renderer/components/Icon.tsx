@@ -1,4 +1,5 @@
 import React from 'React';
+import { ASSETS_PATH } from 'constants/path';
 
 interface IProps {
   className?: string;
@@ -21,9 +22,11 @@ const DEFAULT_STYLE = {
 
 /** SVG icon component */
 export const Icon = ({ name, ...rest }: IProps) => {
+  // const path = `asar://brave/${ASSETS_PATH}/icons/${name}.svg#${name}`;
+  const path = `chrome://brave/Users/samuelmaddock/projects/tv/app/assets/icons/${name}.svg#${name}`;
   return (
     <svg width="24" height="24" style={DEFAULT_STYLE} {...rest}>
-      <use xlinkHref={`asset://icons/${name}.svg#${name}`} />
+      <use xlinkHref={path} />
     </svg>
   );
 };
