@@ -11,6 +11,7 @@ import { register as registerLocalShortcut } from 'electron-localshortcut';
 import { join, dirname } from 'path';
 import MenuBuilder from './browser/menu';
 import * as protocols from './browser/protocols';
+import { loadMediaExtensions } from 'browser/extensions';
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -112,7 +113,8 @@ const setupWindow = () => {
     width: 1280,
     height: 720,
     webPreferences: {
-      blinkFeatures: 'CSSBackdropFilter'
+      blinkFeatures: 'CSSBackdropFilter',
+      webSecurity: false
     },
     frame: false,
     titleBarStyle: 'hidden'
@@ -161,4 +163,5 @@ app.on('ready', async () => {
   }
 
   registerMediaShortcuts();
+  loadMediaExtensions();
 });

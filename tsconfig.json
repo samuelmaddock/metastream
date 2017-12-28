@@ -55,6 +55,7 @@
   "exclude": [
     "node_modules",
     "dist",
-    "old"
+    "old",
+    "app/extensions"
   ]
 }
