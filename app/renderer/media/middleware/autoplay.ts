@@ -26,7 +26,11 @@ const setAutoplay = (url: string) => {
 };
 
 const mware: IMediaMiddleware = {
-  match({ protocol }) {
+  match({ protocol, host }) {
+    // BUG: server returns Access Denied
+    if (host && host.indexOf('redd.it') > -1) {
+      return false;
+    }
     return protocol === 'http:' || protocol === 'https:';
   },
 
