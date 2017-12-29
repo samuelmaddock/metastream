@@ -7,7 +7,9 @@ const isExtVersion = (dirName: string) => !!extVerRegex.exec(dirName);
 
 const extensionIds = [
   'cjpalhdlnbpafiamejdnhcphjbkeiagm', // ublock origin
-  'gcbommkclmclpchllfjekcdonpmejbdp'  // https everywhere
+  'gcbommkclmclpchllfjekcdonpmejbdp',  // https everywhere
+  'netflix-content-script',
+  'enhanced-media-viewer',
 ];
 
 export function loadMediaExtensions() {
@@ -19,12 +21,22 @@ export function loadMediaExtensions() {
   extensionIds.forEach(extId => {
     const extPath = path.join(extRoot, `${extId}`);
 
-    if (fs.statSync(extPath)) {
+    let stat;
+
+    try {
+      stat = fs.statSync(extPath);
+    } catch (e) {}
+
+    if (stat) {
       const dirs = fs.readdirSync(extPath);
       const extVersion = dirs.find(isExtVersion);
       const fullPath = extVersion && path.join(extPath, extVersion);
 
-      if (fullPath && fs.statSync(fullPath)) {
+      try {
+        stat = fullPath && fs.statSync(fullPath);
+      } catch (e) {}
+
+      if (stat) {
         console.log(`Loading extension ${extId}`);
         extensions.load(fullPath, {}, 'unpacked');
       }

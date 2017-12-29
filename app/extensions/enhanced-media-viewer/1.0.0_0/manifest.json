@@ -1,0 +1,13 @@
+{
+  "name": "Enhanced Media Viewer",
+  "version": "0.1",
+  "description": "Make vids full sized",
+  "content_scripts": [
+    {
+      "matches": ["*://*/*"],
+      "js": ["init.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "manifest_version": 2
+}
