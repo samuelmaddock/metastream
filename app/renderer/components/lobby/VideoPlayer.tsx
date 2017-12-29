@@ -245,7 +245,8 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
     // this.updatePlayback(PlaybackState.Paused);
 
     if (this.webview) {
-      this.webContents.loadURL(this.mediaUrl, { httpReferrer: this.httpReferrer });
+      // HACK: Set http referrer to itself to avoid referral blocking
+      this.webContents.loadURL(this.mediaUrl, { httpReferrer: this.mediaUrl });
     }
   }
 
