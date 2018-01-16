@@ -5,7 +5,8 @@ import {
   IMediaMiddleware,
   IMediaRequest,
   IMediaResponse,
-  MediaType
+  MediaType,
+  IMediaContext
 } from '../types';
 import { fetchText } from 'utils/http';
 import { MEDIA_REFERRER } from 'constants/http';
@@ -65,6 +66,28 @@ const getNextPosts = (json: any) => {
   return posts;
 };
 
+const parseItem = (ctx: IMediaContext, item: any): any => {
+  ctx.res.title = item.title;
+
+  // Overwrite request url with subreddit post
+  const url = parse(item.url);
+  if (url && url.href) {
+    ctx.req.url = url as any;
+  }
+
+  const { media } = item;
+  if (media) {
+    if (media.reddit_video) {
+      const v = media.reddit_video;
+      ctx.res.url = v.fallback_url;
+      ctx.res.duration = v.duration;
+      return true;
+    }
+  }
+
+  return false;
+}
+
 const mware: IMediaMiddleware = {
   match(url, ctx) {
     return !!URL_PATTERN.exec(url.href) || !!(ctx.req.state && ctx.req.state.reddit);
@@ -122,14 +145,6 @@ const mware: IMediaMiddleware = {
       }
     }
 
-    ctx.res.title = child.title;
-
-    // Overwrite request url with subreddit post
-    const url = parse(child.url);
-    if (url && url.href) {
-      ctx.req.url = url as any;
-    }
-
     // Save pagination info for resolving next playlist item
     ctx.res.type = MediaType.Playlist;
     ctx.res.hasMore = true;
@@ -144,7 +159,9 @@ const mware: IMediaMiddleware = {
       }
     };
 
-    return next();
+    if (!parseItem(ctx, child)) {
+      return next();
+    }
   }
 };
 
