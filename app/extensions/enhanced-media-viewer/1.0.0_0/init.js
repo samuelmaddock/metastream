@@ -24,7 +24,7 @@ function enhanceImage(image) {
     backgroundImage: `url(${src})`,
     backgroundSize: 'cover',
     backgroundPosition: '50% 50%',
-    position: 'absolute',
+    position: 'fixed',
     top: 0,
     left: 0,
     width: '100%',
