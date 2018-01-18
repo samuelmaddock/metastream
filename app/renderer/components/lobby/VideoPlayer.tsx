@@ -172,13 +172,13 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
 
     if (typeof time === 'number') {
       console.log('Sending seek IPC message', time);
-      this.webview!.send('media-seek', time);
+      this.webContents!.send('media-seek', time);
     }
   };
 
   private updatePlayback = (state: PlaybackState) => {
     if (this.webview) {
-      this.webview.send('media-playback', state);
+      this.webContents.send('media-playback', state);
     }
   };
 
@@ -194,7 +194,7 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
     }
 
     const newVolume = this.props.mute ? 0 : this.props.volume;
-    this.webview.send('media-volume', this.scaleVolume(newVolume));
+    this.webContents.send('media-volume', this.scaleVolume(newVolume));
   };
 
   /**

@@ -1,0 +1,16 @@
+{
+  "name": "Media Remote",
+  "version": "0.1",
+  "description": "Remote controller for media on the web",
+  "content_scripts": [
+    {
+      "matches": ["*://*/*"],
+      "js": ["init.js"],
+      "run_at": "document_start"
+    }
+  ],
+  "web_accessible_resources": [
+    "player.js"
+  ],
+  "manifest_version": 2
+}

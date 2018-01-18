@@ -10,6 +10,7 @@ const extensionIds = [
   'gcbommkclmclpchllfjekcdonpmejbdp',  // https everywhere
   'netflix-content-script',
   'enhanced-media-viewer',
+  'media-remote',
 ];
 
 export function loadMediaExtensions() {
