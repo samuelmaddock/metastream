@@ -159,7 +159,7 @@ export class WebControls extends Component<IProps, IState> {
   }
 
   private updateURL(url: string) {
-    if (url === 'mp://new-tab/') {
+    if (url.startsWith('chrome://brave/')) {
       url = '';
     }
 
