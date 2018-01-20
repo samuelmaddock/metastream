@@ -14,6 +14,7 @@ import { PlaybackControls } from 'renderer/components/media/PlaybackControls';
 import { setVolume } from 'renderer/lobby/actions/settings';
 import { clamp } from 'utils/math';
 import { WEBVIEW_PARTITION, MEDIA_REFERRER } from 'constants/http';
+import { absoluteUrl } from 'utils/appUrl';
 const { remote } = chrome;
 
 interface IProps {
@@ -33,7 +34,7 @@ interface IState {
   interacting: boolean;
 }
 
-const DEFAULT_URL = 'http://samuelmaddock.com/'; // 'mp://idlescreen';
+const DEFAULT_URL = absoluteUrl('./browser/resources/idlescreen.html');
 
 const mapStateToProps = (state: ILobbyNetState): IConnectedProps => {
   return {

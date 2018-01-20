@@ -8,9 +8,10 @@ import { WebControls } from 'renderer/components/browser/Controls';
 import { netConnect } from 'renderer/lobby';
 import { ILobbyNetState } from 'renderer/lobby/reducers';
 import { server_requestMedia } from 'renderer/lobby/actions/mediaPlayer';
+import { absoluteUrl } from 'utils/appUrl';
 const { ipcRenderer, remote } = chrome;
 
-const DEFAULT_URL = 'mp://new-tab';
+const DEFAULT_URL = absoluteUrl('./browser/resources/homescreen.html');
 // const DEFAULT_URL = 'https://www.google.com/';
 // const DEFAULT_URL = 'data:text/html,<style>html{color:#fff;font-size:36px}</style>B R O W S E R';
 
