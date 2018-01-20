@@ -3,6 +3,7 @@ import { IUser } from 'renderer/lobby/reducers/users';
 import styles from './UserItem.css';
 import { PlatformService } from 'renderer/platform';
 import { NetUniqueId } from 'renderer/network';
+import { assetUrl } from 'utils/appUrl';
 
 interface IProps {
   className?: string;
@@ -53,6 +54,6 @@ export class UserAvatar extends Component<IProps> {
   };
 
   render(): JSX.Element | null {
-    return <img src={this.state.src || 'asset://icons/avatar.svg'} onLoad={this.onImageLoad} className={this.props.className} />;
+    return <img src={this.state.src || assetUrl('icons/avatar.svg')} onLoad={this.onImageLoad} className={this.props.className} />;
   }
 }
