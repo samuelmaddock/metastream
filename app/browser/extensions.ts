@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { session } from 'electron';
+import { session, dialog } from 'electron';
 
 const extVerRegex = /^[\d._]+$/;
 const isExtVersion = (dirName: string) => !!extVerRegex.exec(dirName);
@@ -17,16 +17,26 @@ export function loadMediaExtensions() {
   const ses = session.fromPartition('persist:mediaplayer', { cache: true });
   const { extensions } = ses as any;
 
-  const extRoot = path.normalize(path.join(__dirname, '/extensions/'));
+  const extDir = process.env.NODE_ENV === 'production' ? '../../extensions' : '/extensions';
+  const extRoot = path.normalize(path.join(__dirname, extDir));
 
   extensionIds.forEach(extId => {
     const extPath = path.join(extRoot, `${extId}`);
 
     let stat;
+    let err;
 
     try {
       stat = fs.statSync(extPath);
-    } catch (e) {}
+    } catch (e) {
+      err = e;
+    } finally {
+      // dialog.showMessageBox({
+      //   title:'test',
+      //   message: `${extPath}\n\n${JSON.stringify(stat)}\n\n${JSON.stringify(err)}`,
+      //   buttons: ['ok']
+      // })
+    }
 
     if (stat) {
       const dirs = fs.readdirSync(extPath);
