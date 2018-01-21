@@ -35,22 +35,20 @@
   "build": {
     "productName": "Media Player",
     "appId": "mediaplayer",
+    "muonVersion": "4.6.4",
     "files": [
       "assets/",
       "dist/",
       "node_modules/",
-      "builtin-pages/",
+      "browser/resources/",
+      "app.html",
       "main.prod.js",
       "main.prod.js.map",
-      "preload.js",
-      "preload.js.map",
       "package.json"
     ],
     "extraFiles": [
-      {
-        "from": "app/lib/",
-        "to": "lib/"
-      }
+      { "from": "app/extensions/enhanced-media-viewer", "to": "extensions/enhanced-media-viewer" },
+      { "from": "app/extensions/media-remote", "to": "extensions/media-remote" }
     ],
     "dmg": {
       "contents": [
@@ -142,7 +140,7 @@
     "css-loader": "^0.28.0",
     "devtron": "^1.4.0",
     "electron": "brave/electron-prebuilt",
-    "electron-builder": "^19.45.4",
+    "electron-builder": "^19.54.0",
     "electron-devtools-installer": "^2.2.1",
     "electron-rebuild": "^1.5.7",
     "enzyme": "^3.1.0",
