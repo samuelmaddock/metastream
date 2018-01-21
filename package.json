@@ -35,7 +35,7 @@
   "build": {
     "productName": "Media Player",
     "appId": "mediaplayer",
-    "muonVersion": "v4.6.4",
+    "muonVersion": "4.6.4",
     "files": [
       "assets/",
       "dist/",
