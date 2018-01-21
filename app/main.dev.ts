@@ -7,13 +7,25 @@
  * `./app/main.prod.js` using webpack. This gives us some performance wins.
  */
 import { app, BrowserWindow, globalShortcut, protocol } from 'electron';
+
+import packageJson from 'package.json';
+import 'browser/net';
+
+if (process.env.NODE_ENV === 'development') {
+  // Update version before running any code
+  // Fixes Brave overriding version
+  (app as any).setVersion(packageJson.version);
+}
+
 import { register as registerLocalShortcut } from 'electron-localshortcut';
 import { join, dirname } from 'path';
+
 import MenuBuilder from './browser/menu';
 import * as protocols from './browser/protocols';
 import { loadMediaExtensions } from 'browser/extensions';
+import { initUpdater } from 'browser/update';
 
-require('./browser/fetch');
+import './browser/fetch';
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -151,6 +163,8 @@ app.on('ready', async () => {
   if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
     // await installExtensions();
   }
+
+  initUpdater();
 
   let numWindows = 1;
 

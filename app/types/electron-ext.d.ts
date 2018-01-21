@@ -9,8 +9,3 @@ declare namespace Electron {
     selector?: string;
   }
 }
-
-interface Window {
-  // Runtime 'require' preventing webpack from resolving the module
-  require: NodeRequireFunction;
-}

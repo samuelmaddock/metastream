@@ -35,7 +35,7 @@
   "build": {
     "productName": "Media Player",
     "appId": "mediaplayer",
-    "muonVersion": "4.6.4",
+    "muonVersion": "v4.6.4",
     "files": [
       "assets/",
       "dist/",
@@ -47,10 +47,22 @@
       "package.json"
     ],
     "extraResources": [
-      { "from": "app/extensions/cjpalhdlnbpafiamejdnhcphjbkeiagm", "to": "extensions/cjpalhdlnbpafiamejdnhcphjbkeiagm" },
-      { "from": "app/extensions/gcbommkclmclpchllfjekcdonpmejbdp", "to": "extensions/gcbommkclmclpchllfjekcdonpmejbdp" },
-      { "from": "app/extensions/enhanced-media-viewer", "to": "extensions/enhanced-media-viewer" },
-      { "from": "app/extensions/media-remote", "to": "extensions/media-remote" }
+      {
+        "from": "app/extensions/cjpalhdlnbpafiamejdnhcphjbkeiagm",
+        "to": "extensions/cjpalhdlnbpafiamejdnhcphjbkeiagm"
+      },
+      {
+        "from": "app/extensions/gcbommkclmclpchllfjekcdonpmejbdp",
+        "to": "extensions/gcbommkclmclpchllfjekcdonpmejbdp"
+      },
+      {
+        "from": "app/extensions/enhanced-media-viewer",
+        "to": "extensions/enhanced-media-viewer"
+      },
+      {
+        "from": "app/extensions/media-remote",
+        "to": "extensions/media-remote"
+      }
     ],
     "dmg": {
       "contents": [
@@ -155,7 +167,6 @@
     "jest": "^19.0.2",
     "jsdom": "^9.12.0",
     "minimist": "^1.2.0",
-    "node-sass": "^4.5.2",
     "react-addons-test-utils": "^15.6.2",
     "react-test-renderer": "^16.0.0",
     "redux-logger": "^3.0.1",
@@ -180,6 +191,7 @@
     "deep-diff": "^0.3.8",
     "electron-debug": "^1.4.0",
     "electron-localshortcut": "^2.0.2",
+    "electron-updater": "^2.19.1",
     "font-awesome": "^4.7.0",
     "history": "^4.7.2",
     "iso8601-duration": "^1.1.1",

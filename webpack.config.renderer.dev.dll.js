@@ -16,6 +16,7 @@ const depExclude = new Set([
   'electron',
   'electron-debug',
   'electron-localshortcut',
+  'electron-updater',
 ])
 
 export default merge.smart(baseConfig, {

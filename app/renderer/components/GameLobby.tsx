@@ -40,6 +40,7 @@ import { MediaType } from 'renderer/media/types';
 import { WebBrowser } from 'renderer/components/browser/WebBrowser';
 import { Icon } from 'renderer/components/Icon';
 import { registerMediaShortcuts, unregisterMediaShortcuts } from 'renderer/lobby/actions/shortcuts';
+import { isUpdateAvailable } from 'renderer/lobby/reducers/ui';
 
 interface IProps {
   host: boolean;
@@ -57,6 +58,7 @@ interface IConnectedProps {
   playback: PlaybackState;
   users: IUsersState;
   sessionName?: string;
+  updateAvailable: boolean;
 }
 
 type PrivateProps = IProps & IConnectedProps & DispatchProp<ILobbyNetState>;
@@ -207,6 +209,7 @@ export const GameLobby = netConnect<{}, {}, IProps>((state: ILobbyNetState): ICo
     messages: state.chat.messages,
     playback: getPlaybackState(state),
     users: state.users,
-    sessionName: getSessionName(state)
+    sessionName: getSessionName(state),
+    updateAvailable: isUpdateAvailable(state)
   };
 })(_GameLobby);

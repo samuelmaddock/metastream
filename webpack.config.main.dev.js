@@ -9,6 +9,7 @@ import baseConfig from './webpack.config.base';
 import nodeExternals from 'webpack-node-externals';
 
 export default merge.smart(baseConfig, {
+  // TODO: remove this?
   externals: [nodeExternals()],
 
   devtool: 'source-map',
@@ -46,7 +47,6 @@ export default merge.smart(baseConfig, {
    */
   node: {
     __dirname: false,
-    __filename: false,
-    require: false
+    __filename: false
   },
 });
