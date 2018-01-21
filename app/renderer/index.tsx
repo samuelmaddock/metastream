@@ -11,7 +11,15 @@ import * as packageJson from 'package.json';
 let store: any;
 let history: any;
 
+function logger() {
+  chrome.ipcRenderer.on('log', (event: Electron.Event, payload: {type: string, args: any[]}) => {
+    (console as any)[payload.type]('[MAIN]', ...payload.args);
+  })
+}
+
 function init() {
+  logger()
+
   // Set default title
   document.title = packageJson.productName;
 

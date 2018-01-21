@@ -1,6 +1,7 @@
 import { dialog, BrowserWindow, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import updaterFeed from 'constants/updater';
+import logger from './log';
 
 // how long between scheduled auto updates?
 const SCHEDULED_AUTO_UPDATE_DELAY = 24 * 60 * 60 * 1000 // once a day
@@ -15,16 +16,10 @@ const checkForUpdates = () => {
 
 export const initUpdater = () => {
   if (process.env.NODE_ENV === 'development') {
-    return;
+    // return;
   }
 
-  // TODO: send these logs to renderer console
-  autoUpdater.logger = {
-    info: console.info,
-    warn: console.warn,
-    error: console.error,
-    debug: console.debug
-  }
+  autoUpdater.logger = logger
 
   autoUpdater.setFeedURL(updaterFeed as any)
   autoUpdater.on('update-available', () => { hasUpdateAvailable = true })

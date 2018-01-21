@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { session, dialog } from 'electron';
+import log from './log'
 
 const extVerRegex = /^[\d._]+$/;
 const isExtVersion = (dirName: string) => !!extVerRegex.exec(dirName);
@@ -48,7 +49,7 @@ export function loadMediaExtensions() {
       } catch (e) {}
 
       if (stat) {
-        console.log(`Loading extension ${extId}`);
+        log(`Loading extension ${extId}`);
         extensions.load(fullPath, {}, 'unpacked');
       }
     }
