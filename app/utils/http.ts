@@ -1,33 +1,38 @@
-const { remote } = chrome;
-import { CoreOptions, RequestResponse, RequestCallback } from 'request';
+const { ipcRenderer } = chrome;
+import { CoreOptions, RequestResponse } from 'request';
 
-let request: any;
+let fetchId = 0;
+const mainFetch = (url: string, options?: CoreOptions): Promise<RequestResponse> => {
+  return new Promise((resolve, reject) => {
+    const requestId = fetchId++;
 
-export const fetchText = <T = string>(
+    const handler = (event: any, responseId: number, err: any, resp: any) => {
+      if (requestId !== responseId) { return; }
+      ipcRenderer.removeListener('fetch-response', handler);
+
+      if (err) {
+        reject(err);
+        return;
+      }
+
+      resolve(resp);
+    };
+
+    ipcRenderer.on('fetch-response', handler);
+
+    ipcRenderer.send('fetch-request', requestId, url, options);
+  });
+}
+
+export const fetchText = async <T = string>(
   url: string,
   options?: CoreOptions
 ): Promise<[T, RequestResponse]> => {
-  request = request || remote.require('request');
-  return new Promise((resolve, reject) => {
-    request(url, options, (err: any, resp: any, body: any) => {
-      if (err) {
-        reject();
-      } else {
-        resolve([body, resp]);
-      }
-    });
-  });
+  const resp = await mainFetch(url, options);
+  return [resp.body, resp];
 };
 
-export const fetchResponse = (url: string, options?: CoreOptions): Promise<RequestResponse> => {
-  return new Promise((resolve, reject) => {
-    request = request || remote.require('request');
-    request(url, options, (err: any, resp: any, body: any) => {
-      if (err) {
-        reject();
-      } else {
-        resolve(resp);
-      }
-    });
-  });
+export const fetchResponse = async (url: string, options?: CoreOptions): Promise<RequestResponse> => {
+  const resp = await mainFetch(url, options);
+  return resp;
 };

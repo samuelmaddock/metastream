@@ -13,6 +13,8 @@ import MenuBuilder from './browser/menu';
 import * as protocols from './browser/protocols';
 import { loadMediaExtensions } from 'browser/extensions';
 
+require('./browser/fetch');
+
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
   sourceMapSupport.install();
