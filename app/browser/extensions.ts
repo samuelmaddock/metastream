@@ -17,7 +17,7 @@ export function loadMediaExtensions() {
   const ses = session.fromPartition('persist:mediaplayer', { cache: true });
   const { extensions } = ses as any;
 
-  const extDir = process.env.NODE_ENV === 'production' ? '../../extensions' : '/extensions';
+  const extDir = process.env.NODE_ENV === 'production' ? '../extensions' : '/extensions';
   const extRoot = path.normalize(path.join(__dirname, extDir));
 
   extensionIds.forEach(extId => {

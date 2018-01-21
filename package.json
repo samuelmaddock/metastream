@@ -46,7 +46,9 @@
       "main.prod.js.map",
       "package.json"
     ],
-    "extraFiles": [
+    "extraResources": [
+      { "from": "app/extensions/cjpalhdlnbpafiamejdnhcphjbkeiagm", "to": "extensions/cjpalhdlnbpafiamejdnhcphjbkeiagm" },
+      { "from": "app/extensions/gcbommkclmclpchllfjekcdonpmejbdp", "to": "extensions/gcbommkclmclpchllfjekcdonpmejbdp" },
       { "from": "app/extensions/enhanced-media-viewer", "to": "extensions/enhanced-media-viewer" },
       { "from": "app/extensions/media-remote", "to": "extensions/media-remote" }
     ],
