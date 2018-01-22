@@ -57,6 +57,7 @@
     "dll",
     "dist",
     "old",
-    "app/extensions"
+    "app/extensions",
+    "release"
   ]
 }
