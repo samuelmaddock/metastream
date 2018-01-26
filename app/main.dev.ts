@@ -20,6 +20,7 @@ if (process.env.NODE_ENV === 'development') {
 import { register as registerLocalShortcut } from 'electron-localshortcut';
 import { join, dirname } from 'path';
 
+import { sleep } from 'utils/async';
 import MenuBuilder from './browser/menu';
 import * as protocols from './browser/protocols';
 import { loadMediaExtensions } from 'browser/extensions';
@@ -65,7 +66,7 @@ const setupPlugins = () => {
   app.commandLine.appendSwitch('widevine-cdm-path', join(dirpath, '/lib/widevinecdmadapter.dll'));
   // The version of plugin can be got from `chrome://plugins` page in Chrome.
   app.commandLine.appendSwitch('widevine-cdm-version', '1.4.8.1029');
-}
+};
 
 setupPlugins();
 protocols.init();
@@ -85,10 +86,7 @@ app.on('window-all-closed', () => {
 /** Relays global shortcuts to renderer windows via IPC */
 const registerMediaShortcuts = () => {
   // TODO: why the fuck do these block commands elsewhere?
-  const globalCommands = [
-    ['medianexttrack', 'media:next'],
-    ['mediaplaypause', 'media:playpause']
-  ];
+  const globalCommands = [['medianexttrack', 'media:next'], ['mediaplaypause', 'media:playpause']];
 
   const ipcShortcut = (shortcut: string) => {
     BrowserWindow.getAllWindows().forEach(win => {
@@ -109,7 +107,7 @@ const registerMediaShortcuts = () => {
     ['Cmd+Left', 'window:history-prev'],
     ['Alt+Right', 'window:history-next'],
     ['Cmd+Right', 'window:history-next'],
-    ['Cmd+Right', 'window:history-next'],
+    ['Cmd+Right', 'window:history-next']
     // ['Space', 'media:playpause'],
   ];
 
@@ -174,6 +172,8 @@ app.on('ready', async () => {
     numWindows = parseInt(process.env.NUM_WINDOWS || '1', 10) || 1;
     numWindows = Math.min(Math.max(numWindows, 1), 4);
   }
+
+  await sleep(0);
 
   for (let i = 0; i < numWindows; i++) {
     setupWindow();
