@@ -2,7 +2,7 @@
   "name": "media-player",
   "productName": "Media Player",
   "version": "0.0.1",
-  "description": "",
+  "description": "Watch or listen to media with friends",
   "main": "./main.prod.js",
   "author": {
     "name": "Samuel Maddock",
