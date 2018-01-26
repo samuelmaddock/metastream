@@ -34,7 +34,8 @@
   "browserslist": "electron 1.7",
   "build": {
     "productName": "Media Player",
-    "appId": "mediaplayer",
+    "appId": "com.samuelmaddock.mediaplayer",
+    "copyright": "Media Player © 2018. All rights reserved.",
     "muonVersion": "4.6.4",
     "files": [
       "assets/",
@@ -64,6 +65,12 @@
         "to": "extensions/media-remote"
       }
     ],
+    "nsis": {
+      "artifactName": "${name}-setup-${version}.${ext}"
+    },
+    "nsisWeb": {
+      "artifactName": "${name}-setup-${version}.${ext}"
+    },
     "dmg": {
       "contents": [
         {
@@ -80,7 +87,10 @@
     },
     "win": {
       "target": [
-        "dir"
+        "dir",
+        "nsis",
+        "nsis-web",
+        "zip"
       ]
     },
     "linux": {
@@ -217,6 +227,7 @@
   "prettier": {
     "printWidth": 100,
     "singleQuote": true,
-    "jsonEnable": false
+    "jsonEnable": false,
+    "semi": false
   }
 }
