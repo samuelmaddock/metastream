@@ -113,6 +113,9 @@ declare namespace Electron {
   const webFrame: WebFrame;
   const webviewTag: WebviewTag;
 
+  // Muon
+  const componentUpdater: any;
+
   interface App extends EventEmitter {
 
     // Docs: http://electron.atom.io/docs/api/app

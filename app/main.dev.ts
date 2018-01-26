@@ -6,70 +6,70 @@
  * When running `npm run build` or `npm run build-main`, this file is compiled to
  * `./app/main.prod.js` using webpack. This gives us some performance wins.
  */
-import { app, BrowserWindow, globalShortcut, protocol } from 'electron';
+import { app, BrowserWindow, globalShortcut, protocol } from 'electron'
 
-import packageJson from 'package.json';
-import 'browser/net';
+import packageJson from 'package.json'
+import 'browser/net'
 
 if (process.env.NODE_ENV === 'development') {
   // Update version before running any code
   // Fixes Brave overriding version
-  (app as any).setVersion(packageJson.version);
+  ;(app as any).setVersion(packageJson.version)
 }
 
-import { register as registerLocalShortcut } from 'electron-localshortcut';
-import { join, dirname } from 'path';
+import { register as registerLocalShortcut } from 'electron-localshortcut'
+import { join, dirname } from 'path'
 
-import { sleep } from 'utils/async';
-import MenuBuilder from './browser/menu';
-import * as protocols from './browser/protocols';
-import { loadMediaExtensions } from 'browser/extensions';
-import { initUpdater } from 'browser/update';
+import { sleep } from 'utils/async'
+import MenuBuilder from './browser/menu'
+import * as protocols from './browser/protocols'
+import { initExtensions } from 'browser/extensions'
+import { initUpdater } from 'browser/update'
 import log from 'browser/log'
 
-import './browser/fetch';
+import './browser/fetch'
 
 if (process.env.NODE_ENV === 'production') {
-  const sourceMapSupport = require('source-map-support');
-  sourceMapSupport.install();
+  const sourceMapSupport = require('source-map-support')
+  sourceMapSupport.install()
 }
 
 if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
-  require('electron-debug')();
-  const path = require('path');
-  const p = path.join(__dirname, '..', 'app', 'node_modules');
-  require('module').globalPaths.push(p);
+  require('electron-debug')()
+  const path = require('path')
+  const p = path.join(__dirname, '..', 'app', 'node_modules')
+  require('module').globalPaths.push(p)
 }
 
-const USE_ELECTRON_BACKEND = true;
+const USE_ELECTRON_BACKEND = true
 if (USE_ELECTRON_BACKEND) {
-  require('./renderer/platform/electron/main-backend.js');
+  require('./renderer/platform/electron/main-backend.js')
 }
 
 const installExtensions = async () => {
-  const installer = require('electron-devtools-installer');
-  const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
-  const extensions = ['REACT_DEVELOPER_TOOLS', 'REDUX_DEVTOOLS'];
+  const installer = require('electron-devtools-installer')
+  const forceDownload = !!process.env.UPGRADE_EXTENSIONS
+  const extensions = ['REACT_DEVELOPER_TOOLS', 'REDUX_DEVTOOLS']
 
   return Promise.all(
     extensions.map(name => installer.default(installer[name], forceDownload))
-  ).catch(log);
-};
+  ).catch(log)
+}
 
 const setupPlugins = () => {
-  const dirpath = process.env.NODE_ENV === 'production' ? dirname(process.execPath) : __dirname;
+  const dirpath = process.env.NODE_ENV === 'production' ? dirname(process.execPath) : __dirname
 
   // You have to pass the filename of `widevinecdmadapter` here, it is
   // * `widevinecdmadapter.plugin` on macOS,
   // * `libwidevinecdmadapter.so` on Linux,
   // * `widevinecdmadapter.dll` on Windows.
-  app.commandLine.appendSwitch('widevine-cdm-path', join(dirpath, '/lib/widevinecdmadapter.dll'));
+  app.commandLine.appendSwitch('widevine-cdm-path', join(dirpath, '/lib/widevinecdmadapter.dll'))
   // The version of plugin can be got from `chrome://plugins` page in Chrome.
-  app.commandLine.appendSwitch('widevine-cdm-version', '1.4.8.1029');
-};
+  app.commandLine.appendSwitch('widevine-cdm-version', '1.4.8.1029')
+}
 
-setupPlugins();
-protocols.init();
+setupPlugins()
+protocols.init()
 
 /**
  * Add event listeners...
@@ -79,24 +79,24 @@ app.on('window-all-closed', () => {
   // Respect the OSX convention of having the application in memory even
   // after all windows have been closed
   if (process.platform !== 'darwin') {
-    app.quit();
+    app.quit()
   }
-});
+})
 
 /** Relays global shortcuts to renderer windows via IPC */
 const registerMediaShortcuts = () => {
   // TODO: why the fuck do these block commands elsewhere?
-  const globalCommands = [['medianexttrack', 'media:next'], ['mediaplaypause', 'media:playpause']];
+  const globalCommands = [['medianexttrack', 'media:next'], ['mediaplaypause', 'media:playpause']]
 
   const ipcShortcut = (shortcut: string) => {
     BrowserWindow.getAllWindows().forEach(win => {
-      win.webContents.send('command', shortcut);
-    });
-  };
+      win.webContents.send('command', shortcut)
+    })
+  }
 
   globalCommands.forEach(cmd => {
-    globalShortcut.register(cmd[0], ipcShortcut.bind(null, cmd[1]));
-  });
+    globalShortcut.register(cmd[0], ipcShortcut.bind(null, cmd[1]))
+  })
 
   const localCommands = [
     ['CmdOrCtrl+T', 'window:new-tab'],
@@ -109,16 +109,16 @@ const registerMediaShortcuts = () => {
     ['Cmd+Right', 'window:history-next'],
     ['Cmd+Right', 'window:history-next']
     // ['Space', 'media:playpause'],
-  ];
+  ]
 
   localCommands.forEach(cmd => {
     BrowserWindow.getAllWindows().forEach(win => {
       registerLocalShortcut(win, cmd[0], () => {
-        win.webContents.send('command', cmd[1]);
-      });
-    });
-  });
-};
+        win.webContents.send('command', cmd[1])
+      })
+    })
+  })
+}
 
 const setupWindow = () => {
   let win: BrowserWindow | null = new BrowserWindow({
@@ -131,54 +131,54 @@ const setupWindow = () => {
     },
     frame: false,
     titleBarStyle: 'hidden'
-  });
+  })
 
-  win.loadURL(`chrome://brave/${__dirname}/app.html`);
+  win.loadURL(`chrome://brave/${__dirname}/app.html`)
 
   // @TODO: Use 'ready-to-show' event
   //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event
   win.webContents.on('did-finish-load', () => {
     if (!win) {
-      throw new Error('"win" is not defined');
+      throw new Error('"win" is not defined')
     }
-    win.show();
-    win.focus();
-  });
+    win.show()
+    win.focus()
+  })
 
   win.on('closed', () => {
     if (win) {
-      win.removeAllListeners();
-      win = null;
+      win.removeAllListeners()
+      win = null
     }
-  });
+  })
 
-  const menuBuilder = new MenuBuilder(win);
-  menuBuilder.buildMenu();
+  const menuBuilder = new MenuBuilder(win)
+  menuBuilder.buildMenu()
 
-  return win;
-};
+  return win
+}
 
 app.on('ready', async () => {
   if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
     // await installExtensions();
   }
 
-  initUpdater();
+  initUpdater()
 
-  let numWindows = 1;
+  let numWindows = 1
 
   // Allow multiple windows for local testing
   if (process.env.NODE_ENV === 'development') {
-    numWindows = parseInt(process.env.NUM_WINDOWS || '1', 10) || 1;
-    numWindows = Math.min(Math.max(numWindows, 1), 4);
+    numWindows = parseInt(process.env.NUM_WINDOWS || '1', 10) || 1
+    numWindows = Math.min(Math.max(numWindows, 1), 4)
   }
 
-  await sleep(0);
+  await sleep(0)
 
   for (let i = 0; i < numWindows; i++) {
-    setupWindow();
+    setupWindow()
   }
 
-  registerMediaShortcuts();
-  loadMediaExtensions();
-});
+  registerMediaShortcuts()
+  initExtensions()
+})
