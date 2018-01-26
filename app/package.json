@@ -1,7 +1,7 @@
 {
   "name": "media-player",
   "productName": "Media Player",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Watch or listen to media with friends",
   "main": "./main.prod.js",
   "author": {
