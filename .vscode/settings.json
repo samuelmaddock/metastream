@@ -6,5 +6,6 @@
     "node_modules": true,
     "__snapshots__": true,
     "bower_components": true
-  }
+  },
+  "eslint.enable": false
 }
