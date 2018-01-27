@@ -1,7 +1,7 @@
-import { dialog, BrowserWindow, ipcMain } from 'electron';
-import { autoUpdater } from 'electron-updater';
-import updaterFeed from 'constants/updater';
-import logger from './log';
+import { dialog, BrowserWindow, ipcMain } from 'electron'
+import { autoUpdater } from 'electron-updater'
+import updaterFeed from 'constants/updater'
+import logger from './log'
 
 // how long between scheduled auto updates?
 const SCHEDULED_AUTO_UPDATE_DELAY = 24 * 60 * 60 * 1000 // once a day
@@ -16,13 +16,15 @@ const checkForUpdates = () => {
 
 export const initUpdater = () => {
   if (process.env.NODE_ENV === 'development') {
-    // return;
+    return
   }
 
   autoUpdater.logger = logger
 
   autoUpdater.setFeedURL(updaterFeed as any)
-  autoUpdater.on('update-available', () => { hasUpdateAvailable = true })
+  autoUpdater.on('update-available', () => {
+    hasUpdateAvailable = true
+  })
   autoUpdater.on('update-downloaded', () => {
     updateDownloaded = true
 
@@ -36,8 +38,8 @@ export const initUpdater = () => {
   // autoUpdater.on('update-not-available', () => { hasUpdateAvailable = true; })
   // autoUpdater.on('error', function(){ console.log('autoUpdater error', arguments); })
 
-  autoUpdater.on('download-progress', (progress) => {
-    const win = BrowserWindow.getAllWindows()[0];
+  autoUpdater.on('download-progress', progress => {
+    const win = BrowserWindow.getAllWindows()[0]
     if (win) {
       win.setProgressBar(progress.percent || -1)
     }
