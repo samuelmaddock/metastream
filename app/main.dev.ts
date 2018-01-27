@@ -29,6 +29,21 @@ import log from 'browser/log'
 
 import './browser/fetch'
 
+const fixUserDataPath = () => {
+  const BRAVE_STR = 'brave'
+  let userDataPath = app.getPath('userData')
+
+  if (userDataPath.endsWith(BRAVE_STR)) {
+    userDataPath = userDataPath.substring(0, userDataPath.length - BRAVE_STR.length)
+    userDataPath = `${userDataPath}${packageJson.productName}`
+    app.setPath('userData', userDataPath)
+
+    setTimeout(() => {
+      log(`New userData path: ${userDataPath}`)
+    }, 5000)
+  }
+}
+
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support')
   sourceMapSupport.install()
@@ -56,19 +71,7 @@ const installExtensions = async () => {
   ).catch(log)
 }
 
-const setupPlugins = () => {
-  const dirpath = process.env.NODE_ENV === 'production' ? dirname(process.execPath) : __dirname
-
-  // You have to pass the filename of `widevinecdmadapter` here, it is
-  // * `widevinecdmadapter.plugin` on macOS,
-  // * `libwidevinecdmadapter.so` on Linux,
-  // * `widevinecdmadapter.dll` on Windows.
-  app.commandLine.appendSwitch('widevine-cdm-path', join(dirpath, '/lib/widevinecdmadapter.dll'))
-  // The version of plugin can be got from `chrome://plugins` page in Chrome.
-  app.commandLine.appendSwitch('widevine-cdm-version', '1.4.8.1029')
-}
-
-setupPlugins()
+fixUserDataPath()
 protocols.init()
 
 /**
