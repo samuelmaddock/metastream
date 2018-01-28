@@ -2,7 +2,7 @@ import { Reducer } from 'redux';
 import { isType } from 'utils/redux';
 import { IAppState } from 'renderer/reducers';
 import { setSessionData } from 'renderer/lobby/middleware/session';
-import { setUpdateState } from 'renderer/lobby/actions/ui';
+import { setUpdateState } from 'renderer/actions/ui';
 
 export interface IUIState {
   updateAvailable?: boolean;

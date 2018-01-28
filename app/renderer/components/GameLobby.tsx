@@ -33,13 +33,13 @@ import {
 import { ListOverlay } from 'renderer/components/lobby/ListOverlay';
 import { TitleBar } from 'renderer/components/TitleBar';
 import { PlaybackControls } from 'renderer/components/media/PlaybackControls';
-import { setVolume } from 'renderer/lobby/actions/settings';
+import { setVolume } from 'renderer/actions/settings';
 import { ActivityMonitor } from 'renderer/components/lobby/ActivityMonitor';
 import { MediaType } from 'renderer/media/types';
 import { WebBrowser } from 'renderer/components/browser/WebBrowser';
 import { Icon } from 'renderer/components/Icon';
 import { registerMediaShortcuts, unregisterMediaShortcuts } from 'renderer/lobby/actions/shortcuts';
-import { isUpdateAvailable } from 'renderer/lobby/reducers/ui';
+import { isUpdateAvailable } from 'renderer/reducers/ui';
 import { IAppState } from 'renderer/reducers';
 
 interface IProps {

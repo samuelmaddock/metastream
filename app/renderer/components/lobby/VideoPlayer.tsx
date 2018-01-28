@@ -10,7 +10,7 @@ import {
 } from 'renderer/lobby/actions/mediaPlayer';
 import { DispatchProp, connect } from 'react-redux';
 import { PlaybackControls } from 'renderer/components/media/PlaybackControls';
-import { setVolume } from 'renderer/lobby/actions/settings';
+import { setVolume } from 'renderer/actions/settings';
 import { clamp } from 'utils/math';
 import { WEBVIEW_PARTITION, MEDIA_REFERRER } from 'constants/http';
 import { absoluteUrl } from 'utils/appUrl';

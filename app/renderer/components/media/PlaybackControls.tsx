@@ -18,7 +18,7 @@ import {
   server_requestSeek,
   server_requestRepeatMedia
 } from 'renderer/lobby/actions/mediaPlayer';
-import { setVolume, setMute } from 'renderer/lobby/actions/settings';
+import { setVolume, setMute } from 'renderer/actions/settings';
 import { Icon } from 'renderer/components/Icon';
 import { Timeline } from 'renderer/components/media/Timeline';
 import { push } from 'react-router-redux';
