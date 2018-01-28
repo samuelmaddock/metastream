@@ -2,6 +2,7 @@ import { Reducer } from 'redux';
 import { NetworkState } from 'types/network';
 import { isType } from 'utils/redux';
 import { addChat } from 'renderer/lobby/actions/chat';
+import { NetActions } from 'renderer/network/actions';
 
 export interface IMessageAuthor {
   id: string;
@@ -35,6 +36,10 @@ export const chat: Reducer<IChatState> = (state: IChatState = initialState, acti
       ...state,
       messages: [...state.messages, action.payload]
     };
+  }
+
+  if (isType(action, NetActions.disconnect)) {
+    return initialState
   }
 
   return state;

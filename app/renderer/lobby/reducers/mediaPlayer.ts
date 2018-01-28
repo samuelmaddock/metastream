@@ -11,6 +11,7 @@ import {
   repeatMedia
 } from 'renderer/lobby/actions/mediaPlayer';
 import { MediaType } from 'renderer/media/types';
+import { NetActions } from 'renderer/network/actions';
 
 export const enum PlaybackState {
   Idle,
@@ -147,6 +148,10 @@ export const mediaPlayer: Reducer<IMediaPlayerState> = (
       // cycle through repeat modes
       repeatMode: (state.repeatMode + 1) % RepeatMode.Count
     };
+  }
+
+  if (isType(action, NetActions.disconnect)) {
+    return initialState
   }
 
   return state;
