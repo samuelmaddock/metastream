@@ -1,5 +1,5 @@
-import { Url, parse } from 'url';
-import { buildUrl, encodeQueryParams } from 'utils/url';
+import { Url, parse } from 'url'
+import { buildUrl, encodeQueryParams } from 'utils/url'
 import {
   MediaThumbnailSize,
   IMediaMiddleware,
@@ -7,9 +7,9 @@ import {
   IMediaResponse,
   MediaType,
   IMediaContext
-} from '../types';
-import { fetchText } from 'utils/http';
-import { MEDIA_REFERRER } from 'constants/http';
+} from '../types'
+import { fetchText } from 'utils/http'
+import { MEDIA_REFERRER } from 'constants/http'
 
 // https://www.reddit.com/dev/api/
 
@@ -22,132 +22,132 @@ const enum ObjectType {
   Award = 't6'
 }
 
-const URL_PATTERN = /reddit\.com\/r\/([^\s/]+)\/?/i;
-const API_LIMIT = 5;
+const URL_PATTERN = /reddit\.com\/r\/([^\s/]+)\/?/i
+const API_LIMIT = 5
 
 const transformPost = ({ data }: any) => ({
   id: data.id,
   url: data.url,
   title: data.title
-});
+})
 
 const getListing = async (url: string, after?: string) => {
-  const urlobj = parse(url, true);
+  const urlobj = parse(url, true)
 
   const paramObj = {
     ...urlobj.query,
     limit: API_LIMIT
-  };
-
-  if (after) {
-    paramObj.after = after;
   }
 
-  const params = encodeQueryParams(paramObj);
+  if (after) {
+    paramObj.after = after
+  }
+
+  const params = encodeQueryParams(paramObj)
 
   // TODO: Keep GET params for filtering
   // TODO: Pick up from previous playlist state
-  const apiUrl = `${urlobj.protocol}//${urlobj.hostname}${urlobj.pathname}.json?${params}`;
+  const apiUrl = `${urlobj.protocol}//${urlobj.hostname}${urlobj.pathname}.json?${params}`
 
   const [json] = await fetchText<any>(apiUrl, {
     json: true,
     headers: {
       Referer: MEDIA_REFERRER
     }
-  });
+  })
 
-  return json;
-};
+  return json
+}
 
 const getNextPosts = (json: any) => {
-  const posts = (json.data.children as any[])
-    .filter(post => !post.data.stickied)
-    .map(transformPost);
-  return posts;
-};
+  const posts = (json.data.children as any[]).filter(post => !post.data.stickied).map(transformPost)
+  return posts
+}
 
 const parseItem = (ctx: IMediaContext, item: any): any => {
-  ctx.res.title = item.title;
+  ctx.res.title = item.title
 
   // Overwrite request url with subreddit post
-  const url = parse(item.url);
+  const url = parse(item.url)
   if (url && url.href) {
-    ctx.req.url = url as any;
+    ctx.req.url = url as any
   }
 
-  const { media } = item;
+  const { media } = item
   if (media) {
     if (media.reddit_video) {
-      const v = media.reddit_video;
-      ctx.res.url = v.fallback_url;
-      ctx.res.duration = v.duration;
-      return true;
+      const v = media.reddit_video
+      ctx.res.url = v.fallback_url
+      ctx.res.duration = v.duration
+      return true
     }
   }
 
-  return false;
+  return false
 }
 
 const mware: IMediaMiddleware = {
   match(url, ctx) {
-    return !!URL_PATTERN.exec(url.href) || !!(ctx.req.state && ctx.req.state.reddit);
+    const isSubreddit = !!URL_PATTERN.exec(url.href)
+    const isCommentThread = url.pathname ? url.pathname.includes('/comments/') : false
+    return (isSubreddit && !isCommentThread) || !!(ctx.req.state && ctx.req.state.reddit)
   },
 
   async resolve(ctx, next) {
-    const reqState = ctx.req.state;
+    const reqState = ctx.req.state
 
-    let redditUrl;
-    let children: any[];
-    let after;
-    let currentIdx;
+    let redditUrl
+    let children: any[]
+    let after
+    let currentIdx
 
     // TODO: filter for API listings (/hot, /new, etc.)
     // https://www.reddit.com/dev/api/#section_listings
     if (reqState && reqState.reddit) {
-      redditUrl = reqState.reddit.href;
-      children = reqState.reddit.children;
-      after = reqState.reddit.after;
-      currentIdx = reqState.reddit.idx;
+      redditUrl = reqState.reddit.href
+      children = reqState.reddit.children
+      after = reqState.reddit.after
+      currentIdx = reqState.reddit.idx
     } else {
-      redditUrl = ctx.req.url.href;
-      const json = await getListing(redditUrl);
-      console.log('Subreddit JSON', json);
+      redditUrl = ctx.req.url.href
+      const json = await getListing(redditUrl)
+      console.log('Subreddit JSON', json)
 
-      const posts = getNextPosts(json);
+      const posts = getNextPosts(json)
 
       if (posts.length === 0) {
-        return next();
+        return next()
       }
 
-      children = posts;
-      after = json.data.after;
-      currentIdx = -1;
+      children = posts
+      after = json.data.after
+      currentIdx = -1
     }
 
-    let idx = currentIdx + 1;
-    let child = children[idx];
+    let idx = currentIdx + 1
+    let child = children[idx]
 
     if (!child) {
-      const json = await getListing(reqState!.reddit.href, reqState!.reddit.after);
-      const posts = getNextPosts(json);
+      const json = await getListing(reqState!.reddit.href, reqState!.reddit.after)
+      const posts = getNextPosts(json)
 
       if (posts.length === 0) {
-        return next();
+        return next()
       }
 
-      idx = 0;
-      children = posts;
-      child = children[idx];
-      after = json.data.after;
+      idx = 0
+      children = posts
+      child = children[idx]
+      after = json.data.after
 
       if (!child) {
-        return;
+        return
       }
     }
 
     // Save pagination info for resolving next playlist item
-    ctx.res.type = MediaType.Playlist;
-    ctx.res.hasMore = true;
+    ctx.res.type = MediaType.Playlist
+    ctx.res.hasMore = true
     ctx.res.state = {
       ...ctx.res.state,
       reddit: {
@@ -157,12 +157,12 @@ const mware: IMediaMiddleware = {
         children,
         after
       }
-    };
+    }
 
     if (!parseItem(ctx, child)) {
-      return next();
+      return next()
     }
   }
-};
+}
 
-export default mware;
+export default mware
