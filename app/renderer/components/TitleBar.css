@@ -2,31 +2,37 @@
   background: var(--app-titlebar-background-color);
   height: var(--app-titlebar-height);
   user-select: none;
-
-  /* https://github.com/electron/electron/blob/master/docs/api/frameless-window.md#draggable-region */
-  -webkit-app-region: drag;
 }
 
 .wrapper {
   position: relative;
   height: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .header-item {
-  position: absolute;
   height: 100%;
   line-height: var(--app-titlebar-height);
 }
 
 .header {
   composes: header-item;
-  left: 50%;
-  transform: translateX(-50%);
-  max-width: 50%;
+  flex: 1;
+
+  /* overflow hidden hack */
+  -webkit-mask-image: linear-gradient(#000, #000);
+
+  /* https://github.com/electron/electron/blob/master/docs/api/frameless-window.md#draggable-region */
+  -webkit-app-region: drag;
 }
 
 .title {
   composes: single-line from 'styles/text.css';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .actions {
@@ -72,10 +78,6 @@
   text-transform: uppercase;
   font-size: 14px;
   letter-spacing: 1px;
-
-  position: absolute;
-  right: 4px;
-  top: 3px;
 }
 
 /* How to do this better? */
