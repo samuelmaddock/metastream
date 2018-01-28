@@ -61,3 +61,24 @@
 .container:hover .actionButton {
   opacity: 1;
 }
+
+.updateButton {
+  background: var(--color-highlight);
+  color: var(--app-text-color);
+  padding: 0 3px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  text-transform: uppercase;
+  font-size: 14px;
+  letter-spacing: 1px;
+
+  position: absolute;
+  right: 4px;
+  top: 3px;
+}
+
+/* How to do this better? */
+.updateButton svg {
+  transform: scale(0.6);
+}

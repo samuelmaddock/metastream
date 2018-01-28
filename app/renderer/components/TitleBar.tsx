@@ -6,6 +6,7 @@ import * as packageJson from 'package.json';
 
 import cx from 'classnames';
 import styles from './TitleBar.css';
+import { IconButton } from 'renderer/components/common/button';
 
 interface IProps {
   className?: string;
@@ -30,6 +31,7 @@ export class TitleBar extends Component<IProps> {
           <header className={styles.header}>
             <h2 className={styles.title}>{this.props.title || packageJson.productName}</h2>
           </header>
+          <IconButton icon="download" className={styles.updateButton}>Update</IconButton>
           {this.platform === 'win32' && this.renderWin32Actions()}
         </div>
       </div>
