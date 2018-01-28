@@ -14,6 +14,8 @@ import { NetServer } from 'renderer/network';
 import { ILobbyNetState, LobbyReplicatedState, NetProvider } from 'renderer/lobby';
 import { RTCServer } from 'renderer/network/rtc';
 import { createNetStore } from 'renderer/lobby/redux';
+import { NetActions } from 'renderer/network/actions';
+import { ReplicatedState } from 'renderer/network/types';
 
 interface IRouteParams {
   lobbyId: string;
@@ -29,7 +31,7 @@ function mapStateToProps(state: IAppState): IConnectedProps {
 
 type PrivateProps = IProps & IConnectedProps & IReactReduxProps;
 
-export class _LobbyPage extends Component<PrivateProps, {}> {
+export class _LobbyPage extends Component<PrivateProps> {
   private server: NetServer;
   private host: boolean;
   private netStore: Store<ILobbyNetState>;
@@ -62,15 +64,17 @@ export class _LobbyPage extends Component<PrivateProps, {}> {
 
     this.server = rtcServer;
 
-    this.netStore = createNetStore({
-      server: rtcServer,
-      host: this.host,
-      replicated: LobbyReplicatedState
-    });
+    this.netStore = createNetStore();
 
     if (process.env.NODE_ENV === 'development') {
       (window as any).net = this.netStore;
     }
+
+    this.netStore.dispatch(NetActions.connect({
+      server: rtcServer,
+      host: this.host,
+      replicated: LobbyReplicatedState as ReplicatedState<any>
+    }))
 
     this.forceUpdate();
   }
@@ -82,6 +86,7 @@ export class _LobbyPage extends Component<PrivateProps, {}> {
   componentWillUnmount(): void {
     PlatformService.leaveLobby(this.lobbyId || '');
     this.server.close();
+    this.netStore.dispatch(NetActions.disconnect());
   }
 
   private get lobbyId(): string | undefined {

@@ -10,17 +10,17 @@ interface ISessionMiddlewareOptions {
 
 export const setSessionData = actionCreator<ILobbyData>('session/SET_SESSION_DATA');
 
-export const sessionMiddleware = (options: ISessionMiddlewareOptions): Middleware => {
-  const { host } = options;
-
+export const sessionMiddleware = (): Middleware => {
   return <S extends Object>(store: MiddlewareAPI<S>) => {
     const { dispatch, getState } = store;
 
-    if (host) {
-      const lobbyData = PlatformService.getLobbyData();
+    const init = (options: ISessionMiddlewareOptions) => {
+      if (options.host) {
+        const lobbyData = PlatformService.getLobbyData();
 
-      if (lobbyData) {
-        dispatch(setSessionData(lobbyData));
+        if (lobbyData) {
+          dispatch(setSessionData(lobbyData));
+        }
       }
     }
 

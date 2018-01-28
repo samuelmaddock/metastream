@@ -2,6 +2,8 @@ import { Middleware, MiddlewareAPI, Action, Dispatch } from 'redux';
 import { ActionCreator } from 'redux';
 
 import { NetConnection, NetServer, localUser } from 'renderer/network';
+import { NetMiddlewareOptions, NetActions } from 'renderer/network/actions';
+import { isType } from 'utils/redux';
 
 const RpcReduxActionTypes = {
   DISPATCH: '@@rpc/DISPATCH'
@@ -28,15 +30,28 @@ export interface NetRpcMiddlewareOptions {
 
 const RPC_HEADER = 'RPC';
 
-export const netRpcMiddleware = (options: NetRpcMiddlewareOptions): Middleware => {
-  const { server, host } = options;
-  console.log('[RPC] Init middleware', options);
-
+export const netRpcMiddleware = (): Middleware => {
   return <S extends Object>(store: MiddlewareAPI<S>) => {
     const { dispatch, getState } = store;
 
-    // Listen for RPCs and dispatch them
-    server.on('data', (client: NetConnection, data: Buffer) => {
+    let server: NetServer | null, host: boolean
+
+    const init = (options: NetMiddlewareOptions) => {
+      console.log('[RPC] Init middleware', options);
+
+      server = options.server
+      host = options.host
+
+      // Listen for RPCs and dispatch them
+      server.on('data', receive)
+    }
+
+    const destroy = () => {
+      server = null
+      host = false
+    }
+
+    const receive = (client: NetConnection, data: Buffer) => {
       if (data.indexOf(RPC_HEADER) !== 0) {
         return;
       }
@@ -55,7 +70,7 @@ export const netRpcMiddleware = (options: NetRpcMiddlewareOptions): Middleware =
       console.info(`[RPC] Received RPC '#${action.type}' from ${client.id}`, action);
 
       dispatchRpc(action, client);
-    });
+    }
 
     /** Send RPC to recipients. */
     const sendRpc = ({ payload }: RpcAction) => {
@@ -66,10 +81,10 @@ export const netRpcMiddleware = (options: NetRpcMiddlewareOptions): Middleware =
 
       switch (rpc.realm) {
         case RpcRealm.Server:
-          server.sendToHost(buf);
+          server!.sendToHost(buf);
           break;
         case RpcRealm.Multicast:
-          server.send(buf);
+          server!.send(buf);
           break;
         default:
           throw new Error('Not yet implemented');
@@ -91,6 +106,15 @@ export const netRpcMiddleware = (options: NetRpcMiddlewareOptions): Middleware =
     return (next: Dispatch<S>) => <A extends RpcAction>(
       action: A
     ): Action | RpcMiddlewareResult => {
+      if (!server) {
+        if (isType(action, NetActions.connect)) {
+          init(action.payload)
+        } else if (isType(action, NetActions.disconnect)) {
+          destroy()
+        }
+        return next(<A>action);
+      }
+
       // TODO: check for RPC special prop
       if (action.type !== RpcReduxActionTypes.DISPATCH) {
         return next(action);
@@ -108,7 +132,7 @@ export const netRpcMiddleware = (options: NetRpcMiddlewareOptions): Middleware =
         case RpcRealm.Server:
           // SERVER: dispatch
           // CLIENT: send to server
-          if (options.host) {
+          if (host) {
             dispatchRpc(action, localUser());
           } else {
             sendRpc(action);
@@ -119,7 +143,7 @@ export const netRpcMiddleware = (options: NetRpcMiddlewareOptions): Middleware =
         case RpcRealm.Multicast:
           // SERVER: broadcast and dispatch
           // CLIENT: dispatch
-          if (options.host) {
+          if (host) {
             sendRpc(action);
           }
           dispatchRpc(action, localUser());

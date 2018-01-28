@@ -4,12 +4,13 @@ import { createStore, Middleware, applyMiddleware } from 'redux';
 import { connect, Provider, Store, createProvider } from 'react-redux';
 import thunkMiddleware from 'redux-thunk';
 
-import { NetMiddlewareOptions, netSyncMiddleware } from 'renderer/network/middleware/sync';
+import { netSyncMiddleware } from 'renderer/network/middleware/sync';
 import { netRpcMiddleware } from 'renderer/network/middleware/rpc';
 
 import { netReducer, ILobbyNetState } from './';
 import { usersMiddleware } from './middleware/users';
 import { sessionMiddleware } from './middleware/session';
+import { NetMiddlewareOptions } from 'renderer/network/actions';
 
 export const NET_STORE_NAME = 'netStore';
 
@@ -37,12 +38,12 @@ export default customConnect;
 
 export const NetProvider = createProvider(NET_STORE_NAME) as typeof Provider;
 
-export function createNetStore(opts: NetMiddlewareOptions): Store<ILobbyNetState> {
+export function createNetStore(): Store<ILobbyNetState> {
   const middleware: Middleware[] = [
-    netRpcMiddleware(opts),
-    netSyncMiddleware(opts),
-    usersMiddleware(opts),
-    sessionMiddleware(opts),
+    netRpcMiddleware(),
+    netSyncMiddleware(),
+    usersMiddleware(),
+    sessionMiddleware(),
     thunkMiddleware
   ];
 
