@@ -1,5 +1,5 @@
 import React from 'react';
-import { DispatchProp } from 'react-redux';
+import { DispatchProp, connect } from 'react-redux';
 import cx from 'classnames';
 const { ipcRenderer } = chrome;
 
@@ -7,7 +7,6 @@ import { Lobby } from 'renderer/components/Lobby';
 import { IReactReduxProps } from 'types/redux';
 import { IUsersState } from 'renderer/lobby/reducers/users';
 import { server_addChat } from 'renderer/lobby/actions/chat';
-import { netConnect, ILobbyNetState } from 'renderer/lobby';
 import { getSessionName } from 'renderer/lobby/reducers/session';
 import { VideoPlayer } from 'renderer/components/lobby/VideoPlayer';
 import { IMediaItem, PlaybackState } from 'renderer/lobby/reducers/mediaPlayer';
@@ -41,6 +40,7 @@ import { WebBrowser } from 'renderer/components/browser/WebBrowser';
 import { Icon } from 'renderer/components/Icon';
 import { registerMediaShortcuts, unregisterMediaShortcuts } from 'renderer/lobby/actions/shortcuts';
 import { isUpdateAvailable } from 'renderer/lobby/reducers/ui';
+import { IAppState } from 'renderer/reducers';
 
 interface IProps {
   host: boolean;
@@ -61,7 +61,7 @@ interface IConnectedProps {
   updateAvailable: boolean;
 }
 
-type PrivateProps = IProps & IConnectedProps & DispatchProp<ILobbyNetState>;
+type PrivateProps = IProps & IConnectedProps & DispatchProp<IAppState>;
 
 const NO_MEDIA: IMediaItem = {
   type: MediaType.Item,
@@ -202,7 +202,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
   };
 }
 
-export const GameLobby = netConnect<{}, {}, IProps>((state: ILobbyNetState): IConnectedProps => {
+export const GameLobby = connect((state: IAppState): IConnectedProps => {
   return {
     currentMedia: getCurrentMedia(state),
     mediaQueue: getMediaQueue(state),
@@ -212,4 +212,4 @@ export const GameLobby = netConnect<{}, {}, IProps>((state: ILobbyNetState): ICo
     sessionName: getSessionName(state),
     updateAvailable: isUpdateAvailable(state)
   };
-})(_GameLobby);
+})(_GameLobby) as React.ComponentClass<IProps>;

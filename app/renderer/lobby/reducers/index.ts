@@ -22,27 +22,11 @@ export interface ILobbyNetState {
   users: IUsersState;
 }
 
-export const LobbyReplicatedState: ReplicatedState<ILobbyNetState> = {
-  mediaPlayer: true,
-  session: true,
-  users: true
-};
-
-const rootReducer = combineReducers<ILobbyNetState>({
+export const lobbyReducers = {
   chat,
   mediaPlayer,
   session,
   settings,
   ui,
   users
-});
-
-const reducer = (state: ILobbyNetState, action: AnyAction): ILobbyNetState => {
-  // HACK: force re-render on network update
-  if (action.type === NetReduxActionTypes.UPDATE) {
-    return { ...state };
-  }
-  return rootReducer(state, action);
 };
-
-export default reducer;

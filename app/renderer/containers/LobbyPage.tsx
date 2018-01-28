@@ -4,16 +4,14 @@ import { RouteComponentProps } from 'react-router';
 import { createStore, Store } from 'redux';
 import { IReactReduxProps } from 'types/redux';
 
-import { IAppState } from 'renderer/reducers';
+import { IAppState, AppReplicatedState } from 'renderer/reducers';
 
 import { NetworkState } from 'types/network';
 import { Lobby } from 'renderer/components/Lobby';
 import { GameLobby } from 'renderer/components/GameLobby';
 import { PlatformService } from 'renderer/platform';
 import { NetServer } from 'renderer/network';
-import { ILobbyNetState, LobbyReplicatedState, NetProvider } from 'renderer/lobby';
 import { RTCServer } from 'renderer/network/rtc';
-import { createNetStore } from 'renderer/lobby/redux';
 import { NetActions } from 'renderer/network/actions';
 import { ReplicatedState } from 'renderer/network/types';
 
@@ -34,7 +32,6 @@ type PrivateProps = IProps & IConnectedProps & IReactReduxProps;
 export class _LobbyPage extends Component<PrivateProps> {
   private server: NetServer;
   private host: boolean;
-  private netStore: Store<ILobbyNetState>;
 
   constructor(props: PrivateProps) {
     super(props);
@@ -64,16 +61,10 @@ export class _LobbyPage extends Component<PrivateProps> {
 
     this.server = rtcServer;
 
-    this.netStore = createNetStore();
-
-    if (process.env.NODE_ENV === 'development') {
-      (window as any).net = this.netStore;
-    }
-
-    this.netStore.dispatch(NetActions.connect({
+    this.props.dispatch(NetActions.connect({
       server: rtcServer,
       host: this.host,
-      replicated: LobbyReplicatedState as ReplicatedState<any>
+      replicated: AppReplicatedState as ReplicatedState<any>
     }))
 
     this.forceUpdate();
@@ -86,7 +77,7 @@ export class _LobbyPage extends Component<PrivateProps> {
   componentWillUnmount(): void {
     PlatformService.leaveLobby(this.lobbyId || '');
     this.server.close();
-    this.netStore.dispatch(NetActions.disconnect());
+    this.props.dispatch(NetActions.disconnect());
   }
 
   private get lobbyId(): string | undefined {
@@ -96,13 +87,11 @@ export class _LobbyPage extends Component<PrivateProps> {
   }
 
   render(): JSX.Element {
-    if (!this.netStore) {
+    if (!this.server) {
       return <div>Connecting...</div>;
     }
 
-    const child = <GameLobby host={this.host} />;
-
-    return <NetProvider store={this.netStore}>{child}</NetProvider>;
+    return <GameLobby host={this.host} />;
   }
 }
 

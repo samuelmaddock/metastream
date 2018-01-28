@@ -1,6 +1,6 @@
 import { Reducer } from 'redux';
 import { isType } from 'utils/redux';
-import { ILobbyNetState } from './';
+import { IAppState } from 'renderer/reducers';
 import { ILobbyData, SessionKey } from 'renderer/platform/types';
 import { setSessionData } from 'renderer/lobby/middleware/session';
 
@@ -19,6 +19,6 @@ export const session: Reducer<ISessionState> = (
   return state;
 };
 
-export const getSessionName = (state: ILobbyNetState): string | undefined => {
+export const getSessionName = (state: IAppState): string | undefined => {
   return state.session[SessionKey.Name];
 };

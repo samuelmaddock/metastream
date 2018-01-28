@@ -1,6 +1,6 @@
 import { Reducer } from 'redux';
 import { isType } from 'utils/redux';
-import { ILobbyNetState } from './';
+import { IAppState } from 'renderer/reducers';
 import { setSessionData } from 'renderer/lobby/middleware/session';
 import { setUpdateState } from 'renderer/lobby/actions/ui';
 
@@ -21,6 +21,6 @@ export const ui: Reducer<IUIState> = (
   return state;
 };
 
-export const isUpdateAvailable = (state: ILobbyNetState): boolean => {
+export const isUpdateAvailable = (state: IAppState): boolean => {
   return !!state.ui.updateAvailable
 };

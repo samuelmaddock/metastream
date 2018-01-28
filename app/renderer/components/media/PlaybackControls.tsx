@@ -11,8 +11,7 @@ import {
 } from 'renderer/lobby/reducers/mediaPlayer';
 import { Time } from 'renderer/components/media/Time';
 import { VolumeSlider } from 'renderer/components/media/VolumeSlider';
-import { netConnect, ILobbyNetState } from 'renderer/lobby';
-import { DispatchProp } from 'react-redux';
+import { DispatchProp, connect } from 'react-redux';
 import {
   server_requestPlayPause,
   server_requestNextMedia,
@@ -30,6 +29,7 @@ import { CuePointItem } from 'renderer/components/media/CuePoint';
 import { parseCuePoints } from 'renderer/media/utils';
 import { MoreButton } from 'renderer/components/media/MoreButton';
 import { InfoButton } from 'renderer/components/media/buttons/InfoButton';
+import { IAppState } from 'renderer/reducers';
 
 const Button: React.SFC<{
   className?: string;
@@ -88,7 +88,7 @@ interface IConnectedProps extends IMediaPlayerState {
   volume: number;
 }
 
-const mapStateToProps = (state: ILobbyNetState): IConnectedProps => {
+const mapStateToProps = (state: IAppState): IConnectedProps => {
   return {
     ...state.mediaPlayer,
     mute: state.settings.mute,
@@ -96,7 +96,7 @@ const mapStateToProps = (state: ILobbyNetState): IConnectedProps => {
   };
 };
 
-type PrivateProps = IProps & IConnectedProps & DispatchProp<ILobbyNetState>;
+type PrivateProps = IProps & IConnectedProps & DispatchProp<IAppState>;
 
 class _PlaybackControls extends Component<PrivateProps> {
   private get canDebug() {
@@ -269,4 +269,4 @@ class _PlaybackControls extends Component<PrivateProps> {
   };
 }
 
-export const PlaybackControls = netConnect<{}, {}, IProps>(mapStateToProps)(_PlaybackControls);
+export const PlaybackControls = connect(mapStateToProps)(_PlaybackControls) as React.ComponentClass<IProps>;

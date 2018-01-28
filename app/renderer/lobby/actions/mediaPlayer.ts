@@ -3,7 +3,6 @@ import { actionCreator } from 'utils/redux';
 import { IMediaItem, PlaybackState } from 'renderer/lobby/reducers/mediaPlayer';
 import { Thunk } from 'types/thunk';
 import { ThunkAction } from 'redux-thunk';
-import { ILobbyNetState } from 'renderer/lobby';
 import { rpc, RpcRealm } from 'renderer/network/middleware/rpc';
 import { RpcThunk } from 'renderer/lobby/types';
 import { PlatformService } from 'renderer/platform';
@@ -14,6 +13,7 @@ import {
   getPlaybackState,
   getPlaybackTime
 } from 'renderer/lobby/reducers/mediaPlayer.helpers';
+import { IAppState } from 'renderer/reducers';
 
 export const playPauseMedia = actionCreator<number>('PLAY_PAUSE_MEDIA');
 export const repeatMedia = actionCreator<number>('REPEAT_MEDIA');
@@ -25,7 +25,7 @@ export const queueMedia = actionCreator<IMediaItem>('QUEUE_MEDIA');
 /** Media timer until playback ends. This assumes only one media player exists at a time.*/
 let mediaTimeoutId: number | null = null;
 
-export const nextMedia = (): ThunkAction<void, ILobbyNetState, void> => {
+export const nextMedia = (): ThunkAction<void, IAppState, void> => {
   return (dispatch, getState) => {
     const state = getState();
     const media = getCurrentMedia(state);
@@ -41,7 +41,7 @@ export const nextMedia = (): ThunkAction<void, ILobbyNetState, void> => {
   };
 };
 
-const advanceMedia = (playlist: IMediaItem): ThunkAction<void, ILobbyNetState, void> => {
+const advanceMedia = (playlist: IMediaItem): ThunkAction<void, IAppState, void> => {
   return async (dispatch, getState) => {
     console.info('Advancing media', playlist);
 
@@ -80,7 +80,7 @@ const advanceMedia = (playlist: IMediaItem): ThunkAction<void, ILobbyNetState, v
   };
 };
 
-const updatePlaybackTimer = (): ThunkAction<void, ILobbyNetState, void> => {
+const updatePlaybackTimer = (): ThunkAction<void, IAppState, void> => {
   return (dispatch, getState) => {
     const state = getState();
     const media = getCurrentMedia(state);
@@ -107,7 +107,7 @@ const updatePlaybackTimer = (): ThunkAction<void, ILobbyNetState, void> => {
   };
 };
 
-const enqueueMedia = (media: IMediaItem): ThunkAction<void, ILobbyNetState, void> => {
+const enqueueMedia = (media: IMediaItem): ThunkAction<void, IAppState, void> => {
   return (dispatch, getState) => {
     const state = getState();
     const current = getCurrentMedia(state);

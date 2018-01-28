@@ -5,6 +5,7 @@ import { createHashHistory } from 'history';
 import { routerMiddleware } from 'react-router-redux';
 import rootReducer from '../reducers';
 import { IExtra } from 'types/thunk';
+import appMiddleware from 'renderer/store/appMiddleware';
 
 // const history = createBrowserHistory();
 const history = createHashHistory();
@@ -13,7 +14,7 @@ function configureStore(extra: IExtra, initialState?: {}) {
   const thunkMiddleware = thunk.withExtraArgument(extra);
 
   const router = routerMiddleware(history);
-  const enhancer = applyMiddleware(thunkMiddleware, router);
+  const enhancer = applyMiddleware(thunkMiddleware, ...appMiddleware, router);
 
   return createStore(rootReducer, initialState, enhancer);
 }

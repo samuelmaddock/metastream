@@ -8,13 +8,13 @@ import {
   server_requestNextMedia,
   server_requestSeek
 } from 'renderer/lobby/actions/mediaPlayer';
-import { netConnect, ILobbyNetState } from 'renderer/lobby';
-import { DispatchProp } from 'react-redux';
+import { DispatchProp, connect } from 'react-redux';
 import { PlaybackControls } from 'renderer/components/media/PlaybackControls';
 import { setVolume } from 'renderer/lobby/actions/settings';
 import { clamp } from 'utils/math';
 import { WEBVIEW_PARTITION, MEDIA_REFERRER } from 'constants/http';
 import { absoluteUrl } from 'utils/appUrl';
+import { IAppState } from 'renderer/reducers';
 const { remote } = chrome;
 
 interface IProps {
@@ -36,7 +36,7 @@ interface IState {
 
 const DEFAULT_URL = absoluteUrl('./browser/resources/idlescreen.html');
 
-const mapStateToProps = (state: ILobbyNetState): IConnectedProps => {
+const mapStateToProps = (state: IAppState): IConnectedProps => {
   return {
     ...state.mediaPlayer,
     mute: state.settings.mute,
@@ -44,7 +44,7 @@ const mapStateToProps = (state: ILobbyNetState): IConnectedProps => {
   };
 };
 
-type PrivateProps = IProps & IConnectedProps & DispatchProp<ILobbyNetState>;
+type PrivateProps = IProps & IConnectedProps & DispatchProp<IAppState>;
 
 class _VideoPlayer extends Component<PrivateProps, IState> {
   private webview: Electron.WebviewTag | null;
@@ -278,4 +278,4 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
 }
 
 export type VideoPlayer = _VideoPlayer;
-export const VideoPlayer = netConnect<{}, {}, IProps>(mapStateToProps)(_VideoPlayer);
+export const VideoPlayer = connect<{}, {}, IProps>(mapStateToProps)(_VideoPlayer) as React.ComponentClass<IProps>;

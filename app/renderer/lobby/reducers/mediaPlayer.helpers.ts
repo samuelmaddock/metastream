@@ -1,15 +1,15 @@
-import { ILobbyNetState } from 'renderer/lobby/reducers';
+import { IAppState } from 'renderer/reducers';
 import { PlaybackState } from 'renderer/lobby/reducers/mediaPlayer';
 
-export const getCurrentMedia = (state: ILobbyNetState) => {
+export const getCurrentMedia = (state: IAppState) => {
   return state.mediaPlayer.current;
 };
 
-export const getPlaybackState = (state: ILobbyNetState) => {
+export const getPlaybackState = (state: IAppState) => {
   return state.mediaPlayer.playback;
 };
 
-export const getPlaybackTime = (state: ILobbyNetState) => {
+export const getPlaybackTime = (state: IAppState) => {
   const current = getCurrentMedia(state);
   const playback = getPlaybackState(state);
   const startTime = state.mediaPlayer.startTime;
@@ -25,6 +25,6 @@ export const getPlaybackTime = (state: ILobbyNetState) => {
   return -1;
 };
 
-export const getMediaQueue = (state: ILobbyNetState) => {
+export const getMediaQueue = (state: IAppState) => {
   return state.mediaPlayer.queue;
 };

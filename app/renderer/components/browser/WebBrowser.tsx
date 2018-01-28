@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
-import { DispatchProp } from 'react-redux';
+import { DispatchProp, connect } from 'react-redux';
 import cx from 'classnames';
 
 import styles from './WebBrowser.css';
 import { WEBVIEW_PARTITION } from 'constants/http';
 import { WebControls } from 'renderer/components/browser/Controls';
-import { netConnect } from 'renderer/lobby';
-import { ILobbyNetState } from 'renderer/lobby/reducers';
 import { server_requestMedia } from 'renderer/lobby/actions/mediaPlayer';
 import { absoluteUrl } from 'utils/appUrl';
+import { IAppState } from 'renderer/reducers';
 const { ipcRenderer, remote } = chrome;
 
 const DEFAULT_URL = absoluteUrl('./browser/resources/homescreen.html');
@@ -21,7 +20,7 @@ interface IProps {
   onClose?: () => void;
 }
 
-type PrivateProps = IProps & DispatchProp<ILobbyNetState>;
+type PrivateProps = IProps & DispatchProp<IAppState>;
 
 export class _WebBrowser extends Component<PrivateProps> {
   private webview?: Electron.WebviewTag | null;
@@ -141,4 +140,4 @@ export class _WebBrowser extends Component<PrivateProps> {
   }
 }
 
-export const WebBrowser = netConnect<{}, {}, IProps>()(_WebBrowser);
+export const WebBrowser = connect()(_WebBrowser) as React.ComponentClass<IProps>;

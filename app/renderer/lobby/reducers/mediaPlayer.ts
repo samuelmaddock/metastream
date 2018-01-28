@@ -10,7 +10,6 @@ import {
   queueMedia,
   repeatMedia
 } from 'renderer/lobby/actions/mediaPlayer';
-import { ILobbyNetState } from 'renderer/lobby/reducers';
 import { MediaType } from 'renderer/media/types';
 
 export const enum PlaybackState {

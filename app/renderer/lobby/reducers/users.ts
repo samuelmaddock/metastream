@@ -1,7 +1,7 @@
 import { Reducer } from 'redux';
 import { isType } from 'utils/redux';
+import { IAppState } from 'renderer/reducers';
 import { addUser, removeUser } from '../middleware/users';
-import { ILobbyNetState } from './';
 
 export interface IUser {
   id: string;
@@ -34,7 +34,7 @@ export const users: Reducer<IUsersState> = (state: IUsersState = initialState, a
   return state;
 };
 
-export const getUserName = (state: ILobbyNetState, userId: string): string => {
+export const getUserName = (state: IAppState, userId: string): string => {
   const user = state.users[userId];
   return user ? user.name : 'Unknown';
 };

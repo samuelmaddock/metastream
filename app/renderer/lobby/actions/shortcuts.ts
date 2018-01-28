@@ -1,16 +1,16 @@
 const { ipcRenderer } = chrome;
 import { Dispatch } from 'react-redux';
 import { ThunkAction } from 'redux-thunk';
+import { IAppState } from 'renderer/reducers';
 
-import { ILobbyNetState } from 'renderer/lobby';
 import { server_requestNextMedia, server_requestPlayPause } from 'renderer/lobby/actions/mediaPlayer';
 
 let unregister: Function | undefined;
 
 const dispatchCommand = (
   cmd: string,
-  dispatch: Dispatch<ILobbyNetState>,
-  getState: () => ILobbyNetState
+  dispatch: Dispatch<IAppState>,
+  getState: () => IAppState
 ) => {
   switch (cmd) {
     case 'media:next':
@@ -22,7 +22,7 @@ const dispatchCommand = (
   }
 };
 
-export const registerMediaShortcuts = (): ThunkAction<void, ILobbyNetState, void> => {
+export const registerMediaShortcuts = (): ThunkAction<void, IAppState, void> => {
   return (dispatch, getState, extra) => {
     const onCommand = (sender: Electron.WebContents, cmd: string) =>
       dispatch(dispatchCommand.bind(null, cmd));
@@ -35,7 +35,7 @@ export const registerMediaShortcuts = (): ThunkAction<void, ILobbyNetState, void
   };
 };
 
-export const unregisterMediaShortcuts = (): ThunkAction<void, ILobbyNetState, void> => {
+export const unregisterMediaShortcuts = (): ThunkAction<void, IAppState, void> => {
   return (dispatch, getState) => {
     if (unregister) {
       unregister();

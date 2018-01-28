@@ -1,4 +1,4 @@
 import { RpcThunkAction } from 'renderer/network/middleware/rpc';
-import { ILobbyNetState } from './reducers';
+import { IAppState } from 'renderer/reducers';
 
-export type RpcThunk<R> = RpcThunkAction<R, ILobbyNetState>;
+export type RpcThunk<R> = RpcThunkAction<R, IAppState>;

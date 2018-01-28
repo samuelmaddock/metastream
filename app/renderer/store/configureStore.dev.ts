@@ -5,6 +5,7 @@ import { routerMiddleware, routerActions } from 'react-router-redux';
 import { createLogger } from 'redux-logger';
 import rootReducer from '../reducers';
 import { IExtra } from 'types/thunk';
+import appMiddleware from 'renderer/store/appMiddleware';
 
 const history = createHashHistory();
 
@@ -16,6 +17,9 @@ const configureStore = (extra: IExtra, initialState?: {}) => {
   // Thunk Middleware
   const thunkMiddleware = thunk.withExtraArgument(extra);
   middleware.push(thunkMiddleware);
+
+  // App Middleware
+  middleware.push(...appMiddleware)
 
   // Logging Middleware
   const logger = createLogger({
