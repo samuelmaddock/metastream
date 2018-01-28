@@ -5,7 +5,8 @@
 }
 
 .container:hover {
-  -webkit-mask-image: none;
+  /* Fully opaque mask to hack bgblur from breaking */
+  -webkit-mask-image: linear-gradient(#000, #000);
 }
 
 .header {

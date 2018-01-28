@@ -8,7 +8,7 @@
   /* TODO: Check back later to see if background blur is less buggy */
   /* background: rgba(120, 120, 120, 0.33); */
   /* backdrop-filter: blur(20px); */
-  /* overflow: hidden; */
+  /* -webkit-mask-image: linear-gradient(#000, #000); */
 }
 
 .rounded {

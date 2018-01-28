@@ -134,7 +134,7 @@ table {
 Variables
 */
 :root {
-  --app-text-color: #dadada;
+  --app-text-color: #efefef;
   --app-titlebar-height: 30px;
   --app-titlebar-background-color: rgba(0, 0, 0, 0.44);
 

@@ -29,6 +29,8 @@ import log from 'browser/log'
 
 import './browser/fetch'
 
+app.commandLine.appendSwitch('enable-blink-features', 'CSSBackdropFilter')
+
 const fixUserDataPath = () => {
   const BRAVE_STR = 'brave'
   let userDataPath = app.getPath('userData')
@@ -129,7 +131,6 @@ const setupWindow = () => {
     width: 1280,
     height: 720,
     webPreferences: {
-      blinkFeatures: 'CSSBackdropFilter',
       webSecurity: false
     },
     frame: false,
