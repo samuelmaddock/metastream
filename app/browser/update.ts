@@ -1,7 +1,7 @@
 import { dialog, BrowserWindow, ipcMain } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import updaterFeed from 'constants/updater'
-import logger from './log'
+import log from './log'
 
 // how long between scheduled auto updates?
 const SCHEDULED_AUTO_UPDATE_DELAY = 24 * 60 * 60 * 1000 // once a day
@@ -14,12 +14,21 @@ const checkForUpdates = () => {
   setTimeout(checkForUpdates, SCHEDULED_AUTO_UPDATE_DELAY)
 }
 
+const announceUpdate = () => {
+  // TODO: use something more managed for IPC state updates
+  const win = BrowserWindow.getFocusedWindow()
+  if (win) {
+    win.webContents.send('update-ready')
+    win.setProgressBar(-1)
+  }
+}
+
 export const initUpdater = () => {
   if (process.env.NODE_ENV === 'development') {
     return
   }
 
-  autoUpdater.logger = logger
+  autoUpdater.logger = log
 
   autoUpdater.setFeedURL(updaterFeed as any)
   autoUpdater.on('update-available', () => {
@@ -27,13 +36,7 @@ export const initUpdater = () => {
   })
   autoUpdater.on('update-downloaded', () => {
     updateDownloaded = true
-
-    // TODO: use something more managed for IPC state updates
-    const win = BrowserWindow.getFocusedWindow()
-    if (win) {
-      win.webContents.send('update-ready')
-      win.setProgressBar(-1)
-    }
+    announceUpdate()
   })
   // autoUpdater.on('update-not-available', () => { hasUpdateAvailable = true; })
   // autoUpdater.on('error', function(){ console.log('autoUpdater error', arguments); })
@@ -46,6 +49,7 @@ export const initUpdater = () => {
   })
 
   ipcMain.once('install-update', () => {
+    log('got install update ipc')
     if (updateDownloaded) {
       autoUpdater.quitAndInstall()
     }

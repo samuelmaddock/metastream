@@ -10,6 +10,12 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+
+  --item-spacing: 2px;
+  margin: 0 calc(var(--item-spacing) * -1);
+}
+.wrapper > * {
+  margin: 0 var(--item-spacing);
 }
 
 .header-item {

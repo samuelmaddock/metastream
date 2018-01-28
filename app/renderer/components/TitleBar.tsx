@@ -1,41 +1,64 @@
-const { remote } = chrome;
+const { remote } = chrome
 
-import React, { Component } from 'react';
+import React, { Component } from 'react'
+import { connect, DispatchProp } from 'react-redux'
+import cx from 'classnames'
 
-import * as packageJson from 'package.json';
+import * as packageJson from 'package.json'
 
-import cx from 'classnames';
-import styles from './TitleBar.css';
-import { IconButton } from 'renderer/components/common/button';
+import { IAppState } from 'renderer/reducers'
+import { isUpdateAvailable } from 'renderer/reducers/ui'
+
+import styles from './TitleBar.css'
+import { IconButton } from 'renderer/components/common/button'
+import { installUpdate } from 'renderer/actions/ui'
 
 interface IProps {
-  className?: string;
-  title?: string;
+  className?: string
+  title?: string
 }
 
-export class TitleBar extends Component<IProps> {
-  private _platform: string;
+interface IConnectedProps {
+  updateAvailable?: boolean
+}
+
+type PrivateProps = IProps & IConnectedProps & DispatchProp<IAppState>
+
+class _TitleBar extends Component<PrivateProps> {
+  private _platform: string
 
   get window() {
-    return remote.getCurrentWindow();
+    return remote.getCurrentWindow()
   }
 
   get platform() {
-    return this._platform = this._platform || remote.require('os').platform();
+    return (this._platform = this._platform || remote.require('os').platform())
   }
 
   render(): JSX.Element | null {
+    const updateButton = this.props.updateAvailable && (
+      <IconButton
+        icon="download"
+        className={styles.updateButton}
+        onClick={() => {
+          this.props.dispatch!(installUpdate())
+        }}
+      >
+        Update
+      </IconButton>
+    )
+
     return (
       <div className={cx(this.props.className, styles.container)}>
         <div className={styles.wrapper}>
           <header className={styles.header}>
             <h2 className={styles.title}>{this.props.title || packageJson.productName}</h2>
           </header>
-          <IconButton icon="download" className={styles.updateButton}>Update</IconButton>
+          {updateButton}
           {this.platform === 'win32' && this.renderWin32Actions()}
         </div>
       </div>
-    );
+    )
   }
 
   private renderWin32Actions(): JSX.Element {
@@ -48,18 +71,18 @@ export class TitleBar extends Component<IProps> {
         label: this.window.isMaximized() ? '2' : '1', // 🗖
         action: () => {
           if (this.window.isMaximized()) {
-            this.window.restore();
+            this.window.restore()
           } else if (this.window.isMinimizable()) {
-            this.window.maximize();
+            this.window.maximize()
           }
-          this.forceUpdate();
+          this.forceUpdate()
         }
       },
       {
         label: 'r', // ✕
         action: () => this.window.close()
       }
-    ];
+    ]
 
     return (
       <div className={styles.actions}>
@@ -69,6 +92,10 @@ export class TitleBar extends Component<IProps> {
           </button>
         ))}
       </div>
-    );
+    )
   }
 }
+
+export const TitleBar = connect((state: IAppState): IConnectedProps => {
+  return { updateAvailable: isUpdateAvailable(state) }
+})(_TitleBar) as React.ComponentClass<IProps>
