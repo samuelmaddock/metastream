@@ -29,6 +29,9 @@ import log from 'browser/log'
 
 import './browser/fetch'
 
+// Platform backend
+import 'browser/platform/electron'
+
 app.commandLine.appendSwitch('enable-blink-features', 'CSSBackdropFilter')
 
 const fixUserDataPath = () => {
@@ -56,11 +59,6 @@ if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true')
   const path = require('path')
   const p = path.join(__dirname, '..', 'app', 'node_modules')
   require('module').globalPaths.push(p)
-}
-
-const USE_ELECTRON_BACKEND = true
-if (USE_ELECTRON_BACKEND) {
-  require('./renderer/platform/electron/main-backend.js')
 }
 
 const installExtensions = async () => {
