@@ -49,7 +49,6 @@ export const initUpdater = () => {
   })
 
   ipcMain.once('install-update', () => {
-    log('got install update ipc')
     if (updateDownloaded) {
       autoUpdater.quitAndInstall()
     }
