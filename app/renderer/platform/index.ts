@@ -1,16 +1,16 @@
-import { Platform } from 'renderer/platform/types';
-import { ElectronPlatform } from 'renderer/platform/electron';
+import { Platform } from 'renderer/platform/types'
+import { SwarmPlatform } from 'renderer/platform/swarm'
 
 class _PlatformService {
-  private static platform: Platform;
+  private static platform: Platform
 
   static get(): Platform {
     if (!this.platform) {
-      this.platform = new ElectronPlatform();
+      this.platform = new SwarmPlatform()
     }
 
-    return this.platform;
+    return this.platform
   }
 }
 
-export const PlatformService = _PlatformService.get();
+export const PlatformService = _PlatformService.get()

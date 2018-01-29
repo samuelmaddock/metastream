@@ -30,7 +30,7 @@ import log from 'browser/log'
 import './browser/fetch'
 
 // Platform backend
-import 'browser/platform/electron'
+// import 'browser/platform/electron'
 
 app.commandLine.appendSwitch('enable-blink-features', 'CSSBackdropFilter')
 
