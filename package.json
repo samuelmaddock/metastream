@@ -217,6 +217,7 @@
     "redux-thunk": "^2.2.0",
     "request": "^2.81.0",
     "simple-peer": "^8.1.1",
+    "sodium-universal": "^2.0.0",
     "source-map-support": "^0.4.14"
   },
   "devEngines": {

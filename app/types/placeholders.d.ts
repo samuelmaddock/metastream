@@ -1,1 +1,2 @@
-declare module 'electron-localshortcut';
+declare module 'electron-localshortcut'
+declare module 'sodium-universal'

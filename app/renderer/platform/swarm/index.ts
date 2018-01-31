@@ -8,6 +8,12 @@ import { IRTCPeerCoordinator } from 'renderer/network/rtc'
 export class SwarmPlatform extends Platform {
   private id: NetUniqueId<number>
 
+  constructor() {
+    super()
+
+    ipcRenderer.sendSync('platform-swarm-init')
+  }
+
   async createLobby(opts: ILobbyOptions): Promise<boolean> {
     return false
   }
