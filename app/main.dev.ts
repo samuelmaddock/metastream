@@ -29,9 +29,6 @@ import log from 'browser/log'
 
 import './browser/fetch'
 
-// Platform backend
-// import 'browser/platform/electron'
-
 app.commandLine.appendSwitch('enable-blink-features', 'CSSBackdropFilter')
 
 const fixUserDataPath = () => {
@@ -42,10 +39,6 @@ const fixUserDataPath = () => {
     userDataPath = userDataPath.substring(0, userDataPath.length - BRAVE_STR.length)
     userDataPath = `${userDataPath}${packageJson.productName}`
     app.setPath('userData', userDataPath)
-
-    setTimeout(() => {
-      log(`New userData path: ${userDataPath}`)
-    }, 5000)
   }
 }
 
@@ -73,6 +66,9 @@ const installExtensions = async () => {
 
 fixUserDataPath()
 protocols.init()
+
+// Platform backend
+import 'browser/platform/swarm'
 
 /**
  * Add event listeners...

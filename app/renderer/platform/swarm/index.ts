@@ -5,13 +5,17 @@ import { Deferred } from 'utils/async'
 import { NetUniqueId } from 'renderer/network'
 import { IRTCPeerCoordinator } from 'renderer/network/rtc'
 
+type SwarmId = string
+
 export class SwarmPlatform extends Platform {
-  private id: NetUniqueId<number>
+  private id: NetUniqueId<SwarmId>
 
   constructor() {
     super()
 
-    ipcRenderer.sendSync('platform-swarm-init')
+    const swarmId = ipcRenderer.sendSync('platform-swarm-init')
+    this.id = new NetUniqueId<SwarmId>(swarmId)
+    console.log('init swarm id', this.id)
   }
 
   async createLobby(opts: ILobbyOptions): Promise<boolean> {
@@ -43,10 +47,6 @@ export class SwarmPlatform extends Platform {
   }
 
   getLocalId(): NetUniqueId {
-    if (!this.id) {
-      // TODO: get from keypair
-      this.id = new NetUniqueId(-1)
-    }
     return this.id
   }
 
