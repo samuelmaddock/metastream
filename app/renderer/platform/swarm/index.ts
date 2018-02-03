@@ -15,19 +15,45 @@ export class SwarmPlatform extends Platform {
 
     const swarmId = ipcRenderer.sendSync('platform-swarm-init')
     this.id = new NetUniqueId<SwarmId>(swarmId)
-    console.log('init swarm id', this.id)
   }
 
   async createLobby(opts: ILobbyOptions): Promise<boolean> {
-    return false
+    // Send IPC to main with lobby options
+
+    // idea: middleware for lobby: max members, password, auth, etc
+    // do auth first so encrypted socket can be used for the rest
+
+    ipcRenderer.send('platform-create-lobby', opts)
+
+    const success = await new Promise<boolean>((resolve, reject) => {
+      ipcRenderer.once('platform-create-lobby-result', (event: Electron.Event, result: boolean) => {
+        resolve(result)
+      })
+    })
+
+    return success
   }
 
   async joinLobby(id: string): Promise<boolean> {
-    return false
+    // should emit connection events for frontend
+    // allow hash id or ipv4
+
+    ipcRenderer.send('platform-join-lobby', id)
+
+    const success = await new Promise<boolean>((resolve, reject) => {
+      ipcRenderer.once('platform-join-lobby-result', (event: Electron.Event, result: boolean) => {
+        resolve(result)
+      })
+    })
+
+    // TODO: await rtc signalling to complete
+
+    return success
   }
 
   leaveLobby(id: string): boolean {
-    return false
+    ipcRenderer.send('platform-leave-lobby')
+    return true
   }
 
   async findLobbies(): Promise<ILobbySession[]> {

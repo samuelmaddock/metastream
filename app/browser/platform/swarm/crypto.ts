@@ -1,6 +1,13 @@
 import sodium from 'sodium-universal'
 
-export function keyPair(seed?: string) {
+export type Key = Buffer
+
+export type KeyPair = {
+  publicKey: Key;
+  secretKey: Key;
+}
+
+export function keyPair(seed?: string): KeyPair {
   const publicKey = new Buffer(sodium.crypto_sign_PUBLICKEYBYTES)
   const secretKey = new Buffer(sodium.crypto_sign_SECRETKEYBYTES)
 

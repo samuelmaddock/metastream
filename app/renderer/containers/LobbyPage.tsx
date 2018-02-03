@@ -15,6 +15,8 @@ import { RTCServer } from 'renderer/network/rtc'
 import { NetActions } from 'renderer/network/actions'
 import { ReplicatedState } from 'renderer/network/types'
 import { push } from 'react-router-redux'
+import { sleep } from 'utils/async';
+import { NETWORK_TIMEOUT } from 'constants/network';
 
 interface IRouteParams {
   lobbyId: string
@@ -42,27 +44,35 @@ export class _LobbyPage extends Component<PrivateProps> {
   }
 
   private async setupLobby(): Promise<void> {
-    let success
+    let successPromise
 
     if (this.lobbyId) {
-      success = await PlatformService.joinLobby(this.lobbyId)
+      successPromise = PlatformService.joinLobby(this.lobbyId)
     } else {
-      success = await PlatformService.createLobby({
+      successPromise = PlatformService.createLobby({
         maxMembers: 4
       })
     }
 
+    // TODO: will this reject the promise that loses?
+    const result = await Promise.race([
+      successPromise,
+      sleep(NETWORK_TIMEOUT)
+    ])
+
+    const success = typeof result === 'boolean' ? result : false
+
     if (success) {
       this.onJoinLobby()
     } else {
-      setTimeout(() => {
-        console.log('Failed to join lobby')
-        this.props.dispatch(push('/'))
-      }, 500)
+      this.onConnectionFailed()
     }
   }
 
   private onJoinLobby(): void {
+    // TODO: move server and peer coordinator initialization
+    // into constructor? Need to connect to host prior to
+    // connection success
     const peerCoord = PlatformService.createPeerCoordinator()
     const rtcServer = new RTCServer({
       isHost: this.host,
@@ -80,6 +90,12 @@ export class _LobbyPage extends Component<PrivateProps> {
     )
 
     this.forceUpdate()
+  }
+
+  private onConnectionFailed(): void {
+    // TODO: present failure reason to user
+    console.error('Failed to join lobby')
+    this.props.dispatch(push('/'))
   }
 
   componentWillMount(): void {
