@@ -1,6 +1,7 @@
 import sodium from 'sodium-universal'
 
 export type Key = Buffer
+export type KeyHexString = string
 
 export type KeyPair = {
   publicKey: Key;

@@ -7,7 +7,9 @@ import { keyPair, KeyPair, Key } from './crypto';
 import { ILobbyOptions, ILobbySession } from 'renderer/platform/types';
 
 import * as swarm from './server'
+import { EncryptedSocket } from './socket'
 import { SimplePeer } from 'simple-peer';
+import { signalRenderer } from 'browser/platform/swarm/signal';
 
 let localId: string
 let localKeyPair: KeyPair
@@ -70,10 +72,15 @@ ipcMain.on('platform-create-lobby', (event: Electron.Event, opts: ILobbyOptions)
   serverOpts = opts
   swarmServer = swarm.listen({
     ...localKeyPair
-  }, (peer: SimplePeer, peerKey: Key) => {
-    // TODO: redesign to return encrypted socket?
-    // Need to signal rtc data to the renderer
-    log(`New swarm connection from ${peerKey.toString('hex')}`)
+  }, async (esocket: EncryptedSocket, peerKey: Key) => {
+    const keyStr = peerKey.toString('hex')
+    log(`New swarm connection from ${keyStr}`)
+
+    try {
+      await signalRenderer(esocket, peerKey)
+    } catch (e) {
+      log.error(`Failed to connect to peer ${keyStr}`)
+    }
   })
 
   log('Swarm server now listening...')
@@ -103,5 +110,7 @@ ipcMain.on('platform-join-lobby', (event: Electron.Event, serverId: string) => {
     ...localKeyPair,
     hostPublicKey
   })
+
+  // TODO: when do we signal peers?
 })
 
