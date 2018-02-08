@@ -1,5 +1,5 @@
 const EventEmitter = require('events').EventEmitter
-const sodium = require('sodium-native')
+const sodium = require('sodium-universal')
 
 // TODO: just use sodium-universal directly?
 const enc = require('sodium-encryption')

@@ -5,7 +5,6 @@ const sodium = require('sodium-universal')
 const discoverySwarm = require('discovery-swarm')
 const swarmDefaults = require('dat-swarm-defaults')
 
-
 const FRIENDSWARM = new Buffer('swarm3')
 
 // +1 from Dat protocol default to reduce conflict
@@ -50,7 +49,7 @@ async function authConnection(socket, opts) {
   })
 }
 
-function listen(opts, connectionHandler) {
+export function listen(opts, connectionHandler) {
   const discoveryKey = getDiscoveryKey(opts.publicKey)
   const swarm = createSwarm({ id: discoveryKey })
 
@@ -72,7 +71,7 @@ function listen(opts, connectionHandler) {
   return swarm
 }
 
-function connect(opts) {
+export function connect(opts) {
   return new Promise((resolve, reject) => {
     let timeoutId, timeout
     const hostPublicKey = opts.hostPublicKey
@@ -113,9 +112,4 @@ function connect(opts) {
       reject('Timeout connecting to swarm')
     }, NETWORK_TIMEOUT)
   })
-}
-
-module.exports = {
-  listen,
-  connect
 }
