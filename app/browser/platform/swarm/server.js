@@ -1,10 +1,10 @@
 import { NETWORK_TIMEOUT } from 'constants/network';
+import { EncryptedSocket } from './socket'
 
 const sodium = require('sodium-universal')
 const discoverySwarm = require('discovery-swarm')
 const swarmDefaults = require('dat-swarm-defaults')
 
-const { EncryptedSocket, signalPeer } = require('./network')
 
 const FRIENDSWARM = new Buffer('swarm3')
 
@@ -72,8 +72,8 @@ function listen(opts, connectionHandler) {
   return swarm
 }
 
-function connect(opts): Promise<EncryptedSocket> {
-  return new Promise<EncryptedSocket>((resolve, reject) => {
+function connect(opts) {
+  return new Promise((resolve, reject) => {
     let timeoutId, timeout
     const hostPublicKey = opts.hostPublicKey
     const discoveryKey = getDiscoveryKey(hostPublicKey)

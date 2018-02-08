@@ -1,6 +1,9 @@
 const EventEmitter = require('events').EventEmitter
 const sodium = require('sodium-native')
+
+// TODO: just use sodium-universal directly?
 const enc = require('sodium-encryption')
+
 const lpstream = require('length-prefixed-stream')
 const SimplePeer = require('simple-peer')
 

@@ -52,6 +52,7 @@ export class SwarmPlatform extends Platform {
   }
 
   leaveLobby(id: string): boolean {
+    // TODO: close all webrtc peers
     ipcRenderer.send('platform-leave-lobby')
     return true
   }

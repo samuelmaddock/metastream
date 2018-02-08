@@ -78,6 +78,7 @@ ipcMain.on('platform-create-lobby', (event: Electron.Event, opts: ILobbyOptions)
 
     try {
       await signalRenderer(esocket, peerKey)
+      log(`${keyStr} connected to renderer`)
     } catch (e) {
       log.error(`Failed to connect to peer ${keyStr}`)
     }
