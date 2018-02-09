@@ -1,46 +1,52 @@
-import { IMediaMiddleware } from '../types';
-import { Url, parse, format } from 'url';
-import { encodeQueryParams } from 'utils/url';
+import { IMediaMiddleware } from '../types'
+import { Url, parse, format } from 'url'
+import { encodeQueryParams } from 'utils/url'
 
 const setQueryTrue = (prop: string, query: any) => {
   if (!!query[prop]) {
-    query[prop] = 'true';
-    return true;
+    query[prop] = 'true'
+    return true
   }
-};
+}
 
 /** Set autoplay query param to true */
 const setAutoplay = (url: string) => {
-  const urlObj = parse(url, true);
-  const { query } = urlObj;
+  const urlObj = parse(url, true)
+  const { query } = urlObj
 
   if (!(setQueryTrue('autoplay', query) || setQueryTrue('auto_play', query))) {
-    ['autoplay', 'auto_play'].forEach(prop => {
-      query[prop] = 'true';
-    });
+    ;['autoplay', 'auto_play'].forEach(prop => {
+      query[prop] = 'true'
+    })
   }
 
-  urlObj.search = encodeQueryParams(query);
+  urlObj.search = encodeQueryParams(query)
 
-  return format(urlObj);
-};
+  return format(urlObj)
+}
 
 const mware: IMediaMiddleware = {
   match({ protocol, host }) {
     // BUG: server returns Access Denied
     if (host && host.indexOf('redd.it') > -1) {
-      return false;
+      return false
     }
-    return protocol === 'http:' || protocol === 'https:';
+    return protocol === 'http:' || protocol === 'https:'
   },
 
   async resolve(ctx, next) {
-    const { url } = ctx.req;
+    const { url } = ctx.res
 
-    ctx.res.url = setAutoplay(ctx.res.url);
+    // TODO: use mime-type instead of extension
+    // need a way to compose httpHead/media mware after microdata changes url
+    const isMedia = url ? url.endsWith('mp4') : false
 
-    return next();
+    if (!isMedia) {
+      ctx.res.url = setAutoplay(url)
+    }
+
+    return next()
   }
-};
+}
 
-export default mware;
+export default mware
