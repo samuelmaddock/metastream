@@ -25,11 +25,34 @@ const enum ObjectType {
 const URL_PATTERN = /reddit\.com\/r\/([^\s/]+)\/?/i
 const API_LIMIT = 5
 
-const transformPost = ({ data }: any) => ({
-  id: data.id,
-  url: data.url,
-  title: data.title
-})
+const transformPost = ({ data }: any) => {
+  let result: any = {
+    id: data.id,
+    url: data.url,
+    title: data.title
+  }
+
+  const xpost = data.crosspost_parent_list
+
+  // TODO: secure_media_embed
+  if (data.media) {
+    result.media = data.media
+  }
+
+  if (xpost && xpost.length > 0) {
+    const parent = xpost[0]
+
+    if (parent.url) {
+      result.url = parent.url
+    }
+
+    if (parent.media) {
+      result.media = parent.media
+    }
+  }
+
+  return result
+}
 
 const getListing = async (url: string, after?: string) => {
   const urlobj = parse(url, true)
@@ -80,6 +103,10 @@ const parseItem = (ctx: IMediaContext, item: any): any => {
       ctx.res.url = v.fallback_url
       ctx.res.duration = v.duration
       return true
+    } else if (media.oembed) {
+      // Defer parse to oembed middleware
+      // ctx.state.oembed = media.oembed
+      return false
     }
   }
 

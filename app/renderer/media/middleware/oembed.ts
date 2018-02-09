@@ -1,57 +1,72 @@
-import { load } from 'cheerio';
-import { IMediaMiddleware } from '../types';
-import { fetchText } from 'utils/http';
-import { Url } from 'url';
-import { MEDIA_USER_AGENT } from 'constants/http';
+import { load } from 'cheerio'
+import { IMediaMiddleware } from '../types'
+import { fetchText } from 'utils/http'
+import { Url } from 'url'
+import { MEDIA_USER_AGENT } from 'constants/http'
 
-async function resolveOEmbed(url: string) {
-  const [text] = await fetchText(url, {
+async function fetchOEmbed(url: string) {
+  const [json] = await fetchText(url, {
     json: true,
     headers: {
       'user-agent': MEDIA_USER_AGENT
     }
-  });
+  })
 
-  const json = text as any;
+  return json as any
+}
 
-  console.info('oembed', json);
-
+function parseOembedUrl(json: any) {
   if (typeof json.html === 'string') {
-    const $ = load(json.html);
-    const src = $('iframe').attr('src');
+    // Decode html entities if needed
+    const html = json.html.startsWith('&lt;') ? load(json.html)('body').text() : json.html
+    const $ = load(html)
+    let src = $('iframe').attr('src')
 
     if (src) {
-      json.url = src;
+      // TODO: always use https???
+      return src.startsWith('//') ? `http:${src}` : src
     }
   }
-
-  return json;
 }
 
 const mware: IMediaMiddleware = {
   match({ protocol }) {
-    return protocol === 'http:' || protocol === 'https:';
+    return protocol === 'http:' || protocol === 'https:'
   },
 
   async resolve(ctx, next) {
-    const { url } = ctx.req;
+    const { url } = ctx.req
 
-    if (ctx.state.$) {
-      const link = ctx.state.$(`link[type='text/json+oembed']`).attr('href');
+    let json
+
+    if (ctx.state.oembed) {
+      json = ctx.state.oembed
+    } else if (ctx.state.$) {
+      const { $ } = ctx.state
+      const link = $(`link[type='text/json+oembed'], link[type='application/json+oembed']`).attr(
+        'href'
+      )
+
       if (link) {
-        const json = await resolveOEmbed(link);
-        if (json.url) {
-          ctx.res.url = json.url;
-        }
-
-        if (json.description) {
-          ctx.res.description = json.description;
-        }
+        json = await fetchOEmbed(link)
       }
     }
 
-    return next();
-  }
-};
+    if (json) {
+      console.info('oembed', json)
+      const src = parseOembedUrl(json)
 
-export default mware;
+      if (src) {
+        ctx.res.url = src
+      }
+
+      if (json.description) {
+        ctx.res.description = json.description
+      }
+    }
+
+    return next()
+  }
+}
+
+export default mware
