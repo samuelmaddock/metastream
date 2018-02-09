@@ -98,20 +98,23 @@ ipcMain.on('platform-leave-lobby', (event: Electron.Event) => {
   }
 })
 
-ipcMain.on('platform-join-lobby', (event: Electron.Event, serverId: string) => {
-  if (swarmServer) {
-    log.error('Attempt to join lobby while hosting existing swarm server')
-    return
-  }
-
+ipcMain.on('platform-join-lobby', async (event: Electron.Event, serverId: string) => {
+  // TODO: check if already connected
   // TODO: check if serverId is an IP, not a public key
 
   const hostPublicKey = Buffer.from(serverId, 'hex')
-  swarm.connect({
-    ...localKeyPair,
-    hostPublicKey
-  })
+  let success = true
 
-  // TODO: when do we signal peers?
+  try {
+    const socket = await swarm.connect({
+      ...localKeyPair,
+      hostPublicKey
+    })
+    // TODO: hold onto socket for signalling
+  } catch (e) {
+    success = false
+  }
+
+  event.sender.send('platform-join-lobby-result', success)
 })
 

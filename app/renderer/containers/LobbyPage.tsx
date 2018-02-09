@@ -33,6 +33,7 @@ function mapStateToProps(state: IAppState): IConnectedProps {
 type PrivateProps = IProps & IConnectedProps & IReactReduxProps
 
 export class _LobbyPage extends Component<PrivateProps> {
+  private connected: boolean
   private server?: NetServer
   private host: boolean
 
@@ -70,25 +71,49 @@ export class _LobbyPage extends Component<PrivateProps> {
   }
 
   private onJoinLobby(): void {
-    // TODO: move server and peer coordinator initialization
-    // into constructor? Need to connect to host prior to
-    // connection success
     const peerCoord = PlatformService.createPeerCoordinator()
-    const rtcServer = new RTCServer({
+
+    this.server = new RTCServer({
       isHost: this.host,
       peerCoord
     })
 
-    this.server = rtcServer
-
     this.props.dispatch(
       NetActions.connect({
-        server: rtcServer,
+        server: this.server!,
         host: this.host,
         replicated: AppReplicatedState as ReplicatedState<any>
       })
     )
 
+    if (this.host) {
+      // Server is ready
+      this.onConnection()
+    } else {
+      this.connectToHost()
+    }
+  }
+
+  /** Connect client to server */
+  private async connectToHost() {
+    const peerPromise = new Promise(resolve => {
+      this.server!.once('connect', resolve)
+    })
+
+    const conn = await Promise.all([
+      peerPromise,
+      sleep(NETWORK_TIMEOUT)
+    ])
+
+    if (typeof conn !== 'undefined') {
+      this.onConnection()
+    } else {
+      this.onConnectionFailed()
+    }
+  }
+
+  private onConnection(): void {
+    this.connected = true
     this.forceUpdate()
   }
 
@@ -117,7 +142,7 @@ export class _LobbyPage extends Component<PrivateProps> {
   }
 
   render(): JSX.Element {
-    if (!this.server) {
+    if (!this.connected) {
       return <div>Connecting...</div>
     }
 

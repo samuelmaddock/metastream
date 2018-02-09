@@ -4,11 +4,14 @@ import { Platform, ILobbyOptions, ILobbySession, ILobbyData } from 'renderer/pla
 import { Deferred } from 'utils/async'
 import { NetUniqueId } from 'renderer/network'
 import { IRTCPeerCoordinator } from 'renderer/network/rtc'
+import { SwarmRTCPeerCoordinator } from 'renderer/platform/swarm/peer-coordinator';
 
 type SwarmId = string
 
 export class SwarmPlatform extends Platform {
   private id: NetUniqueId<SwarmId>
+  private connected: boolean;
+  private isHosting: boolean;
 
   constructor() {
     super()
@@ -31,6 +34,8 @@ export class SwarmPlatform extends Platform {
       })
     })
 
+    this.isHosting = true
+    this.connected = success
     return success
   }
 
@@ -46,14 +51,20 @@ export class SwarmPlatform extends Platform {
       })
     })
 
-    // TODO: await rtc signalling to complete
-
+    this.isHosting = false
+    this.connected = success
     return success
   }
 
   leaveLobby(id: string): boolean {
+    if (!this.connected) {
+      throw new Error('[Swarm Platform] Attempt to leave lobby while not connected')
+    }
+
     // TODO: close all webrtc peers
     ipcRenderer.send('platform-leave-lobby')
+    this.connected = false
+    this.isHosting = false
     return true
   }
 
@@ -66,7 +77,11 @@ export class SwarmPlatform extends Platform {
   }
 
   createPeerCoordinator(): IRTCPeerCoordinator {
-    throw new Error('Not yet implemented')
+    if (!this.connected) {
+      throw new Error('[Swarm Platform] createPeerCoordinator: No active session.');
+    }
+
+    return new SwarmRTCPeerCoordinator(this.isHosting);
   }
 
   getUserName(userId: NetUniqueId): string {
