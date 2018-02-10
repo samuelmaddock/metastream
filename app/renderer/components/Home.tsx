@@ -30,9 +30,14 @@ export default class Home extends Component<IProps> {
                 <MenuButton icon="play">Start Session</MenuButton>
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link to="/servers" className={styles.btn}>
                 <MenuButton icon="search">Find Session</MenuButton>
+              </Link>
+            </li> */}
+            <li>
+              <Link to="/join" className={styles.btn}>
+                <MenuButton icon="globe">Join Session</MenuButton>
               </Link>
             </li>
           </ul>
