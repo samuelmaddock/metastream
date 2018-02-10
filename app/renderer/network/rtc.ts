@@ -55,6 +55,7 @@ export class RTCPeerConn extends NetConnection {
   private onSignal = (signal: SignalData) => {
     this.signalData = signal;
     this.signalDeferred.resolve(signal);
+    this.emit('signal', signal)
   };
 
   private onData = (data: Buffer): void => {
@@ -101,9 +102,6 @@ export class RTCPeerConn extends NetConnection {
  * Coordinates signaling of WebRTC peers.
  */
 export interface IRTCPeerCoordinator extends EventEmitter {
-  /** Send offer/answer signaling data. */
-  signal(signal: string): void;
-
   /** Subscribe to peer connections. */
   on(eventName: 'connection', listener: (peer: RTCPeerConn) => void): this;
 }

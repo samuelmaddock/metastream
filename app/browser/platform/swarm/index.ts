@@ -93,6 +93,7 @@ ipcMain.on('platform-leave-lobby', (event: Electron.Event) => {
   if (swarmServer) {
     swarmServer.close()
     swarmServer = null
+    log('Closed swarm server connection')
   } else {
     log.error('Attempt to leave unconnected swarm server')
   }
@@ -104,17 +105,20 @@ ipcMain.on('platform-join-lobby', async (event: Electron.Event, serverId: string
 
   const hostPublicKey = Buffer.from(serverId, 'hex')
   let success = true
+  let socket
 
   try {
-    const socket = await swarm.connect({
+    socket = await swarm.connect({
       ...localKeyPair,
       hostPublicKey
     })
-    // TODO: hold onto socket for signalling
   } catch (e) {
     success = false
   }
 
   event.sender.send('platform-join-lobby-result', success)
+
+  await signalRenderer(socket, hostPublicKey)
+  log(`Finished signaling connection to host ${serverId}`)
 })
 

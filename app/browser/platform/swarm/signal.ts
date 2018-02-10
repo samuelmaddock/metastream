@@ -13,7 +13,7 @@ export async function signalRenderer(socket: EncryptedSocket, peerKey: Key): Pro
 
   const relayReadSignal = (data: Buffer) => {
     readJSON(data, (offer: SignalData) => {
-      webContents.send('rtc-peer-signal', offer)
+      webContents.send('rtc-peer-signal', keyStr, offer)
     })
   }
   socket.on('data', relayReadSignal)
@@ -28,6 +28,7 @@ export async function signalRenderer(socket: EncryptedSocket, peerKey: Key): Pro
   const cleanup = () => {
     ipcMain.removeListener('rtc-peer-signal', relayWriteSignal)
     socket.destroy()
+    // TODO: unannounce DHT peer
   }
 
   return new Promise<void>((resolve, reject) => {
@@ -44,6 +45,8 @@ export async function signalRenderer(socket: EncryptedSocket, peerKey: Key): Pro
         reject()
       }
     })
+
+    webContents.send('rtc-peer-init', keyStr)
   })
 }
 

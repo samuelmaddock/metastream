@@ -46,10 +46,6 @@ export class ElectronRTCPeerCoordinator extends EventEmitter implements IRTCPeer
     this.onConnect();
   }
 
-  signal(signal: string): void {
-    throw new Error('Method not implemented.');
-  }
-
   private createPeer(userId: string): RTCPeerConn {
     const peer = new SimplePeer({
       initiator: this.isLobbyOwner,
