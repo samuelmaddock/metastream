@@ -171,8 +171,6 @@ app.on('ready', async () => {
     numWindows = Math.min(Math.max(numWindows, 1), 4)
   }
 
-  await sleep(0)
-
   for (let i = 0; i < numWindows; i++) {
     setupWindow()
   }
