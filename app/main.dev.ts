@@ -7,6 +7,7 @@
  * `./app/main.prod.js` using webpack. This gives us some performance wins.
  */
 import { app, BrowserWindow, globalShortcut, protocol } from 'electron'
+import os from 'os'
 
 import packageJson from 'package.json'
 import 'browser/net'
@@ -128,7 +129,9 @@ const setupWindow = () => {
       webSecurity: false
     },
     frame: false,
-    titleBarStyle: 'hidden'
+    // macOS doesn't work with titlebar 'hidden'
+    // https://github.com/brave/muon/issues/445
+    titleBarStyle: os.platform() === 'darwin' ? 'hiddenInset' : 'hidden'
   })
 
   win.loadURL(`chrome://brave/${__dirname}/app.html`)
