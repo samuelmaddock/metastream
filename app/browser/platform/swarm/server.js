@@ -41,7 +41,8 @@ async function authConnection(socket, opts) {
     esocket.once('connection', () => {
       resolve(esocket)
     })
-    esocket.once('error', () => {
+    esocket.once('error', (err) => {
+      log(`Socket error: ${err}`)
       reject()
     })
 
@@ -55,14 +56,22 @@ export function listen(opts, connectionHandler) {
 
   // Wait for connections to perform auth handshake with
   swarm.on('connection', async socket => {
-    console.log('Local swarm connection', socket)
+    const address = socket.address().address
+    console.log('Local swarm connection', address)
 
-    const esocket = await authConnection(socket, {
-      publicKey: opts.publicKey,
-      secretKey: opts.secretKey
-    })
+    let esocket
 
-    console.log(`AUTHED WITH PEER! ${socket.address().address}`)
+    try {
+      esocket = await authConnection(socket, {
+        publicKey: opts.publicKey,
+        secretKey: opts.secretKey
+      })
+    } catch (e) {
+      console.error('Failed to auth peer\n', e)
+      return
+    }
+
+    console.log(`AUTHED WITH PEER! ${address}`)
 
     // TODO: make sure handler closes socket
     connectionHandler(esocket, esocket.peerKey)
