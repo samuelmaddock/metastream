@@ -107,10 +107,10 @@ ipcMain.on('platform-join-lobby', async (event: Electron.Event, serverId: string
 
   const hostPublicKey = Buffer.from(serverId, 'hex')
   let success = true
-  let socket
+  let esocket
 
   try {
-    socket = await swarm.connect({
+    esocket = await swarm.connect({
       ...localKeyPair,
       hostPublicKey
     })
@@ -121,12 +121,12 @@ ipcMain.on('platform-join-lobby', async (event: Electron.Event, serverId: string
   event.sender.send('platform-join-lobby-result', success)
 
   try {
-    await signalRenderer(socket, hostPublicKey)
+    await signalRenderer(esocket, hostPublicKey)
     log(`Finished signaling connection to host ${serverId}`)
   } catch (e) {
     log.error(`Failed to connect to peer ${serverId}`)
   } finally {
-    socket.destroy()
+    esocket.destroy()
   }
 })
 

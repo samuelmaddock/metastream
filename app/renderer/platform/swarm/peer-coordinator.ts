@@ -23,6 +23,7 @@ export class SwarmRTCPeerCoordinator extends EventEmitter implements IRTCPeerCoo
   // TODO: 'destroy' method?
 
   private onInitPeer = async (event: Electron.Event, peerId: string) => {
+    console.debug(`[PeerCoordinator] Init ${peerId}`)
     const peer = this.createPeer(peerId)
 
     peer.on('signal', (signal: SimplePeerData) => {

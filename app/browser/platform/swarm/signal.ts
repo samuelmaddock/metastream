@@ -11,10 +11,11 @@ export async function signalRenderer(socket: EncryptedSocket, peerKey: Key): Pro
     const keyStr = peerKey.toString('hex')
 
     // TODO: better way to get the window we want
-    const win = BrowserWindow.getFocusedWindow()
+    const win = BrowserWindow.getAllWindows()[0]
     const { webContents } = win
 
     const relayReadSignal = (data: Buffer) => {
+      log.debug(`SIGNAL read [${data.length}] ${keyStr}`)
       readJSON(data, (offer: SignalData) => {
         webContents.send('rtc-peer-signal', keyStr, offer)
       })
@@ -22,6 +23,7 @@ export async function signalRenderer(socket: EncryptedSocket, peerKey: Key): Pro
     socket.on('data', relayReadSignal)
 
     const relayWriteSignal = (event: Electron.Event, key: string, signal: SignalData) => {
+      log.debug(`SIGNAL write ${keyStr}`)
       if (event.sender.id === webContents.id && key === keyStr) {
         writeJSON(socket, signal)
       }
@@ -67,6 +69,7 @@ export async function signalRenderer(socket: EncryptedSocket, peerKey: Key): Pro
     ipcMain.once('rtc-peer-connect', onPeerConnect)
     ipcMain.once('rtc-peer-error', onPeerError)
 
+    log(`INITING SIGNAL FOR ${keyStr}`)
     webContents.send('rtc-peer-init', keyStr)
 
     timeoutId = (setTimeout(() => {

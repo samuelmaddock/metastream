@@ -62,6 +62,7 @@ export function listen(opts, connectionHandler) {
 
     let esocket
     try {
+      log(`Attempting to auth...`)
       esocket = await authConnection(socket, {
         publicKey: opts.publicKey,
         secretKey: opts.secretKey
@@ -97,7 +98,11 @@ export function connect(opts) {
       queue.forEach(socket => socket.destroy())
       queue = []
 
-      swarm.close()
+      swarm.removeListener('connection', onConnection)
+
+      if (!connected) {
+        swarm.close()
+      }
     }
 
     async function attemptConnect() {
@@ -107,6 +112,7 @@ export function connect(opts) {
       while (!connected && !timeout && (socket = queue.shift())) {
         let esocket
         try {
+          log(`Attempting to auth ${hostPublicKey.toString('hex')}...`)
           esocket = await authConnection(socket, {
             publicKey: opts.publicKey,
             secretKey: opts.secretKey,
@@ -122,7 +128,12 @@ export function connect(opts) {
 
         if (!timeout && !connected) {
           connected = true
-          cleanup()
+
+          // close swarm when we're done with the socket
+          esocket.once('close', () => {
+            swarm.close()
+          })
+
           resolve(esocket)
         } else {
           esocket.destroy()
@@ -133,7 +144,7 @@ export function connect(opts) {
     }
 
     // Wait for connections and attempt to auth with host
-    swarm.on('connection', async socket => {
+    const onConnection = async socket => {
       const address = socket.address().address
       log(`Remote swarm connection ${address}`)
 
@@ -142,7 +153,8 @@ export function connect(opts) {
       if (!connecting) {
         attemptConnect()
       }
-    })
+    }
+    swarm.on('connection', onConnection)
 
     timeoutId = setTimeout(() => {
       cleanup()
