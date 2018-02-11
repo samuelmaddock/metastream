@@ -58,10 +58,9 @@ export function listen(opts, connectionHandler) {
   // Wait for connections to perform auth handshake with
   swarm.on('connection', async socket => {
     const address = socket.address().address
-    log('Local swarm connection', address)
+    log(`Local swarm connection ${address}`)
 
     let esocket
-
     try {
       esocket = await authConnection(socket, {
         publicKey: opts.publicKey,
@@ -93,12 +92,15 @@ export function connect(opts) {
       }
 
       // TODO: will closing swarm also destroy socket?
-      swarm.close()
+      setTimeout(() => {
+        swarm.close()
+      }, NETWORK_TIMEOUT)
     }
 
     // Wait for connections and attempt to auth with host
     swarm.on('connection', async socket => {
-      log('Remote swarm connection', socket)
+      const address = socket.address().address
+      log(`Remote swarm connection ${address}`)
 
       const esocket = await authConnection(socket, {
         publicKey: opts.publicKey,
@@ -106,7 +108,7 @@ export function connect(opts) {
         hostPublicKey
       })
 
-      log(`AUTHED WITH HOST! ${socket.address().address}`)
+      log(`AUTHED WITH HOST! ${address}`)
 
       if (!timeout && !connected) {
         connected = true

@@ -2,7 +2,8 @@ import { BrowserWindow, ipcMain, ipcRenderer } from 'electron'
 import { EncryptedSocket } from './socket'
 import { Key } from './crypto'
 import { SignalData } from 'renderer/network/rtc'
-import { NETWORK_TIMEOUT } from '../../../constants/network'
+import { NETWORK_TIMEOUT } from 'constants/network'
+import log from 'browser/log';
 
 /** Relay signal data to renderer process */
 export async function signalRenderer(socket: EncryptedSocket, peerKey: Key): Promise<void> {
@@ -21,7 +22,7 @@ export async function signalRenderer(socket: EncryptedSocket, peerKey: Key): Pro
     socket.on('data', relayReadSignal)
 
     const relayWriteSignal = (event: Electron.Event, key: string, signal: SignalData) => {
-      if (event.sender === webContents && key === keyStr) {
+      if (event.sender.id === webContents.id && key === keyStr) {
         writeJSON(socket, signal)
       }
     }
@@ -75,12 +76,13 @@ function writeJSON(stream: any, object: SignalData) {
 
 function readJSON(data: Buffer, cb: (data: SignalData) => void) {
   let string = data.toString()
+  let json
   try {
-    const json = JSON.parse(string)
-    cb(json)
+    json = JSON.parse(string)
   } catch (e) {
     throw e
   }
+  cb(json)
 }
 
 /*

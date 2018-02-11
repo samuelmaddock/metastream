@@ -67,8 +67,8 @@ ipcMain.on('platform-create-lobby', (event: Electron.Event, opts: ILobbyOptions)
 
   if (swarmServer) {
     log.error('Attempt to create new swarm server without closing existing server.')
-    event.sender.send('platform-create-lobby-result', false)
-    return
+    swarmServer.close()
+    swarmServer = null
   }
 
   serverOpts = opts
@@ -126,7 +126,7 @@ ipcMain.on('platform-join-lobby', async (event: Electron.Event, serverId: string
     await signalRenderer(socket, hostPublicKey)
     log(`Finished signaling connection to host ${serverId}`)
   } catch (e) {
-    log.error(`Failed to connect to peer ${hostPublicKey}`)
+    log.error(`Failed to connect to peer ${serverId}`)
   } finally {
     socket.destroy()
   }
