@@ -36,7 +36,6 @@ export class RTCServer extends NetServer {
 /** WebRTC peer connection. */
 export class RTCPeerConn extends NetConnection {
   private peer: SimplePeer.Instance;
-  private signalData?: SignalData;
   private signalDeferred: Deferred<SignalData> = new Deferred();
 
   constructor(id: NetUniqueId, peer: SimplePeer.Instance) {
@@ -51,7 +50,6 @@ export class RTCPeerConn extends NetConnection {
   }
 
   private onSignal = (signal: SignalData) => {
-    this.signalData = signal;
     this.signalDeferred.resolve(signal);
     this.emit('signal', signal)
   };

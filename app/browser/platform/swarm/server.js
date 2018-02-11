@@ -1,5 +1,6 @@
 import { NETWORK_TIMEOUT } from 'constants/network';
 import { EncryptedSocket } from './socket'
+import log from 'browser/log'
 
 const sodium = require('sodium-native')
 const discoverySwarm = require('discovery-swarm')
@@ -18,7 +19,7 @@ const SWARM_OPTS = {
 function getDiscoveryKey(tree) {
   var digest = new Buffer(32)
   sodium.crypto_generichash(digest, FRIENDSWARM, tree)
-  // console.debug(`FRIENDDISC digest=${digest.toString('hex')}, tree=${tree.toString('hex')}`)
+  // log.debug(`FRIENDDISC digest=${digest.toString('hex')}, tree=${tree.toString('hex')}`)
   return digest
 }
 
@@ -57,7 +58,7 @@ export function listen(opts, connectionHandler) {
   // Wait for connections to perform auth handshake with
   swarm.on('connection', async socket => {
     const address = socket.address().address
-    console.log('Local swarm connection', address)
+    log('Local swarm connection', address)
 
     let esocket
 
@@ -67,13 +68,11 @@ export function listen(opts, connectionHandler) {
         secretKey: opts.secretKey
       })
     } catch (e) {
-      console.error('Failed to auth peer\n', e)
+      log.error('Failed to auth peer\n', e)
       return
     }
 
-    console.log(`AUTHED WITH PEER! ${address}`)
-
-    // TODO: make sure handler closes socket
+    log(`AUTHED WITH PEER! ${address}`)
     connectionHandler(esocket, esocket.peerKey)
   })
 
@@ -99,7 +98,7 @@ export function connect(opts) {
 
     // Wait for connections and attempt to auth with host
     swarm.on('connection', async socket => {
-      console.log('Remote swarm connection', socket)
+      log('Remote swarm connection', socket)
 
       const esocket = await authConnection(socket, {
         publicKey: opts.publicKey,
@@ -107,7 +106,7 @@ export function connect(opts) {
         hostPublicKey
       })
 
-      console.log(`AUTHED WITH HOST! ${socket.address().address}`)
+      log(`AUTHED WITH HOST! ${socket.address().address}`)
 
       if (!timeout && !connected) {
         connected = true

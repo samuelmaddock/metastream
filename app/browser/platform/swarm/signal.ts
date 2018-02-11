@@ -2,51 +2,68 @@ import { BrowserWindow, ipcMain, ipcRenderer } from 'electron'
 import { EncryptedSocket } from './socket'
 import { Key } from './crypto'
 import { SignalData } from 'renderer/network/rtc'
+import { NETWORK_TIMEOUT } from '../../../constants/network'
 
 /** Relay signal data to renderer process */
-export async function signalRenderer(socket: EncryptedSocket, peerKey: Key): Promise<boolean> {
-  const keyStr = peerKey.toString('hex')
+export async function signalRenderer(socket: EncryptedSocket, peerKey: Key): Promise<void> {
+  return new Promise<void>((resolve, reject) => {
+    const keyStr = peerKey.toString('hex')
 
-  // TODO: better way to get the window we want
-  const win = BrowserWindow.getFocusedWindow()
-  const { webContents } = win
+    // TODO: better way to get the window we want
+    const win = BrowserWindow.getFocusedWindow()
+    const { webContents } = win
 
-  const relayReadSignal = (data: Buffer) => {
-    readJSON(data, (offer: SignalData) => {
-      webContents.send('rtc-peer-signal', keyStr, offer)
-    })
-  }
-  socket.on('data', relayReadSignal)
-
-  const relayWriteSignal = (event: Electron.Event, key: string, signal: SignalData) => {
-    if (event.sender === webContents && key === keyStr) {
-      writeJSON(socket, signal)
+    const relayReadSignal = (data: Buffer) => {
+      readJSON(data, (offer: SignalData) => {
+        webContents.send('rtc-peer-signal', keyStr, offer)
+      })
     }
-  }
-  ipcMain.on('rtc-peer-signal', relayWriteSignal)
+    socket.on('data', relayReadSignal)
 
-  const cleanup = () => {
-    ipcMain.removeListener('rtc-peer-signal', relayWriteSignal)
-    socket.destroy()
-    // TODO: unannounce DHT peer
-  }
+    const relayWriteSignal = (event: Electron.Event, key: string, signal: SignalData) => {
+      if (event.sender === webContents && key === keyStr) {
+        writeJSON(socket, signal)
+      }
+    }
+    ipcMain.on('rtc-peer-signal', relayWriteSignal)
 
-  return new Promise<boolean>((resolve, reject) => {
-    ipcMain.once('rtc-peer-connect', (event: Electron.Event, key: string) => {
+    let timeoutId: number | null
+
+    const onPeerConnect = (event: Electron.Event, key: string) => {
       if (event.sender === webContents && key === keyStr) {
         cleanup()
-        resolve(true)
+        resolve()
       }
-    })
+    }
 
-    ipcMain.once('rtc-peer-error', (event: Electron.Event, key: string) => {
+    const onPeerError = (event: Electron.Event, key: string) => {
       if (event.sender === webContents && key === keyStr) {
         cleanup()
         reject()
       }
-    })
+    }
+
+    const cleanup = () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId)
+        timeoutId = null
+      }
+
+      ipcMain.removeListener('rtc-peer-connect', onPeerConnect)
+      ipcMain.removeListener('rtc-peer-error', onPeerError)
+      ipcMain.removeListener('rtc-peer-signal', relayWriteSignal)
+      // TODO: unannounce DHT peer
+    }
+
+    ipcMain.once('rtc-peer-connect', onPeerConnect)
+    ipcMain.once('rtc-peer-error', onPeerError)
 
     webContents.send('rtc-peer-init', keyStr)
+
+    timeoutId = (setTimeout(() => {
+      cleanup()
+      reject()
+    }, NETWORK_TIMEOUT) as any) as number
   })
 }
 

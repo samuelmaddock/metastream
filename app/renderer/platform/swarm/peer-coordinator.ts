@@ -29,16 +29,21 @@ export class SwarmRTCPeerCoordinator extends EventEmitter implements IRTCPeerCoo
       ipcRenderer.send('rtc-peer-signal', peerId, signal)
     })
 
-    peer.once('connect', () => {
-      console.info(`[PeerCoordinator] Peer connected ${peerId}`)
-      ipcRenderer.send('rtc-peer-connect', peerId)
-    })
-
-    peer.once('error', () => {
+    const error = () => {
       console.info(`[PeerCoordinator] Peer errored ${peerId}`)
       ipcRenderer.send('rtc-peer-error', peerId)
       peer.close()
+    };
+
+    peer.once('connect', () => {
+      console.info(`[PeerCoordinator] Peer connected ${peerId}`)
+      ipcRenderer.send('rtc-peer-connect', peerId)
+      peer.removeListener('error', error)
+      peer.removeListener('close', error)
     })
+
+    peer.once('error', error)
+    peer.once('close', error)
   }
 
   private onSignal = (event: Electron.Event, peerId: string, signal: SimplePeer.SignalData) => {

@@ -78,23 +78,13 @@ ipcMain.on('platform-create-lobby', (event: Electron.Event, opts: ILobbyOptions)
     const keyStr = peerKey.toString('hex')
     log(`New swarm connection from ${keyStr}`)
 
-    let result
-
     try {
-      result = await Promise.race([
-        signalRenderer(esocket, peerKey),
-        sleep(NETWORK_TIMEOUT)
-      ]);
+      await signalRenderer(esocket, peerKey)
+      log(`${keyStr} connected to renderer`)
     } catch (e) {
-      result = false
+      log.error(`Failed to connect to peer ${keyStr}`)
     } finally {
       esocket.destroy()
-    }
-
-    if (result) {
-      log(`${keyStr} connected to renderer`)
-    } else {
-      log.error(`Failed to connect to peer ${keyStr}`)
     }
   })
 
@@ -132,7 +122,13 @@ ipcMain.on('platform-join-lobby', async (event: Electron.Event, serverId: string
 
   event.sender.send('platform-join-lobby-result', success)
 
-  await signalRenderer(socket, hostPublicKey)
-  log(`Finished signaling connection to host ${serverId}`)
+  try {
+    await signalRenderer(socket, hostPublicKey)
+    log(`Finished signaling connection to host ${serverId}`)
+  } catch (e) {
+    log.error(`Failed to connect to peer ${hostPublicKey}`)
+  } finally {
+    socket.destroy()
+  }
 })
 
