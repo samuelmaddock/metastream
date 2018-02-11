@@ -61,6 +61,7 @@ export async function signalRenderer(socket: EncryptedSocket, peerKey: Key): Pro
     webContents.send('rtc-peer-init', keyStr)
 
     timeoutId = (setTimeout(() => {
+      webContents.send('rtc-peer-timeout', keyStr);
       cleanup()
       reject()
     }, NETWORK_TIMEOUT) as any) as number

@@ -17,6 +17,7 @@ export class SwarmRTCPeerCoordinator extends EventEmitter implements IRTCPeerCoo
     super()
     ipcRenderer.on('rtc-peer-init', this.onInitPeer)
     ipcRenderer.on('rtc-peer-signal', this.onSignal)
+    ipcRenderer.on('rtc-peer-timeout', this.onTimeout)
   }
 
   // TODO: 'destroy' method?
@@ -50,6 +51,13 @@ export class SwarmRTCPeerCoordinator extends EventEmitter implements IRTCPeerCoo
     if (this.connecting.has(peerId)) {
       const peer = this.connecting.get(peerId)!
       peer.signal(signal)
+    }
+  }
+
+  private onTimeout = (event: Electron.Event, peerId: string) => {
+    if (this.connecting.has(peerId)) {
+      const peer = this.connecting.get(peerId)!
+      peer.close()
     }
   }
 
