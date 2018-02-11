@@ -100,7 +100,7 @@ export class _LobbyPage extends Component<PrivateProps> {
       this.server!.once('connect', resolve)
     })
 
-    const conn = await Promise.all([
+    const conn = await Promise.race([
       peerPromise,
       sleep(NETWORK_TIMEOUT)
     ])

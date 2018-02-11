@@ -34,6 +34,10 @@ abstract class NetServer extends EventEmitter implements INetServerEvents {
     const id = conn.id.toString();
     this.connections[id] = undefined;
     conn.removeAllListeners();
+
+    if (!this.isHost) {
+      this.close()
+    }
   }
 
   protected getClientById(clientId: NetUniqueId) {
@@ -55,6 +59,8 @@ abstract class NetServer extends EventEmitter implements INetServerEvents {
     });
 
     this.connections = {};
+
+    this.emit('close')
   }
 
   protected receive(conn: NetConnection, data: Buffer) {

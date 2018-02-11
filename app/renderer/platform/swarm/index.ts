@@ -10,8 +10,8 @@ type SwarmId = string
 
 export class SwarmPlatform extends Platform {
   private id: NetUniqueId<SwarmId>
-  private connected: boolean;
-  private isHosting: boolean;
+  private connected: boolean = false
+  private isHosting: boolean = false
 
   constructor() {
     super()
@@ -65,6 +65,7 @@ export class SwarmPlatform extends Platform {
     ipcRenderer.send('platform-leave-lobby')
     this.connected = false
     this.isHosting = false
+
     return true
   }
 

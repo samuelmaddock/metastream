@@ -174,7 +174,7 @@ export class EncryptedSocket extends EventEmitter {
     box.copy(msg, nonce.length)
 
     this._encode.write(msg)
-    log(`Write ${msg.length} to ${this.peerKey.toString('hex')}`)
+    log.debug(`Write ${msg.length} to ${this.peerKey.toString('hex')}`)
   }
 
   _onReceive(data) {
@@ -182,7 +182,7 @@ export class EncryptedSocket extends EventEmitter {
       throw new Error(`EncryptedSocket failed to receive. Missing 'sharedKey'`)
     }
 
-    log(`Received ${data.length} from ${this.peerKey.toString('hex')}`)
+    log.debug(`Received ${data.length} from ${this.peerKey.toString('hex')}`)
 
     const nonce = data.slice(0, sodium.crypto_box_NONCEBYTES)
     const box = data.slice(sodium.crypto_box_NONCEBYTES, data.length)
@@ -201,6 +201,7 @@ export class EncryptedSocket extends EventEmitter {
       this.socket.destroy()
       this.socket = null
     }
+    this.emit('close')
   }
 
   _error(err) {

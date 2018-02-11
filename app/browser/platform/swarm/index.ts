@@ -98,8 +98,6 @@ ipcMain.on('platform-leave-lobby', (event: Electron.Event) => {
     swarmServer.close()
     swarmServer = null
     log('Closed swarm server connection')
-  } else {
-    log.error('Attempt to leave unconnected swarm server')
   }
 })
 

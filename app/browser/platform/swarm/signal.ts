@@ -44,6 +44,12 @@ export async function signalRenderer(socket: EncryptedSocket, peerKey: Key): Pro
       }
     }
 
+    const onSocketClose = () => {
+      cleanup()
+      reject()
+    }
+    socket.once('close', onSocketClose)
+
     const cleanup = () => {
       if (timeoutId) {
         clearTimeout(timeoutId)
@@ -53,6 +59,8 @@ export async function signalRenderer(socket: EncryptedSocket, peerKey: Key): Pro
       ipcMain.removeListener('rtc-peer-connect', onPeerConnect)
       ipcMain.removeListener('rtc-peer-error', onPeerError)
       ipcMain.removeListener('rtc-peer-signal', relayWriteSignal)
+      socket.removeListener('close', onSocketClose)
+
       // TODO: unannounce DHT peer
     }
 

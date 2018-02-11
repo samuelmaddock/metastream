@@ -1,7 +1,8 @@
 import { BrowserWindow } from 'electron'
 
 const _log = (type: string, ...args: any[]) => {
-  (console as any)[type].apply(console, args)
+  const clog = (console as any)[type] || console.log
+  clog.apply(console, args)
   const win = BrowserWindow.getAllWindows().forEach(win => {
     win.webContents.send('log', { type, args })
   })

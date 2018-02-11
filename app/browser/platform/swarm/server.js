@@ -85,16 +85,51 @@ export function connect(opts) {
     const discoveryKey = getDiscoveryKey(hostPublicKey)
     const swarm = createSwarm({ id: discoveryKey })
 
+    let queue = []
+    let connecting = false
+
     const cleanup = () => {
       if (timeoutId) {
         clearTimeout(timeoutId)
         timeoutId = null
       }
 
-      // TODO: will closing swarm also destroy socket?
-      setTimeout(() => {
-        swarm.close()
-      }, NETWORK_TIMEOUT)
+      queue.forEach(socket => socket.destroy())
+      queue = []
+
+      swarm.close()
+    }
+
+    async function attemptConnect() {
+      connecting = true
+
+      let socket
+      while (!connected && !timeout && (socket = queue.shift())) {
+        let esocket
+        try {
+          esocket = await authConnection(socket, {
+            publicKey: opts.publicKey,
+            secretKey: opts.secretKey,
+            hostPublicKey
+          })
+        } catch (e) {
+          log.error('Failed to auth peer\n', e)
+          continue
+        }
+
+        const address = socket.address().address
+        log(`AUTHED WITH HOST! ${address}`)
+
+        if (!timeout && !connected) {
+          connected = true
+          cleanup()
+          resolve(esocket)
+        } else {
+          esocket.destroy()
+        }
+      }
+
+      connecting = false
     }
 
     // Wait for connections and attempt to auth with host
@@ -102,20 +137,10 @@ export function connect(opts) {
       const address = socket.address().address
       log(`Remote swarm connection ${address}`)
 
-      const esocket = await authConnection(socket, {
-        publicKey: opts.publicKey,
-        secretKey: opts.secretKey,
-        hostPublicKey
-      })
+      queue.push(socket)
 
-      log(`AUTHED WITH HOST! ${address}`)
-
-      if (!timeout && !connected) {
-        connected = true
-        cleanup()
-        resolve(esocket)
-      } else {
-        esocket.destroy()
+      if (!connecting) {
+        attemptConnect()
       }
     })
 
