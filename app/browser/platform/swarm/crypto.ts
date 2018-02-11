@@ -1,11 +1,11 @@
-import sodium from 'sodium-universal'
+import sodium from 'sodium-native'
 
 export type Key = Buffer
 export type KeyHexString = string
 
 export type KeyPair = {
-  publicKey: Key;
-  secretKey: Key;
+  publicKey: Key
+  secretKey: Key
 }
 
 export function keyPair(seed?: string): KeyPair {

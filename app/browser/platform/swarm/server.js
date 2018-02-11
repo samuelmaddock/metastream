@@ -1,7 +1,7 @@
 import { NETWORK_TIMEOUT } from 'constants/network';
 import { EncryptedSocket } from './socket'
 
-const sodium = require('sodium-universal')
+const sodium = require('sodium-native')
 const discoverySwarm = require('discovery-swarm')
 const swarmDefaults = require('dat-swarm-defaults')
 
