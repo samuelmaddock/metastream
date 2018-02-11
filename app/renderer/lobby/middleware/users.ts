@@ -1,21 +1,22 @@
-import { Middleware, MiddlewareAPI, Action, Dispatch } from 'redux';
-import { actionCreator, isType } from 'utils/redux';
-import { Platform } from 'renderer/platform/types';
-import { PlatformService } from 'renderer/platform';
-import { localUser, NetConnection, NetServer } from 'renderer/network';
-import { NetMiddlewareOptions, NetActions } from 'renderer/network/actions';
+import { Middleware, MiddlewareAPI, Action, Dispatch } from 'redux'
+import { actionCreator, isType } from 'utils/redux'
+import { Platform } from 'renderer/platform/types'
+import { PlatformService } from 'renderer/platform'
+import { localUser, NetConnection, NetServer } from 'renderer/network'
+import { NetMiddlewareOptions, NetActions } from 'renderer/network/actions'
 
 interface IUserPayload {
-  conn: NetConnection;
-  name: string;
+  conn: NetConnection
+  name: string
 }
 
-export const addUser = actionCreator<IUserPayload>('ADD_USER');
-export const removeUser = actionCreator<string>('REMOVE_USER');
+export const addUser = actionCreator<IUserPayload>('ADD_USER')
+export const removeUser = actionCreator<string>('REMOVE_USER')
+export const clearUsers = actionCreator<string>('CLEAR_USERS')
 
 export const usersMiddleware = (): Middleware => {
   return <S extends Object>(store: MiddlewareAPI<S>) => {
-    const { dispatch, getState } = store;
+    const { dispatch, getState } = store
 
     let server: NetServer | null, host: boolean
 
@@ -30,7 +31,7 @@ export const usersMiddleware = (): Middleware => {
             conn: localUser(),
             name: PlatformService.getUserName(localUser().id)
           })
-        );
+        )
 
         server.on('connect', (conn: NetConnection) => {
           dispatch(
@@ -38,18 +39,19 @@ export const usersMiddleware = (): Middleware => {
               conn,
               name: PlatformService.getUserName(conn.id)
             })
-          );
-        });
+          )
+        })
 
         server.on('disconnect', (conn: NetConnection) => {
-          dispatch(removeUser(conn.id.toString()));
-        });
+          dispatch(removeUser(conn.id.toString()))
+        })
       }
     }
 
     const destroy = () => {
       server = null
       host = false
+      dispatch(clearUsers())
     }
 
     return (next: Dispatch<S>) => <A extends Action, B>(action: A): B | Action => {
@@ -61,7 +63,7 @@ export const usersMiddleware = (): Middleware => {
         return next(<A>action)
       }
 
-      return next(<A>action);
-    };
-  };
-};
+      return next(<A>action)
+    }
+  }
+}

@@ -124,6 +124,7 @@ export const netSyncMiddleware = (): Middleware => {
     const destroy = () => {
       server = null
       host = false
+      COMMIT_NUMBER = 0
     }
 
     /** Get tree containing only replicated state. */
