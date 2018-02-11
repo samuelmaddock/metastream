@@ -21,8 +21,18 @@ build/Release
 
 # Dependency directory
 # https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
-node_modules
+node_modules/*
 app/node_modules
+
+# Checkin sodium-native custom builds
+!node_modules/sodium-native
+node_modules/sodium-native/*
+!node_modules/sodium-native/prebuilds
+node_modules/sodium-native/prebuilds/*
+!node_modules/sodium-native/prebuilds/darwin-x64
+node_modules/sodium-native/prebuilds/darwin-x64/*
+!node_modules/sodium-native/prebuilds/darwin-x64/node-55.node
+
 
 # OSX
 .DS_Store
