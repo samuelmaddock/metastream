@@ -3,8 +3,6 @@ import { NETWORK_TIMEOUT } from '../../../constants/network'
 
 const EventEmitter = require('events').EventEmitter
 const sodium = require('sodium-native')
-
-// TODO: just use sodium-universal directly?
 const enc = require('sodium-encryption')
 
 const lpstream = require('length-prefixed-stream')
@@ -13,6 +11,27 @@ const SimplePeer = require('simple-peer')
 const SUCCESS = new Buffer('chat-auth-success')
 
 const AUTH_TIMEOUT = 5000
+
+// FIX: for https://github.com/nodejs/node/pull/14330
+const Decoder = lpstream.decode
+Decoder.prototype._destroy = function () {
+  this._destroyed = true
+}
+Decoder.prototype._transform = function (data, enc, cb) {
+  var offset = 0
+  while (!this._destroyed && offset < data.length) {
+    if (this._missing && this._missing > 1000000) {
+      // HACK: some bug causes this, idk what
+      break
+      cb()
+    } else if (this._missing) {
+      offset = this._parseMessage(data, offset)
+    } else {
+      offset = this._parseLength(data, offset)
+    }
+  }
+  cb()
+}
 
 function pub2auth(publicKey) {
   const publicAuthKey = new Buffer(sodium.crypto_box_PUBLICKEYBYTES)
@@ -53,6 +72,7 @@ export class EncryptedSocket extends EventEmitter {
     this.publicAuthKey = pub2auth(publicKey)
     this.secretAuthKey = secret2auth(secretKey)
 
+    this._error = this._error.bind(this)
     this._onReceive = this._onReceive.bind(this)
     this._authTimeout = this._authTimeout.bind(this)
 
@@ -84,6 +104,7 @@ export class EncryptedSocket extends EventEmitter {
     this._decode = lpstream.decode()
 
     this._decode.on('data', this._onReceive)
+    this._decode.once('error', this._error)
 
     this._encode.pipe(this.socket)
     this.socket.pipe(this._decode)
@@ -184,6 +205,10 @@ export class EncryptedSocket extends EventEmitter {
   }
 
   write(data) {
+    if (!this.socket) {
+      return
+    }
+
     if (!this.sharedKey) {
       this._error(`EncryptedSocket failed to write. Missing 'sharedKey'`)
       return
@@ -201,6 +226,11 @@ export class EncryptedSocket extends EventEmitter {
   }
 
   _onReceive(data) {
+    if (!this.socket) {
+      // Received chunk after socket destroyed
+      return
+    }
+
     if (!this.sharedKey) {
       this._error(`EncryptedSocket failed to receive. Missing 'sharedKey'`)
       return
@@ -230,6 +260,11 @@ export class EncryptedSocket extends EventEmitter {
       this.socket.removeAllListeners()
       this.socket.destroy()
       this.socket = null
+    }
+    if (this._decode) {
+      this._encode.destroy()
+      this._decode.destroy()
+      this._decode = null
     }
     this.emit('close')
   }
