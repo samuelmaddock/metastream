@@ -6,7 +6,7 @@ const sodium = require('sodium-native')
 const discoverySwarm = require('discovery-swarm')
 const swarmDefaults = require('dat-swarm-defaults')
 
-const FRIENDSWARM = new Buffer('swarm3')
+const DISCOVERY_HASH = new Buffer('metastream')
 
 // +1 from Dat protocol default to reduce conflict
 const DEFAULT_PORT = 3283
@@ -18,20 +18,15 @@ const SWARM_OPTS = {
 // Get discovery key from original key
 function getDiscoveryKey(tree) {
   var digest = new Buffer(32)
-  sodium.crypto_generichash(digest, FRIENDSWARM, tree)
-  // log.debug(`FRIENDDISC digest=${digest.toString('hex')}, tree=${tree.toString('hex')}`)
+  sodium.crypto_generichash(digest, DISCOVERY_HASH, tree)
   return digest
 }
 
 function createSwarm(opts) {
   const swarm = discoverySwarm(swarmDefaults(SWARM_OPTS))
+  swarm.on('error', () => swarm.listen(0))
   swarm.listen(DEFAULT_PORT)
-  swarm.join(opts.id, { announce: opts.announce ? opts.announce : true })
-
-  swarm.on('error', function() {
-    swarm.listen(0)
-  })
-
+  swarm.join(opts.id, { announce: true })
   return swarm
 }
 
