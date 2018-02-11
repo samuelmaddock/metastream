@@ -31,14 +31,14 @@ export async function signalRenderer(socket: EncryptedSocket, peerKey: Key): Pro
     let timeoutId: number | null
 
     const onPeerConnect = (event: Electron.Event, key: string) => {
-      if (event.sender === webContents && key === keyStr) {
+      if (event.sender.id === webContents.id && key === keyStr) {
         cleanup()
         resolve()
       }
     }
 
     const onPeerError = (event: Electron.Event, key: string) => {
-      if (event.sender === webContents && key === keyStr) {
+      if (event.sender.id === webContents.id && key === keyStr) {
         cleanup()
         reject()
       }
