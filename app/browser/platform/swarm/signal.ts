@@ -4,6 +4,7 @@ import { Key } from './crypto'
 import { SignalData } from 'renderer/network/rtc'
 import { NETWORK_TIMEOUT } from 'constants/network'
 import log from 'browser/log';
+import { SimplePeerData } from 'simple-peer';
 
 /** Relay signal data to renderer process */
 export async function signalRenderer(socket: EncryptedSocket, peerKey: Key): Promise<void> {
@@ -16,9 +17,8 @@ export async function signalRenderer(socket: EncryptedSocket, peerKey: Key): Pro
 
     const relayReadSignal = (data: Buffer) => {
       log.debug(`SIGNAL read [${data.length}] ${keyStr}`)
-      readJSON(data, (offer: SignalData) => {
-        webContents.send('rtc-peer-signal', keyStr, offer)
-      })
+      const signal = readJSON(data)
+      webContents.send('rtc-peer-signal', keyStr, signal)
     }
     socket.on('data', relayReadSignal)
 
@@ -62,6 +62,7 @@ export async function signalRenderer(socket: EncryptedSocket, peerKey: Key): Pro
       ipcMain.removeListener('rtc-peer-error', onPeerError)
       ipcMain.removeListener('rtc-peer-signal', relayWriteSignal)
       socket.removeListener('close', onSocketClose)
+      socket.removeListener('data', relayReadSignal)
 
       // TODO: unannounce DHT peer
     }
@@ -85,7 +86,7 @@ function writeJSON(stream: any, object: SignalData) {
   stream.write(buf)
 }
 
-function readJSON(data: Buffer, cb: (data: SignalData) => void) {
+function readJSON(data: Buffer): SimplePeerData {
   let string = data.toString()
   let json
   try {
@@ -93,7 +94,7 @@ function readJSON(data: Buffer, cb: (data: SignalData) => void) {
   } catch (e) {
     throw e
   }
-  cb(json)
+  return json
 }
 
 /*

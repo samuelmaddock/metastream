@@ -1,4 +1,5 @@
 import log from 'browser/log'
+import { NETWORK_TIMEOUT } from '../../../constants/network'
 
 const EventEmitter = require('events').EventEmitter
 const sodium = require('sodium-native')
@@ -51,19 +52,27 @@ export class EncryptedSocket extends EventEmitter {
     this.secretAuthKey = secret2auth(secretKey)
 
     this._onReceive = this._onReceive.bind(this)
+    this._authTimeout = this._authTimeout.bind(this)
   }
 
   /**
    * Connect to peer
-   * @param {*} peerKey
+   * @param {*} hostKey If present, authenticate with the host
    * @param {*} initiator Whether this connection is initiating
    */
-  connect(peerKey) {
-    if (peerKey) {
-      this._authHost(peerKey)
+  connect(hostKey) {
+    if (hostKey) {
+      this._authHost(hostKey)
     } else {
       this._authPeer()
     }
+
+    this._authTimeoutId = setTimeout(this._authTimeout, NETWORK_TIMEOUT)
+  }
+
+  _authTimeout() {
+    this._authTimeoutId = null
+    this._error(`Auth timed out`)
   }
 
   _setupSocket() {
@@ -108,7 +117,7 @@ export class EncryptedSocket extends EventEmitter {
     /** 3. Receive auth success */
     function receiveAuthSuccess(data) {
       if (data.equals(SUCCESS)) {
-        self.emit('connection')
+        self._onAuthed()
       }
     }
 
@@ -152,13 +161,22 @@ export class EncryptedSocket extends EventEmitter {
     function receiveChallengeVerification(decryptedChallenge) {
       if (challenge.equals(decryptedChallenge)) {
         self.write(SUCCESS)
-        self.emit('connection')
+        self._onAuthed()
       } else {
         self._error('Failed to authenticate peer')
       }
     }
 
     this.socket.once('data', receiveAuthRequest)
+  }
+
+  _onAuthed() {
+    if (this._authTimeoutId) {
+      clearTimeout(this._authTimeoutId)
+      this._authTimeoutId = null
+    }
+
+    this.emit('connection')
   }
 
   write(data) {
@@ -205,6 +223,7 @@ export class EncryptedSocket extends EventEmitter {
   }
 
   _error(err) {
+    log.error(`[EncryptedSocket]`, err)
     this.destroy()
     this.emit('error', err)
   }

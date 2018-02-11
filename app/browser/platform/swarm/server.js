@@ -1,4 +1,4 @@
-import { NETWORK_TIMEOUT } from 'constants/network';
+import { NETWORK_TIMEOUT } from 'constants/network'
 import { EncryptedSocket } from './socket'
 import log from 'browser/log'
 
@@ -39,14 +39,10 @@ async function authConnection(socket, opts) {
   return new Promise((resolve, reject) => {
     const esocket = new EncryptedSocket(socket, opts.publicKey, opts.secretKey)
 
-    esocket.once('connection', () => {
-      resolve(esocket)
-    })
-    esocket.once('error', (err) => {
-      log(`Socket error: ${err}`)
-      reject()
-    })
+    esocket.once('connection', () => resolve(esocket))
+    esocket.once('close', reject)
 
+    // TODO: timeout
     esocket.connect(opts.hostPublicKey)
   })
 }
