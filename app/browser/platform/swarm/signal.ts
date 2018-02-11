@@ -42,13 +42,26 @@ export async function signalRenderer(socket: EncryptedSocket, peerKey: Key): Pro
     const onPeerError = (event: Electron.Event, key: string) => {
       if (event.sender.id === webContents.id && key === keyStr) {
         cleanup()
-        reject()
+        reject(`Peer error`)
       }
     }
 
+    const setupTimeout = (delay: number) => {
+      if (timeoutId) {
+        clearTimeout(timeoutId)
+      }
+      timeoutId = (setTimeout(() => {
+        cleanup()
+        webContents.send('rtc-peer-timeout', keyStr);
+        reject(`Signalling timeout`)
+      }, delay) as any) as number
+    }
+
     const onSocketClose = () => {
-      cleanup()
-      reject()
+      log.debug(`Signaling connection closed`)
+
+      // Give small delay to allow time for connect IPC
+      setupTimeout(2000)
     }
     socket.once('close', onSocketClose)
 
@@ -63,8 +76,6 @@ export async function signalRenderer(socket: EncryptedSocket, peerKey: Key): Pro
       ipcMain.removeListener('rtc-peer-signal', relayWriteSignal)
       socket.removeListener('close', onSocketClose)
       socket.removeListener('data', relayReadSignal)
-
-      // TODO: unannounce DHT peer
     }
 
     ipcMain.once('rtc-peer-connect', onPeerConnect)
@@ -73,11 +84,7 @@ export async function signalRenderer(socket: EncryptedSocket, peerKey: Key): Pro
     log(`INITING SIGNAL FOR ${keyStr}`)
     webContents.send('rtc-peer-init', keyStr)
 
-    timeoutId = (setTimeout(() => {
-      webContents.send('rtc-peer-timeout', keyStr);
-      cleanup()
-      reject()
-    }, NETWORK_TIMEOUT) as any) as number
+    setupTimeout(NETWORK_TIMEOUT)
   })
 }
 
@@ -96,24 +103,3 @@ function readJSON(data: Buffer): SimplePeerData {
   }
   return json
 }
-
-/*
-function signalPeer(socket, opts) {
-  return new Promise((resolve, reject) => {
-      const peer = SimplePeer(opts)
-      peer.once('error', reject)
-
-      const writeSignal = answer => writeJSON(socket, answer)
-      const readSignal = data => readJSON(data, offer => peer.signal(offer))
-
-      peer.on('signal', writeSignal)
-      socket.on('data', readSignal)
-
-      peer.once('connect', () => {
-          peer.removeListener('signal', writeSignal)
-          socket.removeListener('data', readSignal)
-          resolve(peer)
-      })
-  })
-}
-*/

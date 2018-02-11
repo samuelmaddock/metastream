@@ -129,6 +129,7 @@ export function connect(opts) {
           // close swarm when we're done with the socket
           esocket.once('close', () => {
             swarm.close()
+            // TODO: unannounce to DHT
           })
 
           resolve(esocket)

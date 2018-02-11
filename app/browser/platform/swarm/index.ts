@@ -81,13 +81,14 @@ ipcMain.on('platform-create-lobby', (event: Electron.Event, opts: ILobbyOptions)
       log(`New swarm connection from ${keyStr}`)
 
       try {
+        log(`${keyStr} signaling renderer`)
         await signalRenderer(esocket, peerKey)
         log(`${keyStr} connected to renderer`)
       } catch (e) {
-        log.error(`Failed to connect to peer ${keyStr}`)
-      } finally {
-        esocket.destroy()
+        log.error(`Failed to connect to peer ${keyStr}:`, e)
       }
+
+      esocket.destroy()
     }
   )
 
@@ -126,9 +127,9 @@ ipcMain.on('platform-join-lobby', async (event: Electron.Event, serverId: string
       await signalRenderer(esocket, hostPublicKey)
       log(`Finished signaling connection to host ${serverId}`)
     } catch (e) {
-      log.error(`Failed to connect to peer ${serverId}`)
-    } finally {
-      esocket.destroy()
+      log.error(`Failed to connect to peer ${serverId}\n`, e)
     }
+
+    esocket.destroy()
   }
 })

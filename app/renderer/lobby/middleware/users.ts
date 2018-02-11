@@ -53,13 +53,12 @@ export const usersMiddleware = (): Middleware => {
     }
 
     return (next: Dispatch<S>) => <A extends Action, B>(action: A): B | Action => {
-      if (!server) {
-        if (isType(action, NetActions.connect)) {
-          init(action.payload)
-        } else if (isType(action, NetActions.disconnect)) {
-          destroy()
-        }
-        return next(<A>action);
+      if (isType(action, NetActions.connect)) {
+        init(action.payload)
+        return next(<A>action)
+      } else if (isType(action, NetActions.disconnect)) {
+        destroy()
+        return next(<A>action)
       }
 
       return next(<A>action);

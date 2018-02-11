@@ -78,6 +78,8 @@ export class _LobbyPage extends Component<PrivateProps> {
       peerCoord
     })
 
+    this.server.once('close', this.disconnect)
+
     this.props.dispatch(
       NetActions.connect({
         server: this.server!,
@@ -118,8 +120,13 @@ export class _LobbyPage extends Component<PrivateProps> {
   }
 
   private onConnectionFailed(): void {
-    // TODO: present failure reason to user
-    console.error('Failed to join lobby')
+    this.disconnect('Failed to join lobby')
+  }
+
+  private disconnect = (reason?: string) => {
+    // TODO: display reason
+    reason = reason || 'Disconnected'
+    console.info(reason)
     this.props.dispatch(push('/'))
   }
 
@@ -129,9 +136,11 @@ export class _LobbyPage extends Component<PrivateProps> {
 
   componentWillUnmount(): void {
     if (this.server) {
-      PlatformService.leaveLobby(this.lobbyId || '')
-      this.server.close()
       this.props.dispatch(NetActions.disconnect())
+      PlatformService.leaveLobby(this.lobbyId || '')
+      this.server.removeAllListeners()
+      this.server.close()
+      this.server = undefined
     }
   }
 

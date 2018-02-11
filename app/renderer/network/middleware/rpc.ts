@@ -106,13 +106,12 @@ export const netRpcMiddleware = (): Middleware => {
     return (next: Dispatch<S>) => <A extends RpcAction>(
       action: A
     ): Action | RpcMiddlewareResult => {
-      if (!server) {
-        if (isType(action, NetActions.connect)) {
-          init(action.payload)
-        } else if (isType(action, NetActions.disconnect)) {
-          destroy()
-        }
-        return next(<A>action);
+      if (isType(action, NetActions.connect)) {
+        init(action.payload)
+        return next(<A>action)
+      } else if (isType(action, NetActions.disconnect)) {
+        destroy()
+        return next(<A>action)
       }
 
       // TODO: check for RPC special prop
