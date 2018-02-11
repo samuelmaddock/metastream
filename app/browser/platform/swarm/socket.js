@@ -224,7 +224,7 @@ export class EncryptedSocket extends EventEmitter {
 
   _error(err) {
     log.error(`[EncryptedSocket]`, err)
-    this.destroy()
     this.emit('error', err)
+    this.destroy()
   }
 }

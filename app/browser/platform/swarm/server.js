@@ -40,6 +40,7 @@ async function authConnection(socket, opts) {
     const esocket = new EncryptedSocket(socket, opts.publicKey, opts.secretKey)
 
     esocket.once('connection', () => resolve(esocket))
+    esocket.once('error', () => {})
     esocket.once('close', reject)
 
     // TODO: timeout

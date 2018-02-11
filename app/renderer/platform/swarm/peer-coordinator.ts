@@ -20,7 +20,14 @@ export class SwarmRTCPeerCoordinator extends EventEmitter implements IRTCPeerCoo
     ipcRenderer.on('rtc-peer-timeout', this.onTimeout)
   }
 
-  // TODO: 'destroy' method?
+  close() {
+    this.connecting.forEach(conn => conn.close())
+    this.connecting.clear()
+
+    ipcRenderer.removeListener('rtc-peer-init', this.onInitPeer)
+    ipcRenderer.removeListener('rtc-peer-signal', this.onSignal)
+    ipcRenderer.removeListener('rtc-peer-timeout', this.onTimeout)
+  }
 
   private onInitPeer = async (event: Electron.Event, peerId: string) => {
     console.debug(`[PeerCoordinator] Init ${peerId}`)
@@ -31,8 +38,8 @@ export class SwarmRTCPeerCoordinator extends EventEmitter implements IRTCPeerCoo
       ipcRenderer.send('rtc-peer-signal', peerId, signal)
     })
 
-    const error = () => {
-      console.info(`[PeerCoordinator] Peer errored ${peerId}`)
+    const error = (e: Error) => {
+      console.error(`[PeerCoordinator] Peer errored ${peerId}\n`, e)
       ipcRenderer.send('rtc-peer-error', peerId)
       peer.close()
     };

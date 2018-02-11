@@ -34,6 +34,7 @@ abstract class NetConnection extends EventEmitter {
 
   protected onClose(): void {
     this.emit('close')
+    this.removeAllListeners()
   }
 
   protected onConnect = (): void => {

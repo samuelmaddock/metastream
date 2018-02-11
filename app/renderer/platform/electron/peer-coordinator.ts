@@ -46,6 +46,10 @@ export class ElectronRTCPeerCoordinator extends EventEmitter implements IRTCPeer
     this.onConnect();
   }
 
+  close() {
+    this.lobby.removeListener('message', this.onReceive)
+  }
+
   private createPeer(userId: string): RTCPeerConn {
     const peer = new SimplePeer({
       initiator: this.isLobbyOwner,
