@@ -4,7 +4,7 @@ import { Key } from './crypto'
 import { SignalData } from 'renderer/network/rtc'
 
 /** Relay signal data to renderer process */
-export async function signalRenderer(socket: EncryptedSocket, peerKey: Key): Promise<void> {
+export async function signalRenderer(socket: EncryptedSocket, peerKey: Key): Promise<boolean> {
   const keyStr = peerKey.toString('hex')
 
   // TODO: better way to get the window we want
@@ -31,11 +31,11 @@ export async function signalRenderer(socket: EncryptedSocket, peerKey: Key): Pro
     // TODO: unannounce DHT peer
   }
 
-  return new Promise<void>((resolve, reject) => {
+  return new Promise<boolean>((resolve, reject) => {
     ipcMain.once('rtc-peer-connect', (event: Electron.Event, key: string) => {
       if (event.sender === webContents && key === keyStr) {
         cleanup()
-        resolve()
+        resolve(true)
       }
     })
 

@@ -10,6 +10,8 @@ import * as swarm from './server'
 import { EncryptedSocket } from './socket'
 import { SimplePeer } from 'simple-peer';
 import { signalRenderer } from 'browser/platform/swarm/signal';
+import { NETWORK_TIMEOUT } from 'constants/network';
+import { sleep } from 'utils/async';
 
 let localId: string
 let localKeyPair: KeyPair
@@ -76,10 +78,20 @@ ipcMain.on('platform-create-lobby', (event: Electron.Event, opts: ILobbyOptions)
     const keyStr = peerKey.toString('hex')
     log(`New swarm connection from ${keyStr}`)
 
+    let result
+
     try {
-      await signalRenderer(esocket, peerKey)
-      log(`${keyStr} connected to renderer`)
+      result = await Promise.race([
+        signalRenderer(esocket, peerKey),
+        sleep(NETWORK_TIMEOUT)
+      ]);
     } catch (e) {
+      result = false
+    }
+
+    if (result) {
+      log(`${keyStr} connected to renderer`)
+    } else {
       log.error(`Failed to connect to peer ${keyStr}`)
     }
   })
