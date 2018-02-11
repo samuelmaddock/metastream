@@ -113,6 +113,8 @@ export function connect(opts) {
         connected = true
         cleanup()
         resolve(esocket)
+      } else {
+        esocket.destroy()
       }
     })
 

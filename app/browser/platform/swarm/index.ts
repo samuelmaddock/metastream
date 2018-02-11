@@ -87,6 +87,8 @@ ipcMain.on('platform-create-lobby', (event: Electron.Event, opts: ILobbyOptions)
       ]);
     } catch (e) {
       result = false
+    } finally {
+      esocket.destroy()
     }
 
     if (result) {
