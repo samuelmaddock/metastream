@@ -13,6 +13,7 @@ export interface INetServerOptions {
 abstract class NetServer extends EventEmitter implements INetServerEvents {
   protected connections: Map<string, NetConnection> = new Map()
   protected isHost: boolean
+  protected connected: boolean = false
 
   constructor(opts: INetServerOptions) {
     super()
@@ -35,15 +36,18 @@ abstract class NetServer extends EventEmitter implements INetServerEvents {
     this.connections.set(id, conn)
     conn.once('close', () => this.disconnect(conn))
     conn.on('data', (data: Buffer) => this.receive(conn, data))
+
+    this.connected = true
     this.emit('connect', conn)
   }
 
   protected disconnect(conn: NetConnection): void {
-    this.emit('disconnect', conn)
-    console.log(`[NetServer] Client ${conn} has disconnected`)
     const id = conn.id.toString()
     this.connections.delete(id)
+    this.emit('disconnect', conn)
     conn.removeAllListeners()
+
+    console.log(`[NetServer] Client ${conn} has disconnected`)
 
     if (!this.isHost) {
       this.close()
@@ -59,9 +63,12 @@ abstract class NetServer extends EventEmitter implements INetServerEvents {
   }
 
   close(): void {
-    this.forEachClient(conn => conn.close())
-    this.connections.clear()
-    this.emit('close')
+    if (this.connected) {
+      this.forEachClient(conn => conn.close())
+      this.connections.clear()
+      this.connected = false
+      this.emit('close')
+    }
   }
 
   protected receive(conn: NetConnection, data: Buffer) {

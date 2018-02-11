@@ -12,6 +12,8 @@ const SimplePeer = require('simple-peer')
 
 const SUCCESS = new Buffer('chat-auth-success')
 
+const AUTH_TIMEOUT = 5000
+
 function pub2auth(publicKey) {
   const publicAuthKey = new Buffer(sodium.crypto_box_PUBLICKEYBYTES)
   sodium.crypto_sign_ed25519_pk_to_curve25519(publicAuthKey, publicKey)
@@ -53,6 +55,8 @@ export class EncryptedSocket extends EventEmitter {
 
     this._onReceive = this._onReceive.bind(this)
     this._authTimeout = this._authTimeout.bind(this)
+
+    this.socket.once('close', this.destroy.bind(this))
   }
 
   /**
@@ -67,7 +71,7 @@ export class EncryptedSocket extends EventEmitter {
       this._authPeer()
     }
 
-    this._authTimeoutId = setTimeout(this._authTimeout, NETWORK_TIMEOUT)
+    this._authTimeoutId = setTimeout(this._authTimeout, AUTH_TIMEOUT)
   }
 
   _authTimeout() {
@@ -215,7 +219,12 @@ export class EncryptedSocket extends EventEmitter {
   }
 
   destroy() {
+    if (this._authTimeoutId) {
+      clearTimeout(this._authTimeoutId)
+      this._authTimeoutId = null
+    }
     if (this.socket) {
+      this.socket.removeAllListeners()
       this.socket.destroy()
       this.socket = null
     }
