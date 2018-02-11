@@ -185,7 +185,8 @@ export class EncryptedSocket extends EventEmitter {
 
   write(data) {
     if (!this.sharedKey) {
-      throw new Error(`EncryptedSocket failed to write. Missing 'sharedKey'`)
+      this._error(`EncryptedSocket failed to write. Missing 'sharedKey'`)
+      return
     }
 
     const nonce = enc.nonce()
@@ -201,7 +202,8 @@ export class EncryptedSocket extends EventEmitter {
 
   _onReceive(data) {
     if (!this.sharedKey) {
-      throw new Error(`EncryptedSocket failed to receive. Missing 'sharedKey'`)
+      this._error(`EncryptedSocket failed to receive. Missing 'sharedKey'`)
+      return
     }
 
     log.debug(`Received ${data.length} from ${this.peerKey.toString('hex')}`)
@@ -212,7 +214,8 @@ export class EncryptedSocket extends EventEmitter {
     const msg = enc.decrypt(box, nonce, this.sharedKey)
 
     if (!msg) {
-      throw new Error('EncryptedSocket failed to decrypt received data.')
+      this._error('EncryptedSocket failed to decrypt received data.')
+      return
     }
 
     this.emit('data', msg)
