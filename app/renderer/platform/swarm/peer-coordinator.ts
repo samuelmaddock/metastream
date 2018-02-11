@@ -50,8 +50,7 @@ export class SwarmRTCPeerCoordinator extends EventEmitter implements IRTCPeerCoo
 
   private createPeer(userId: string): RTCPeerConn {
     const peer = new SimplePeer({
-      initiator: this.host,
-      // trickle: false,
+      initiator: !this.host,
       config: {
         iceServers
       }
