@@ -1,52 +1,57 @@
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'events'
 
 export class NetUniqueId<T = any> {
-  id: T;
+  id: T
 
   constructor(id: T) {
-    this.id = id;
+    this.id = id
   }
 
   toString(): string {
-    return this.id + '';
+    return this.id + ''
   }
 }
 
 abstract class NetConnection extends EventEmitter {
-  id: NetUniqueId;
-  connected: boolean;
+  id: NetUniqueId
+  connected: boolean
 
   constructor(id: NetUniqueId) {
-    super();
-    this.id = id;
+    super()
+    this.id = id
   }
 
-  abstract send(data: Buffer): void;
+  abstract send(data: Buffer): void
 
   receive = (data: Buffer): void => {
-    this.emit('data', data);
-  };
+    this.emit('data', data)
+  }
 
   close = (): void => {
-    this.connected = false;
-    this.onClose();
-  };
+    this.connected = false
+    this.onClose()
+  }
 
   protected onClose(): void {
-    this.emit('close');
+    this.emit('close')
   }
 
   protected onConnect = (): void => {
-    this.connected = true;
-    this.emit('connect');
-  };
+    this.connected = true
+    this.emit('connect')
+  }
 
-  abstract getIP(): string;
-  abstract getPort(): string;
+  protected onError = (e: Error): void => {
+    this.emit('error', e)
+    this.close()
+  }
+
+  abstract getIP(): string
+  abstract getPort(): string
 
   toString(): string {
-    return `${this.id.toString()} (${this.getIP()}:${this.getPort()})`;
+    return `${this.id.toString()} (${this.getIP()}:${this.getPort()})`
   }
 }
 
-export default NetConnection;
+export default NetConnection

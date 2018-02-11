@@ -42,11 +42,9 @@ export class RTCPeerConn extends NetConnection {
   constructor(id: NetUniqueId, peer: SimplePeer.Instance) {
     super(id);
     this.peer = peer;
-    this.setup();
-  }
 
-  private setup(): void {
     this.peer.on('close', this.close);
+    this.peer.on('error', this.onError);
     this.peer.on('data', this.onData);
     this.peer.on('signal', this.onSignal);
     this.peer.once('connect', this.onConnect);
