@@ -73,9 +73,7 @@ ipcMain.on('platform-create-lobby', (event: Electron.Event, opts: ILobbyOptions)
 
   serverOpts = opts
   swarmServer = swarm.listen(
-    {
-      ...localKeyPair
-    },
+    { ...localKeyPair },
     async (esocket: EncryptedSocket, peerKey: Key) => {
       const keyStr = peerKey.toString('hex')
       log(`New swarm connection from ${keyStr}`)
@@ -117,7 +115,9 @@ ipcMain.on('platform-join-lobby', async (event: Electron.Event, serverId: string
       ...localKeyPair,
       hostPublicKey
     })
-  } catch (e) {}
+  } catch (e) {
+    log.error(`Join lobby error`, e)
+  }
 
   const success = !!esocket
   event.sender.send('platform-join-lobby-result', success)
