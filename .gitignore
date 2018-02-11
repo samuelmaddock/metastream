@@ -32,7 +32,9 @@ node_modules/sodium-native/prebuilds/*
 !node_modules/sodium-native/prebuilds/darwin-x64
 node_modules/sodium-native/prebuilds/darwin-x64/*
 !node_modules/sodium-native/prebuilds/darwin-x64/node-55.node
-
+!node_modules/sodium-native/prebuilds/win32-x64
+node_modules/sodium-native/prebuilds/win32-x64/*
+!node_modules/sodium-native/prebuilds/win32-x64/node-55.node
 
 # OSX
 .DS_Store
