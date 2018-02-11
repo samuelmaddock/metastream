@@ -82,7 +82,7 @@ export function listen(opts, connectionHandler) {
 
 export function connect(opts) {
   return new Promise((resolve, reject) => {
-    let timeoutId, timeout
+    let timeoutId, timeout, connected
     const hostPublicKey = opts.hostPublicKey
     const discoveryKey = getDiscoveryKey(hostPublicKey)
     const swarm = createSwarm({ id: discoveryKey })
@@ -109,7 +109,8 @@ export function connect(opts) {
 
       console.log(`AUTHED WITH HOST! ${socket.address().address}`)
 
-      if (!timeout) {
+      if (!timeout && !connected) {
+        connected = true
         cleanup()
         resolve(esocket)
       }
