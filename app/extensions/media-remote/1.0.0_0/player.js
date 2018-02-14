@@ -62,6 +62,9 @@
     console.debug('Add media', media, media.src, media.duration)
     mediaList.add(media)
 
+    // Immediately mute to prevent being really loud
+    media.volume = 0
+
     const eventLogger = function(e) {
       console.debug(`Event: ${e.type}`, e)
     }
@@ -87,15 +90,21 @@
     function checkMediaReady() {
       // Soundcloud fix
       if (isNaN(media.duration)) {
-        return
+        return false
       }
 
       if (media.readyState >= MediaReadyState.HAVE_CURRENT_DATA) {
         setMedia(media)
         media.removeEventListener('playing', checkMediaReady)
+        return true
       }
+
+      return false
     }
-    media.addEventListener('playing', checkMediaReady)
+
+    if (media.paused || !checkMediaReady()) {
+      media.addEventListener('playing', checkMediaReady)
+    }
   }
 
   /** Interval time (ms) to detect video element. */
@@ -141,7 +150,6 @@
   /** Abstraction around HTML video tag. */
   class HTMLMediaPlayer {
     constructor(media) {
-      console.debug('Constructing HTMLMediaPlayer')
       this.media = media
 
       this.onPlay = this.onPlay.bind(this)
