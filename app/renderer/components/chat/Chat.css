@@ -93,10 +93,13 @@
 }
 
 .username {
+  composes: single-line from 'styles/text.css';
   color: var(--color-nice-blue);
   font-weight: bold;
   margin-right: 5px;
-  white-space: nowrap;
+  max-width: 240px;
+  display: inline-block;
+  vertical-align: top;
 }
 
 .form {

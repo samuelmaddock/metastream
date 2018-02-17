@@ -11,4 +11,9 @@
   border-radius: 50%;
   background: #444;
   margin-right: 10px;
+  flex-shrink: 0;
+}
+
+.name {
+  composes: single-line from 'styles/text.css';
 }
