@@ -34,3 +34,10 @@
   font-size: 8px;
   margin-right: 4px;
 }
+
+.author {
+  composes: single-line from 'styles/text.css';
+  display: inline-block;
+  max-width: 140px;
+  vertical-align: middle;
+}
