@@ -13,6 +13,13 @@ import { signalRenderer } from 'browser/platform/swarm/signal'
 import { NETWORK_TIMEOUT } from 'constants/network'
 import { sleep } from 'utils/async'
 
+try {
+  require('utp-native')
+} catch (e) {
+  console.error('Failed to load utp-native')
+  console.error(e)
+}
+
 let localId: string
 let localKeyPair: KeyPair
 
