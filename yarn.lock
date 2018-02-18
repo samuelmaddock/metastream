@@ -8234,7 +8234,7 @@ svgo@^0.7.0:
     whet.extend "~0.9.9"
 
 "swarm-server@git+ssh://git@github.com/samuelmaddock/swarm-server.git#0.0.2":
-  version ""
+  version "0.0.2"
   resolved "git+ssh://git@github.com/samuelmaddock/swarm-server.git#390ef69a72ca003917fc5f6d8dbabaebbcde875d"
   dependencies:
     dat-swarm-defaults "^1.0.0"

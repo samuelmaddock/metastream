@@ -1,7 +1,7 @@
 {
-  "name": "media-player",
-  "productName": "Media Player",
-  "version": "0.0.2",
+  "name": "metastream",
+  "productName": "Metastream",
+  "version": "0.0.3",
   "description": "Watch or listen to media with friends",
   "main": "./main.prod.js",
   "author": {

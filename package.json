@@ -2,7 +2,7 @@
   "name": "tv",
   "productName": "TV",
   "private": true,
-  "version": "0.11.0",
+  "version": "0.12.0",
   "description": "",
   "main": "main.js",
   "scripts": {
@@ -31,12 +31,12 @@
     "test-watch": "npm test -- --watch",
     "test": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 node --trace-warnings ./test/runTests.js"
   },
-  "browserslist": "electron 1.7",
+  "browserslist": "Chrome >= 64",
   "build": {
-    "productName": "Media Player",
-    "appId": "com.samuelmaddock.mediaplayer",
-    "copyright": "Media Player © 2018. All rights reserved.",
-    "muonVersion": "4.6.4",
+    "productName": "Metastream",
+    "appId": "com.samuelmaddock.metastream",
+    "copyright": "Metastream © 2018. All rights reserved.",
+    "muonVersion": "4.8.1",
     "files": [
       "assets/",
       "dist/",
