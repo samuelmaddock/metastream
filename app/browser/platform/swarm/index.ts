@@ -13,11 +13,13 @@ import { signalRenderer } from 'browser/platform/swarm/signal'
 import { NETWORK_TIMEOUT } from 'constants/network'
 import { sleep } from 'utils/async'
 
-try {
-  require('utp-native')
-} catch (e) {
-  console.error('Failed to load utp-native')
-  console.error(e)
+function checkNativeDeps() {
+  try {
+    require('utp-native')
+  } catch (e) {
+    log.error('Failed to load utp-native')
+    log.error(e)
+  }
 }
 
 let localId: string
@@ -72,6 +74,8 @@ let serverOpts: ILobbyOptions
 ipcMain.on('platform-create-lobby', (event: Electron.Event, opts: ILobbyOptions) => {
   const { sender } = event
 
+  checkNativeDeps()
+
   if (swarmServer) {
     log.error('Attempt to create new swarm server without closing existing server.')
     swarmServer.close()
@@ -113,6 +117,8 @@ ipcMain.on('platform-leave-lobby', (event: Electron.Event) => {
 ipcMain.on('platform-join-lobby', async (event: Electron.Event, serverId: string) => {
   // TODO: check if already connected
   // TODO: check if serverId is an IP, not a public key
+
+  checkNativeDeps()
 
   const hostPublicKey = Buffer.from(serverId, 'hex')
   let esocket
