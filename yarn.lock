@@ -8233,7 +8233,7 @@ svgo@^0.7.0:
     sax "~1.2.1"
     whet.extend "~0.9.9"
 
-"swarm-server@git+ssh://git@github.com/samuelmaddock/swarm-server.git":
+"swarm-server@git+ssh://git@github.com/samuelmaddock/swarm-server.git#0.0.1":
   version ""
   resolved "git+ssh://git@github.com/samuelmaddock/swarm-server.git#0bf1a2db88b2bbabdb27f7aa01dde571aca86810"
   dependencies:
