@@ -8233,9 +8233,9 @@ svgo@^0.7.0:
     sax "~1.2.1"
     whet.extend "~0.9.9"
 
-"swarm-server@git+ssh://git@github.com/samuelmaddock/swarm-server.git#0.0.1":
+"swarm-server@git+ssh://git@github.com/samuelmaddock/swarm-server.git#0.0.2":
   version ""
-  resolved "git+ssh://git@github.com/samuelmaddock/swarm-server.git#0bf1a2db88b2bbabdb27f7aa01dde571aca86810"
+  resolved "git+ssh://git@github.com/samuelmaddock/swarm-server.git#390ef69a72ca003917fc5f6d8dbabaebbcde875d"
   dependencies:
     dat-swarm-defaults "^1.0.0"
     discovery-swarm "^4.4.2"
