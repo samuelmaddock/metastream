@@ -7749,7 +7749,7 @@ sodium-native@^1.5.1:
     nan "^2.4.0"
     node-gyp-build "^3.0.0"
 
-sodium-native@^2.0.0:
+sodium-native@^2.0.0, sodium-native@^2.1.4:
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/sodium-native/-/sodium-native-2.1.4.tgz#f31e20992695ce4295a4324e08f64ee203baf0c6"
   dependencies:
@@ -8232,6 +8232,18 @@ svgo@^0.7.0:
     mkdirp "~0.5.1"
     sax "~1.2.1"
     whet.extend "~0.9.9"
+
+"swarm-server@git+ssh://git@github.com/samuelmaddock/swarm-server.git":
+  version ""
+  resolved "git+ssh://git@github.com/samuelmaddock/swarm-server.git#0bf1a2db88b2bbabdb27f7aa01dde571aca86810"
+  dependencies:
+    dat-swarm-defaults "^1.0.0"
+    discovery-swarm "^4.4.2"
+    length-prefixed-stream "^1.5.1"
+    sodium-encryption "^1.2.3"
+    sodium-native "^2.1.4"
+  optionalDependencies:
+    yargs "^11.0.0"
 
 symbol-observable@^1.0.1, symbol-observable@^1.0.3:
   version "1.0.4"
@@ -9116,6 +9128,12 @@ yargs-parser@^8.1.0:
   dependencies:
     camelcase "^4.1.0"
 
+yargs-parser@^9.0.2:
+  version "9.0.2"
+  resolved "https://registry.yarnpkg.com/yargs-parser/-/yargs-parser-9.0.2.tgz#9ccf6a43460fe4ed40a9bb68f48d43b8a68cc077"
+  dependencies:
+    camelcase "^4.1.0"
+
 yargs@^1.2.6:
   version "1.3.3"
   resolved "https://registry.yarnpkg.com/yargs/-/yargs-1.3.3.tgz#054de8b61f22eefdb7207059eaef9d6b83fb931a"
@@ -9136,6 +9154,23 @@ yargs@^10.1.1:
     which-module "^2.0.0"
     y18n "^3.2.1"
     yargs-parser "^8.1.0"
+
+yargs@^11.0.0:
+  version "11.0.0"
+  resolved "https://registry.yarnpkg.com/yargs/-/yargs-11.0.0.tgz#c052931006c5eee74610e5fc0354bedfd08a201b"
+  dependencies:
+    cliui "^4.0.0"
+    decamelize "^1.1.1"
+    find-up "^2.1.0"
+    get-caller-file "^1.0.1"
+    os-locale "^2.0.0"
+    require-directory "^2.1.1"
+    require-main-filename "^1.0.1"
+    set-blocking "^2.0.0"
+    string-width "^2.0.0"
+    which-module "^2.0.0"
+    y18n "^3.2.1"
+    yargs-parser "^9.0.2"
 
 yargs@^3.5.4:
   version "3.32.0"

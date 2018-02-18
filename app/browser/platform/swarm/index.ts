@@ -6,7 +6,7 @@ import log from 'browser/log'
 import { keyPair, KeyPair, Key } from './crypto'
 import { ILobbyOptions, ILobbySession } from 'renderer/platform/types'
 
-import * as swarm from './server'
+import * as swarm from 'swarm-server'
 import { EncryptedSocket } from './socket'
 import { SimplePeer } from 'simple-peer'
 import { signalRenderer } from 'browser/platform/swarm/signal'
@@ -73,7 +73,7 @@ ipcMain.on('platform-create-lobby', (event: Electron.Event, opts: ILobbyOptions)
 
   serverOpts = opts
   swarmServer = swarm.listen(
-    { ...localKeyPair },
+    { ...localKeyPair, convert: true },
     async (esocket: EncryptedSocket, peerKey: Key) => {
       const keyStr = peerKey.toString('hex')
       log(`New swarm connection from ${keyStr}`)
@@ -113,7 +113,8 @@ ipcMain.on('platform-join-lobby', async (event: Electron.Event, serverId: string
   try {
     esocket = await swarm.connect({
       ...localKeyPair,
-      hostPublicKey
+      hostPublicKey,
+      convert: true
     })
   } catch (e) {
     log.error(`Join lobby error`, e)
