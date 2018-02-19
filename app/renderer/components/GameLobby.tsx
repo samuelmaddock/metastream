@@ -43,6 +43,7 @@ import { isUpdateAvailable } from 'renderer/reducers/ui'
 import { IAppState } from 'renderer/reducers'
 import { HighlightButton } from 'renderer/components/common/button'
 import { Modal } from 'renderer/components/lobby/Modal'
+import { Invite } from 'renderer/components/lobby/Invite'
 
 interface IProps {
   host: boolean
@@ -167,9 +168,13 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
   private renderModal() {
     switch (this.state.modal!) {
       case LobbyModal.Browser:
-        return <WebBrowser className={styles.browser} onClose={this.closeModal} />
+        return <WebBrowser className={styles.modal} onClose={this.closeModal} />
       case LobbyModal.Invite:
-        return <Modal onClose={this.closeModal}>Invite</Modal>
+        return (
+          <Modal className={styles.modal} onClose={this.closeModal}>
+            <Invite />
+          </Modal>
+        )
     }
   }
 

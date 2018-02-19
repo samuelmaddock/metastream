@@ -85,7 +85,7 @@
   right: var(--overlay-spacing);
 }
 
-.browser {
+.modal {
   position: absolute;
   top: var(--app-titlebar-height);
   bottom: 0;
