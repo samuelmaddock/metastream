@@ -4,20 +4,22 @@ import { Platform, ILobbyOptions, ILobbySession, ILobbyData } from 'renderer/pla
 import { Deferred } from 'utils/async'
 import { NetUniqueId } from 'renderer/network'
 import { IRTCPeerCoordinator } from 'renderer/network/rtc'
-import { SwarmRTCPeerCoordinator } from 'renderer/platform/swarm/peer-coordinator';
+import { SwarmRTCPeerCoordinator } from 'renderer/platform/swarm/peer-coordinator'
 
 type SwarmId = string
 
 export class SwarmPlatform extends Platform {
   private id: NetUniqueId<SwarmId>
+  private username: string
   private connected: boolean = false
   private isHosting: boolean = false
 
   constructor() {
     super()
 
-    const swarmId = ipcRenderer.sendSync('platform-swarm-init')
-    this.id = new NetUniqueId<SwarmId>(swarmId)
+    const swarmInfo = ipcRenderer.sendSync('platform-swarm-init')
+    this.id = new NetUniqueId<SwarmId>(swarmInfo.id)
+    this.username = swarmInfo.username
   }
 
   async createLobby(opts: ILobbyOptions): Promise<boolean> {
@@ -79,14 +81,14 @@ export class SwarmPlatform extends Platform {
 
   createPeerCoordinator(): IRTCPeerCoordinator {
     if (!this.connected) {
-      throw new Error('[Swarm Platform] createPeerCoordinator: No active session.');
+      throw new Error('[Swarm Platform] createPeerCoordinator: No active session.')
     }
 
-    return new SwarmRTCPeerCoordinator(this.isHosting);
+    return new SwarmRTCPeerCoordinator(this.isHosting)
   }
 
   getUserName(userId: NetUniqueId): string {
-    return `Swarm-${userId}`
+    return this.username || `Swarm-${userId}`
   }
 
   getLocalId(): NetUniqueId {

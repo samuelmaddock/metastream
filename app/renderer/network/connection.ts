@@ -10,6 +10,10 @@ export class NetUniqueId<T = any> {
   toString(): string {
     return this.id + ''
   }
+
+  equals(other: NetUniqueId<T>): boolean {
+    return this.id === other.id
+  }
 }
 
 abstract class NetConnection extends EventEmitter {

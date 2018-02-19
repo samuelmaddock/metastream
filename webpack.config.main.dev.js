@@ -9,10 +9,12 @@ import baseConfig from './webpack.config.base';
 import nodeExternals from 'webpack-node-externals';
 
 export default merge.smart(baseConfig, {
-  // TODO: remove this?
-  externals: [nodeExternals()],
+  // BUG: attempts to load native modules from /node_modules and not app/node_modules
+  // externals: [nodeExternals()],
 
-  devtool: 'source-map',
+  // Speed up dev times
+  devtool: false,
+  // devtool: 'source-map',
 
   target: 'electron-main',
 

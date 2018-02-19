@@ -1,6 +1,7 @@
 import fs from 'fs-extra'
 import path from 'path'
 import { app, ipcMain, webContents } from 'electron'
+const { productName } = require('package.json')
 
 import log from 'browser/log'
 import { keyPair, KeyPair, Key } from './crypto'
@@ -12,6 +13,7 @@ import { SimplePeer } from 'simple-peer'
 import { signalRenderer } from 'browser/platform/swarm/signal'
 import { NETWORK_TIMEOUT } from 'constants/network'
 import { sleep } from 'utils/async'
+import * as username from 'username'
 
 function checkNativeDeps() {
   try {
@@ -58,13 +60,17 @@ async function initIdentity() {
 
 ipcMain.on('platform-swarm-init', async (event: Electron.Event) => {
   let id
+  let name = (await username()) || productName
   try {
     id = await initIdentity()
   } catch (e) {
     id = ''
     log.error('Failed to initialize swarm identity')
   } finally {
-    event.returnValue = id
+    event.returnValue = {
+      id,
+      username: name
+    }
   }
 })
 

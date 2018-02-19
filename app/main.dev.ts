@@ -8,9 +8,14 @@
  */
 import { app, BrowserWindow, globalShortcut, protocol } from 'electron'
 import os from 'os'
-
 import packageJson from 'package.json'
-import 'browser/net'
+
+if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
+  require('electron-debug')()
+  const path = require('path')
+  const p = path.join(__dirname, '..', 'app', 'node_modules')
+  require('module').globalPaths.push(p)
+}
 
 if (process.env.NODE_ENV === 'development') {
   // Update version before running any code
@@ -18,6 +23,7 @@ if (process.env.NODE_ENV === 'development') {
   ;(app as any).setVersion(packageJson.version)
 }
 
+import 'browser/net'
 import { register as registerLocalShortcut } from 'electron-localshortcut'
 import { join, dirname } from 'path'
 
@@ -46,13 +52,6 @@ const fixUserDataPath = () => {
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support')
   sourceMapSupport.install()
-}
-
-if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
-  require('electron-debug')()
-  const path = require('path')
-  const p = path.join(__dirname, '..', 'app', 'node_modules')
-  require('module').globalPaths.push(p)
 }
 
 const installExtensions = async () => {

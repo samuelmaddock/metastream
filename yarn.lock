@@ -8233,9 +8233,9 @@ svgo@^0.7.0:
     sax "~1.2.1"
     whet.extend "~0.9.9"
 
-"swarm-server@git+ssh://git@github.com/samuelmaddock/swarm-server.git#0.0.2":
-  version "0.0.2"
-  resolved "git+ssh://git@github.com/samuelmaddock/swarm-server.git#390ef69a72ca003917fc5f6d8dbabaebbcde875d"
+"swarm-server@git+ssh://git@github.com/samuelmaddock/swarm-server.git#0.0.4":
+  version ""
+  resolved "git+ssh://git@github.com/samuelmaddock/swarm-server.git#f9e44c8b61fd84245312b5139b15a2a7c991db37"
   dependencies:
     dat-swarm-defaults "^1.0.0"
     discovery-swarm "^4.4.2"
@@ -8674,6 +8674,13 @@ use@^2.0.0:
     define-property "^0.2.5"
     isobject "^3.0.0"
     lazy-cache "^2.0.2"
+
+username@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/username/-/username-3.0.0.tgz#b3dba982a72b4ce59d52f159fa1aeba266af5fc8"
+  dependencies:
+    execa "^0.7.0"
+    mem "^1.1.0"
 
 utf8-byte-length@^1.0.1:
   version "1.0.4"
