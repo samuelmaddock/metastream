@@ -1,84 +1,84 @@
-import React, { Component } from 'react';
-import { DispatchProp, connect } from 'react-redux';
-import cx from 'classnames';
+import React, { Component } from 'react'
+import { DispatchProp, connect } from 'react-redux'
+import cx from 'classnames'
 
-import styles from './WebBrowser.css';
-import { WEBVIEW_PARTITION } from 'constants/http';
-import { WebControls } from 'renderer/components/browser/Controls';
-import { server_requestMedia } from 'renderer/lobby/actions/mediaPlayer';
-import { absoluteUrl } from 'utils/appUrl';
-import { IAppState } from 'renderer/reducers';
-const { ipcRenderer, remote } = chrome;
+import styles from './WebBrowser.css'
+import { WEBVIEW_PARTITION } from 'constants/http'
+import { WebControls } from 'renderer/components/browser/Controls'
+import { server_requestMedia } from 'renderer/lobby/actions/mediaPlayer'
+import { absoluteUrl } from 'utils/appUrl'
+import { IAppState } from 'renderer/reducers'
+const { ipcRenderer, remote } = chrome
 
-const DEFAULT_URL = absoluteUrl('./browser/resources/homescreen.html');
+const DEFAULT_URL = absoluteUrl('./browser/resources/homescreen.html')
 // const DEFAULT_URL = 'https://www.google.com/';
 // const DEFAULT_URL = 'data:text/html,<style>html{color:#fff;font-size:36px}</style>B R O W S E R';
 
 interface IProps {
-  className?: string;
-  initialUrl?: string;
-  onClose?: () => void;
+  className?: string
+  initialUrl?: string
+  onClose?: () => void
 }
 
-type PrivateProps = IProps & DispatchProp<IAppState>;
+type PrivateProps = IProps & DispatchProp<IAppState>
 
 export class _WebBrowser extends Component<PrivateProps> {
-  private webview?: Electron.WebviewTag | null;
-  private webContents: Electron.webContents;
-  private controls?: WebControls | null;
+  private webview?: Electron.WebviewTag | null
+  private webContents: Electron.webContents
+  private controls?: WebControls | null
 
-  private hasSetupControls?: boolean;
+  private hasSetupControls?: boolean
 
   private get initialUrl() {
-    return this.props.initialUrl || DEFAULT_URL;
+    return this.props.initialUrl || DEFAULT_URL
   }
 
   componentDidMount(): void {
-    ipcRenderer.on('command', this.dispatchCommand);
+    ipcRenderer.on('command', this.dispatchCommand)
   }
 
   componentWillUnmount(): void {
-    ipcRenderer.removeListener('command', this.dispatchCommand);
+    ipcRenderer.removeListener('command', this.dispatchCommand)
   }
 
   private dispatchCommand = (sender: Electron.WebContents, cmd: string) => {
     if (!this.webview) {
-      return;
+      return
     }
 
     switch (cmd) {
       case 'window:close':
         if (this.props.onClose) {
-          this.props.onClose();
+          this.props.onClose()
         }
-        break;
+        break
       case 'window:focus-url':
         if (this.controls) {
-          this.controls.focusURL();
+          this.controls.focusURL()
         }
-        break;
+        break
       case 'window:history-prev':
         if (this.webContents.canGoBack()) {
-          this.webContents.goBack();
+          this.webContents.goBack()
         }
-        break;
+        break
       case 'window:history-next':
         if (this.webContents.canGoForward()) {
-          this.webContents.goForward();
+          this.webContents.goForward()
         }
-        break;
+        break
     }
-  };
+  }
 
   private setupControls() {
     if (!this.hasSetupControls && this.controls && this.webview && this.webContents) {
-      this.controls.setWebview(this.webview, this.webContents);
-      this.hasSetupControls = true;
+      this.controls.setWebview(this.webview, this.webContents)
+      this.hasSetupControls = true
     }
   }
 
   private setupWebview = (webview: Electron.WebviewTag | null): void => {
-    this.webview = webview;
+    this.webview = webview
 
     if (this.webview) {
       // this.webview.addEventListener('new-window', e => {
@@ -86,39 +86,39 @@ export class _WebBrowser extends Component<PrivateProps> {
       //   this.webview!.loadURL(e.url);
       // });
 
-      const wv = this.webview as any;
+      const wv = this.webview as any
       wv.addEventListener('did-attach', (e: any) => {
-        (remote as any).getWebContents(e.tabId, (webContents: Electron.WebContents) => {
-          this.webContents = webContents;
-          this.setupControls();
-        });
-      });
+        ;(remote as any).getWebContents(e.tabId, (webContents: Electron.WebContents) => {
+          this.webContents = webContents
+          this.setupControls()
+        })
+      })
     } else {
-      this.webContents = undefined as any;
+      this.webContents = undefined as any
     }
-  };
+  }
 
   render(): JSX.Element {
     return (
       <div className={cx(styles.container, this.props.className)}>
         <WebControls
           ref={el => {
-            this.controls = el;
-            this.setupControls();
+            this.controls = el
+            this.setupControls()
           }}
           initialUrl={this.initialUrl}
           onClose={this.props.onClose}
           onRequestUrl={url => {
-            this.props.dispatch!(server_requestMedia(url));
+            this.props.dispatch!(server_requestMedia(url))
 
             if (this.props.onClose) {
-              this.props.onClose();
+              this.props.onClose()
             }
           }}
         />
         {this.renderContent()}
       </div>
-    );
+    )
   }
 
   private renderContent() {
@@ -136,8 +136,8 @@ export class _WebBrowser extends Component<PrivateProps> {
         partition={WEBVIEW_PARTITION}
         transparent
       />
-    );
+    )
   }
 }
 
-export const WebBrowser = connect()(_WebBrowser) as React.ComponentClass<IProps>;
+export const WebBrowser = connect()(_WebBrowser) as React.ComponentClass<IProps>
