@@ -41,6 +41,7 @@ import { Icon } from 'renderer/components/Icon'
 import { registerMediaShortcuts, unregisterMediaShortcuts } from 'renderer/lobby/actions/shortcuts'
 import { isUpdateAvailable } from 'renderer/reducers/ui'
 import { IAppState } from 'renderer/reducers'
+import { HighlightButton } from 'renderer/components/common/button'
 
 interface IProps {
   host: boolean
@@ -112,7 +113,16 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
 
         <section className={styles.controls}>
           {this.renderPlaybackControls()}
-          <ListOverlay className={styles.users} title="Users" tagline={`${userIds.length} online`}>
+          <ListOverlay
+            className={styles.users}
+            title="Users"
+            tagline={`${userIds.length} online`}
+            action={
+              <HighlightButton icon="mail" onClick={this.openBrowser}>
+                Invite
+              </HighlightButton>
+            }
+          >
             {userIds.map((userId: string) => {
               const user = this.props.users[userId]!
               return <UserItem key={userId} user={user} />
@@ -123,21 +133,9 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
             title="Next up"
             tagline={`${this.props.mediaQueue.length} items`}
             action={
-              <button
-                style={{
-                  backgroundColor: 'var(--color-highlight)',
-                  padding: '0 5px',
-                  marginLeft: 'auto',
-                  borderRadius: '4px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  textTransform: 'uppercase',
-                  letterSpacing: '1px'
-                }}
-                onClick={this.openBrowser}
-              >
-                <Icon name="plus" /> Add
-              </button>
+              <HighlightButton icon="plus" onClick={this.openBrowser}>
+                Add
+              </HighlightButton>
             }
           >
             {media && media.hasMore && <MediaItem key="current" media={media} />}

@@ -1,0 +1,14 @@
+.highlightBtn {
+  background-color: var(--color-highlight);
+  padding: 0 5px;
+  margin-left: auto;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.highlightBtn svg {
+  transform: scale(0.9);
+}

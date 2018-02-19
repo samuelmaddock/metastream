@@ -1,52 +1,53 @@
-import React, { Component } from 'react';
-import cx from 'classnames';
+import React, { Component } from 'react'
+import cx from 'classnames'
 
-import styles from './PlaybackControls.css';
+import styles from './PlaybackControls.css'
 
 import {
   PlaybackState,
   IMediaItem,
   IMediaPlayerState,
   RepeatMode
-} from 'renderer/lobby/reducers/mediaPlayer';
-import { Time } from 'renderer/components/media/Time';
-import { VolumeSlider } from 'renderer/components/media/VolumeSlider';
-import { DispatchProp, connect } from 'react-redux';
+} from 'renderer/lobby/reducers/mediaPlayer'
+import { Time } from 'renderer/components/media/Time'
+import { VolumeSlider } from 'renderer/components/media/VolumeSlider'
+import { DispatchProp, connect } from 'react-redux'
 import {
   server_requestPlayPause,
   server_requestNextMedia,
   server_requestSeek,
   server_requestRepeatMedia
-} from 'renderer/lobby/actions/mediaPlayer';
-import { setVolume, setMute } from 'renderer/actions/settings';
-import { Icon } from 'renderer/components/Icon';
-import { Timeline } from 'renderer/components/media/Timeline';
-import { push } from 'react-router-redux';
-import { openInBrowser } from 'utils/url';
-import { copyToClipboard } from 'utils/clipboard';
-import { timestampToMilliseconds, parseTimestampPairs } from 'utils/cuepoints';
-import { CuePointItem } from 'renderer/components/media/CuePoint';
-import { parseCuePoints } from 'renderer/media/utils';
-import { MoreButton } from 'renderer/components/media/MoreButton';
-import { InfoButton } from 'renderer/components/media/buttons/InfoButton';
-import { IAppState } from 'renderer/reducers';
+} from 'renderer/lobby/actions/mediaPlayer'
+import { setVolume, setMute } from 'renderer/actions/settings'
+import { Icon } from 'renderer/components/Icon'
+import { Timeline } from 'renderer/components/media/Timeline'
+import { push } from 'react-router-redux'
+import { openInBrowser } from 'utils/url'
+import { copyToClipboard } from 'utils/clipboard'
+import { timestampToMilliseconds, parseTimestampPairs } from 'utils/cuepoints'
+import { CuePointItem } from 'renderer/components/media/CuePoint'
+import { parseCuePoints } from 'renderer/media/utils'
+import { MoreButton } from 'renderer/components/media/MoreButton'
+import { InfoButton } from 'renderer/components/media/buttons/InfoButton'
+import { IAppState } from 'renderer/reducers'
+import { IconButton } from 'renderer/components/common/button'
 
 const Button: React.SFC<{
-  className?: string;
-  icon: string;
-  title?: string;
+  className?: string
+  icon: string
+  title?: string
 
   /** Highlight button as turned on */
-  enabled?: boolean;
+  enabled?: boolean
 
   /** Disable button interaction */
-  disabled?: boolean;
+  disabled?: boolean
 
-  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>
 }> = props => {
   return (
-    <button
-      type="button"
+    <IconButton
+      icon={props.icon}
       disabled={props.disabled}
       className={cx(props.className, styles.button, {
         [styles.buttonEnabled]: props.enabled
@@ -54,38 +55,38 @@ const Button: React.SFC<{
       title={props.title}
       onClick={props.onClick}
     >
-      <Icon name={props.icon} /> {props.children}
-    </button>
-  );
-};
+      {props.children}
+    </IconButton>
+  )
+}
 
 const ButtonListItem: React.SFC<{
-  icon: string;
-  title?: string;
-  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  icon: string
+  title?: string
+  onClick?: React.MouseEventHandler<HTMLButtonElement>
 }> = props => {
   return (
-    <button
-      type="button"
+    <IconButton
+      icon={props.icon}
       className={styles.buttonListItem}
       title={props.title}
       onClick={props.onClick}
     >
-      <Icon name={props.icon} /> {props.children}
-    </button>
-  );
-};
+      {props.children}
+    </IconButton>
+  )
+}
 
 interface IProps {
-  className?: string;
-  reload?: React.MouseEventHandler<HTMLButtonElement>;
-  debug?: React.MouseEventHandler<HTMLButtonElement>;
-  openBrowser: Function;
+  className?: string
+  reload?: React.MouseEventHandler<HTMLButtonElement>
+  debug?: React.MouseEventHandler<HTMLButtonElement>
+  openBrowser: Function
 }
 
 interface IConnectedProps extends IMediaPlayerState {
-  mute: boolean;
-  volume: number;
+  mute: boolean
+  volume: number
 }
 
 const mapStateToProps = (state: IAppState): IConnectedProps => {
@@ -93,52 +94,52 @@ const mapStateToProps = (state: IAppState): IConnectedProps => {
     ...state.mediaPlayer,
     mute: state.settings.mute,
     volume: state.settings.volume
-  };
-};
+  }
+}
 
-type PrivateProps = IProps & IConnectedProps & DispatchProp<IAppState>;
+type PrivateProps = IProps & IConnectedProps & DispatchProp<IAppState>
 
 class _PlaybackControls extends Component<PrivateProps> {
   private get canDebug() {
-    return process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
+    return process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true'
   }
 
   private getCuePoints() {
-    const { current: media } = this.props;
+    const { current: media } = this.props
     if (media) {
-      let cuePoints = parseCuePoints(media);
-      return cuePoints;
+      let cuePoints = parseCuePoints(media)
+      return cuePoints
     }
   }
 
   render(): JSX.Element | null {
-    const { current: media, playback, startTime, pauseTime } = this.props;
-    const playbackIcon = playback === PlaybackState.Playing ? 'pause' : 'play';
+    const { current: media, playback, startTime, pauseTime } = this.props
+    const playbackIcon = playback === PlaybackState.Playing ? 'pause' : 'play'
 
-    const isIdle = playback === PlaybackState.Idle;
-    const isPaused = playback === PlaybackState.Paused;
-    const duration = (media && media.duration) || 0;
-    const isTimed = duration > 0;
+    const isIdle = playback === PlaybackState.Idle
+    const isPaused = playback === PlaybackState.Paused
+    const duration = (media && media.duration) || 0
+    const isTimed = duration > 0
 
     const addMediaBtn = (
       <Button
         className={styles.addMediaButton}
         icon="plus"
         onClick={e => {
-          this.props.openBrowser();
+          this.props.openBrowser()
         }}
       >
-        <span>Add Media</span>
+        Add Media
       </Button>
-    );
+    )
 
     const playPauseBtn = (
       <Button key="playpause" icon={playbackIcon} disabled={isIdle} onClick={this.playPause} />
-    );
+    )
 
     const nextBtn = (
       <Button key="next" icon="skip-forward" title="Next" disabled={isIdle} onClick={this.next} />
-    );
+    )
 
     const repeatBtn = (
       <Button
@@ -148,7 +149,7 @@ class _PlaybackControls extends Component<PrivateProps> {
         disabled={isIdle}
         onClick={this.repeat}
       />
-    );
+    )
 
     const timeline =
       isIdle || !isTimed ? (
@@ -162,7 +163,7 @@ class _PlaybackControls extends Component<PrivateProps> {
           onSeek={this.seek}
           cuePoints={this.getCuePoints()}
         />
-      );
+      )
 
     const volumeSlider = (
       <VolumeSlider
@@ -171,39 +172,39 @@ class _PlaybackControls extends Component<PrivateProps> {
         onChange={this.setVolume}
         onMute={this.toggleMute}
       />
-    );
+    )
 
-    const infoBtn = media && media.description ? <InfoButton media={media} /> : undefined;
+    const infoBtn = media && media.description ? <InfoButton media={media} /> : undefined
 
     const reloadBtn = (
       <ButtonListItem icon="rotate-cw" onClick={this.props.reload}>
         Reload
       </ButtonListItem>
-    );
+    )
 
     const externalLinkBtn = media && (
       <ButtonListItem icon="external-link" onClick={this.openLink}>
         Open in browser
       </ButtonListItem>
-    );
+    )
 
     const copyLinkBtn = media && (
       <ButtonListItem icon="copy" onClick={this.copyLink}>
         Copy link
       </ButtonListItem>
-    );
+    )
 
     const debugBtn = this.canDebug && (
       <ButtonListItem icon="settings" onClick={this.props.debug}>
         Debug
       </ButtonListItem>
-    );
+    )
 
     const disconnectBtn = (
       <ButtonListItem icon="log-out" onClick={this.disconnect}>
         Disconnect
       </ButtonListItem>
-    );
+    )
 
     return (
       <div className={cx(this.props.className, styles.container)}>
@@ -220,53 +221,55 @@ class _PlaybackControls extends Component<PrivateProps> {
           {disconnectBtn}
         </MoreButton>
       </div>
-    );
+    )
   }
 
   private playPause = () => {
-    this.props.dispatch!(server_requestPlayPause());
-  };
+    this.props.dispatch!(server_requestPlayPause())
+  }
 
   private next = () => {
-    this.props.dispatch!(server_requestNextMedia());
-  };
+    this.props.dispatch!(server_requestNextMedia())
+  }
 
   private repeat = () => {
-    this.props.dispatch!(server_requestRepeatMedia());
-  };
+    this.props.dispatch!(server_requestRepeatMedia())
+  }
 
   private seek = (time: number) => {
-    this.props.dispatch!(server_requestSeek(time));
-  };
+    this.props.dispatch!(server_requestSeek(time))
+  }
 
   private setVolume = (volume: number) => {
-    this.props.dispatch!(setVolume(volume));
-  };
+    this.props.dispatch!(setVolume(volume))
+  }
 
   private toggleMute = () => {
-    const mute = !this.props.mute;
-    this.props.dispatch!(setMute(mute));
-  };
+    const mute = !this.props.mute
+    this.props.dispatch!(setMute(mute))
+  }
 
   private openLink = () => {
-    const { current: media } = this.props;
+    const { current: media } = this.props
     if (media) {
-      openInBrowser(media.requestUrl);
+      openInBrowser(media.requestUrl)
     }
-  };
+  }
 
   private copyLink = () => {
-    const { current: media } = this.props;
+    const { current: media } = this.props
     if (media) {
-      copyToClipboard(media.requestUrl);
+      copyToClipboard(media.requestUrl)
     }
-  };
+  }
 
   private disconnect = () => {
     // TODO: Use react-router-redux actions after refactoring to not use
     // multiple redux stores
-    window.location.hash = '#/';
-  };
+    this.props.dispatch!(push('/'))
+  }
 }
 
-export const PlaybackControls = connect(mapStateToProps)(_PlaybackControls) as React.ComponentClass<IProps>;
+export const PlaybackControls = connect(mapStateToProps)(_PlaybackControls) as React.ComponentClass<
+  IProps
+>
