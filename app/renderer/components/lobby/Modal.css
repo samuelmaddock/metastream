@@ -1,5 +1,8 @@
 .container {
-  composes: glass absolute-full scroller from 'styles/layout.css';
+  composes: dark-overlay absolute-full scroller from 'styles/layout.css';
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .close {

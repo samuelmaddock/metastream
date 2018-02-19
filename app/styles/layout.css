@@ -2,6 +2,10 @@
   --rounded-radius: 8px;
 }
 
+.dark-overlay {
+  background: var(--app-titlebar-background-color);
+}
+
 .glass {
   background: rgba(60, 60, 60, 0.54);
 

@@ -2,6 +2,9 @@
   background: var(--app-titlebar-background-color);
   height: var(--app-titlebar-height);
   user-select: none;
+
+  /* Visible edge to help separate content */
+  /* box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.03); */
 }
 
 .wrapper {
@@ -39,6 +42,7 @@
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
+  pointer-events: none;
 }
 
 .actions {

@@ -1,6 +1,6 @@
 .container {
+  composes: dark-overlay from 'styles/layout.css';
   width: 100%;
-  background: var(--app-titlebar-background-color);
 
   display: flex;
   flex-direction: column;
