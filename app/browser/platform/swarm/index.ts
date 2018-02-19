@@ -7,7 +7,7 @@ import { keyPair, KeyPair, Key } from './crypto'
 import { ILobbyOptions, ILobbySession } from 'renderer/platform/types'
 
 import * as swarm from 'swarm-server'
-import { EncryptedSocket } from './socket'
+import { EncryptedSocket } from 'swarm-server'
 import { SimplePeer } from 'simple-peer'
 import { signalRenderer } from 'browser/platform/swarm/signal'
 import { NETWORK_TIMEOUT } from 'constants/network'
@@ -83,23 +83,20 @@ ipcMain.on('platform-create-lobby', (event: Electron.Event, opts: ILobbyOptions)
   }
 
   serverOpts = opts
-  swarmServer = swarm.listen(
-    { ...localKeyPair, convert: true },
-    async (esocket: EncryptedSocket, peerKey: Key) => {
-      const keyStr = peerKey.toString('hex')
-      log(`New swarm connection from ${keyStr}`)
+  swarmServer = swarm.listen({ ...localKeyPair, convert: true }, async (esocket, peerKey) => {
+    const keyStr = peerKey.toString('hex')
+    log(`New swarm connection from ${keyStr}`)
 
-      try {
-        log(`${keyStr} signaling renderer`)
-        await signalRenderer(esocket, peerKey)
-        log(`${keyStr} connected to renderer`)
-      } catch (e) {
-        log.error(`Failed to connect to peer ${keyStr}:`, e)
-      }
-
-      esocket.destroy()
+    try {
+      log(`${keyStr} signaling renderer`)
+      await signalRenderer(esocket, peerKey)
+      log(`${keyStr} connected to renderer`)
+    } catch (e) {
+      log.error(`Failed to connect to peer ${keyStr}:`, e)
     }
-  )
+
+    esocket.destroy()
+  })
 
   log('Swarm server now listening...')
 
@@ -136,7 +133,7 @@ ipcMain.on('platform-join-lobby', async (event: Electron.Event, serverId: string
   const success = !!esocket
   event.sender.send('platform-join-lobby-result', success)
 
-  if (success) {
+  if (esocket) {
     try {
       await signalRenderer(esocket, hostPublicKey)
       log(`Finished signaling connection to host ${serverId}`)

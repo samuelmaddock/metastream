@@ -1,10 +1,10 @@
 import { BrowserWindow, ipcMain, ipcRenderer } from 'electron'
-import { EncryptedSocket } from './socket'
 import { Key } from './crypto'
 import { SignalData } from 'renderer/network/rtc'
 import { NETWORK_TIMEOUT } from 'constants/network'
-import log from 'browser/log';
-import { SimplePeerData } from 'simple-peer';
+import log from 'browser/log'
+import { SimplePeerData } from 'simple-peer'
+import { EncryptedSocket } from 'swarm-server'
 
 /** Relay signal data to renderer process */
 export async function signalRenderer(socket: EncryptedSocket, peerKey: Key): Promise<void> {
@@ -52,7 +52,7 @@ export async function signalRenderer(socket: EncryptedSocket, peerKey: Key): Pro
       }
       timeoutId = (setTimeout(() => {
         cleanup()
-        webContents.send('rtc-peer-timeout', keyStr);
+        webContents.send('rtc-peer-timeout', keyStr)
         reject(`Signalling timeout`)
       }, delay) as any) as number
     }

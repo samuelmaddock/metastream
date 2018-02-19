@@ -195,7 +195,7 @@
     "stylefmt": "^5.3.2",
     "stylelint": "^7.10.1",
     "stylelint-config-standard": "^16.0.0",
-    "swarm-server": "git+ssh://git@github.com/samuelmaddock/swarm-server.git#0.0.2",
+    "swarm-server": "git+ssh://git@github.com/samuelmaddock/swarm-server.git#0.0.4",
     "typescript": "^2.5.3",
     "url-loader": "^0.5.8",
     "webpack": "^3.5.6",
