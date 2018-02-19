@@ -26,12 +26,12 @@
   opacity: 0;
 }
 
-:global(.browserVisible) .overlay {
+:global(.modalVisible) .overlay {
   opacity: 0;
   transition: none;
 }
 
-:global(.browserVisible) .titlebar {
+:global(.modalVisible) .titlebar {
   opacity: 1;
 }
 

@@ -42,6 +42,7 @@ import { registerMediaShortcuts, unregisterMediaShortcuts } from 'renderer/lobby
 import { isUpdateAvailable } from 'renderer/reducers/ui'
 import { IAppState } from 'renderer/reducers'
 import { HighlightButton } from 'renderer/components/common/button'
+import { Modal } from 'renderer/components/lobby/Modal'
 
 interface IProps {
   host: boolean
@@ -49,7 +50,7 @@ interface IProps {
 
 interface IState {
   inactive: boolean
-  showBrowser?: boolean
+  modal?: LobbyModal
 }
 
 interface IConnectedProps {
@@ -63,6 +64,11 @@ interface IConnectedProps {
 }
 
 type PrivateProps = IProps & IConnectedProps & DispatchProp<IAppState>
+
+const enum LobbyModal {
+  Browser = 'browser',
+  Invite = 'invite'
+}
 
 const NO_MEDIA: IMediaItem = {
   type: MediaType.Item,
@@ -97,7 +103,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
       <div
         className={cx(styles.container, {
           lobbyInactive: this.isInactive,
-          browserVisible: this.state.showBrowser
+          modalVisible: !!this.state.modal
         })}
       >
         <ActivityMonitor onChange={active => this.setState({ inactive: !active })} />
@@ -118,7 +124,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
             title="Users"
             tagline={`${userIds.length} online`}
             action={
-              <HighlightButton icon="mail" onClick={this.openBrowser}>
+              <HighlightButton icon="mail" onClick={() => this.openModal(LobbyModal.Invite)}>
                 Invite
               </HighlightButton>
             }
@@ -148,16 +154,23 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
             className={styles.chat}
             messages={this.props.messages}
             sendMessage={this.sendChat}
-            disabled={this.state.showBrowser}
+            disabled={!!this.state.modal}
           />
         </section>
 
         {this.isInactive && <div className={styles.inactiveOverlay} />}
-        {this.state.showBrowser && (
-          <WebBrowser className={styles.browser} onClose={this.closeBrowser} />
-        )}
+        {this.state.modal && this.renderModal()}
       </div>
     )
+  }
+
+  private renderModal() {
+    switch (this.state.modal!) {
+      case LobbyModal.Browser:
+        return <WebBrowser className={styles.browser} onClose={this.closeModal} />
+      case LobbyModal.Invite:
+        return <Modal onClose={this.closeModal}>Invite</Modal>
+    }
   }
 
   private renderPlaybackControls(): JSX.Element {
@@ -165,7 +178,6 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
       <PlaybackControls
         className={styles.playbackControls}
         reload={() => {
-          console.log('reload', this, this.player)
           if (this.player) {
             this.player.reload()
           }
@@ -197,11 +209,15 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
   }
 
   private openBrowser = () => {
-    this.setState({ showBrowser: true })
+    this.setState({ modal: LobbyModal.Browser })
   }
 
-  private closeBrowser = () => {
-    this.setState({ showBrowser: false })
+  private openModal = (modal: LobbyModal) => {
+    this.setState({ modal })
+  }
+
+  private closeModal = () => {
+    this.setState({ modal: undefined })
   }
 }
 

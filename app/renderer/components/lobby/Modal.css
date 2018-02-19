@@ -1,0 +1,12 @@
+.container {
+  composes: glass absolute-full scroller from 'styles/layout.css';
+}
+
+.close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+}
