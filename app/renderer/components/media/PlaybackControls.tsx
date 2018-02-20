@@ -28,7 +28,6 @@ import { timestampToMilliseconds, parseTimestampPairs } from 'utils/cuepoints'
 import { CuePointItem } from 'renderer/components/media/CuePoint'
 import { parseCuePoints } from 'renderer/media/utils'
 import { MoreButton } from 'renderer/components/media/MoreButton'
-import { InfoButton } from 'renderer/components/media/buttons/InfoButton'
 import { IAppState } from 'renderer/reducers'
 import { IconButton } from 'renderer/components/common/button'
 
@@ -82,6 +81,7 @@ interface IProps {
   reload?: React.MouseEventHandler<HTMLButtonElement>
   debug?: React.MouseEventHandler<HTMLButtonElement>
   openBrowser: Function
+  showInfo: Function
 }
 
 interface IConnectedProps extends IMediaPlayerState {
@@ -174,7 +174,8 @@ class _PlaybackControls extends Component<PrivateProps> {
       />
     )
 
-    const infoBtn = media && media.description ? <InfoButton media={media} /> : undefined
+    const infoBtn = media &&
+      media.description && <Button icon="info" title="Info" onClick={() => this.props.showInfo()} />
 
     const reloadBtn = (
       <ButtonListItem icon="rotate-cw" onClick={this.props.reload}>

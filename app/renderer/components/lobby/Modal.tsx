@@ -36,7 +36,7 @@ export class Modal extends Component<PrivateProps> {
     return (
       <div className={cx(styles.container, this.props.className)}>
         <IconButton icon="x" className={styles.close} onClick={this.props.onClose} />
-        {this.props.children}
+        <div className={styles.content}>{this.props.children}</div>
       </div>
     )
   }

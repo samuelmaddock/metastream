@@ -1,9 +1,18 @@
 .container {
-  composes: dark-overlay absolute-full scroller from 'styles/layout.css';
+  composes: dark-overlay absolute-full from 'styles/layout.css';
   display: flex;
   justify-content: center;
   align-items: center;
-  /* backdrop-filter: blur(6px); */
+}
+
+.content {
+  composes: scroller from 'styles/layout.css';
+  display: flex;
+  justify-content: center;
+  overflow-y: auto;
+  max-height: 100%;
+  width: 100%;
+  padding: 30px 0;
 }
 
 .close {

@@ -44,6 +44,7 @@ import { IAppState } from 'renderer/reducers'
 import { HighlightButton } from 'renderer/components/common/button'
 import { Modal } from 'renderer/components/lobby/Modal'
 import { Invite } from 'renderer/components/lobby/Invite'
+import { MediaInfo } from 'renderer/components/lobby/modals/MediaInfo'
 
 interface IProps {
   host: boolean
@@ -68,7 +69,8 @@ type PrivateProps = IProps & IConnectedProps & DispatchProp<IAppState>
 
 const enum LobbyModal {
   Browser = 'browser',
-  Invite = 'invite'
+  Invite = 'invite',
+  MediaInfo = 'media-info'
 }
 
 const NO_MEDIA: IMediaItem = {
@@ -175,6 +177,12 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
             <Invite />
           </Modal>
         )
+      case LobbyModal.MediaInfo:
+        return (
+          <Modal className={styles.modal} onClose={this.closeModal}>
+            <MediaInfo media={this.props.currentMedia} onClose={this.closeModal} />
+          </Modal>
+        )
     }
   }
 
@@ -193,6 +201,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
           }
         }}
         openBrowser={this.openBrowser}
+        showInfo={this.showInfo}
       />
     )
   }
@@ -215,6 +224,10 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
 
   private openBrowser = () => {
     this.setState({ modal: LobbyModal.Browser })
+  }
+
+  private showInfo = () => {
+    this.setState({ modal: LobbyModal.MediaInfo })
   }
 
   private openModal = (modal: LobbyModal) => {
