@@ -4,15 +4,21 @@ import styles from './input.css'
 import { Icon } from 'renderer/components/Icon'
 import { HighlightButton } from 'renderer/components/common/button'
 
-interface ITextInputProps {
+interface ITextInputProps extends React.HTMLProps<HTMLInputElement> {
+  theRef?: (e: HTMLInputElement | null) => void
   className?: string
-  disabled?: boolean
-  placeholder?: string
   defaultValue?: string
 }
 
 export const TextInput: React.SFC<ITextInputProps> = props => {
-  return <input type="text" {...props} className={cx(styles.text, props.className)} />
+  const { theRef, ...rest } = props;
+  return (
+    <input ref={theRef} type="text" {...rest} className={cx(styles.text, props.className)} />
+  )
+}
+
+export const InputGroup: React.SFC<ITextInputProps> = props => {
+  return <div className={styles.inputGroup}>{props.children}</div>
 }
 
 interface IClipboardTextInputProps extends ITextInputProps {
@@ -20,7 +26,7 @@ interface IClipboardTextInputProps extends ITextInputProps {
 }
 
 export class ClipboardTextInput extends React.Component<IClipboardTextInputProps> {
-  private input: HTMLInputElement | null
+  private input: HTMLInputElement | null = null
 
   render() {
     return (

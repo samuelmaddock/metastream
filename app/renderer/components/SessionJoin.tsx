@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import styles from './ServerBrowser.css'
+import styles from './SessionJoin.css'
 import { NetworkState } from 'types/network'
 import { ILobbySession } from 'renderer/platform/types'
 import LayoutMain from 'renderer/components/layout/Main'
 import { Icon } from 'renderer/components/Icon'
 import { MenuButton } from 'renderer/components/menu/MenuButton'
+import { TextInput, InputGroup } from './common/input'
 
 interface IProps {
   connect: (sessionId: string) => void
@@ -27,20 +28,34 @@ export class SessionJoin extends Component<IProps> {
               <h1>Join Session</h1>
             </div>
           </header>
-          <div>
-            <input ref={el => this.sessionInput = el} type="text" pattern="[a-zA-Z0-9]{64}" required />
-            <MenuButton
-              icon="globe"
-              size="medium"
-              onClick={() => {
-                if (this.sessionInput!.checkValidity()) {
-                  this.props.connect(this.sessionInput!.value)
-                }
-              }}
-            >
-              Connect
-            </MenuButton>
-          </div>
+          <form>
+            <p>Enter a 64-character friend code.</p>
+            <InputGroup>
+              <TextInput
+                theRef={el => (this.sessionInput = el)}
+                className={styles.peerId}
+                pattern="[a-zA-Z0-9]{64}"
+                placeholder="Friend code"
+                spellCheck={false}
+                autoFocus
+                required
+              />
+              <MenuButton
+                icon="globe"
+                size="medium"
+                onClick={() => {
+                  const valid = this.sessionInput!.checkValidity()
+                  if (valid) {
+                    this.props.connect(this.sessionInput!.value)
+                  } else {
+                    this.sessionInput!.classList.add('invalid')
+                  }
+                }}
+              >
+                Join
+              </MenuButton>
+            </InputGroup>
+          </form>
         </section>
       </LayoutMain>
     )

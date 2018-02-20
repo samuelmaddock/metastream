@@ -52,3 +52,10 @@
 .table td:last-child {
   padding-right: 0;
 }
+
+.peerId {
+  vertical-align: bottom;
+  width: 100%;
+  max-width: 300px;
+  border-color: rgba(255, 255, 255, 0.3);
+}
