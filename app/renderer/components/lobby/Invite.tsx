@@ -5,6 +5,7 @@ import cx from 'classnames'
 import styles from './Invite.css'
 import { IAppState } from 'renderer/reducers'
 import { PlatformService } from 'renderer/platform'
+import { ClipboardTextInput } from 'renderer/components/common/input'
 
 interface IProps {
   className?: string
@@ -18,7 +19,12 @@ class _Invite extends Component<PrivateProps> {
     return (
       <div className={cx(styles.container, this.props.className)}>
         <p>Send your ID to peeps to invite them</p>
-        <input value={PlatformService.getLocalId().toString()} disabled />
+        <ClipboardTextInput
+          className={styles.idContainer}
+          inputClassName={styles.idText}
+          defaultValue={PlatformService.getLocalId().toString()}
+          disabled
+        />
       </div>
     )
   }

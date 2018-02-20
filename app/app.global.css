@@ -230,3 +230,7 @@ button {
 button:disabled {
   cursor: auto;
 }
+
+p:not(:last-child) {
+  margin-bottom: 15px;
+}

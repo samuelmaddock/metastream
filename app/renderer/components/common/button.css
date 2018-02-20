@@ -12,3 +12,11 @@
 .highlightBtn svg {
   transform: scale(0.9);
 }
+
+.highlightBtn:hover {
+  filter: brightness(1.1);
+}
+
+.highlightBtn:active {
+  filter: brightness(0.95);
+}

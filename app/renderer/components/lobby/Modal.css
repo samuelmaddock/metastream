@@ -3,6 +3,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  /* backdrop-filter: blur(6px); */
 }
 
 .close {
@@ -12,4 +13,14 @@
   border-radius: 50%;
   width: 60px;
   height: 60px;
+  background: rgba(255, 255, 255, 0.1);
+  mix-blend-mode: soft-light;
+}
+
+.close:hover {
+  mix-blend-mode: normal;
+}
+
+.close svg {
+  transform: scale(1.3);
 }

@@ -1,0 +1,26 @@
+.textInput {
+  color: var(--app-text-color);
+  background: transparent;
+  border: none;
+  outline: none;
+}
+
+.text {
+  composes: textInput;
+  padding: 6px 8px;
+  border: 1px solid var(--app-text-color);
+  border-radius: 4px;
+}
+
+.text:disabled {
+  /* opacity: 0.7; */
+}
+
+.textContainer {
+  composes: text;
+  display: flex;
+}
+
+.textContainer input {
+  flex-grow: 1;
+}
