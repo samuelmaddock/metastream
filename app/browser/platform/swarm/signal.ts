@@ -4,7 +4,7 @@ import { SignalData } from 'renderer/network/rtc'
 import { NETWORK_TIMEOUT } from 'constants/network'
 import log from 'browser/log'
 import { SimplePeerData } from 'simple-peer'
-import { EncryptedSocket } from 'swarm-server'
+import { EncryptedSocket } from 'swarm-peer-server'
 
 /** Relay signal data to renderer process */
 export async function signalRenderer(socket: EncryptedSocket, peerKey: Key): Promise<void> {

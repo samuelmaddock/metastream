@@ -8233,16 +8233,17 @@ svgo@^0.7.0:
     sax "~1.2.1"
     whet.extend "~0.9.9"
 
-"swarm-server@git+ssh://git@github.com/samuelmaddock/swarm-server.git#0.0.4":
-  version ""
-  resolved "git+ssh://git@github.com/samuelmaddock/swarm-server.git#f9e44c8b61fd84245312b5139b15a2a7c991db37"
+swarm-peer-server@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/swarm-peer-server/-/swarm-peer-server-1.0.1.tgz#c7a84d8cb9cb51367fab0018120fa5e918365e08"
   dependencies:
-    dat-swarm-defaults "^1.0.0"
+    debug "^3.1.0"
     discovery-swarm "^4.4.2"
     length-prefixed-stream "^1.5.1"
     sodium-encryption "^1.2.3"
     sodium-native "^2.1.4"
   optionalDependencies:
+    dat-swarm-defaults "^1.0.0"
     yargs "^11.0.0"
 
 symbol-observable@^1.0.1, symbol-observable@^1.0.3:
