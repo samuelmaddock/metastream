@@ -17,6 +17,7 @@ import { ReplicatedState } from 'renderer/network/types'
 import { push } from 'react-router-redux'
 import { sleep } from 'utils/async';
 import { NETWORK_TIMEOUT } from 'constants/network';
+import { Connect } from '../components/lobby/Connect';
 
 interface IRouteParams {
   lobbyId: string
@@ -152,7 +153,7 @@ export class _LobbyPage extends Component<PrivateProps> {
 
   render(): JSX.Element {
     if (!this.connected) {
-      return <div>Connecting...</div>
+      return <Connect />
     }
 
     return <GameLobby host={this.host} />
