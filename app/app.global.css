@@ -4,7 +4,7 @@ Variables
 :root {
   --app-text-color: #efefef;
   --app-titlebar-height: 30px;
-  --app-titlebar-background-color: rgba(0, 0, 0, 0.44);
+  --app-titlebar-background-color: rgba(0, 0, 0, 0.5);
 
   --color-nice-blue: #00bfff;
   /* --color-highlight: #f8c0b1; */
