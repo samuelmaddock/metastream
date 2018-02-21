@@ -13,7 +13,7 @@ export interface IMessageAuthor {
 export interface IMessage {
   // id: string;
 
-  author: IMessageAuthor;
+  author?: IMessageAuthor;
 
   /** Raw markdown content. */
   content: string;

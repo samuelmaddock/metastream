@@ -26,4 +26,6 @@ const localUser = (): NetConnection => {
   return client;
 };
 
+export const localUserId = () => localUser().id.toString()
+
 export default localUser;

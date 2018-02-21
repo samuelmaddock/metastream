@@ -102,6 +102,10 @@
   vertical-align: top;
 }
 
+.broadcast {
+  font-style: italic;
+}
+
 .form {
   composes: anim;
   width: 100%;
