@@ -18,12 +18,11 @@ export const users: Reducer<IUsersState> = (state: IUsersState = initialState, a
   if (isType(action, addUser)) {
     const conn = action.payload.conn
     const id = conn.id.toString()
+    const userState = state[id]
+    const name = action.payload.name || (userState && userState.name) || id
     return {
       ...state,
-      [id]: {
-        id,
-        name: action.payload.name
-      }
+      [id]: { id, name }
     }
   } else if (isType(action, removeUser)) {
     const id = action.payload

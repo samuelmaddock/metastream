@@ -8,10 +8,12 @@ import { SwarmRTCPeerCoordinator } from 'renderer/platform/swarm/peer-coordinato
 
 type SwarmId = string
 
-const getIpcId = function() {
+const getIpcId = (function() {
   let ipcId = 0
   return () => ++ipcId
-}()
+})()
+
+const MAX_NAME_LEN = 32
 
 export class SwarmPlatform extends Platform {
   private id: NetUniqueId<SwarmId>
@@ -37,11 +39,14 @@ export class SwarmPlatform extends Platform {
     ipcRenderer.send('platform-create-lobby', ipcId, opts)
 
     const success = await new Promise<boolean>((resolve, reject) => {
-      ipcRenderer.once('platform-create-lobby-result', (event: Electron.Event, id: number, result: boolean) => {
-        if (id === ipcId) {
-          resolve(result)
+      ipcRenderer.once(
+        'platform-create-lobby-result',
+        (event: Electron.Event, id: number, result: boolean) => {
+          if (id === ipcId) {
+            resolve(result)
+          }
         }
-      })
+      )
     })
 
     this.isHosting = true
@@ -57,11 +62,14 @@ export class SwarmPlatform extends Platform {
     ipcRenderer.send('platform-join-lobby', ipcId, lobbyId)
 
     const success = await new Promise<boolean>((resolve, reject) => {
-      ipcRenderer.once('platform-join-lobby-result', (event: Electron.Event, id: number, result: boolean) => {
-        if (id === ipcId) {
-          resolve(result)
+      ipcRenderer.once(
+        'platform-join-lobby-result',
+        (event: Electron.Event, id: number, result: boolean) => {
+          if (id === ipcId) {
+            resolve(result)
+          }
         }
-      })
+      )
     })
 
     this.isHosting = false
@@ -95,7 +103,13 @@ export class SwarmPlatform extends Platform {
   }
 
   getUserName(userId: NetUniqueId): string {
-    return this.username || `Swarm-${userId}`
+    let name = (this.getLocalId().equals(userId) && this.username) || `Swarm-${userId}`
+
+    if (name.length > MAX_NAME_LEN) {
+      name = name.substr(0, MAX_NAME_LEN)
+    }
+
+    return name
   }
 
   getLocalId(): NetUniqueId {

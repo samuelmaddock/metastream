@@ -4,15 +4,25 @@ import { Platform } from 'renderer/platform/types'
 import { PlatformService } from 'renderer/platform'
 import { localUser, NetConnection, NetServer } from 'renderer/network'
 import { NetMiddlewareOptions, NetActions } from 'renderer/network/actions'
+import { RpcThunk } from '../types';
+import { rpc, RpcRealm } from '../../network/middleware/rpc';
 
 interface IUserPayload {
   conn: NetConnection
-  name: string
+  name?: string
 }
 
 export const addUser = actionCreator<IUserPayload>('ADD_USER')
 export const removeUser = actionCreator<string>('REMOVE_USER')
 export const clearUsers = actionCreator<string>('CLEAR_USERS')
+
+const sendUsername = (name: string): RpcThunk<void> => (dispatch, getState, context) => {
+  dispatch(addUser({
+    conn: context.client,
+    name: name
+  }));
+};
+export const server_sendUsername = rpc(RpcRealm.Server, sendUsername);
 
 export const usersMiddleware = (): Middleware => {
   return <S extends Object>(store: MiddlewareAPI<S>) => {
@@ -34,16 +44,16 @@ export const usersMiddleware = (): Middleware => {
         )
 
         server.on('connect', (conn: NetConnection) => {
-          dispatch(
-            addUser({
-              conn,
-              name: PlatformService.getUserName(conn.id)
-            })
-          )
+          dispatch(addUser({ conn }))
         })
 
         server.on('disconnect', (conn: NetConnection) => {
           dispatch(removeUser(conn.id.toString()))
+        })
+      } else {
+        server.once('connect', () => {
+          const username = PlatformService.getUserName(localUser().id)
+          dispatch(server_sendUsername(username))
         })
       }
     }
