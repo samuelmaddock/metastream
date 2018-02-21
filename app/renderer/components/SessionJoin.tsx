@@ -36,7 +36,7 @@ export class SessionJoin extends Component<IProps> {
                 className={styles.peerId}
                 pattern="[a-zA-Z0-9]{64}"
                 placeholder="Friend code"
-                defaultValue="103b85f300da1d6b449473df91eca4f4e1159b90f433d6c8cccb1618db838a52"
+                defaultValue={localStorage.getItem('prevFriendCode') || undefined}
                 spellCheck={false}
                 autoFocus
                 required
@@ -47,7 +47,9 @@ export class SessionJoin extends Component<IProps> {
                 onClick={() => {
                   const valid = this.sessionInput!.checkValidity()
                   if (valid) {
-                    this.props.connect(this.sessionInput!.value)
+                    const value = this.sessionInput!.value
+                    localStorage.setItem('prevFriendCode', value)
+                    this.props.connect(value)
                   } else {
                     this.sessionInput!.classList.add('invalid')
                   }
