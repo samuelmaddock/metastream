@@ -121,7 +121,9 @@ export class _LobbyPage extends Component<PrivateProps> {
   }
 
   private onConnectionFailed(): void {
-    this.disconnect('Failed to join lobby')
+    if (this.server) {
+      this.disconnect('Failed to join lobby')
+    }
   }
 
   private disconnect = (reason?: string) => {
@@ -153,7 +155,7 @@ export class _LobbyPage extends Component<PrivateProps> {
 
   render(): JSX.Element {
     if (!this.connected) {
-      return <Connect />
+      return <Connect onCancel={this.disconnect} />
     }
 
     return <GameLobby host={this.host} />

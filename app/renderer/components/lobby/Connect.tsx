@@ -8,6 +8,7 @@ import { MenuButton } from '../menu/MenuButton';
 
 interface IProps {
   className?: string
+  onCancel: () => void
 }
 
 type PrivateProps = IProps & DispatchProp<IAppState>
@@ -19,7 +20,7 @@ class _Connect extends Component<PrivateProps> {
         <TitleBar className={styles.titlebar} />
 
         <p>Connecting&hellip;</p>
-        <MenuButton icon="x" size="medium">Cancel</MenuButton>
+        <MenuButton icon="x" size="medium" onClick={this.props.onCancel}>Cancel</MenuButton>
       </div>
     )
   }

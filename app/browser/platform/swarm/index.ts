@@ -29,6 +29,10 @@ function checkNativeDeps() {
 let localId: string
 let localKeyPair: KeyPair
 
+let prevLobbyConnectTime = 0
+const updateConnectTime = () => prevLobbyConnectTime = Date.now()
+const isPrevConnectTime = (time: number) => prevLobbyConnectTime === time
+
 async function initIdentity() {
   // 1. check if identity exists
   const userPath = app.getPath('userData')
@@ -79,7 +83,7 @@ ipcMain.on('platform-swarm-init', async (event: Electron.Event) => {
 let swarmServer: any
 let serverOpts: ILobbyOptions
 
-ipcMain.on('platform-create-lobby', (event: Electron.Event, opts: ILobbyOptions) => {
+ipcMain.on('platform-create-lobby', (event: Electron.Event, ipcId: number, opts: ILobbyOptions) => {
   const { sender } = event
 
   checkNativeDeps()
@@ -89,6 +93,8 @@ ipcMain.on('platform-create-lobby', (event: Electron.Event, opts: ILobbyOptions)
     swarmServer.close()
     swarmServer = null
   }
+
+  updateConnectTime()
 
   serverOpts = opts
   swarmServer = swarm.listen(
@@ -115,7 +121,7 @@ ipcMain.on('platform-create-lobby', (event: Electron.Event, opts: ILobbyOptions)
 
   log('Swarm server now listening...')
 
-  event.sender.send('platform-create-lobby-result', true)
+  event.sender.send('platform-create-lobby-result', ipcId, true)
 })
 
 ipcMain.on('platform-leave-lobby', (event: Electron.Event) => {
@@ -126,11 +132,13 @@ ipcMain.on('platform-leave-lobby', (event: Electron.Event) => {
   }
 })
 
-ipcMain.on('platform-join-lobby', async (event: Electron.Event, serverId: string) => {
+ipcMain.on('platform-join-lobby', async (event: Electron.Event, ipcId: number, serverId: string) => {
   // TODO: check if already connected
   // TODO: check if serverId is an IP, not a public key
 
   checkNativeDeps()
+
+  let connectTime = updateConnectTime()
 
   const hostPublicKey = Buffer.from(serverId, 'hex')
   let conn
@@ -146,10 +154,10 @@ ipcMain.on('platform-join-lobby', async (event: Electron.Event, serverId: string
     log.error(`Join lobby error`, e)
   }
 
-  const success = !!conn
-  event.sender.send('platform-join-lobby-result', success)
+  const success = !!conn && isPrevConnectTime(connectTime)
+  event.sender.send('platform-join-lobby-result', ipcId, success)
 
-  if (conn) {
+  if (success && conn) {
     try {
       await signalRenderer(conn.socket, hostPublicKey)
       log(`Finished signaling connection to host ${serverId}`)
@@ -157,6 +165,8 @@ ipcMain.on('platform-join-lobby', async (event: Electron.Event, serverId: string
       log.error(`Failed to connect to peer ${serverId}\n`, e)
     }
 
+    conn.socket.destroy()
+  } else if (conn) {
     conn.socket.destroy()
   }
 })

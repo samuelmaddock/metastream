@@ -8,6 +8,11 @@ import { SwarmRTCPeerCoordinator } from 'renderer/platform/swarm/peer-coordinato
 
 type SwarmId = string
 
+const getIpcId = function() {
+  let ipcId = 0
+  return () => ++ipcId
+}()
+
 export class SwarmPlatform extends Platform {
   private id: NetUniqueId<SwarmId>
   private username: string
@@ -28,11 +33,14 @@ export class SwarmPlatform extends Platform {
     // idea: middleware for lobby: max members, password, auth, etc
     // do auth first so encrypted socket can be used for the rest
 
-    ipcRenderer.send('platform-create-lobby', opts)
+    const ipcId = getIpcId()
+    ipcRenderer.send('platform-create-lobby', ipcId, opts)
 
     const success = await new Promise<boolean>((resolve, reject) => {
-      ipcRenderer.once('platform-create-lobby-result', (event: Electron.Event, result: boolean) => {
-        resolve(result)
+      ipcRenderer.once('platform-create-lobby-result', (event: Electron.Event, id: number, result: boolean) => {
+        if (id === ipcId) {
+          resolve(result)
+        }
       })
     })
 
@@ -41,15 +49,18 @@ export class SwarmPlatform extends Platform {
     return success
   }
 
-  async joinLobby(id: string): Promise<boolean> {
+  async joinLobby(lobbyId: string): Promise<boolean> {
     // should emit connection events for frontend
     // allow hash id or ipv4
 
-    ipcRenderer.send('platform-join-lobby', id)
+    const ipcId = getIpcId()
+    ipcRenderer.send('platform-join-lobby', ipcId, lobbyId)
 
     const success = await new Promise<boolean>((resolve, reject) => {
-      ipcRenderer.once('platform-join-lobby-result', (event: Electron.Event, result: boolean) => {
-        resolve(result)
+      ipcRenderer.once('platform-join-lobby-result', (event: Electron.Event, id: number, result: boolean) => {
+        if (id === ipcId) {
+          resolve(result)
+        }
       })
     })
 
@@ -59,10 +70,6 @@ export class SwarmPlatform extends Platform {
   }
 
   leaveLobby(id: string): boolean {
-    if (!this.connected) {
-      throw new Error('[Swarm Platform] Attempt to leave lobby while not connected')
-    }
-
     // TODO: close all webrtc peers
     ipcRenderer.send('platform-leave-lobby')
     this.connected = false
