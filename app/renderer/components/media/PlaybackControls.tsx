@@ -190,7 +190,7 @@ class _PlaybackControls extends Component<PrivateProps> {
     )
 
     const copyLinkBtn = media && (
-      <ButtonListItem icon="copy" onClick={this.copyLink}>
+      <ButtonListItem icon="clipboard" onClick={this.copyLink}>
         Copy link
       </ButtonListItem>
     )
