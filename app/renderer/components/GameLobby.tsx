@@ -101,7 +101,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
 
   render(): JSX.Element {
     const { currentMedia: media } = this.props
-    const userIds = Object.keys(this.props.users)
+    const userIds = Object.keys(this.props.users.map)
     return (
       <div
         className={cx(styles.container, {
@@ -133,7 +133,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
             }
           >
             {userIds.map((userId: string) => {
-              const user = this.props.users[userId]!
+              const user = this.props.users.map[userId]!
               return <UserItem key={userId} user={user} />
             })}
           </ListOverlay>

@@ -4,25 +4,42 @@ import cx from 'classnames'
 
 import styles from './Invite.css'
 import { IAppState } from 'renderer/reducers'
-import { PlatformService } from 'renderer/platform'
 import { ClipboardTextInput } from 'renderer/components/common/input'
+import { getHostId, isHost, getHost } from 'renderer/lobby/reducers/users'
 
 interface IProps {
   className?: string
   onClose?: () => void
 }
 
-type PrivateProps = IProps & DispatchProp<IAppState>
+interface IConnectedProps {
+  isHost: boolean
+  hostId: string
+  hostName: string
+}
+
+const mapStateToProps = (state: IAppState): IConnectedProps => {
+  return {
+    isHost: isHost(state),
+    hostId: getHostId(state),
+    hostName: getHost(state).name
+  }
+}
+
+type PrivateProps = IProps & IConnectedProps & DispatchProp<IAppState>
 
 class _Invite extends Component<PrivateProps> {
   render(): JSX.Element {
+    const msg = this.props.isHost
+      ? 'Send your friend code to peeps to invite them'
+      : `Send ${this.props.hostName}’s friend code to peeps to invite them`
     return (
       <div className={cx(styles.container, this.props.className)}>
-        <p>Send your ID to peeps to invite them</p>
+        <p>{msg}</p>
         <ClipboardTextInput
           className={styles.idContainer}
           inputClassName={styles.idText}
-          defaultValue={PlatformService.getLocalId().toString()}
+          defaultValue={this.props.hostId}
           disabled
         />
       </div>
@@ -30,4 +47,4 @@ class _Invite extends Component<PrivateProps> {
   }
 }
 
-export const Invite = connect()(_Invite) as React.ComponentClass<IProps>
+export const Invite = connect(mapStateToProps)(_Invite) as React.ComponentClass<IProps>

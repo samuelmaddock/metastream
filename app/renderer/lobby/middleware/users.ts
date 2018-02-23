@@ -12,6 +12,7 @@ import { initialize } from 'renderer/lobby/actions/user-init'
 interface IUserPayload {
   conn: NetConnection
   name?: string
+  host?: boolean
 }
 
 export const addUser = actionCreator<IUserPayload>('ADD_USER')
@@ -33,7 +34,8 @@ export const usersMiddleware = (): Middleware => {
         dispatch(
           addUser({
             conn: localUser(),
-            name: PlatformService.getUserName(localUser().id)
+            name: PlatformService.getUserName(localUser().id),
+            host: true
           })
         )
 
