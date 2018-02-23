@@ -49,13 +49,15 @@ export const users: Reducer<IUsersState> = (state: IUsersState = initialState, a
   return state
 }
 
+export const getUser = (state: IAppState, userId: string) => state.users.map[userId]
+
 export const getUserName = (state: IAppState, userId: string): string => {
-  const user = state.users.map[userId]
+  const user = getUser(state, userId)
   return user ? user.name : 'Unknown'
 }
 
 export const getHostId = (state: IAppState) => state.users.host
-export const getHost = (state: IAppState) => state.users.map[getHostId(state)]!
+export const getHost = (state: IAppState) => getUser(state, getHostId(state))!
 
 export const isHost = (state: IAppState) =>
-  state.users.host === PlatformService.getLocalId().id.toString()
+  getHostId(state) === PlatformService.getLocalId().id.toString()

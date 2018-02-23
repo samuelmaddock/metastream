@@ -6,6 +6,7 @@ import { localUser } from 'renderer/network'
 import { RpcThunk } from 'renderer/lobby/types'
 import { multi_userJoined } from 'renderer/lobby/actions/users'
 import { rpc, RpcRealm } from 'renderer/network/middleware/rpc'
+import { getUser } from 'renderer/lobby/reducers/users'
 
 const { version } = require('package.json')
 
@@ -35,6 +36,14 @@ const initClient = (info: ClientInfo): RpcThunk<void> => (dispatch, getState, { 
     // TODO: send disconnect reason to client
     client.close()
     console.debug(`Client '${info.version}'[${id}] kicked for version mismatch (${info.version})`)
+    return
+  }
+
+  const existingUser = !!getUser(getState(), id)
+
+  if (existingUser) {
+    client.close()
+    console.debug(`Client with existing ID already active in session ${id}`)
     return
   }
 
