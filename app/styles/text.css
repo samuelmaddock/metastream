@@ -3,3 +3,8 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.select-text {
+  user-select: text;
+  cursor: auto;
+}

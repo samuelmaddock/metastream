@@ -1,4 +1,5 @@
 .container {
+  composes: select-text from 'styles/text.css';
   white-space: pre-line;
   width: 100%;
   max-width: 600px;
