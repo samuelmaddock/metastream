@@ -4,16 +4,12 @@ import { getUserName } from 'renderer/lobby/reducers/users'
 import { rpc, RpcRealm } from 'renderer/network/middleware/rpc'
 import { IMessage } from 'renderer/lobby/reducers/chat'
 import { CHAT_MAX_MESSAGE_LENGTH } from 'constants/chat'
-import { localUserId } from '../../network';
-import { addChat } from './chat';
+import { localUserId } from '../../network'
+import { addChat } from './chat'
 
-const userJoined = (userId: string): RpcThunk<void> => (
-  dispatch,
-  getState,
-  context
-) => {
+const userJoined = (userId: string): RpcThunk<void> => (dispatch, getState, context) => {
   if (localUserId() === userId) {
-    return;
+    return
   }
 
   const username = getUserName(getState(), userId)
@@ -27,11 +23,7 @@ const userJoined = (userId: string): RpcThunk<void> => (
 }
 export const multi_userJoined = rpc(RpcRealm.Multicast, userJoined)
 
-const userLeft = (userId: string): RpcThunk<void> => (
-  dispatch,
-  getState,
-  context
-) => {
+const userLeft = (userId: string): RpcThunk<void> => (dispatch, getState, context) => {
   const username = getUserName(getState(), userId)
   const msg = `${username} has left`
   dispatch(

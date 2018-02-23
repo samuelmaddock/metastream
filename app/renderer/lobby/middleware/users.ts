@@ -6,7 +6,8 @@ import { localUser, NetConnection, NetServer } from 'renderer/network'
 import { NetMiddlewareOptions, NetActions } from 'renderer/network/actions'
 import { RpcThunk } from '../types'
 import { rpc, RpcRealm } from '../../network/middleware/rpc'
-import { multi_userJoined, multi_userLeft } from '../actions/users';
+import { multi_userJoined, multi_userLeft } from '../actions/users'
+import { initialize } from 'renderer/lobby/actions/user-init'
 
 interface IUserPayload {
   conn: NetConnection
@@ -16,28 +17,6 @@ interface IUserPayload {
 export const addUser = actionCreator<IUserPayload>('ADD_USER')
 export const removeUser = actionCreator<string>('REMOVE_USER')
 export const clearUsers = actionCreator<string>('CLEAR_USERS')
-
-const usernameCache = new Map<string, string>()
-
-const setUsername = (name: string): RpcThunk<void> => (dispatch, getState, context) => {
-  const id = context.client.id.toString()
-  const oldName = usernameCache.get(id)
-
-  // Skip update if already cached
-  if (oldName !== name) {
-    dispatch(
-      addUser({
-        conn: context.client,
-        name
-      })
-    )
-
-    usernameCache.set(id, name)
-  }
-
-  multi_userJoined(id.toString())
-}
-const server_setUsername = rpc(RpcRealm.Server, setUsername)
 
 export const usersMiddleware = (): Middleware => {
   return <S extends Object>(store: MiddlewareAPI<S>) => {
@@ -58,10 +37,6 @@ export const usersMiddleware = (): Middleware => {
           })
         )
 
-        server.on('connect', (conn: NetConnection) => {
-          dispatch(addUser({ conn, name: usernameCache.get(conn.id.toString()) }))
-        })
-
         server.on('disconnect', (conn: NetConnection) => {
           const id = conn.id.toString()
           multi_userLeft(id)
@@ -69,8 +44,7 @@ export const usersMiddleware = (): Middleware => {
         })
       } else {
         server.once('connect', () => {
-          const username = PlatformService.getUserName(localUser().id)
-          dispatch(server_setUsername(username))
+          dispatch((initialize as any)())
         })
       }
     }
