@@ -4,7 +4,7 @@ import { rpc, RpcRealm } from 'renderer/network/middleware/rpc'
 import { ThunkAction } from 'redux-thunk'
 import { IAppState } from 'renderer/reducers'
 
-export const updateServerTimeDelta = actionCreator<number>('UPDATE_SERVEr_TIME_DELTA')
+export const updateServerTimeDelta = actionCreator<number>('UPDATE_SERVER_TIME_DELTA')
 
 const announceServerTime = (time: number): RpcThunk<void> => (dispatch, getState, context) => {
   if (context.host) {
