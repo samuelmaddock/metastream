@@ -174,7 +174,7 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
     let time
 
     if (this.isPlaying) {
-      time = Date.now() - this.props.startTime!
+      time = Date.now() + this.props.serverTimeDelta - this.props.startTime!
     } else if (this.isPaused) {
       time = this.props.pauseTime!
     }
