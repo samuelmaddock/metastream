@@ -50,7 +50,7 @@ const initClient = (info: ClientInfo): RpcThunk<void> => (dispatch, getState, { 
   dispatch(
     addUser({
       conn: client,
-      name
+      name: info.name
     })
   )
 
