@@ -5332,6 +5332,14 @@ levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
+"license-gen@git+ssh://git@github.com/samuelmaddock/license-gen.git#0.0.1":
+  version "1.0.0"
+  resolved "git+ssh://git@github.com/samuelmaddock/license-gen.git#65fc3ead28a706fb429d7c26f9dbbfffd3e9b8d4"
+  dependencies:
+    ramda "^0.25.0"
+    sodium-native "^2.1.2"
+    yargs "^11.0.0"
+
 load-json-file@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/load-json-file/-/load-json-file-1.1.0.tgz#956905708d58b4bab4c2261b04f59f31c99374c0"
@@ -6987,6 +6995,10 @@ railroad-diagrams@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/railroad-diagrams/-/railroad-diagrams-1.0.0.tgz#eb7e6267548ddedfb899c1b90e57374559cddb7e"
 
+ramda@^0.25.0:
+  version "0.25.0"
+  resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.25.0.tgz#8fdf68231cffa90bc2f9460390a0cb74a29b29a9"
+
 randexp@^0.4.2:
   version "0.4.6"
   resolved "https://registry.yarnpkg.com/randexp/-/randexp-0.4.6.tgz#e986ad5e5e31dae13ddd6f7b3019aa7c87f60ca3"
@@ -7887,7 +7899,7 @@ sodium-native@^1.5.1:
     nan "^2.4.0"
     node-gyp-build "^3.0.0"
 
-sodium-native@^2.0.0, sodium-native@^2.1.4:
+sodium-native@^2.0.0, sodium-native@^2.1.2, sodium-native@^2.1.4:
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/sodium-native/-/sodium-native-2.1.4.tgz#f31e20992695ce4295a4324e08f64ee203baf0c6"
   dependencies:
