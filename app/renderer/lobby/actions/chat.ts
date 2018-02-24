@@ -7,7 +7,7 @@ import { CHAT_MAX_MESSAGE_LENGTH } from 'constants/chat'
 
 export const addChat = actionCreator<IMessage>('ADD_CHAT')
 
-const broadcastChat = (text: string, userId?: string): RpcThunk<void> => (
+const broadcastChat = (text: string, userId: string | null): RpcThunk<void> => (
   dispatch,
   getState,
   context

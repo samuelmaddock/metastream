@@ -198,15 +198,15 @@ const execRpc = <T>({ payload }: RpcAction): T => {
 }
 
 // prettier-ignore
-export function rpc<TResult>(realm: RpcRealm, action: () => TResult, validate?: (...args: any[]) => boolean): (() => TResult);
+export function rpc<TResult>(realm: RpcRealm, action: () => TResult, validate?: (...args: any[]) => boolean): (() => ActionCreator<void>);
 // prettier-ignore
-export function rpc<T1, TResult>(realm: RpcRealm, action: (a: T1) => TResult, validate?: (...args: any[]) => boolean): ((a: T1) => TResult);
+export function rpc<T1, TResult>(realm: RpcRealm, action: (a: T1) => TResult, validate?: (...args: any[]) => boolean): ((a: T1) => ActionCreator<void>);
 // prettier-ignore
-export function rpc<T1, T2, TResult>(realm: RpcRealm, action: (a: T1, b: T2) => TResult, validate?: (...args: any[]) => boolean): ((a: T1, b: T2) => TResult);
+export function rpc<T1, T2, TResult>(realm: RpcRealm, action: (a: T1, b: T2) => TResult, validate?: (...args: any[]) => boolean): ((a: T1, b: T2) => ActionCreator<void>);
 // prettier-ignore
-export function rpc<T1, T2, T3, TResult>(realm: RpcRealm, action: (a: T1, b: T2, c: T3) => TResult, validate?: (...args: any[]) => boolean): ((a: T1, b: T2, c: T3) => TResult);
+export function rpc<T1, T2, T3, TResult>(realm: RpcRealm, action: (a: T1, b: T2, c: T3) => TResult, validate?: (...args: any[]) => boolean): ((a: T1, b: T2, c: T3) => ActionCreator<void>);
 // prettier-ignore
-export function rpc(realm: RpcRealm, action: (...args: any[]) => any, validate?: (...args: any[]) => boolean): ((...args: any[]) => any) {
+export function rpc(realm: RpcRealm, action: (...args: any[]) => any, validate?: (...args: any[]) => boolean): ((...args: any[]) => ActionCreator<void>) {
   const { name } = action
 
   if (name === 'action') {

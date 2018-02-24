@@ -54,6 +54,6 @@ const initClient = (info: ClientInfo): RpcThunk<void> => (dispatch, getState, { 
     })
   )
 
-  multi_userJoined(id.toString())
+  dispatch(multi_userJoined(id.toString()))
 }
 const server_initClient = rpc(RpcRealm.Server, initClient)
