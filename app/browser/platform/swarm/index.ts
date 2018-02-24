@@ -30,15 +30,17 @@ let localId: string
 let localKeyPair: KeyPair
 
 let prevLobbyConnectTime = 0
-const updateConnectTime = () => prevLobbyConnectTime = Date.now()
+const updateConnectTime = () => (prevLobbyConnectTime = Date.now())
 const isPrevConnectTime = (time: number) => prevLobbyConnectTime === time
+
+const KEYNAME = 'idkey'
 
 async function initIdentity() {
   // 1. check if identity exists
   const userPath = app.getPath('userData')
   const userDataPath = path.join(userPath, 'userdata')
-  const keyPath = path.join(userPath, 'key.pub')
-  const skeyPath = path.join(userPath, 'key')
+  const keyPath = path.join(userPath, `${KEYNAME}.pub`)
+  const skeyPath = path.join(userPath, KEYNAME)
 
   const exists = await fs.pathExists(keyPath)
 
@@ -100,8 +102,7 @@ ipcMain.on('platform-create-lobby', (event: Electron.Event, ipcId: number, opts:
   swarmServer = swarm.listen(
     {
       ...swarmDefaults({ hash: false }),
-      ...localKeyPair,
-      convert: true
+      ...localKeyPair
     },
     async (esocket, peerKey) => {
       const keyStr = peerKey.toString('hex')
@@ -132,41 +133,43 @@ ipcMain.on('platform-leave-lobby', (event: Electron.Event) => {
   }
 })
 
-ipcMain.on('platform-join-lobby', async (event: Electron.Event, ipcId: number, serverId: string) => {
-  // TODO: check if already connected
-  // TODO: check if serverId is an IP, not a public key
+ipcMain.on(
+  'platform-join-lobby',
+  async (event: Electron.Event, ipcId: number, serverId: string) => {
+    // TODO: check if already connected
+    // TODO: check if serverId is an IP, not a public key
 
-  checkNativeDeps()
+    checkNativeDeps()
 
-  let connectTime = updateConnectTime()
+    let connectTime = updateConnectTime()
 
-  const hostPublicKey = Buffer.from(serverId, 'hex')
-  let conn
+    const hostPublicKey = Buffer.from(serverId, 'hex')
+    let conn
 
-  try {
-    conn = await swarm.connect({
-      ...swarmDefaults({ hash: false }),
-      ...localKeyPair,
-      hostPublicKey,
-      convert: true
-    })
-  } catch (e) {
-    log.error(`Join lobby error`, e)
-  }
-
-  const success = !!conn && isPrevConnectTime(connectTime)
-  event.sender.send('platform-join-lobby-result', ipcId, success)
-
-  if (success && conn) {
     try {
-      await signalRenderer(conn.socket, hostPublicKey)
-      log(`Finished signaling connection to host ${serverId}`)
+      conn = await swarm.connect({
+        ...swarmDefaults({ hash: false }),
+        ...localKeyPair,
+        hostPublicKey
+      })
     } catch (e) {
-      log.error(`Failed to connect to peer ${serverId}\n`, e)
+      log.error(`Join lobby error`, e)
     }
 
-    conn.socket.destroy()
-  } else if (conn) {
-    conn.socket.destroy()
+    const success = !!conn && isPrevConnectTime(connectTime)
+    event.sender.send('platform-join-lobby-result', ipcId, success)
+
+    if (success && conn) {
+      try {
+        await signalRenderer(conn.socket, hostPublicKey)
+        log(`Finished signaling connection to host ${serverId}`)
+      } catch (e) {
+        log.error(`Failed to connect to peer ${serverId}\n`, e)
+      }
+
+      conn.socket.destroy()
+    } else if (conn) {
+      conn.socket.destroy()
+    }
   }
-})
+)
