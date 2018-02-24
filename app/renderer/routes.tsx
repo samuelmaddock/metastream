@@ -6,6 +6,7 @@ import { ServerBrowserPage } from './containers/ServerBrowserPage'
 import { LobbyPage } from './containers/LobbyPage'
 import { SessionJoinPage } from './containers/SessionJoinPage'
 import { hasValidLicense } from 'renderer/license'
+import { LicenseGate } from 'renderer/components/license/LicenseGate'
 
 export default () => (
   <App>
@@ -30,7 +31,7 @@ const LicensedRoute = ({ component: Component, ...rest }: PrivateRouteProps) => 
       hasValidLicense() ? (
         <Component {...props} />
       ) : (
-        <div>TODO: license page</div>
+        <LicenseGate />
       )
     }
   />

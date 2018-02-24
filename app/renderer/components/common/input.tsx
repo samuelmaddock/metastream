@@ -11,10 +11,18 @@ interface ITextInputProps extends React.HTMLProps<HTMLInputElement> {
 }
 
 export const TextInput: React.SFC<ITextInputProps> = props => {
-  const { theRef, ...rest } = props;
-  return (
-    <input ref={theRef} type="text" {...rest} className={cx(styles.text, props.className)} />
-  )
+  const { theRef, ...rest } = props
+  return <input ref={theRef} type="text" {...rest} className={cx(styles.text, props.className)} />
+}
+
+interface ITextAreaProps extends React.HTMLProps<HTMLTextAreaElement> {
+  theRef?: (e: HTMLTextAreaElement | null) => void
+  className?: string
+}
+
+export const TextAreaInput: React.SFC<ITextAreaProps> = props => {
+  const { theRef, ...rest } = props
+  return <textarea ref={theRef} {...rest} className={cx(styles.text, props.className)} />
 }
 
 export const InputGroup: React.SFC<ITextInputProps> = props => {
