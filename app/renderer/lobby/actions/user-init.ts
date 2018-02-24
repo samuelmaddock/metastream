@@ -7,6 +7,7 @@ import { RpcThunk } from 'renderer/lobby/types'
 import { multi_userJoined } from 'renderer/lobby/actions/users'
 import { rpc, RpcRealm } from 'renderer/network/middleware/rpc'
 import { getUser } from 'renderer/lobby/reducers/users'
+import { syncServerTime } from 'renderer/lobby/actions/clock'
 
 const { version } = require('package.json')
 
@@ -55,5 +56,6 @@ const initClient = (info: ClientInfo): RpcThunk<void> => (dispatch, getState, { 
   )
 
   dispatch(multi_userJoined(id.toString()))
+  dispatch(syncServerTime())
 }
 const server_initClient = rpc(RpcRealm.Server, initClient)

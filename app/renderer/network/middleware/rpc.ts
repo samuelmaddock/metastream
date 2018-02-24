@@ -13,6 +13,7 @@ type RpcMiddlewareResult = boolean
 
 interface IRpcThunkContext {
   client: NetConnection
+  host: boolean
 }
 
 export type RpcThunkAction<R, S> = (
@@ -96,7 +97,7 @@ export const netRpcMiddleware = (): Middleware => {
       const result = execRpc(action)
 
       if (isRpcThunk(result)) {
-        const context = { client }
+        const context = { client, host }
         result(dispatch, getState, context)
       } else if (typeof result === 'object') {
         dispatch(result as Action)
