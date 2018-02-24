@@ -15,6 +15,7 @@ import { clamp } from 'utils/math'
 import { WEBVIEW_PARTITION, MEDIA_REFERRER } from 'constants/http'
 import { absoluteUrl } from 'utils/appUrl'
 import { IAppState } from 'renderer/reducers'
+import { getPlaybackTime2 } from 'renderer/lobby/reducers/mediaPlayer.helpers'
 const { remote } = chrome
 
 interface IProps {
@@ -140,6 +141,7 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
       wv.addEventListener('did-attach', (e: any) => {
         ;(remote as any).getWebContents(e.tabId, (webContents: Electron.WebContents) => {
           this.webContents = webContents
+          this.reload()
         })
       })
     } else {
@@ -171,28 +173,22 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
       return // live stream
     }
 
-    let time
+    let time = getPlaybackTime2(this.props)
 
-    if (this.isPlaying) {
-      time = Date.now() + this.props.serverTimeDelta - this.props.startTime!
-    } else if (this.isPaused) {
-      time = this.props.pauseTime!
-    }
-
-    if (typeof time === 'number') {
+    if (this.webContents && typeof time === 'number') {
       console.log('Sending seek IPC message', time)
       this.webContents!.send('media-seek', time)
     }
   }
 
   private updatePlayback = (state: PlaybackState) => {
-    if (this.webview) {
+    if (this.webContents) {
       this.webContents.send('media-playback', state)
     }
   }
 
   private updateVolume = () => {
-    if (!this.webview) {
+    if (!this.webContents) {
       return
     }
 
@@ -251,13 +247,13 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
     // This happens with mixcloud.com
     // this.updatePlayback(PlaybackState.Paused);
 
-    if (this.webview) {
+    if (this.webContents) {
       this.webContents.loadURL(this.mediaUrl, { httpReferrer: this.httpReferrer })
     }
   }
 
   debug(): void {
-    if (this.webview && !this.webContents.isDevToolsOpened()) {
+    if (this.webContents && !this.webContents.isDevToolsOpened()) {
       this.webContents.openDevTools()
     }
   }

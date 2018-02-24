@@ -30,6 +30,7 @@ import { parseCuePoints } from 'renderer/media/utils'
 import { MoreButton } from 'renderer/components/media/MoreButton'
 import { IAppState } from 'renderer/reducers'
 import { IconButton } from 'renderer/components/common/button'
+import { getPlaybackTime2 } from 'renderer/lobby/reducers/mediaPlayer.helpers'
 
 const Button: React.SFC<{
   className?: string
@@ -157,7 +158,7 @@ class _PlaybackControls extends Component<PrivateProps> {
       ) : (
         <Timeline
           className={styles.spacer}
-          time={(isPaused ? pauseTime : startTime) || 0}
+          time={(isPaused ? pauseTime : startTime! + this.props.serverTimeDelta) || 0}
           paused={isPaused}
           duration={media && media.duration}
           onSeek={this.seek}
