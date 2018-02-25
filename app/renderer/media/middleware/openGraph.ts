@@ -9,7 +9,7 @@ import { parse } from './og'
 function buildHTMLMetadata(url: Url, body: string): Partial<IMediaResponse> {
   const og = parse(body, {})
   console.log('og', og)
-  const { ogTitle: title, ogImage: image } = og
+  const { ogTitle: title, ogImage: image, ogDescription: description } = og
 
   const thumbnails = image
     ? {
@@ -20,7 +20,8 @@ function buildHTMLMetadata(url: Url, body: string): Partial<IMediaResponse> {
   const meta: Partial<IMediaResponse> = {
     url: url.href!,
     title,
-    thumbnails
+    thumbnails,
+    description
   }
 
   if (og.ogVideo) {
