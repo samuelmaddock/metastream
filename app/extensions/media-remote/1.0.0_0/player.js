@@ -24,8 +24,10 @@
   let activeMedia
 
   const signalReady = () => {
-    const evt = new CustomEvent('CMediaReady')
-    document.dispatchEvent(evt)
+    window.postMessage({
+      type: 'CMediaReady',
+      duration: activeMedia && activeMedia.duration ? activeMedia.duration * 1000 : undefined
+    }, '*')
   }
 
   const setMedia = media => {
@@ -96,6 +98,7 @@
       if (media.readyState >= MediaReadyState.HAVE_CURRENT_DATA) {
         setMedia(media)
         media.removeEventListener('playing', checkMediaReady)
+        media.removeEventListener('durationchange', checkMediaReady)
         return true
       }
 
@@ -104,6 +107,7 @@
 
     if (media.paused || !checkMediaReady()) {
       media.addEventListener('playing', checkMediaReady)
+      media.addEventListener('durationchange', checkMediaReady)
     }
   }
 
@@ -289,7 +293,7 @@
 
     document.addEventListener('CMediaVolumeChange', e => {
       const volume = e.detail
-      console.info(`Received volume command [volume=${volume}]`)
+      console.info(`Received volume command [volume=${volume}] (${location.hostname})`)
       if (player) {
         player.setVolume(volume)
       }

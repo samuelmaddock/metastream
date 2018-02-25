@@ -6,7 +6,8 @@ import { Dispatch } from 'redux'
 import {
   server_requestPlayPause,
   server_requestNextMedia,
-  server_requestSeek
+  server_requestSeek,
+  updateMedia
 } from 'renderer/lobby/actions/mediaPlayer'
 import { DispatchProp, connect } from 'react-redux'
 import { PlaybackControls } from 'renderer/components/media/PlaybackControls'
@@ -16,6 +17,7 @@ import { WEBVIEW_PARTITION, MEDIA_REFERRER } from 'constants/http'
 import { absoluteUrl } from 'utils/appUrl'
 import { IAppState } from 'renderer/reducers'
 import { getPlaybackTime2 } from 'renderer/lobby/reducers/mediaPlayer.helpers'
+import { isHost } from 'renderer/lobby/reducers/users'
 const { remote } = chrome
 
 interface IProps {
@@ -26,6 +28,7 @@ interface IProps {
 interface IConnectedProps extends IMediaPlayerState {
   mute: boolean
   volume: number
+  host: boolean
 }
 
 interface IState {
@@ -41,7 +44,8 @@ const mapStateToProps = (state: IAppState): IConnectedProps => {
   return {
     ...state.mediaPlayer,
     mute: state.settings.mute,
-    volume: state.settings.volume
+    volume: state.settings.volume,
+    host: isHost(state)
   }
 }
 
@@ -142,6 +146,7 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
         ;(remote as any).getWebContents(e.tabId, (webContents: Electron.WebContents) => {
           this.webContents = webContents
           this.reload()
+          ;(window as any).WEBCONTENTS = webContents
         })
       })
     } else {
@@ -150,19 +155,28 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
   }
 
   private onIpcMessage = (event: Electron.IpcMessageEvent) => {
-    console.log('Received VideoPlayer IPC message', event)
+    console.log('Received VideoPlayer IPC message', event, event.args)
 
     switch (event.channel) {
       case 'media-ready':
-        this.onMediaReady()
+        this.onMediaReady(...event.args)
         break
     }
   }
 
-  private onMediaReady = () => {
+  private onMediaReady = (info?: any) => {
     this.updatePlaybackTime()
     this.updatePlayback(this.props.playback)
     this.updateVolume()
+
+    const media = this.props.current
+    if (this.props.host) {
+      const hasDuration = media ? !!media.duration : false
+      const gotDuration = info && info.duration && !isNaN(info.duration)
+      if (!hasDuration && gotDuration) {
+        this.props.dispatch!(updateMedia(info))
+      }
+    }
   }
 
   private updatePlaybackTime = () => {

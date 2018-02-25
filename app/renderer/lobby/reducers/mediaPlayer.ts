@@ -8,7 +8,8 @@ import {
   playPauseMedia,
   seekMedia,
   queueMedia,
-  repeatMedia
+  repeatMedia,
+  updateMedia
 } from 'renderer/lobby/actions/mediaPlayer'
 import { MediaType } from 'renderer/media/types'
 import { NetActions } from 'renderer/network/actions'
@@ -153,6 +154,14 @@ export const mediaPlayer: Reducer<IMediaPlayerState> = (
     }
   } else if (isType(action, updateServerTimeDelta)) {
     return { ...state, serverTimeDelta: action.payload }
+  } else if (isType(action, updateMedia) && state.current) {
+    return {
+      ...state,
+      current: {
+        ...state.current,
+        duration: action.payload.duration || state.current.duration
+      }
+    }
   }
 
   if (isType(action, NetActions.disconnect)) {
