@@ -171,7 +171,7 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
 
     const media = this.props.current
     if (this.props.host) {
-      const hasDuration = media ? !!media.duration : false
+      const hasDuration = media ? typeof media.duration === 'number' : false
       const gotDuration = info && info.duration && !isNaN(info.duration)
       if (!hasDuration && gotDuration) {
         this.props.dispatch!(updateMedia(info))
