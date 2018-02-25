@@ -1,4 +1,5 @@
-(function contentInit() {
+'use strict'
+;(function contentInit() {
   function dispatch(eventName, data) {
     const evt = new CustomEvent(eventName, { detail: data })
     console.log(`[MediaRemote] Dispatch ${eventName} (${location.hostname})`, document)
@@ -26,7 +27,7 @@
     window.addEventListener('message', e => {
       if (e.source !== window) return
 
-      const { type, ...payload } = e.data;
+      const { type, ...payload } = e.data
 
       switch (type) {
         case 'CMediaReady':
@@ -44,18 +45,25 @@
       return
     }
 
-    const elem = document.createElement('script')
-    elem.src = chrome.runtime.getURL('player.js')
-    document.documentElement.appendChild(elem)
+    // TODO: do not use synchronous XHR in production! inline code instead
+    const x = new XMLHttpRequest()
+    x.open('GET', chrome.runtime.getURL('player.js'), false)
+    x.send()
+    const actualCode = x.responseText
 
-    elem.onload = () => {
+    const script = document.createElement('script')
+    // script.src = chrome.runtime.getURL('player.js')
+    script.textContent = actualCode
+    // script.onload = function () { this.parentNode.removeChild(this) }
+    script.onload = () => {
       console.debug(`[MediaRemote] Loaded player.js (${location.href})`)
     }
-
-    elem.onerror = () => {
+    script.onerror = () => {
+      console.debug(`[MediaRemote] Failed to inject player script (attempt=${attempt})`)
       setTimeout(insertPlayerScript, attempt * 100, ++attempt)
     }
+    document.documentElement.appendChild(script)
   }
 
   insertPlayerScript()
-}())
+})()
