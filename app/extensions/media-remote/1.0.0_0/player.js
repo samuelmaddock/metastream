@@ -23,10 +23,20 @@
   let mediaList = new WeakSet()
   let activeMedia
 
+  const TEN_HOURS = 36000
+  const isValidDuration = duration => typeof duration === 'number' && !isNaN(duration) && duration < TEN_HOURS
+
   const signalReady = () => {
+    const metadata = {}
+    const media = activeMedia
+
+    if (media) {
+      metadata.duration = isValidDuration(media.duration) ? media.duration * 1000 : undefined
+    }
+
     window.postMessage({
       type: 'CMediaReady',
-      duration: activeMedia && activeMedia.duration ? activeMedia.duration * 1000 : undefined
+      ...metadata
     }, '*')
   }
 
