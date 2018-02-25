@@ -1,12 +1,14 @@
-import { Url } from 'url';
-import { buildUrl } from 'utils/url';
-import { MediaThumbnailSize, IMediaMiddleware, IMediaRequest, IMediaResponse } from '../types';
-import { fetchText } from 'utils/http';
+import { Url } from 'url'
+import { buildUrl } from 'utils/url'
+import { MediaThumbnailSize, IMediaMiddleware, IMediaRequest, IMediaResponse } from '../types'
+import { fetchText } from 'utils/http'
 
-const API_URL = 'https://www.googleapis.com/youtube/v3/videos';
+const USE_OFFICIAL_API = true
+
+const API_URL = 'https://www.googleapis.com/youtube/v3/videos'
 
 // TODO: move into app config
-const API_KEY = 'AIzaSyAlDyii-2FVIOD4lR0lZBzrig3BNQWKA14';
+const API_KEY = 'AIzaSyAlDyii-2FVIOD4lR0lZBzrig3BNQWKA14'
 
 const DEFAULT_QUERY = {
   key: API_KEY,
@@ -14,9 +16,9 @@ const DEFAULT_QUERY = {
   part: 'contentDetails,snippet,status',
   videoEmbeddable: true,
   videoSyndicated: true
-};
+}
 
-const URL_PATTERN = /youtu\.?be(?:.com)?/i;
+const URL_PATTERN = /youtu\.?be(?:.com)?/i
 
 // TODO: https://www.youtube.com/attribution_link?a=ShEHdkiTDq4&u=%2Fwatch%3Fv%3Dm-6zjXLPRHg%26feature%3Dshare
 const VIDEO_ID_PATTERNS = [
@@ -25,109 +27,113 @@ const VIDEO_ID_PATTERNS = [
   /\&v=([^#\&\?]{11})/, // &v=<id>
   /embed\/([^#\&\?]{11})/, // embed/<id>
   /\/v\/([^#\&\?]{11})/ // /v/<id>
-];
+]
 
 /** Parse YouTube's duration format */
 const parseTime = (duration: string): number => {
-  let a = duration.match(/\d+/g);
+  let a = duration.match(/\d+/g)
   if (!a) {
-    return -1;
+    return -1
   }
 
-  let vector = a as (string | number)[];
+  let vector = a as (string | number)[]
 
   if (duration.indexOf('M') >= 0 && duration.indexOf('H') == -1 && duration.indexOf('S') == -1) {
-    vector = [0, a[0], 0];
+    vector = [0, a[0], 0]
   }
   if (duration.indexOf('H') >= 0 && duration.indexOf('M') == -1) {
-    vector = [a[0], 0, a[1]];
+    vector = [a[0], 0, a[1]]
   }
   if (duration.indexOf('H') >= 0 && duration.indexOf('M') == -1 && duration.indexOf('S') == -1) {
-    vector = [a[0], 0, 0];
+    vector = [a[0], 0, 0]
   }
 
   if (!vector) {
-    return -1;
+    return -1
   }
 
-  let time = 0;
+  let time = 0
 
   if (vector.length == 3) {
-    time = time + parseInt(vector[0] as string, 10) * 3600;
-    time = time + parseInt(vector[1] as string, 10) * 60;
-    time = time + parseInt(vector[2] as string, 10);
+    time = time + parseInt(vector[0] as string, 10) * 3600
+    time = time + parseInt(vector[1] as string, 10) * 60
+    time = time + parseInt(vector[2] as string, 10)
   }
 
   if (vector.length == 2) {
-    time = time + parseInt(vector[0] as string, 10) * 60;
-    time = time + parseInt(vector[1] as string, 10);
+    time = time + parseInt(vector[0] as string, 10) * 60
+    time = time + parseInt(vector[1] as string, 10)
   }
 
   if (vector.length == 1) {
-    time = time + parseInt(vector[0] as string, 10);
+    time = time + parseInt(vector[0] as string, 10)
   }
-  return time;
-};
+  return time
+}
 
 class YouTubeClient {
   static getInstance(): YouTubeClient {
     if (!this.instance) {
-      this.instance = new YouTubeClient();
+      this.instance = new YouTubeClient()
     }
-    return this.instance;
+    return this.instance
   }
 
-  private static instance: YouTubeClient;
+  private static instance: YouTubeClient
 
   getVideoId(url: string): string | null {
-    let match;
+    let match
 
     for (let i = 0; i < VIDEO_ID_PATTERNS.length; i++) {
-      match = VIDEO_ID_PATTERNS[i].exec(url);
+      match = VIDEO_ID_PATTERNS[i].exec(url)
       if (match) {
-        break;
+        break
       }
     }
 
-    return match ? match[1] : null;
+    return match ? match[1] : null
   }
 
-  async getVideoMetadata(url: string): Promise<Partial<IMediaResponse>> {
-    const videoId = this.getVideoId(url);
+  getVideoMetadata(url: string): Promise<Partial<IMediaResponse>> {
+    return USE_OFFICIAL_API ? this.getApiMetadata(url) : this.getScrapedMetadata(url)
+  }
+
+  private async getApiMetadata(url: string): Promise<Partial<IMediaResponse>> {
+    const videoId = this.getVideoId(url)
     const apiUrl = buildUrl(API_URL, {
       ...DEFAULT_QUERY,
       id: videoId
-    });
+    })
 
     const [json] = await fetchText<any>(apiUrl, {
       json: true,
       headers: {
         Referer: 'http://mediaplayer.samuelmaddock.com'
       }
-    });
+    })
 
-    console.debug('youtube', json);
+    console.debug('youtube', json)
 
     if (json.error) {
-      throw new Error(JSON.stringify(json.error));
+      throw new Error(JSON.stringify(json.error))
     }
 
-    const { pageInfo } = json;
-    const { totalResults } = pageInfo;
+    const { pageInfo } = json
+    const { totalResults } = pageInfo
 
     if (totalResults < 1) {
-      throw new Error('No results');
+      throw new Error('No results')
     }
 
-    const item = json.items[0];
-    const { snippet } = item;
-    let duration = 0;
+    const item = json.items[0]
+    const { snippet } = item
+    let duration = 0
 
     if (snippet.liveBroadcastContent === 'none') {
-      const str = item.contentDetails.duration;
-      duration = parseTime(str) * 1000; // sec to ms
+      const str = item.contentDetails.duration
+      duration = parseTime(str) * 1000 // sec to ms
     } else {
-      duration = 0;
+      duration = 0
     }
 
     // TODO: how to handle paid content?
@@ -142,7 +148,7 @@ class YouTubeClient {
           showinfo: 0,
           iv_load_policy: 3 // disable annotations
         })
-      : url;
+      : url
 
     return {
       url: embedUrl,
@@ -152,32 +158,54 @@ class YouTubeClient {
       thumbnails: {
         [MediaThumbnailSize.Default]: snippet.thumbnails.medium.url
       }
-    };
+    }
+  }
+
+  private async getScrapedMetadata(url: string): Promise<Partial<IMediaResponse>> {
+    const videoId = this.getVideoId(url)
+    const apiUrl = buildUrl(API_URL, {
+      ...DEFAULT_QUERY,
+      id: videoId
+    })
+
+    const [json] = await fetchText<any>(apiUrl, {
+      json: true,
+      headers: {
+        Referer: 'http://mediaplayer.samuelmaddock.com'
+      }
+    })
+
+    console.debug('youtube', json)
+
+    // TODO
+    return {
+      url: url
+    }
   }
 }
 
-const yt = YouTubeClient.getInstance();
+const yt = YouTubeClient.getInstance()
 
 const mware: IMediaMiddleware = {
   match(url) {
-    const { hostname = '', href = '' } = url;
-    return !!URL_PATTERN.exec(hostname) && !!yt.getVideoId(href);
+    const { hostname = '', href = '' } = url
+    return !!URL_PATTERN.exec(hostname) && !!yt.getVideoId(href)
   },
 
   async resolve(ctx, next) {
-    let metadata;
+    let metadata
 
     try {
-      metadata = await yt.getVideoMetadata(ctx.req.url.href);
+      metadata = await yt.getVideoMetadata(ctx.req.url.href)
     } catch (e) {
-      console.error('YouTube request failed', e.message);
-      return next();
+      console.error('YouTube request failed', e.message)
+      return next()
     }
 
-    Object.assign(ctx.res, metadata);
+    Object.assign(ctx.res, metadata)
 
-    return ctx.res;
+    return USE_OFFICIAL_API ? ctx.res : next()
   }
-};
+}
 
-export default mware;
+export default mware
