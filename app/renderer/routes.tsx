@@ -31,7 +31,7 @@ const LicensedRoute = ({ component: Component, ...rest }: PrivateRouteProps) => 
       hasValidLicense() ? (
         <Component {...props} />
       ) : (
-        <LicenseGate />
+        <LicenseGate {...props} />
       )
     }
   />

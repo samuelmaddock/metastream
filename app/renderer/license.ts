@@ -1,3 +1,17 @@
+const { ipcRenderer } = chrome
+
+let valid: boolean | null = null
+
 export function hasValidLicense() {
-  return false
+  if (typeof valid === 'boolean') {
+    return valid
+  } else {
+    valid = ipcRenderer.sendSync('validate-license')
+    return valid
+  }
+}
+
+export function registerLicense(license: string) {
+  valid = ipcRenderer.sendSync('register-license', license)
+  return !!valid
 }

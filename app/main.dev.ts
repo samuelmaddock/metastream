@@ -69,6 +69,7 @@ protocols.init()
 
 // Platform backend
 import 'browser/platform/swarm'
+import 'browser/license'
 
 /**
  * Add event listeners...
