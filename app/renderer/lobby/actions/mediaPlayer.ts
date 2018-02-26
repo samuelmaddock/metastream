@@ -81,7 +81,7 @@ const advanceMedia = (playlist: IMediaItem): ThunkAction<void, IAppState, void> 
   }
 }
 
-const updatePlaybackTimer = (): ThunkAction<void, IAppState, void> => {
+export const updatePlaybackTimer = (): ThunkAction<void, IAppState, void> => {
   return (dispatch, getState) => {
     const state = getState()
     const media = getCurrentMedia(state)

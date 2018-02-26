@@ -7,7 +7,8 @@ import {
   server_requestPlayPause,
   server_requestNextMedia,
   server_requestSeek,
-  updateMedia
+  updateMedia,
+  updatePlaybackTimer
 } from 'renderer/lobby/actions/mediaPlayer'
 import { DispatchProp, connect } from 'react-redux'
 import { PlaybackControls } from 'renderer/components/media/PlaybackControls'
@@ -175,6 +176,7 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
       const gotDuration = info && info.duration && !isNaN(info.duration)
       if (!hasDuration && gotDuration) {
         this.props.dispatch!(updateMedia(info))
+        this.props.dispatch!(updatePlaybackTimer())
       }
     }
   }
