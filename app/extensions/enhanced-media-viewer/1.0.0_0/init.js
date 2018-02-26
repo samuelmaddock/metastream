@@ -2,7 +2,7 @@ const body = document.body
 
 function enhanceVideo(video) {
   Object.assign(video, {
-    loop: true,
+    loop: false,
     controls: false
   })
 
