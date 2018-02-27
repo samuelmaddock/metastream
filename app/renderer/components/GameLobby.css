@@ -63,7 +63,7 @@
 .chat {
   position: absolute;
   z-index: var(--overlay-z-index);
-  right: var(--overlay-spacing);
+  left: var(--overlay-spacing);
   bottom: 150px;
   width: 450px;
 
