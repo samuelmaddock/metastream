@@ -70,6 +70,7 @@ protocols.init()
 // Platform backend
 import 'browser/platform/swarm'
 import 'browser/license'
+import 'browser/media-router'
 
 /**
  * Add event listeners...

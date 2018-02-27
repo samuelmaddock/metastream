@@ -9,20 +9,24 @@
   if (chrome.ipcRenderer) {
     const { ipcRenderer } = chrome
 
+    ipcRenderer.on('media-action', (event, action) => {
+      console.log(`[MediaRemote] RECEIVE LISTEN EVENT ${location.href}`, action)
+
+      switch (action.type) {
+        case 'seek':
+          dispatch('CMediaSeek', action.payload)
+          break
+        case 'playback':
+          dispatch('CMediaPlaybackChange', action.payload)
+          break
+        case 'volume':
+          dispatch('CMediaVolumeChange', action.payload)
+          break
+      }
+    })
+
     console.log(`[MediaRemote] Setting up IPC listeners (${location.hostname})`, chrome)
-
-    ipcRenderer.on('media-seek', (event, time) => {
-      dispatch('CMediaSeek', time)
-    })
-
-    ipcRenderer.on('media-playback', (event, playbackState) => {
-      dispatch('CMediaPlaybackChange', playbackState)
-    })
-
-    ipcRenderer.on('media-volume', (event, volume) => {
-      console.log(`[MediaRemote] IPC volume change (${location.hostname})`)
-      dispatch('CMediaVolumeChange', volume)
-    })
+    ipcRenderer.send('media-register-listener', location.href)
 
     window.addEventListener('message', e => {
       if (e.source !== window) return

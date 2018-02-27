@@ -19,7 +19,7 @@ import { absoluteUrl } from 'utils/appUrl'
 import { IAppState } from 'renderer/reducers'
 import { getPlaybackTime2 } from 'renderer/lobby/reducers/mediaPlayer.helpers'
 import { isHost } from 'renderer/lobby/reducers/users'
-const { remote } = chrome
+const { remote, ipcRenderer } = chrome
 
 interface IProps {
   className?: string
@@ -155,6 +155,10 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
     }
   }
 
+  private dispatchMedia(type: string, payload: any) {
+    ipcRenderer.send('media-action', { type, payload })
+  }
+
   private onIpcMessage = (event: Electron.IpcMessageEvent) => {
     console.log('Received VideoPlayer IPC message', event, event.args)
 
@@ -193,13 +197,13 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
 
     if (this.webContents && typeof time === 'number') {
       console.log('Sending seek IPC message', time)
-      this.webContents!.send('media-seek', time)
+      this.dispatchMedia('seek', time)
     }
   }
 
   private updatePlayback = (state: PlaybackState) => {
     if (this.webContents) {
-      this.webContents.send('media-playback', state)
+      this.dispatchMedia('playback', state)
     }
   }
 
@@ -215,7 +219,7 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
     }
 
     const newVolume = this.props.mute ? 0 : this.props.volume
-    this.webContents.send('media-volume', this.scaleVolume(newVolume))
+    this.dispatchMedia('volume', this.scaleVolume(newVolume))
   }
 
   /**
@@ -266,6 +270,8 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
     if (this.webContents) {
       this.webContents.loadURL(this.mediaUrl, { httpReferrer: this.httpReferrer })
     }
+
+    ipcRenderer.send('media-cleanup')
   }
 
   debug(): void {
