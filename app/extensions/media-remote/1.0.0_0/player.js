@@ -26,12 +26,29 @@
   const TEN_HOURS = 36000
   const isValidDuration = duration => typeof duration === 'number' && !isNaN(duration) && duration < TEN_HOURS
 
+  const getVideoDuration = () => {
+    let duration
+
+    if (activeMedia) {
+      duration = activeMedia.duration
+      if (isValidDuration(duration)) return duration;
+    }
+
+    const { player } = window;
+    if (typeof player === 'object' && typeof player.getDuration === 'function') {
+      try {
+        duration = player.getDuration()
+      } catch (e) {}
+      if (isValidDuration(duration)) return duration;
+    }
+  }
+
   const signalReady = () => {
     const metadata = {}
-    const media = activeMedia
+    const duration = getVideoDuration()
 
-    if (media) {
-      metadata.duration = isValidDuration(media.duration) ? media.duration * 1000 : undefined
+    if (duration) {
+      metadata.duration = duration * 1000
     }
 
     window.postMessage({
