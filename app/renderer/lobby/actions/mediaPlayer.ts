@@ -14,6 +14,7 @@ import {
   getPlaybackTime
 } from 'renderer/lobby/reducers/mediaPlayer.helpers'
 import { IAppState } from 'renderer/reducers'
+import { getUserName } from 'renderer/lobby/reducers/users';
 
 export const playPauseMedia = actionCreator<number>('PLAY_PAUSE_MEDIA')
 export const repeatMedia = actionCreator<number>('REPEAT_MEDIA')
@@ -143,7 +144,7 @@ const requestMedia = (url: string): RpcThunk<void> => async (dispatch, getState,
 
   console.log('Media response', res)
 
-  const userId = context.client.id
+  const userId = context.client.id.toString()
   const media: IMediaItem = {
     type: res.type,
     url: res.url,
@@ -152,8 +153,8 @@ const requestMedia = (url: string): RpcThunk<void> => async (dispatch, getState,
     description: res.description,
     imageUrl: res.thumbnails && res.thumbnails[MediaThumbnailSize.Default],
     requestUrl: url,
-    ownerId: userId.toString(),
-    ownerName: PlatformService.getUserName(userId),
+    ownerId: userId,
+    ownerName: getUserName(getState(), userId),
     hasMore: res.hasMore
   }
 
