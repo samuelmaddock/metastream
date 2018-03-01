@@ -160,6 +160,13 @@ const setupWindow = () => {
   return win
 }
 
+app.on('web-contents-created', (event, webContents) => {
+  // Prevent HTML5 fullscreen api from fullscreening the window
+  webContents.on('will-enter-html-full-screen' as any, event => {
+    event.preventDefault()
+  })
+})
+
 app.on('ready', async () => {
   if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
     // await installExtensions();

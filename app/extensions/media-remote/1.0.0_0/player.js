@@ -44,17 +44,59 @@
   }
 
   const signalReady = () => {
-    const metadata = {}
     const duration = getVideoDuration()
-
-    if (duration) {
-      metadata.duration = duration * 1000
-    }
 
     window.postMessage({
       type: 'CMediaReady',
-      ...metadata
+      duration: duration && duration * 1000,
+      iframe: window.self !== window.top,
+      href: location.href
     }, '*')
+  }
+
+  const getVideoContainer = video => {
+    const videoRect = video.getBoundingClientRect()
+
+    const area = videoRect.width * videoRect.height
+    const windowArea = window.innerWidth * window.innerHeight
+    const fillPercent = Math.abs(1 - area / windowArea)
+
+    // Don't select a container if our video is already the full page
+    if (fillPercent > 0.95) {
+      return;
+    }
+
+    let parent = video
+    let prev = video
+    while ((parent = parent.parentNode) && parent instanceof HTMLElement) {
+      const rect = parent.getBoundingClientRect()
+
+      // Container expands past video
+      if (rect.width > videoRect.width) {
+        continue;
+      }
+
+      const vidMidY = videoRect.top + (videoRect.height / 2)
+      const parentMidY = rect.top + (rect.height / 2)
+      const isVideoVerticallyCentered = Math.abs(vidMidY - parentMidY) < 50; // px
+      if (!isVideoVerticallyCentered) {
+        continue;
+      }
+
+      // Save last known container element
+      prev = parent
+    }
+    return prev
+  }
+
+  const fullscreenMedia = () => {
+    if (activeMedia) {
+      activeMedia.controls = false
+      const container = getVideoContainer(activeMedia)
+      if (container) {
+        container.webkitRequestFullScreen()
+      }
+    }
   }
 
   const setMedia = media => {
@@ -62,6 +104,8 @@
     player = new HTMLMediaPlayer(media)
     console.debug('Set active media', media, media.src, media.duration)
     window.MEDIA = media
+
+    // Prevent media seeking
     ;['seekable', 'seeked'].forEach(eventName => {
       media.addEventListener(eventName, event => {
         console.debug(`stopImmediate ${eventName} capture=false`)
@@ -292,8 +336,6 @@
 
   /** Setup IPC message listeners */
   const setupListeners = () => {
-    const mediaRemote = {}
-
     document.addEventListener('CMediaSeek', e => {
       console.log('SEEK EVENT', e)
       const time = e.detail
@@ -326,7 +368,14 @@
       }
     })
 
-    window.mediaRemote = mediaRemote
+    document.addEventListener('mouseup', e => {
+      if (e.movementX === 1234) {
+        e.stopImmediatePropagation()
+        e.preventDefault()
+        console.log(`Fullscreen mouseup event`, e, location.href)
+        fullscreenMedia()
+      }
+    })
   }
 
   setupListeners()

@@ -1,13 +1,16 @@
 'use strict'
 ;(function contentInit() {
+  const { ipcRenderer } = chrome
+
   function dispatch(eventName, data) {
     const evt = new CustomEvent(eventName, { detail: data })
     console.log(`[MediaRemote] Dispatch ${eventName} (${location.hostname})`, document)
     document.dispatchEvent(evt)
   }
 
-  if (chrome.ipcRenderer) {
-    const { ipcRenderer } = chrome
+  const attachIpcListeners = () => {
+    if (!ipcRenderer) return;
+    console.log(`[MediaRemote] Setting up IPC listeners (${location.hostname})`)
 
     ipcRenderer.on('media-action', (event, action) => {
       console.log(`[MediaRemote] RECEIVE LISTEN EVENT ${location.href}`, action)
@@ -25,23 +28,72 @@
       }
     })
 
-    console.log(`[MediaRemote] Setting up IPC listeners (${location.hostname})`, chrome)
-    ipcRenderer.send('media-register-listener', location.href)
+    function compareElementArea(a, b) {
+      const areaA = a.width * a.height;
+      const areaB = b.width * b.height;
+      if (areaA < areaB) return -1;
+      if (areaA > areaB) return 1;
+      return 0;
+    }
 
-    window.addEventListener('message', e => {
-      if (e.source !== window) return
-
-      const { type, ...payload } = e.data
-
-      switch (type) {
-        case 'CMediaReady':
-          console.debug(`[MediaRemote] Forwarding media-ready event to host`, payload)
-          ipcRenderer.sendToHost('media-ready', payload)
+    ipcRenderer.on('media-iframes', (event, href) => {
+      const frame = document.querySelector(`iframe[src='${href}']`)
+      if (frame) {
+        const rect = frame.getBoundingClientRect()
+        window.scrollTo(0, rect.top)
+        const point = { x: rect.left, y: rect.top }
+        ipcRenderer.sendToHost('media-iframes', [point])
+      } else {
+        console.error(`[MediaRemote] Couldn't find iframe for href=${href}`)
       }
+
+      /*
+      const frames = Array.from(document.querySelectorAll(`iframe[src='${href}']`))
+      if (frames.length === 0) return
+
+      const rects = frames.map(frame => frame.getBoundingClientRect())
+      rects.sort(compareElementArea)
+
+      // Place biggest rect in view
+      const biggestRect = rects[0]
+      window.scrollTo(0, biggestRect.top)
+
+      const points = rects.map(rect => {
+        return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }
+      })
+
+      ipcRenderer.sendToHost('media-iframes', points)
+      */
     })
-  } else {
-    console.log(`[MediaRemote] ipcRenderer not available (${location.hostname})`, chrome)
+
+    ipcRenderer.send('media-register-listener', location.href)
   }
+
+  const isTopFrame = window.self === window.top
+
+  if (isTopFrame) {
+    attachIpcListeners()
+  }
+
+  window.addEventListener('message', e => {
+    if (e.source !== window) return
+    const { type, ...payload } = e.data
+
+    switch (type) {
+      case 'CMediaReady':
+        console.debug(`[MediaRemote] Forwarding media-ready event to host`, payload)
+
+        // Lazy init for iframes
+        if (!isTopFrame) {
+          attachIpcListeners()
+        }
+
+        if (ipcRenderer) {
+          ipcRenderer.sendToHost('media-ready', payload)
+        }
+        break
+    }
+  })
 
   const MAX_ATTEMPTS = 10
   function insertPlayerScript(attempt = 1) {

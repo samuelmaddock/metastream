@@ -166,6 +166,9 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
       case 'media-ready':
         this.onMediaReady(...event.args)
         break
+      case 'media-iframes':
+        this.requestFullScreenIFrame(event.args[0])
+        break
     }
   }
 
@@ -188,6 +191,29 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
         this.props.dispatch!(updatePlaybackTimer())
       }
     }
+
+    if (info) {
+      if (info.iframe) {
+        this.webContents.send('media-iframes', info.href)
+      } else {
+        this.requestFullScreen()
+      }
+    }
+  }
+
+  private requestFullScreen(x: number = 0, y: number = 0) {
+    console.info(`CLICK FRAME ${x},${y}`)
+    this.webContents.sendInputEvent({
+      type: 'mouseUp',
+      x,
+      y,
+      movementX: 1234
+    } as any)
+  }
+
+  private requestFullScreenIFrame(points: { x: number; y: number }[]) {
+    console.log('FS POINTS', points)
+    points.forEach((p, idx) => this.requestFullScreen(p.x + 10, idx === 0 ? 0 : p.y + 10))
   }
 
   private updatePlaybackTime = () => {
@@ -239,7 +265,7 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
     return (
       <div
         className={cx(styles.container, this.props.className)}
-        onDoubleClick={this.onDoubleClick}
+        onDoubleClick={this.enterInteractMode}
       >
         {this.renderBrowser()}
       </div>
@@ -262,7 +288,7 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
         plugins="true"
         preload="./preload.js"
         partition={WEBVIEW_PARTITION}
-        ondblclick={this.onDoubleClick}
+        ondblclick={this.enterInteractMode}
       />
     )
   }
@@ -285,21 +311,23 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
     }
   }
 
-  private onExitInteractMode() {
+  private exitInteractMode() {
     document.removeEventListener('keydown', this.onKeyDown, false)
     this.setState({ interacting: false })
+    ipcRenderer.send('media-interact', false)
   }
 
-  private onDoubleClick = () => {
+  private enterInteractMode = () => {
     this.setState({ interacting: true }, () => {
       document.addEventListener('keydown', this.onKeyDown, false)
+      ipcRenderer.send('media-interact', true)
     })
   }
 
   private onKeyDown = (event: KeyboardEvent): void => {
     switch (event.key) {
       case 'Escape':
-        this.onExitInteractMode()
+        this.exitInteractMode()
         return
     }
   }
