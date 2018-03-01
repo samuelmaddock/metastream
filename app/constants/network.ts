@@ -1,1 +1,2 @@
 export const NETWORK_TIMEOUT = 15000
+export const RECONNECT_TIMEOUT = 30000

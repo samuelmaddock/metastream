@@ -5,6 +5,7 @@ import { Deferred } from 'utils/async'
 import NetConnection, { NetUniqueId } from './connection'
 import { NetServer } from 'renderer/network'
 import { INetServerOptions } from 'renderer/network/server'
+import { RECONNECT_TIMEOUT } from 'constants/network'
 
 export type SignalData = SignalData
 
@@ -42,10 +43,12 @@ export class RTCPeerConn extends NetConnection {
   constructor(id: NetUniqueId, peer: SimplePeer.Instance) {
     super(id)
     this.peer = peer
+    ;(this.peer as any).reconnectTimer = RECONNECT_TIMEOUT
 
     this.peer.on('close', this.close)
     this.peer.on('error', this.onError)
     this.peer.on('data', this.onData)
+    this.peer.on('iceStateChange', this.onStateChange)
     this.peer.on('signal', this.onSignal)
     this.peer.once('connect', this.onConnect)
   }
@@ -64,6 +67,13 @@ export class RTCPeerConn extends NetConnection {
     }
 
     this.receive(data)
+  }
+
+  private onStateChange = (state: RTCIceConnectionState) => {
+    if (state === 'disconnected') {
+      this.emit('disconnect')
+      this.once('connect', () => this.emit('reconnect'))
+    }
   }
 
   protected onClose(): void {
