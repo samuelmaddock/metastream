@@ -26,7 +26,7 @@ function buildHTMLMetadata(url: Url, body: string): Partial<IMediaResponse> {
 
   if (og.ogVideo) {
     meta.url = og.ogVideo.url || meta.url
-    meta.duration = og.ogVideo.duration
+    meta.duration = og.ogVideo.duration ? og.ogVideo.duration * 1000 : undefined
   }
 
   return meta

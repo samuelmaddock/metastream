@@ -123,6 +123,11 @@ const fieldsArray = [
     fieldName: 'ogVideoType'
   },
   {
+    multiple: true,
+    property: 'video:duration',
+    fieldName: 'ogVideoDuration'
+  },
+  {
     multiple: false,
     property: 'twitter:card',
     fieldName: 'twitterCard'
@@ -249,6 +254,13 @@ const fieldsArray = [
   }
 ];
 
+var parseNumbers = function(str) {
+  if (!isNaN(str)) {
+    str = str % 1 === 0 ? parseInt(str, 10) : parseFloat(str);
+  }
+  return str;
+};
+
 var mediaMapperTwitterImage = function(item) {
   return {
     url: item[0],
@@ -272,7 +284,8 @@ var mediaMapper = function(item) {
     url: item[0],
     width: item[1],
     height: item[2],
-    type: item[3]
+    type: item[3],
+    duration: parseNumbers(item[4])
   };
 };
 
@@ -367,12 +380,14 @@ export function parse(body, options) {
     ogObject.ogVideoWidth = ogObject.ogVideoWidth ? ogObject.ogVideoWidth : [null];
     ogObject.ogVideoHeight = ogObject.ogVideoHeight ? ogObject.ogVideoHeight : [null];
     ogObject.ogVideoType = ogObject.ogVideoType ? ogObject.ogVideoType : [null];
+    ogObject.ogVideoDuration = ogObject.ogVideoDuration ? ogObject.ogVideoDuration : [null];
   }
   var ogVideos = _.zip(
     ogObject.ogVideo,
     ogObject.ogVideoWidth,
     ogObject.ogVideoHeight,
-    ogObject.ogVideoType
+    ogObject.ogVideoType,
+    ogObject.ogVideoDuration
   )
     .map(mediaMapper)
     .sort(mediaSorter);
