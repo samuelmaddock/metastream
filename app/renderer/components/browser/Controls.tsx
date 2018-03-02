@@ -2,9 +2,10 @@ import React, { Component } from 'react'
 import cx from 'classnames'
 
 import { Icon } from 'renderer/components/Icon'
-import { IconButton } from 'renderer/components/common/button'
+import { IconButton, HighlightButton } from 'renderer/components/common/button'
 
 import styles from './Controls.css'
+import { MenuButton } from 'renderer/components/menu/MenuButton'
 
 interface IProps {
   initialUrl: string
@@ -86,7 +87,11 @@ export class WebControls extends Component<IProps, IState> {
     )
 
     const playBtn = (
-      <IconButton className={styles.button} icon="play" onClick={this.onPlayClicked.bind(this)} />
+      <div className={styles.requestButtonContainer}>
+        <HighlightButton icon="play" onClick={this.onPlayClicked.bind(this)}>
+          Request URL
+        </HighlightButton>
+      </div>
     )
     const closeBtn = (
       <IconButton className={styles.button} icon="x" onClick={this.onCloseClicked.bind(this)} />

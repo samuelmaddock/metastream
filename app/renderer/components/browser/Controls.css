@@ -5,7 +5,7 @@
   align-items: center;
 }
 
-.container svg {
+.container .button svg {
   margin: 0 8px;
   opacity: 0.7;
 }
@@ -42,4 +42,13 @@
 
 .button:disabled {
   opacity: 0.5;
+}
+
+.requestButtonContainer {
+  padding: 6px;
+  height: 100%;
+}
+
+.requestButtonContainer button {
+  height: 100%;
 }
