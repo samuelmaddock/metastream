@@ -58,10 +58,9 @@
     const videoRect = video.getBoundingClientRect()
 
     const area = videoRect.width * videoRect.height
-    const windowArea = window.innerWidth * window.innerHeight
-    const fillPercent = Math.abs(1 - area / windowArea)
+    const fillPercent = videoRect.width / window.innerWidth
 
-    // Don't select a container if our video is already the full page
+    // Don't select a container if our video is already the full width
     if (fillPercent > 0.95) {
       return;
     }
