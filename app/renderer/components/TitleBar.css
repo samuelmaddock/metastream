@@ -57,6 +57,7 @@
   composes: header-item;
   -webkit-app-region: no-drag;
   right: 0;
+  z-index: 99999;
 }
 
 .actionButton {
