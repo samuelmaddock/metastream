@@ -47,7 +47,7 @@ abstract class NetConnection extends EventEmitter {
   }
 
   protected onError = (e: Error): void => {
-    this.emit('error', e)
+    console.error(`Connection error [${this.id}]`, e)
     this.close()
   }
 
