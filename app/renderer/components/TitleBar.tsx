@@ -53,6 +53,7 @@ class _TitleBar extends Component<PrivateProps> {
         <div className={styles.wrapper}>
           <header className={styles.header}>
             <h2 className={styles.title}>{this.props.title || packageJson.productName}</h2>
+            <div className={styles.drag} />
           </header>
           {updateButton}
           {this.platform === 'win32' && this.renderWin32Actions()}

@@ -28,10 +28,19 @@
 
 .header {
   composes: header-item;
+  position: relative;
   flex: 1;
 
   /* overflow hidden hack */
   -webkit-mask-image: linear-gradient(#000, #000);
+}
+
+.drag {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  right: 4px;
+  bottom: 0;
 
   /* https://github.com/electron/electron/blob/master/docs/api/frameless-window.md#draggable-region */
   -webkit-app-region: drag;
