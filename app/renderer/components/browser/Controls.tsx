@@ -1,29 +1,29 @@
-import React, { Component } from 'react';
-import cx from 'classnames';
+import React, { Component } from 'react'
+import cx from 'classnames'
 
-import { Icon } from 'renderer/components/Icon';
-import { IconButton } from 'renderer/components/common/button';
+import { Icon } from 'renderer/components/Icon'
+import { IconButton } from 'renderer/components/common/button'
 
-import styles from './Controls.css';
+import styles from './Controls.css'
 
 interface IProps {
-  initialUrl: string;
-  className?: string;
-  onRequestUrl?: (url: string) => void;
-  onClose?: () => void;
+  initialUrl: string
+  className?: string
+  onRequestUrl?: (url: string) => void
+  onClose?: () => void
 }
 
 interface IState {
-  url?: string;
-  loading?: boolean;
+  url?: string
+  loading?: boolean
 }
 
 export class WebControls extends Component<IProps, IState> {
-  private webview: Electron.WebviewTag | null;
-  private webContents: Electron.WebContents;
-  private addressInput: HTMLInputElement | null;
+  private webview: Electron.WebviewTag | null
+  private webContents: Electron.WebContents
+  private addressInput: HTMLInputElement | null
 
-  state: IState = {};
+  state: IState = {}
 
   render(): JSX.Element {
     // back, forward, location bar, play button, exit
@@ -34,12 +34,12 @@ export class WebControls extends Component<IProps, IState> {
         icon="arrow-left"
         onClick={() => {
           if (this.webview) {
-            this.webContents.goBack();
+            this.webContents.goBack()
           }
         }}
         disabled={this.webview ? !this.webContents.canGoBack() : true}
       />
-    );
+    )
 
     const forwardBtn = (
       <IconButton
@@ -47,12 +47,12 @@ export class WebControls extends Component<IProps, IState> {
         icon="arrow-right"
         onClick={() => {
           if (this.webview) {
-            this.webContents.goForward();
+            this.webContents.goForward()
           }
         }}
         disabled={this.webview ? !this.webContents.canGoForward() : true}
       />
-    );
+    )
 
     const refreshBtn = (
       <IconButton
@@ -61,16 +61,16 @@ export class WebControls extends Component<IProps, IState> {
         onClick={e => {
           if (this.webview) {
             if (this.state.loading) {
-              this.webContents.stop();
+              this.webContents.stop()
             } else if (e.shiftKey) {
-              this.webContents.reloadIgnoringCache();
+              this.webContents.reloadIgnoringCache()
             } else {
-              this.webContents.reload();
+              this.webContents.reload()
             }
           }
         }}
       />
-    );
+    )
 
     const homeBtn = (
       <IconButton
@@ -79,18 +79,18 @@ export class WebControls extends Component<IProps, IState> {
         onClick={e => {
           if (this.webview) {
             // TODO: navigate forward instead of back
-            this.webContents.goToIndex(0);
+            this.webContents.goToIndex(0)
           }
         }}
       />
-    );
+    )
 
     const playBtn = (
       <IconButton className={styles.button} icon="play" onClick={this.onPlayClicked.bind(this)} />
-    );
+    )
     const closeBtn = (
       <IconButton className={styles.button} icon="x" onClick={this.onCloseClicked.bind(this)} />
-    );
+    )
 
     return (
       <div className={cx(this.props.className, styles.container)}>
@@ -102,7 +102,7 @@ export class WebControls extends Component<IProps, IState> {
         {playBtn}
         {closeBtn}
       </div>
-    );
+    )
   }
 
   private renderLocation(): JSX.Element {
@@ -111,7 +111,7 @@ export class WebControls extends Component<IProps, IState> {
         <div className={styles.locationBar}>
           <input
             ref={el => {
-              this.addressInput = el;
+              this.addressInput = el
             }}
             type="text"
             className={styles.addressInput}
@@ -123,98 +123,105 @@ export class WebControls extends Component<IProps, IState> {
           />
         </div>
       </div>
-    );
+    )
   }
 
   setWebview(webview: Electron.WebviewTag | null, webContents: Electron.WebContents) {
-    this.webview = webview;
-    this.webContents = webContents;
+    this.webview = webview
+    this.webContents = webContents
 
     if (this.webview) {
       this.webview.addEventListener('dom-ready', e => {
         if (this.webview) {
-          this.updateURL(this.webContents.getURL());
+          this.updateURL(this.webContents.getURL())
         }
-      });
+      })
 
       const updateUrl = (e: { url: string }) => {
-        this.updateURL(e.url);
-      };
+        this.updateURL(e.url)
+      }
 
-      this.webview.addEventListener('will-navigate', updateUrl);
-      this.webview.addEventListener('did-navigate-in-page', updateUrl);
+      this.webview.addEventListener('will-navigate', updateUrl)
+      this.webview.addEventListener('did-navigate-in-page', updateUrl)
 
-      const setLoading = (loading: boolean) => this.setState({ loading });
-      this.webview.addEventListener('did-start-loading', setLoading.bind(null, true));
-      this.webview.addEventListener('did-stop-loading', setLoading.bind(null, false));
-      this.webview.addEventListener('did-finish-load', setLoading.bind(null, false));
+      const setLoading = (loading: boolean) => this.setState({ loading })
+      this.webview.addEventListener('did-start-loading', setLoading.bind(null, true))
+      this.webview.addEventListener('did-stop-loading', setLoading.bind(null, false))
+      this.webview.addEventListener('did-finish-load', setLoading.bind(null, false))
     }
   }
 
   focusURL() {
     if (this.addressInput) {
-      this.addressInput.focus();
-      this.addressInput.select();
+      this.addressInput.focus()
+      this.addressInput.select()
     }
   }
 
   private updateURL(url: string) {
     if (url.startsWith('chrome://brave/')) {
-      url = '';
+      url = ''
     }
 
     if (this.addressInput) {
-      this.addressInput.value = url;
+      this.addressInput.value = url
+    }
+  }
+
+  private requestUrl(url: string) {
+    if (url.startsWith('chrome://') || url.startsWith('chrome-extension://')) {
+      return
+    }
+
+    const { onRequestUrl } = this.props
+    if (onRequestUrl) {
+      onRequestUrl(url)
     }
   }
 
   private onLocationKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      event.preventDefault();
+      event.preventDefault()
 
-      const { onRequestUrl } = this.props;
-      const target = event.target as HTMLInputElement;
-
+      const target = event.target as HTMLInputElement
       if (target) {
-        const url = target.value;
-        const shouldRequest = event.ctrlKey || event.shiftKey || event.altKey;
+        const url = target.value
+        const shouldRequest = event.ctrlKey || event.shiftKey || event.altKey
 
-        if (onRequestUrl && shouldRequest) {
-          onRequestUrl(url);
+        if (shouldRequest) {
+          this.requestUrl(url)
         } else {
-          this.loadURL(url);
-          this.webview!.focus();
+          this.loadURL(url)
+          this.webview!.focus()
         }
       }
     }
-  };
+  }
 
   private loadURL(url: string) {
     // TODO: make this robust and use https everywhere extension
     if (!url.match(/^[\w-]+?:\/\//i)) {
-      url = `http://${url}`;
+      url = `http://${url}`
     }
 
     if (this.webview) {
-      const httpReferrer = this.webview.getAttribute('httpreferrer') || undefined;
-      this.webContents.loadURL(url, { httpReferrer });
+      const httpReferrer = this.webview.getAttribute('httpreferrer') || undefined
+      this.webContents.loadURL(url, { httpReferrer })
     }
   }
 
   private onPlayClicked() {
-    const { onRequestUrl } = this.props;
-    const url = this.webview && this.webContents.getURL();
-
-    if (onRequestUrl && url) {
-      onRequestUrl(url);
+    const url = this.webview && this.webContents.getURL()
+    if (url) {
+      this.requestUrl(url)
     }
   }
 
   private onCloseClicked() {
-    const { onClose } = this.props;
+    const { onClose } = this.props
 
     if (onClose) {
-      onClose();
+      onClose()
     }
   }
 }
