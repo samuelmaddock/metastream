@@ -311,17 +311,17 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
     }
   }
 
-  private exitInteractMode() {
-    document.removeEventListener('keydown', this.onKeyDown, false)
-    this.setState({ interacting: false })
-    ipcRenderer.send('media-interact', false)
-  }
-
   private enterInteractMode = () => {
     this.setState({ interacting: true }, () => {
       document.addEventListener('keydown', this.onKeyDown, false)
-      ipcRenderer.send('media-interact', true)
+      this.dispatchMedia('interact', true)
     })
+  }
+
+  private exitInteractMode() {
+    document.removeEventListener('keydown', this.onKeyDown, false)
+    this.setState({ interacting: false })
+    this.dispatchMedia('interact', false)
   }
 
   private onKeyDown = (event: KeyboardEvent): void => {

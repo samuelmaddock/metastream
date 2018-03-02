@@ -8,6 +8,14 @@
     document.dispatchEvent(evt)
   }
 
+  function setFullscreen(fullscreen) {
+    if (fullscreen && !document.webkitFullscreenElement) {
+      // TODO
+    } else if (!fullscreen && document.webkitFullscreenElement) {
+      document.webkitExitFullscreen()
+    }
+  }
+
   const attachIpcListeners = () => {
     if (!ipcRenderer) return;
     console.log(`[MediaRemote] Setting up IPC listeners (${location.hostname})`)
@@ -24,6 +32,10 @@
           break
         case 'volume':
           dispatch('CMediaVolumeChange', action.payload)
+          break
+        case 'interact':
+          const interacting = action.payload
+          setFullscreen(!interacting)
           break
       }
     })
@@ -101,16 +113,14 @@
       return
     }
 
-    // TODO: do not use synchronous XHR in production! inline code instead
+    // TODO: inline this code instead of sync xhr
     const x = new XMLHttpRequest()
     x.open('GET', chrome.runtime.getURL('player.js'), false)
     x.send()
     const actualCode = x.responseText
 
     const script = document.createElement('script')
-    // script.src = chrome.runtime.getURL('player.js')
     script.textContent = actualCode
-    // script.onload = function () { this.parentNode.removeChild(this) }
     script.onload = () => {
       console.debug(`[MediaRemote] Loaded player.js (${location.href})`)
     }

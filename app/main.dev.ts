@@ -145,6 +145,7 @@ const setupWindow = () => {
     }
     win.show()
     win.focus()
+    initExtensions()
   })
 
   win.on('closed', () => {
@@ -187,5 +188,4 @@ app.on('ready', async () => {
   }
 
   registerMediaShortcuts()
-  initExtensions()
 })

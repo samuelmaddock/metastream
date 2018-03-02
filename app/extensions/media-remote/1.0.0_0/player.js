@@ -89,6 +89,10 @@
   }
 
   const fullscreenMedia = () => {
+    if (document.webkitFullscreenElement) {
+      return
+    }
+
     if (activeMedia) {
       activeMedia.controls = false
       const container = getVideoContainer(activeMedia)
