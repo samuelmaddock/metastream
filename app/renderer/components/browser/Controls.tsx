@@ -26,6 +26,10 @@ export class WebControls extends Component<IProps, IState> {
 
   state: IState = {}
 
+  private get addressUrl() {
+    return this.addressInput && this.addressInput.value
+  }
+
   render(): JSX.Element {
     // back, forward, location bar, play button, exit
 
@@ -188,17 +192,14 @@ export class WebControls extends Component<IProps, IState> {
     if (event.key === 'Enter') {
       event.preventDefault()
 
-      const target = event.target as HTMLInputElement
-      if (target) {
-        const url = target.value
-        const shouldRequest = event.ctrlKey || event.shiftKey || event.altKey
+      const url = this.addressUrl
+      const shouldRequest = event.ctrlKey || event.shiftKey || event.altKey
 
-        if (shouldRequest) {
-          this.requestUrl(url)
-        } else {
-          this.loadURL(url)
-          this.webview!.focus()
-        }
+      if (url && shouldRequest) {
+        this.requestUrl(url)
+      } else if (url) {
+        this.loadURL(url)
+        this.webview!.focus()
       }
     }
   }
@@ -216,7 +217,7 @@ export class WebControls extends Component<IProps, IState> {
   }
 
   private onPlayClicked() {
-    const url = this.webview && this.webContents.getURL()
+    const url = this.addressUrl
     if (url) {
       this.requestUrl(url)
     }
