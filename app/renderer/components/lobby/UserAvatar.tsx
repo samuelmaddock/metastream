@@ -1,59 +1,49 @@
-import React, { Component } from 'react';
-import { IUser } from 'renderer/lobby/reducers/users';
-import styles from './UserItem.css';
-import { PlatformService } from 'renderer/platform';
-import { NetUniqueId } from 'renderer/network';
-import { assetUrl } from 'utils/appUrl';
+import React, { Component } from 'react'
+import { IUser } from 'renderer/lobby/reducers/users'
+import styles from './UserItem.css'
+import { PlatformService } from 'renderer/platform'
+import { NetUniqueId } from 'renderer/network'
+import { assetUrl } from 'utils/appUrl'
 
 interface IProps {
-  className?: string;
+  className?: string
 
   /** User ID */
-  id: string;
+  id: string
+
+  avatar?: string
 }
 
 interface IState {
-  src?: string;
+  src?: string
 }
 
 export class UserAvatar extends Component<IProps> {
-  private mounted?: boolean;
-
-  state: IState = {};
+  state: IState = {}
 
   componentWillMount(): void {
-    this.requestAvatar(this.props.id);
-    this.mounted = true;
-  }
-
-  componentWillUnmount(): void {
-    this.mounted = false;
+    if (this.props.avatar) {
+      this.requestAvatar(this.props.avatar)
+    }
   }
 
   componentWillReceiveProps(nextProps: IProps): void {
-    if (this.props.id !== nextProps.id) {
-      this.requestAvatar(nextProps.id);
+    if (nextProps.avatar && this.props.avatar !== nextProps.avatar) {
+      this.requestAvatar(nextProps.avatar)
     }
   }
 
-  private async requestAvatar(id: string) {
-    let src;
-    try {
-      src = await PlatformService.requestAvatarUrl(id);
-    } catch (e) {
-      return;
+  private async requestAvatar(src: string) {
+    let img = new Image()
+    img.onload = () => {
+      this.setState({ src })
     }
-    this.setState({ src });
+    img.src = src
   }
-
-  private onImageLoad = () => {
-    const { src } = this.state;
-    if (src) {
-      URL.revokeObjectURL(src);
-    }
-  };
 
   render(): JSX.Element | null {
-    return <img src={this.state.src || assetUrl('icons/avatar.svg')} onLoad={this.onImageLoad} className={this.props.className} />;
+    return (
+      <img src={this.state.src || assetUrl('icons/avatar.svg')} className={this.props.className} />
+    )
   }
 }

@@ -7,6 +7,7 @@ import { PlatformService } from 'renderer/platform'
 export interface IUser {
   id: string
   name: string
+  avatar?: string
 }
 
 export interface IUsersState {
