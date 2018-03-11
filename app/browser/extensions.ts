@@ -7,13 +7,7 @@ import * as widevine from 'constants/widevine'
 const extVerRegex = /^[\d._]+$/
 const isExtVersion = (dirName: string) => !!extVerRegex.exec(dirName)
 
-const extensionIds = [
-  'cjpalhdlnbpafiamejdnhcphjbkeiagm', // ublock origin
-  'gcbommkclmclpchllfjekcdonpmejbdp', // https everywhere
-  'netflix-content-script',
-  'enhanced-media-viewer',
-  'media-remote'
-]
+const extensionIds = ['netflix-content-script', 'enhanced-media-viewer', 'media-remote']
 
 export function initExtensions() {
   loadMediaExtensions()
@@ -37,12 +31,7 @@ function loadMediaExtensions() {
       stat = fs.statSync(extPath)
     } catch (e) {
       err = e
-    } finally {
-      // dialog.showMessageBox({
-      //   title:'test',
-      //   message: `${extPath}\n\n${JSON.stringify(stat)}\n\n${JSON.stringify(err)}`,
-      //   buttons: ['ok']
-      // })
+      log.error(`${extPath}\n\n${JSON.stringify(stat)}\n\n${JSON.stringify(err)}`)
     }
 
     if (stat) {

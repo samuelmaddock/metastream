@@ -73,8 +73,3 @@ npm-debug.log.*
 
 .awcache
 *.todo
-
-
-# Extensions
-app/extensions/cjpalhdlnbpafiamejdnhcphjbkeiagm/
-app/extensions/gcbommkclmclpchllfjekcdonpmejbdp/
