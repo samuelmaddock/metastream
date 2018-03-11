@@ -1,0 +1,161 @@
+Object.assign(app.store.getState(), {
+  "router": {
+    "location": { "pathname": "/lobby/create", "search": "", "hash": "" }
+  },
+  "lobby": { "network": 0 },
+  "chat": {
+    "messages": [
+      {
+        "author": {
+          "id": "2",
+          "username": "Hunter"
+        },
+        "content": "that was 👌",
+        "timestamp": Date.now()
+      }
+    ]
+  },
+  "mediaPlayer": {
+    "playback": 1,
+    "repeatMode": 0,
+    "queue": [
+      {
+        "type": "item",
+        "url":
+          "https://www.netflix.com/watch/60031236?trackId=14170056&tctx=14%2C0%2C9e8b0b2f-7daf-4f65-a871-477a25d274e9-9562447&autoplay=true&auto_play=true",
+        "title": "Kill Bill: Vol. 1 | Netflix",
+        "description":
+          "An assassin is shot by her ruthless employer, Bill, and other members of their assassination circle. But she lives -- and plots her vengeance.",
+        "imageUrl": {
+          "url":
+            "https://occ-0-2433-2430.1.nflxso.net/art/29a19/f0b11727e4c156e9b4465ad52d539cfa9d829a19.jpg",
+          "width": null,
+          "height": null,
+          "type": null
+        },
+        "requestUrl":
+          "https://www.netflix.com/watch/60031236?trackId=14170056&tctx=14%2C0%2C9e8b0b2f-7daf-4f65-a871-477a25d274e9-9562447",
+        "ownerId":
+          "14e3a386e9195cfeaf92ec57224fd3c4e518b58811e448bb59181cd8c2b8480c",
+        "ownerName": "Hunter",
+        "state": {}
+      },
+      {
+        "type": "item",
+        "url":
+          "https://w.soundcloud.com/player/?visual=true&url=https%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F257108978&show_artwork=true&autoplay=true&auto_play=true",
+        "title": "MACROSS 82-99// Mix 4 Amidiscs",
+        "duration": 1247000,
+        "description": "listen 2 my acovadoes and bananis",
+        "imageUrl": {
+          "url":
+            "https://i1.sndcdn.com/artworks-000156240197-eo6na1-t500x500.jpg",
+          "width": "500",
+          "height": "500",
+          "type": null
+        },
+        "requestUrl":
+          "https://soundcloud.com/maya-ampora-ochoa/macross-82-99-mix-4-amidiscs",
+        "ownerId":
+          "14e3a386e9195cfeaf92ec57224fd3c4e518b58811e448bb59181cd8c2b8480c",
+        "ownerName": "Sam",
+        "state": {}
+      },
+      {
+        "type": "item",
+        "url":
+          "https://w.soundcloud.com/player/?visual=true&url=https%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F257108978&show_artwork=true&autoplay=true&auto_play=true",
+        "title": "reddit.com/r/videos",
+        "description": "listen 2 my acovadoes and bananis",
+        "imageUrl": {
+          "url":
+            "https://i1.sndcdn.com/artworks-000156240197-eo6na1-t500x500.jpg",
+          "width": "500",
+          "height": "500",
+          "type": null
+        },
+        "requestUrl":
+          "https://soundcloud.com/maya-ampora-ochoa/macross-82-99-mix-4-amidiscs",
+        "ownerId":
+          "14e3a386e9195cfeaf92ec57224fd3c4e518b58811e448bb59181cd8c2b8480c",
+        "ownerName": "Sam",
+        "state": {}
+      },
+      {
+        "type": "item",
+        "url":
+          "https://www.youtube.com/embed/Uno1OOvX5sU?autoplay=1&controls=0&fs=0&rel=0&showinfo=0&iv_load_policy=3",
+        "title": "PUBG 1.0 Highlights - Episode 2",
+        "duration": 603000,
+        "description":
+          "Send your clips to BattlegroundsHighlights@gmail.com\nFAQ: http://www.dearsomeone.net/pubgfaq\nTwitter: https://twitter.com/dearsomeone\n\nThis video is not monetized due to the copyrighted music.\n\nMusic:\nMuse - Uprising\nBon Jovi - Runaway\n\nDo you have a Replay file you'd like to send in?  Here's a video on how to backup and share your Replays. https://youtu.be/fCaIXoHM58k\n\nThanks to Kingpin Crazy, WoofQuack and anyone who submitted a clip.  If you didn’t see your clip in this video, you may see it in the future.  No need to resubmit. \n\nThanks for watching!\nhttp://www.dearsomeone.net/",
+        "imageUrl": "https://i.ytimg.com/vi/Uno1OOvX5sU/mqdefault.jpg",
+        "requestUrl": "https://www.youtube.com/watch?v=Uno1OOvX5sU&t=1s",
+        "ownerId":
+          "14e3a386e9195cfeaf92ec57224fd3c4e518b58811e448bb59181cd8c2b8480c",
+        "ownerName": "Austin",
+        "state": {}
+      },
+      {
+        "type": "item",
+        "url":
+          "http://www.crunchyroll.com/darling-in-the-franxx/episode-1-alone-and-lonesome-759575?autoplay=true&auto_play=true",
+        "title": "DARLING in the FRANXX",
+        "description":
+          "Watch DARLING in the FRANXX Episode 1 - Alone and Lonesome",
+        "imageUrl": {
+          "url":
+            "http://img1.ak.crunchyroll.com/i/spire4/e8e3c09f8450c3d8a90a03e2198688f61515484130_large.jpg",
+          "width": null,
+          "height": null,
+          "type": null
+        },
+        "requestUrl":
+          "http://www.crunchyroll.com/darling-in-the-franxx/episode-1-alone-and-lonesome-759575",
+        "ownerId":
+          "14e3a386e9195cfeaf92ec57224fd3c4e518b58811e448bb59181cd8c2b8480c",
+        "ownerName": "Sam",
+        "state": {}
+      }
+    ],
+    "serverTimeDelta": 0,
+    "current": {
+      "type": "item",
+      "url":
+        "https://www.youtube.com/embed/8AtcaspHKRg?autoplay=1&controls=0&fs=0&rel=0&showinfo=0&iv_load_policy=3",
+      "title": "PUBG 1.0 Highlights - Episode 1",
+      "description":
+        "Send your clips to BattlegroundsHighlights@gmail.com\nFAQ: http://www.dearsomeone.net/pubgfaq\nTwitter: https://twitter.com/dearsomeone\n\nThis video is not monetized due to the copyrighted music.\n\nMusic:\nThe Seatbelts - Tank! (Suggested by squall6789)\nJourney - Separate Ways\n\nThank you to Kingpin Crazy who's helping out with the thumbnail images.\nCheck out his channel!\nhttps://www.youtube.com/channel/UCqRHF3ZwfpMDn34cTbxqVWw\n\nThank you to WoofQuack who’s always helping out with these videos. \n\nThank you to anyone who submitted a clip!  If you didn’t see it in this video, you may see it in a future video.  No need to resubmit. \n\nThanks for watching!\nhttp://www.dearsomeone.net/",
+      "imageUrl": "https://i.ytimg.com/vi/8AtcaspHKRg/mqdefault.jpg",
+      "requestUrl": "https://www.youtube.com/watch?v=8AtcaspHKRg",
+      "ownerId":
+        "14e3a386e9195cfeaf92ec57224fd3c4e518b58811e448bb59181cd8c2b8480c",
+      "ownerName": "Unknown",
+      "state": {}
+    },
+    "startTime": Date.now()
+  },
+  "session": {},
+  "users": {
+    "host": "14e3a386e9195cfeaf92ec57224fd3c4e518b58811e448bb59181cd8c2b8480c",
+    "map": {
+      "1": {
+        "id": "1",
+        "name": "Sam",
+        "avatar": "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/a7/a7b5859365dcbf6be35229ae8b86567fcbd57ebf_full.jpg"
+      },
+      "2": {
+        "id": "2",
+        "name": "Hunter",
+        "avatar": "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/8e/8e2b92368f4e7b6216ca8c8c43c3da0571c03238_full.jpg"
+      },
+      "3": {
+        "id": "3",
+        "name": "Austin",
+        "avatar": "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/47/4776820c4883336b1e44b6fa6d7f3caaff22551a_full.jpg"
+      }
+    }
+  },
+  "settings": { "mute": false, "volume": 0.75 },
+  "ui": {}
+})
