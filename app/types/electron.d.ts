@@ -3708,6 +3708,9 @@ declare namespace Electron {
     cookies: Cookies;
     protocol: Protocol;
     webRequest: WebRequest;
+
+    /** Muon extensions API */
+    extensions: any;
   }
 
   interface Shell {

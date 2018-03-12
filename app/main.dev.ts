@@ -143,9 +143,9 @@ const setupWindow = () => {
     if (!win) {
       throw new Error('"win" is not defined')
     }
+    initExtensions()
     win.show()
     win.focus()
-    initExtensions()
   })
 
   win.on('closed', () => {
