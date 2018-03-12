@@ -1,6 +1,6 @@
-import fs from 'fs'
+import fs from 'fs-extra'
 import path from 'path'
-import { app, session, dialog, componentUpdater } from 'electron'
+import { app, session, dialog, componentUpdater, ipcMain } from 'electron'
 import log from './log'
 import * as widevine from 'constants/widevine'
 import request from 'request'
@@ -12,6 +12,20 @@ const extVerRegex = /^[\d._]+$/
 const isExtVersion = (dirName: string) => !!extVerRegex.exec(dirName)
 const getExtensionsPath = () => `${app.getPath('userData')}/Extensions`
 
+const activeExtensions = new Set<string>()
+
+const loadExtension = (session: Electron.session, extId: string, extPath: string) => {
+  session.extensions.load(extPath, {}, 'unpacked')
+  activeExtensions.add(extId)
+}
+
+const disableExtension = (session: Electron.session, extId: string) => {
+  session.extensions.disable(extId)
+  activeExtensions.delete(extId)
+}
+
+const getActiveExtensions = () => Array.from(activeExtensions)
+
 const APP_EXTENSIONS = ['netflix-content-script', 'enhanced-media-viewer', 'media-remote']
 const VENDOR_EXTENSIONS = ['cjpalhdlnbpafiamejdnhcphjbkeiagm']
 
@@ -21,22 +35,7 @@ export function initExtensions() {
   loadMediaExtensions(mediaSession)
   loadVendorExtensions(mediaSession)
   loadComponents()
-
-  /*
-  setTimeout(async () => {
-    log.info('Testing extension install')
-    const extId = VENDOR_EXTENSIONS[0]
-    let dir
-    try {
-      dir = await installExtension(extId)
-    } catch (e) {
-      log.error(e)
-      return
-    }
-    loadVendorExtensions(mediaSession)
-    log.info(`Successfully installed extension at ${extId}`)
-  }, 5000)
-  */
+  initIpc(mediaSession)
 }
 
 function readExtensionsInDir(
@@ -149,14 +148,6 @@ function installExtension(extId: string) {
       return
     }
 
-    /*
-    -delete extension if installed
-    request extension crx, mark as pending
-    check crx headers
-    extract crx to extension path
-    load extension api
-    */
-
     // TODO: fetch version from remote?
     const version = '1.15.2'
     const extDest = path.join(getExtensionsPath(), extId, version)
@@ -196,17 +187,47 @@ function installExtension(extId: string) {
   })
 }
 
-function removeExtension(extId: string) {
+async function removeExtension(extId: string) {
   const activeReq = activeInstalls[extId]
   if (activeReq) {
     activeReq.abort()
     activeInstalls[extId] = null
   }
 
-  /*
-  abort active install
-  check if extension exists
-  delete extension directory
-  unload extension api
-  */
+  const extPath = path.join(getExtensionsPath(), extId)
+  await fs.remove(extPath)
+}
+
+function initIpc(session: Electron.Session) {
+  const error = (sender: Electron.WebContents, err: Error) => {
+    log.error(err)
+    sender.send('extensions-error', err.message)
+  }
+
+  ipcMain.on('extensions-install', async (event: Electron.Event, extId: string) => {
+    try {
+      await installExtension(extId)
+    } catch (e) {
+      error(event.sender, e)
+      return
+    }
+    loadVendorExtensions(session)
+  })
+
+  ipcMain.on('extensions-remove', async (event: Electron.Event, extId: string) => {
+    session.extensions.disable(extId)
+    try {
+      await removeExtension(extId)
+    } catch (e) {
+      error(event.sender, e)
+      return
+    }
+  })
+
+  ipcMain.on('extensions-list', (event: Electron.Event) => {
+    const list = VENDOR_EXTENSIONS.map(extId => {
+      return { id: extId, enabled: activeExtensions.has(extId) }
+    })
+    event.sender.send('extensions-list-result', list)
+  })
 }

@@ -5,8 +5,7 @@ import { AppContainer } from 'react-hot-loader'
 import Root from './containers/Root'
 import * as cfgStore from './store/configureStore'
 
-import 'styles/app.global.scss'
-import '../app.global.css'
+import 'styles/app.global.css'
 
 import * as packageJson from 'package.json'
 import { PlatformService } from 'renderer/platform'

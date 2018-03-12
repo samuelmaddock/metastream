@@ -97,6 +97,22 @@ export class WebControls extends Component<IProps, IState> {
         </HighlightButton>
       </div>
     )
+
+    const canDebug = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true'
+    const debugBtn = canDebug ? (
+      <IconButton
+        className={styles.button}
+        icon="settings"
+        onClick={() => {
+          if (this.webContents) {
+            this.webContents.toggleDevTools()
+          }
+        }}
+      />
+    ) : (
+      undefined
+    )
+
     const closeBtn = (
       <IconButton className={styles.button} icon="x" onClick={this.onCloseClicked.bind(this)} />
     )
@@ -109,6 +125,7 @@ export class WebControls extends Component<IProps, IState> {
         {homeBtn}
         {this.renderLocation()}
         {playBtn}
+        {debugBtn}
         {closeBtn}
       </div>
     )
