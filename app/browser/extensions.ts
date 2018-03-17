@@ -17,6 +17,7 @@ const activeExtensions = new Set<string>()
 
 const loadExtension = (session: Electron.session, extId: string, extPath: string) => {
   session.extensions.load(extPath, {}, 'unpacked')
+  session.extensions.enable(extId)
   activeExtensions.add(extId)
 }
 
