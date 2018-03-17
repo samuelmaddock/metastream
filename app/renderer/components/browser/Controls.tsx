@@ -67,7 +67,7 @@ export class WebControls extends Component<IProps, IState> {
           if (this.webview) {
             if (this.state.loading) {
               this.webContents.stop()
-            } else if (e.shiftKey) {
+            } else if (e.shiftKey || process.env.NODE_ENV === 'development') {
               this.webContents.reloadIgnoringCache()
             } else {
               this.webContents.reload()

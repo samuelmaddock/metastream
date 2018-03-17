@@ -1,0 +1,18 @@
+@import './components/toggle.css';
+
+body {
+  /* background: transparent; */
+  background: #222;
+  background: linear-gradient(200deg, #42275a, #734b6d);
+}
+
+.container {
+  max-width: 600px;
+  margin: 60px auto 30px auto;
+}
+
+.header {
+  font-size: 2em;
+  font-weight: bold;
+  margin-bottom: 30px;
+}
