@@ -1,6 +1,6 @@
 import fs from 'fs-extra'
 import path from 'path'
-import { app, session, dialog, componentUpdater, ipcMain } from 'electron'
+import { app, session, dialog, componentUpdater, ipcMain, ipcRenderer } from 'electron'
 import log from './log'
 import * as widevine from 'constants/widevine'
 import request from 'request'
@@ -12,6 +12,7 @@ const extVerRegex = /^[\d._]+$/
 const isExtVersion = (dirName: string) => !!extVerRegex.exec(dirName)
 const getExtensionsPath = () => `${app.getPath('userData')}/Extensions`
 
+let initialized = false
 const activeExtensions = new Set<string>()
 
 const loadExtension = (session: Electron.session, extId: string, extPath: string) => {
@@ -25,17 +26,20 @@ const disableExtension = (session: Electron.session, extId: string) => {
 }
 
 const getActiveExtensions = () => Array.from(activeExtensions)
+const getSession = () => session.fromPartition('persist:mediaplayer', { cache: true })
 
 const APP_EXTENSIONS = ['netflix-content-script', 'enhanced-media-viewer', 'media-remote']
 const VENDOR_EXTENSIONS = ['cjpalhdlnbpafiamejdnhcphjbkeiagm']
 
 export function initExtensions() {
-  const mediaSession = session.fromPartition('persist:mediaplayer', { cache: true })
+  const mediaSession = getSession()
 
   loadMediaExtensions(mediaSession)
   loadVendorExtensions(mediaSession)
   loadComponents()
   initIpc(mediaSession)
+
+  initialized = true
 }
 
 function readExtensionsInDir(
@@ -84,7 +88,7 @@ function loadVendorExtensions(session: Electron.Session) {
     }
 
     log.debug(`Loading extension ${extId}`)
-    session.extensions.load(dir, {}, 'unpacked')
+    loadExtension(session, extId!, dir!)
   })
 }
 
@@ -99,7 +103,7 @@ function loadMediaExtensions(session: Electron.Session) {
     }
 
     log.debug(`Loading extension ${extId}`)
-    session.extensions.load(dir, {}, 'unpacked')
+    loadExtension(session, extId!, dir!)
   })
 }
 
@@ -148,6 +152,7 @@ function installExtension(extId: string) {
       return
     }
 
+    // TODO: read and write to crx cache
     // TODO: fetch version from remote?
     const version = '1.15.2'
     const extDest = path.join(getExtensionsPath(), extId, version)
@@ -175,7 +180,15 @@ function installExtension(extId: string) {
         let manifestFile = path.join(extDest, 'manifest.json')
         fs.readFile(manifestFile, 'utf8', (err, data) => {
           if (err) log.error(err)
-          let manifest = JSON.parse(data)
+          let manifest
+
+          try {
+            manifest = JSON.parse(data)
+          } catch (e) {
+            reject(`Failed to parse extension manifest`)
+            return
+          }
+
           manifest.key = publicKey
           fs.writeFile(manifestFile, JSON.stringify(manifest, null, 2), 'utf8', () =>
             resolve(extDest)
@@ -198,36 +211,55 @@ async function removeExtension(extId: string) {
   await fs.remove(extPath)
 }
 
+/* ----------------------------------------
+  IPC
+---------------------------------------- */
+
+function ipcError(sender: Electron.WebContents, err: Error) {
+  log.error(err)
+  sender.send('extensions-error', err.message)
+}
+
+async function ipcInstall(event: Electron.Event, extId: string) {
+  log.debug(`[Extension] Installing ${extId}...`)
+  try {
+    await installExtension(extId)
+  } catch (e) {
+    ipcError(event.sender, e)
+    return
+  }
+  log.debug(`[Extension] Installed ${extId}`)
+  loadVendorExtensions(getSession())
+  ipcStatus(event)
+}
+
+async function ipcRemove(event: Electron.Event, extId: string) {
+  log.debug(`[Extension] Removing ${extId}`)
+  disableExtension(getSession(), extId)
+  try {
+    await removeExtension(extId)
+  } catch (e) {
+    ipcError(event.sender, e)
+    return
+  }
+  ipcStatus(event)
+}
+
+function ipcStatus(event: Electron.Event) {
+  const list = VENDOR_EXTENSIONS.map(extId => {
+    return { id: extId, enabled: activeExtensions.has(extId) }
+  })
+  event.sender.send('extensions-status', list)
+}
+
 function initIpc(session: Electron.Session) {
-  const error = (sender: Electron.WebContents, err: Error) => {
-    log.error(err)
-    sender.send('extensions-error', err.message)
+  if (initialized) {
+    ipcMain.removeListener('extensions-install', ipcInstall)
+    ipcMain.removeListener('extensions-remove', ipcRemove)
+    ipcMain.removeListener('extensions-list', ipcStatus)
   }
 
-  ipcMain.on('extensions-install', async (event: Electron.Event, extId: string) => {
-    try {
-      await installExtension(extId)
-    } catch (e) {
-      error(event.sender, e)
-      return
-    }
-    loadVendorExtensions(session)
-  })
-
-  ipcMain.on('extensions-remove', async (event: Electron.Event, extId: string) => {
-    session.extensions.disable(extId)
-    try {
-      await removeExtension(extId)
-    } catch (e) {
-      error(event.sender, e)
-      return
-    }
-  })
-
-  ipcMain.on('extensions-list', (event: Electron.Event) => {
-    const list = VENDOR_EXTENSIONS.map(extId => {
-      return { id: extId, enabled: activeExtensions.has(extId) }
-    })
-    event.sender.send('extensions-list-result', list)
-  })
+  ipcMain.on('extensions-install', ipcInstall)
+  ipcMain.on('extensions-remove', ipcRemove)
+  ipcMain.on('extensions-status', ipcStatus)
 }

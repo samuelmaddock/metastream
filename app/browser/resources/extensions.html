@@ -31,13 +31,54 @@
       margin-bottom: 10px;
     }
   </style>
+  <script>
+    (function() {
+      const { ipcRenderer } = chrome;
+      const getExtElem = id => document.querySelector(`[data-extension-id=${id}]`)
+
+      ipcRenderer.on('extensions-status', (e, list) => {
+        console.debug('Extensions status', list)
+        list.forEach(ext => {
+          setupExtension(ext.id)
+          updateExtension(ext.id, ext.enabled)
+        })
+      })
+
+      function updateExtension(id, enabled) {
+        const toggle = getExtElem(id).querySelector('.tgl')
+        toggle.checked = enabled
+      }
+
+      function setupExtension(id) {
+        const elem = getExtElem(id)
+        if (elem.__init) return
+
+        const toggle = elem.querySelector('.tgl')
+        const toggleBtn = elem.querySelector('.tgl-btn')
+        toggleBtn.addEventListener('click', (e) => {
+          const enabled = toggle.checked
+          const eventName = enabled ? 'extensions-remove' : 'extensions-install'
+          ipcRenderer.send(eventName, id)
+        })
+
+        elem.__init = true
+      }
+
+      function init() {
+        console.log('Initializing...')
+        ipcRenderer.send('extensions-status')
+      }
+      document.addEventListener('DOMContentLoaded', init)
+    }())
+  </script>
 </head>
 
 <body>
   <main class="container">
     <h1 class="header">Extensions</h1>
     <section class="ext-list">
-      <div class="ext-item">
+      <!-- TODO: use template tag -->
+      <div class="ext-item" data-extension-id="cjpalhdlnbpafiamejdnhcphjbkeiagm">
         <img class="ext-icon" src="../../assets/img/extensions/ublock.svg">
         <div class="ext-meta">
           <div class="ext-name">uBlock Origin</div>

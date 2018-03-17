@@ -4,6 +4,7 @@ body {
   /* background: transparent; */
   background: #222;
   background: linear-gradient(200deg, #42275a, #734b6d);
+  padding: 0 30px;
 }
 
 .container {
