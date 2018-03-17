@@ -31,6 +31,9 @@ import { MoreButton } from 'renderer/components/media/MoreButton'
 import { IAppState } from 'renderer/reducers'
 import { IconButton } from 'renderer/components/common/button'
 import { getPlaybackTime2 } from 'renderer/lobby/reducers/mediaPlayer.helpers'
+import { absoluteUrl } from 'utils/appUrl'
+
+const EXTENSIONS_URL = absoluteUrl('./browser/resources/extensions.html')
 
 const Button: React.SFC<{
   className?: string
@@ -81,7 +84,7 @@ interface IProps {
   className?: string
   reload?: React.MouseEventHandler<HTMLButtonElement>
   debug?: React.MouseEventHandler<HTMLButtonElement>
-  openBrowser: Function
+  openBrowser: (url?: string) => void
   showInfo: Function
 }
 
@@ -202,6 +205,12 @@ class _PlaybackControls extends Component<PrivateProps> {
       </ButtonListItem>
     )
 
+    const extensionsBtn = (
+      <ButtonListItem icon="settings" onClick={() => this.props.openBrowser(EXTENSIONS_URL)}>
+        Extensions
+      </ButtonListItem>
+    )
+
     const disconnectBtn = (
       <ButtonListItem icon="log-out" onClick={this.disconnect}>
         Disconnect
@@ -219,6 +228,7 @@ class _PlaybackControls extends Component<PrivateProps> {
           {externalLinkBtn}
           {copyLinkBtn}
           {reloadBtn}
+          {extensionsBtn}
           {debugBtn}
           {disconnectBtn}
         </MoreButton>

@@ -53,6 +53,7 @@ interface IProps {
 interface IState {
   inactive: boolean
   modal?: LobbyModal
+  modalProps?: React.Props<any> & { [key: string]: any }
 }
 
 interface IConnectedProps {
@@ -142,7 +143,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
             title="Next up"
             tagline={`${this.props.mediaQueue.length} items`}
             action={
-              <HighlightButton icon="plus" onClick={this.openBrowser}>
+              <HighlightButton icon="plus" onClick={() => this.openBrowser()}>
                 Add
               </HighlightButton>
             }
@@ -170,7 +171,13 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
   private renderModal() {
     switch (this.state.modal!) {
       case LobbyModal.Browser:
-        return <WebBrowser className={styles.modal} onClose={this.closeModal} />
+        return (
+          <WebBrowser
+            className={styles.modal}
+            onClose={this.closeModal}
+            {...this.state.modalProps}
+          />
+        )
       case LobbyModal.Invite:
         return (
           <Modal className={styles.modal} onClose={this.closeModal}>
@@ -222,8 +229,8 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
     }
   }
 
-  private openBrowser = () => {
-    this.setState({ modal: LobbyModal.Browser })
+  private openBrowser = (url?: string) => {
+    this.setState({ modal: LobbyModal.Browser, modalProps: { initialUrl: url } })
   }
 
   private showInfo = () => {
