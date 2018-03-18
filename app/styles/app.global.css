@@ -78,15 +78,6 @@ body {
   cursor: default;
 }
 
-a,
-a:visited,
-a:hover,
-a:active {
-  color: #00bfff;
-  text-decoration: none;
-  -webkit-user-drag: none;
-}
-
 button {
   background: transparent;
   padding: 0;
@@ -103,4 +94,17 @@ button:disabled {
 
 p:not(:last-child) {
   margin-bottom: 15px;
+}
+
+a {
+  text-decoration: none;
+}
+
+.link,
+.link:visited,
+.link:hover,
+.link:active {
+  color: #00bfff;
+  text-decoration: none;
+  -webkit-user-drag: none;
 }

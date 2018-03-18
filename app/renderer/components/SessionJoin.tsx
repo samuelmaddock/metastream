@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import cx from 'classnames'
 import { Link } from 'react-router-dom'
 import styles from './SessionJoin.css'
 import { NetworkState } from 'types/network'
@@ -18,7 +19,7 @@ export class SessionJoin extends Component<IProps> {
   render(): JSX.Element | null {
     return (
       <LayoutMain className={styles.container}>
-        <Link to="/" className={styles.goBack}>
+        <Link to="/" className={cx('link', styles.goBack)}>
           <Icon name="arrow-left" />
           Go back
         </Link>
