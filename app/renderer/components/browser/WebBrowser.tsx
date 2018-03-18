@@ -39,6 +39,7 @@ export class _WebBrowser extends Component<PrivateProps> {
 
   componentWillUnmount(): void {
     ipcRenderer.removeListener('command', this.dispatchCommand)
+    ;(window as any).WEBBROWSER = null
   }
 
   private dispatchCommand = (sender: Electron.WebContents, cmd: string) => {
@@ -91,6 +92,7 @@ export class _WebBrowser extends Component<PrivateProps> {
         ;(remote as any).getWebContents(e.tabId, (webContents: Electron.WebContents) => {
           this.webContents = webContents
           this.setupControls()
+          ;(window as any).WEBBROWSER = webContents
         })
       })
     } else {

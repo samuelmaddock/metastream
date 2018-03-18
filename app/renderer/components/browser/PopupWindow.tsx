@@ -76,13 +76,13 @@ export class _PopupWindow extends Component<PrivateProps> {
     let style: { [key: string]: any } = {}
 
     if (this.props.width) {
-      style.width = this.props.width + 2
+      style.width = this.props.width
     } else {
       style.boxShadow = 'none'
     }
 
     if (this.props.height) {
-      style.height = this.props.height + 2
+      style.height = this.props.height
     }
 
     if (this.props.top) {

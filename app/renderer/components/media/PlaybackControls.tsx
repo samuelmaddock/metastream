@@ -226,7 +226,7 @@ class _PlaybackControls extends Component<PrivateProps> {
         {volumeSlider}
         {infoBtn}
         <MoreButton buttonClassName={styles.button}>
-          <BrowserActionList />
+          <BrowserActionList tabId={-1} />
           {externalLinkBtn}
           {copyLinkBtn}
           {reloadBtn}

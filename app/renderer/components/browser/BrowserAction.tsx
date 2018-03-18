@@ -7,7 +7,10 @@ import styles from './BrowserAction.css'
 import { IExtension, getBrowserActionBackgroundImage } from '../../reducers/extensions'
 
 interface IProps {
+  tabId: number
   extension: IExtension
+  popupOpen: boolean
+  closePopup: Function
 }
 
 interface IState {}
@@ -39,6 +42,11 @@ export class BrowserAction extends Component<IProps, IState> {
   private onClick = (e: React.MouseEvent<any>) => {
     e.nativeEvent.stopImmediatePropagation()
 
+    if (this.props.popupOpen) {
+      this.props.closePopup()
+      return
+    }
+
     const target = e.target as HTMLElement
     if (!target) return
 
@@ -59,12 +67,6 @@ export class BrowserAction extends Component<IProps, IState> {
       offsetY: e.nativeEvent.offsetY
     }
     const ext = this.props.extension
-    ipcRenderer.send(
-      'chrome-browser-action-clicked',
-      ext.id,
-      -1, // this.props.activeTabId,
-      ext.name,
-      props
-    )
+    ipcRenderer.send('chrome-browser-action-clicked', ext.id, this.props.tabId, ext.name, props)
   }
 }
