@@ -1,0 +1,12 @@
+.action {
+  width: 38px;
+  height: 38px;
+}
+
+.actionBtn {
+  width: 100%;
+  height: 100%;
+  background-position: center;
+  background-size: container;
+  background-repeat: no-repeat;
+}

@@ -32,6 +32,7 @@ import { IAppState } from 'renderer/reducers'
 import { IconButton } from 'renderer/components/common/button'
 import { getPlaybackTime2 } from 'renderer/lobby/reducers/mediaPlayer.helpers'
 import { absoluteUrl } from 'utils/appUrl'
+import { BrowserActionList } from '../browser/BrowserActionList'
 
 const EXTENSIONS_URL = absoluteUrl('./browser/resources/extensions.html')
 
@@ -225,6 +226,7 @@ class _PlaybackControls extends Component<PrivateProps> {
         {volumeSlider}
         {infoBtn}
         <MoreButton buttonClassName={styles.button}>
+          <BrowserActionList />
           {externalLinkBtn}
           {copyLinkBtn}
           {reloadBtn}

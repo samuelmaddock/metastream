@@ -6,6 +6,8 @@ import { IconButton, HighlightButton } from 'renderer/components/common/button'
 
 import styles from './Controls.css'
 import { MenuButton } from 'renderer/components/menu/MenuButton'
+import { BrowserAction } from './BrowserAction'
+import { BrowserActionList } from './BrowserActionList'
 
 interface IProps {
   initialUrl: string
@@ -126,6 +128,7 @@ export class WebControls extends Component<IProps, IState> {
         {this.renderLocation()}
         {playBtn}
         {debugBtn}
+        <BrowserActionList />
         {closeBtn}
       </div>
     )

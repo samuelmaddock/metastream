@@ -1,12 +1,21 @@
 import fs from 'fs-extra'
 import path from 'path'
-import { app, session, dialog, componentUpdater, ipcMain, ipcRenderer } from 'electron'
+import {
+  app,
+  session,
+  dialog,
+  componentUpdater,
+  ipcMain,
+  ipcRenderer,
+  BrowserWindow
+} from 'electron'
 import log from './log'
 import * as widevine from 'constants/widevine'
 import request from 'request'
 import { CDN_URL } from 'constants/api'
 import * as AdmZip from 'adm-zip'
 import * as CrxReader from 'chrome-ext-downloader'
+import { fileUrl } from 'utils/appUrl'
 
 const extVerRegex = /^[\d._]+$/
 const isExtVersion = (dirName: string) => !!extVerRegex.exec(dirName)
@@ -14,6 +23,7 @@ const getExtensionsPath = () => `${app.getPath('userData')}/Extensions`
 
 let initialized = false
 const activeExtensions = new Set<string>()
+const extensionInfo = new Map<string, any>()
 
 const loadExtension = (session: Electron.session, extId: string, extPath: string) => {
   session.extensions.load(extPath, {}, 'unpacked')
@@ -34,6 +44,11 @@ const VENDOR_EXTENSIONS = ['cjpalhdlnbpafiamejdnhcphjbkeiagm']
 
 export function initExtensions() {
   const mediaSession = getSession()
+
+  process.on('extension-ready' as any, (info: any) => {
+    info.base_path = fileUrl(info.base_path)
+    extensionInfo.set(info.id, info)
+  })
 
   loadMediaExtensions(mediaSession)
   loadVendorExtensions(mediaSession)
@@ -216,6 +231,34 @@ async function removeExtension(extId: string) {
   IPC
 ---------------------------------------- */
 
+function sendStatus(sender: Electron.WebContents) {
+  const list = VENDOR_EXTENSIONS.map(extId => {
+    let status = {
+      id: extId,
+      enabled: activeExtensions.has(extId)
+    }
+
+    if (extensionInfo.has(extId)) {
+      const info = extensionInfo.get(extId)
+      Object.assign(status, {
+        base_path: info.base_path,
+        name: info.name,
+        version: info.version,
+        browser_action: info.manifest && info.manifest.browser_action
+      })
+    }
+
+    return status
+  })
+  sender.send('extensions-status', list)
+}
+
+function onExtensionsChange(activator: Electron.WebContents) {
+  const focusedContents = BrowserWindow.getFocusedWindow().webContents
+  sendStatus(focusedContents)
+  sendStatus(activator)
+}
+
 function ipcError(sender: Electron.WebContents, err: Error) {
   log.error(err)
   sender.send('extensions-error', err.message)
@@ -231,7 +274,7 @@ async function ipcInstall(event: Electron.Event, extId: string) {
   }
   log.debug(`[Extension] Installed ${extId}`)
   loadVendorExtensions(getSession())
-  ipcStatus(event)
+  onExtensionsChange(event.sender)
 }
 
 async function ipcRemove(event: Electron.Event, extId: string) {
@@ -243,14 +286,11 @@ async function ipcRemove(event: Electron.Event, extId: string) {
     ipcError(event.sender, e)
     return
   }
-  ipcStatus(event)
+  onExtensionsChange(event.sender)
 }
 
 function ipcStatus(event: Electron.Event) {
-  const list = VENDOR_EXTENSIONS.map(extId => {
-    return { id: extId, enabled: activeExtensions.has(extId) }
-  })
-  event.sender.send('extensions-status', list)
+  sendStatus(event.sender)
 }
 
 function initIpc(session: Electron.Session) {

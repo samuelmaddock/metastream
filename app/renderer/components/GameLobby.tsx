@@ -45,6 +45,7 @@ import { HighlightButton } from 'renderer/components/common/button'
 import { Modal } from 'renderer/components/lobby/Modal'
 import { Invite } from 'renderer/components/lobby/Invite'
 import { MediaInfo } from 'renderer/components/lobby/modals/MediaInfo'
+import { addExtensionListeners, removeExtensionListeners } from '../actions/extensions'
 
 interface IProps {
   host: boolean
@@ -92,12 +93,15 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
 
   componentDidMount() {
     ipcRenderer.on('command', this.onWindowCommand)
+    ipcRenderer.send('extensions-status')
     this.props.dispatch!(registerMediaShortcuts())
+    this.props.dispatch!(addExtensionListeners())
   }
 
   componentWillUnmount() {
     ipcRenderer.removeListener('command', this.onWindowCommand)
     this.props.dispatch!(unregisterMediaShortcuts())
+    this.props.dispatch!(removeExtensionListeners())
   }
 
   render(): JSX.Element {
