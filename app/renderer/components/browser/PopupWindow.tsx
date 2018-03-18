@@ -22,12 +22,21 @@ interface IProps {
 type PrivateProps = IProps & DispatchProp<IAppState>
 
 export class _PopupWindow extends Component<PrivateProps> {
+  private get src() {
+    const win = window as any
+    const tabId = win.__POPUP_TAB_ID__
+
+    // HACK: Force 'tabId' for uBlock Origin. Otherwise it attempts to get the current
+    // window's tab ID instead of the webview.
+    return this.props.src + (tabId ? `?tabId=${tabId}` : '')
+  }
+
   componentDidMount() {
     window.addEventListener('keydown', this.onKeyDown)
 
     if (this.props.src) {
       let webview = document.createElement('webview')
-      webview.setAttribute('src', this.props.src)
+      webview.setAttribute('src', this.src)
       webview.setAttribute('name', 'browserAction')
       webview.setAttribute('partition', WEBVIEW_PARTITION)
       webview.addEventListener('crashed', this.closePopup)

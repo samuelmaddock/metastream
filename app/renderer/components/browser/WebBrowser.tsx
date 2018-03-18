@@ -92,7 +92,11 @@ export class _WebBrowser extends Component<PrivateProps> {
         ;(remote as any).getWebContents(e.tabId, (webContents: Electron.WebContents) => {
           this.webContents = webContents
           this.setupControls()
-          ;(window as any).WEBBROWSER = webContents
+
+          if (process.env.NODE_ENV === 'development') {
+            const win = window as any
+            win.WEBBROWSER = webContents
+          }
         })
       })
     } else {

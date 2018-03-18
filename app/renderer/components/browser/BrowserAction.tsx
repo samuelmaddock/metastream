@@ -66,6 +66,11 @@ export class BrowserAction extends Component<IProps, IState> {
       offsetX: e.nativeEvent.offsetX,
       offsetY: e.nativeEvent.offsetY
     }
+
+    // HACK: have to manually pass in 'tabId' search param to PopupWindow component
+    const win = window as any
+    win.__POPUP_TAB_ID__ = this.props.tabId
+
     const ext = this.props.extension
     ipcRenderer.send('chrome-browser-action-clicked', ext.id, this.props.tabId, ext.name, props)
   }

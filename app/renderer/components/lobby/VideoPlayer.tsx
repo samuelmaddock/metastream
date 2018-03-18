@@ -147,7 +147,13 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
         ;(remote as any).getWebContents(e.tabId, (webContents: Electron.WebContents) => {
           this.webContents = webContents
           this.reload()
-          ;(window as any).WEBCONTENTS = webContents
+
+          const win = window as any
+          win.__PLAYER_TAB_ID__ = e.tabId || -1
+
+          if (process.env.NODE_ENV === 'development') {
+            win.WEBCONTENTS = webContents
+          }
         })
       })
     } else {
