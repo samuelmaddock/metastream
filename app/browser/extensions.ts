@@ -50,6 +50,31 @@ export function initExtensions() {
     extensionInfo.set(info.id, info)
   })
 
+  process.on(
+    'chrome-browser-action-popup' as any,
+    (
+      extensionId: string,
+      tabId: string,
+      name: string,
+      popup: string,
+      props: { [key: string]: any }
+    ) => {
+      let nodeProps = {
+        left: props.x,
+        top: props.y + 20,
+        src: popup
+      }
+
+      let win = BrowserWindow.getFocusedWindow()
+      if (!win) {
+        return
+      }
+
+      log.debug(`[Extension] Show popup`, extensionId, popup, nodeProps)
+      win.webContents.send('extensions-show-popup', extensionId, popup, nodeProps)
+    }
+  )
+
   loadMediaExtensions(mediaSession)
   loadVendorExtensions(mediaSession)
   loadComponents()

@@ -1,0 +1,6 @@
+.container {
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.33);
+  position: absolute;
+  z-index: 999999;
+  overflow: hidden;
+}

@@ -37,6 +37,8 @@ export class BrowserAction extends Component<IProps, IState> {
   }
 
   private onClick = (e: React.MouseEvent<any>) => {
+    e.nativeEvent.stopImmediatePropagation()
+
     const target = e.target as HTMLElement
     if (!target) return
 
@@ -62,7 +64,7 @@ export class BrowserAction extends Component<IProps, IState> {
       ext.id,
       -1, // this.props.activeTabId,
       ext.name,
-      this.props.extension
+      props
     )
   }
 }

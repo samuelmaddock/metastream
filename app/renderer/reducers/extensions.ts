@@ -3,7 +3,7 @@ import { isType } from 'utils/redux'
 import { IAppState } from 'renderer/reducers'
 import { setSessionData } from 'renderer/lobby/middleware/session'
 import { setUpdateState } from 'renderer/actions/ui'
-import { updateExtensions } from 'renderer/actions/extensions'
+import { updateExtensions, showExtensionPopup } from 'renderer/actions/extensions'
 import { chromeUrl } from 'utils/appUrl'
 
 export interface IExtension {
@@ -32,10 +32,19 @@ export interface IExtension {
   }
 }
 
+export interface IPopupState {
+  src: string
+  left: number
+  top: number
+  width?: number
+  height?: number
+}
+
 export type IExtensionsState = {
   byId: {
     [extensionId: string]: IExtension
   }
+  popup?: IPopupState
 }
 
 const initialState: IExtensionsState = {
@@ -55,6 +64,11 @@ export const extensions: Reducer<IExtensionsState> = (
     return {
       ...state,
       byId: extMap
+    }
+  } else if (isType(action, showExtensionPopup)) {
+    return {
+      ...state,
+      popup: action.payload || undefined
     }
   }
 

@@ -46,6 +46,8 @@ import { Modal } from 'renderer/components/lobby/Modal'
 import { Invite } from 'renderer/components/lobby/Invite'
 import { MediaInfo } from 'renderer/components/lobby/modals/MediaInfo'
 import { addExtensionListeners, removeExtensionListeners } from '../actions/extensions'
+import { PopupWindow } from './browser/PopupWindow'
+import { IPopupState } from '../reducers/extensions'
 
 interface IProps {
   host: boolean
@@ -65,6 +67,7 @@ interface IConnectedProps {
   users: IUsersState
   sessionName?: string
   updateAvailable: boolean
+  popup?: IPopupState
 }
 
 type PrivateProps = IProps & IConnectedProps & DispatchProp<IAppState>
@@ -114,6 +117,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
           modalVisible: !!this.state.modal
         })}
       >
+        {this.props.popup ? <PopupWindow {...this.props.popup} /> : null}
         <ActivityMonitor onChange={active => this.setState({ inactive: !active })} />
 
         <VideoPlayer
@@ -258,6 +262,7 @@ export const GameLobby = connect((state: IAppState): IConnectedProps => {
     playback: getPlaybackState(state),
     users: state.users,
     sessionName: getSessionName(state),
-    updateAvailable: isUpdateAvailable(state)
+    updateAvailable: isUpdateAvailable(state),
+    popup: state.extensions.popup
   }
 })(_GameLobby) as React.ComponentClass<IProps>
