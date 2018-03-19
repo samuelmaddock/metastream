@@ -32,6 +32,11 @@ export class WebControls extends Component<IProps, IState> {
     return this.addressInput && this.addressInput.value
   }
 
+  private get canRequestUrl() {
+    const url = this.addressUrl
+    return url ? url.length !== 0 : false
+  }
+
   render(): JSX.Element {
     // back, forward, location bar, play button, exit
 
@@ -94,7 +99,11 @@ export class WebControls extends Component<IProps, IState> {
 
     const playBtn = (
       <div className={styles.requestButtonContainer}>
-        <HighlightButton icon="play" onClick={this.onPlayClicked.bind(this)}>
+        <HighlightButton
+          icon="play"
+          onClick={this.onPlayClicked.bind(this)}
+          disabled={!this.canRequestUrl}
+        >
           Request URL
         </HighlightButton>
       </div>
