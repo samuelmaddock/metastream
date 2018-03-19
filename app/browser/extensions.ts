@@ -39,7 +39,7 @@ const disableExtension = (session: Electron.session, extId: string) => {
 const getActiveExtensions = () => Array.from(activeExtensions)
 const getSession = () => session.fromPartition('persist:mediaplayer', { cache: true })
 
-const APP_EXTENSIONS = ['netflix-content-script', 'enhanced-media-viewer', 'media-remote']
+const APP_EXTENSIONS = ['enhanced-media-viewer', 'media-remote']
 const VENDOR_EXTENSIONS = ['cjpalhdlnbpafiamejdnhcphjbkeiagm']
 
 export function initExtensions() {

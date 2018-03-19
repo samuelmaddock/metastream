@@ -237,10 +237,19 @@
       this.media.addEventListener('volumechange', this.onVolumeChange, false)
     }
 
+    dispatch(eventName, detail) {
+      const e = new CustomEvent(eventName, { detail: detail, cancelable: true, bubbles: false })
+      document.dispatchEvent(e)
+      return e.defaultPrevented
+    }
+
     play() {
+      if (this.dispatch('ms:play')) return
+
       this.media.play()
     }
     pause() {
+      if (this.dispatch('ms:pause')) return
       this.media.pause()
     }
     getCurrentTime() {
@@ -250,9 +259,7 @@
       return this.media.duration
     }
     seek(time) {
-      if (this.customSeek(time)) {
-        return
-      }
+      if (this.dispatch('ms:seek', time)) return
 
       // Infinity is generally used for a dynamically allocated media object
       // or live media
@@ -274,31 +281,6 @@
       if (this.media.muted && volume > 0) {
         this.media.muted = false
       }
-    }
-
-    customSeek(time) {
-      if (!this.timeExceedsThreshold(time)) {
-        return false
-      }
-
-      // HACK: SoundCloud fallback
-      if (location.hostname.indexOf('soundcloud.com') >= 0) {
-        const action = { method: 'seekTo', value: time }
-        const json = JSON.stringify(action)
-        postMessage(json, location.origin)
-        return true
-      }
-
-      if (location.hostname.indexOf('netflix.com') >= 0) {
-        const player = window.NETFLIXPLAYER
-        if (player) {
-          player.seek(time)
-          console.debug('Proxied netflix seek', time)
-        }
-        return true
-      }
-
-      return false
     }
 
     /** Only seek if we're off by greater than our threshold */

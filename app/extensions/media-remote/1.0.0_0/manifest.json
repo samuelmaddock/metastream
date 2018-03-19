@@ -8,10 +8,21 @@
       "js": ["init.js"],
       "run_at": "document_start",
       "all_frames": true
+    },
+    {
+      "matches": ["*://*.soundcloud.com/*"],
+      "js": ["players/soundcloud.js"],
+      "run_at": "document_start"
+    },
+    {
+      "matches": ["https://*.netflix.com/*"],
+      "js": ["players/netflix.js"],
+      "run_at": "document_start"
     }
   ],
   "web_accessible_resources": [
-    "player.js"
+    "player.js",
+    "players/netflix-global.js"
   ],
   "manifest_version": 2
 }
