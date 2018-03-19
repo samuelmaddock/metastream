@@ -375,7 +375,7 @@ export function parse(body, options) {
 
   /* Combine video/width/height/type
       and sort for priority */
-  if (ogObject.ogVideo || ogObject.ogVideoWidth || ogObject.ogVideoHeight || ogObject.ogVideoType) {
+  if (ogObject.ogVideo || ogObject.ogVideoWidth || ogObject.ogVideoHeight || ogObject.ogVideoType || ogObject.ogVideoDuration) {
     ogObject.ogVideo = ogObject.ogVideo ? ogObject.ogVideo : [null];
     ogObject.ogVideoWidth = ogObject.ogVideoWidth ? ogObject.ogVideoWidth : [null];
     ogObject.ogVideoHeight = ogObject.ogVideoHeight ? ogObject.ogVideoHeight : [null];
