@@ -140,7 +140,7 @@ export class _WebBrowser extends Component<PrivateProps> {
         httpreferrer="http://mediaplayer.samuelmaddock.com/"
         plugins="true"
         partition={WEBVIEW_PARTITION}
-        transparent
+        allowtransparency
       />
     )
   }
