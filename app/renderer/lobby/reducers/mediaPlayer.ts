@@ -155,8 +155,13 @@ export const mediaPlayer: Reducer<IMediaPlayerState> = (
   } else if (isType(action, updateServerTimeDelta)) {
     return { ...state, serverTimeDelta: action.payload }
   } else if (isType(action, updateMedia) && state.current) {
+    const prevDuration = state.current.duration
+    const nextDuration = action.payload.duration
+    const startTime = !prevDuration && nextDuration ? Date.now() : state.startTime
+
     return {
       ...state,
+      startTime,
       current: {
         ...state.current,
         duration: action.payload.duration || state.current.duration
