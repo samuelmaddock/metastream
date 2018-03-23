@@ -23,8 +23,10 @@
   let mediaList = new WeakSet()
   let activeMedia
 
+  const SEC2MS = 1000
+  const MIN_DURATION = 1
   const TEN_HOURS = 36000
-  const isValidDuration = duration => typeof duration === 'number' && !isNaN(duration) && duration < TEN_HOURS
+  const isValidDuration = duration => typeof duration === 'number' && !isNaN(duration) && duration < TEN_HOURS && duration > MIN_DURATION
 
   const getVideoDuration = () => {
     let duration
@@ -48,7 +50,7 @@
 
     window.postMessage({
       type: 'CMediaReady',
-      duration: duration && duration * 1000,
+      duration: duration && duration * SEC2MS,
       iframe: window.self !== window.top,
       href: location.href
     }, '*')
