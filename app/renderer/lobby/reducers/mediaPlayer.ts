@@ -157,6 +157,8 @@ export const mediaPlayer: Reducer<IMediaPlayerState> = (
   } else if (isType(action, updateMedia) && state.current) {
     const prevDuration = state.current.duration
     const nextDuration = action.payload.duration
+
+    // Reset start time if media previously had unknown duration
     const startTime = !prevDuration && nextDuration ? Date.now() : state.startTime
 
     return {
