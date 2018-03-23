@@ -18,6 +18,11 @@
       "matches": ["https://*.netflix.com/*"],
       "js": ["players/netflix.js"],
       "run_at": "document_start"
+    },
+    {
+      "matches": ["https://*.spotify.com/*"],
+      "js": ["players/spotify.js"],
+      "run_at": "document_start"
     }
   ],
   "web_accessible_resources": [
