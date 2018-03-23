@@ -78,18 +78,15 @@ const enum LobbyModal {
   MediaInfo = 'media-info'
 }
 
-const NO_MEDIA: IMediaItem = {
-  type: MediaType.Item,
-  title: 'No media playing',
-  url: '',
-  requestUrl: ''
-}
-
 class _GameLobby extends React.Component<PrivateProps, IState> {
   private player: VideoPlayer | null
 
   private get isInactive() {
-    return this.state.inactive && this.props.playback === PlaybackState.Playing
+    return (
+      this.state.inactive &&
+      this.props.playback === PlaybackState.Playing &&
+      !(this.player && this.player.state.interacting)
+    )
   }
 
   state: IState = { inactive: false }
@@ -109,7 +106,6 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
 
   render(): JSX.Element {
     const { currentMedia: media } = this.props
-    const userIds = Object.keys(this.props.users.map)
     return (
       <div
         className={cx(styles.container, {
@@ -125,54 +121,64 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
             this.player = el
           }}
           className={styles.video}
+          onInteractChange={() => this.forceUpdate()}
         />
 
         <TitleBar className={styles.titlebar} title={media && media.title} />
 
-        <section className={styles.controls}>
-          {this.renderPlaybackControls()}
-          <ListOverlay
-            className={styles.users}
-            title="Users"
-            tagline={`${userIds.length} online`}
-            action={
-              <HighlightButton icon="mail" onClick={() => this.openModal(LobbyModal.Invite)}>
-                Invite
-              </HighlightButton>
-            }
-          >
-            {userIds.map((userId: string) => {
-              const user = this.props.users.map[userId]!
-              return <UserItem key={userId} user={user} />
-            })}
-          </ListOverlay>
-          <ListOverlay
-            className={styles.queue}
-            title="Next up"
-            tagline={`${this.props.mediaQueue.length} items`}
-            action={
-              <HighlightButton icon="plus" onClick={() => this.openBrowser()}>
-                Add
-              </HighlightButton>
-            }
-          >
-            {media && media.hasMore && <MediaItem key="current" media={media} />}
-            {this.props.mediaQueue.map((media, idx) => {
-              return <MediaItem key={idx} media={media} />
-            })}
-          </ListOverlay>
-
-          <Chat
-            className={styles.chat}
-            messages={this.props.messages}
-            sendMessage={this.sendChat}
-            disabled={!!this.state.modal}
-          />
-        </section>
+        {this.player && this.player.state.interacting ? null : this.renderControls()}
 
         {this.isInactive && <div className={styles.inactiveOverlay} />}
         {this.state.modal && this.renderModal()}
       </div>
+    )
+  }
+
+  private renderControls() {
+    const { currentMedia: media } = this.props
+    const userIds = Object.keys(this.props.users.map)
+
+    return (
+      <section className={styles.controls}>
+        {this.renderPlaybackControls()}
+        <ListOverlay
+          className={styles.users}
+          title="Users"
+          tagline={`${userIds.length} online`}
+          action={
+            <HighlightButton icon="mail" onClick={() => this.openModal(LobbyModal.Invite)}>
+              Invite
+            </HighlightButton>
+          }
+        >
+          {userIds.map((userId: string) => {
+            const user = this.props.users.map[userId]!
+            return <UserItem key={userId} user={user} />
+          })}
+        </ListOverlay>
+        <ListOverlay
+          className={styles.queue}
+          title="Next up"
+          tagline={`${this.props.mediaQueue.length} items`}
+          action={
+            <HighlightButton icon="plus" onClick={() => this.openBrowser()}>
+              Add
+            </HighlightButton>
+          }
+        >
+          {media && media.hasMore && <MediaItem key="current" media={media} />}
+          {this.props.mediaQueue.map((media, idx) => {
+            return <MediaItem key={idx} media={media} />
+          })}
+        </ListOverlay>
+
+        <Chat
+          className={styles.chat}
+          messages={this.props.messages}
+          sendMessage={this.sendChat}
+          disabled={!!this.state.modal}
+        />
+      </section>
     )
   }
 

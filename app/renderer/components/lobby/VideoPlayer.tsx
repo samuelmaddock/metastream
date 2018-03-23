@@ -24,6 +24,7 @@ const { remote, ipcRenderer } = chrome
 interface IProps {
   className?: string
   theRef?: (c: _VideoPlayer | null) => void
+  onInteractChange?: (interacting: boolean) => void
 }
 
 interface IConnectedProps extends IMediaPlayerState {
@@ -274,6 +275,12 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
         onDoubleClick={this.enterInteractMode}
       >
         {this.renderBrowser()}
+        {!this.state.interacting ? (
+          <div className={styles.interactTrigger} onDoubleClick={this.enterInteractMode} />
+        ) : null}
+        {this.state.interacting ? (
+          <div className={styles.interactNotice}>Interact ON. Press Esc to cancel.</div>
+        ) : null}
       </div>
     )
   }
@@ -290,11 +297,8 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
           [styles.loading]: this.state.initializing,
           [styles.interactive]: this.state.interacting
         })}
-        /* Disable plugins until we know we need them */
         plugins="true"
-        preload="./preload.js"
         partition={WEBVIEW_PARTITION}
-        ondblclick={this.enterInteractMode}
       />
     )
   }
@@ -321,13 +325,20 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
     this.setState({ interacting: true }, () => {
       document.addEventListener('keydown', this.onKeyDown, false)
       this.dispatchMedia('interact', true)
+      if (this.props.onInteractChange) {
+        this.props.onInteractChange(this.state.interacting)
+      }
     })
   }
 
   private exitInteractMode() {
     document.removeEventListener('keydown', this.onKeyDown, false)
-    this.setState({ interacting: false })
     this.dispatchMedia('interact', false)
+    this.setState({ interacting: false }, () => {
+      if (this.props.onInteractChange) {
+        this.props.onInteractChange(this.state.interacting)
+      }
+    })
   }
 
   private onKeyDown = (event: KeyboardEvent): void => {

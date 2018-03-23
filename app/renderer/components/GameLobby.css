@@ -11,7 +11,7 @@
   height: 100%;
   position: relative;
   --overlay-spacing: 50px;
-  --overlay-z-index: 2;
+  --overlay-z-index: 10;
   --overlay-anim-duration: 160ms;
 }
 
