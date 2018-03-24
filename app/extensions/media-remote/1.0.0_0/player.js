@@ -25,8 +25,8 @@
 
   const SEC2MS = 1000
   const MIN_DURATION = 1
-  const TEN_HOURS = 36000
-  const isValidDuration = duration => typeof duration === 'number' && !isNaN(duration) && duration < TEN_HOURS && duration > MIN_DURATION
+  const MAX_DURATION = 60 * 60 * 20 * SEC2MS
+  const isValidDuration = duration => typeof duration === 'number' && !isNaN(duration) && duration < MAX_DURATION && duration > MIN_DURATION
 
   const getVideoDuration = () => {
     let duration
@@ -47,13 +47,13 @@
 
   const signalReady = () => {
     const duration = getVideoDuration()
-
-    window.postMessage({
+    const meta = {
       type: 'CMediaReady',
       duration: duration && duration * SEC2MS,
       iframe: window.self !== window.top,
       href: location.href
-    }, '*')
+    }
+    window.postMessage(meta, '*')
   }
 
   const USE_VIDEO_CONTAINER = false
