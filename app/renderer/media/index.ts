@@ -1,5 +1,6 @@
 import { Url, parse } from 'url'
 
+import { cleanObject } from '../../utils/object'
 import compose from './compose'
 
 import { IMediaMiddleware, IMediaRequest, IMediaResponse, IMediaContext, MediaType } from './types'
@@ -54,6 +55,14 @@ const createContext = (url: MediaUrl) => {
   return ctx
 }
 
+const finalizeMedia = (media: IMediaResponse) => {
+  if (media.description) {
+    const desc = media.description.trim()
+    media.description = desc || undefined
+  }
+  return cleanObject(media)
+}
+
 export const resolveMediaUrl = async (url: string): Promise<Readonly<IMediaResponse> | null> => {
   const urlObj = parse(url) as MediaUrl
   if (!urlObj.href) {
@@ -64,7 +73,7 @@ export const resolveMediaUrl = async (url: string): Promise<Readonly<IMediaRespo
 
   const fn = compose(middlewares)
   const result = (await fn(ctx)) || ctx.res
-  return result
+  return finalizeMedia(result)
 }
 
 export const resolveMediaPlaylist = async (
@@ -87,5 +96,5 @@ export const resolveMediaPlaylist = async (
 
   const fn = compose(middlewares)
   const result = (await fn(ctx)) || ctx.res
-  return result
+  return finalizeMedia(result)
 }
