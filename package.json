@@ -36,7 +36,7 @@
     "productName": "Metastream",
     "appId": "com.samuelmaddock.metastream",
     "copyright": "Metastream © 2018. All rights reserved.",
-    "muonVersion": "4.8.1",
+    "muonVersion": "5.1.1",
     "nodeGypRebuild": false,
     "npmRebuild": false,
     "files": [
