@@ -57,16 +57,16 @@
   }
 
   const USE_VIDEO_CONTAINER = false
-  const FILL_THRESHOLD = 0.95
+  const FILL_THRESHOLD = 0.05
 
   const getVideoContainer = video => {
     const videoRect = video.getBoundingClientRect()
 
-    const widthFillPercent = videoRect.width / window.innerWidth
-    const heightFillPercent = videoRect.height / window.innerHeight
+    const widthFillError = Math.abs(1 - (videoRect.width / window.innerWidth))
+    const heightFillError = Math.abs(1 - (videoRect.height / window.innerHeight))
 
     // Don't select a container if our video is already the full page size
-    if (widthFillPercent > FILL_THRESHOLD || heightFillPercent > FILL_THRESHOLD) {
+    if (widthFillError <= FILL_THRESHOLD || heightFillError <= FILL_THRESHOLD) {
       console.debug(`FILL% width=${widthFillPercent} height=${heightFillPercent}`)
       return;
     }
