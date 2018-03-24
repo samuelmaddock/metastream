@@ -65,6 +65,8 @@
     const widthFillError = Math.abs(1 - (videoRect.width / window.innerWidth))
     const heightFillError = Math.abs(1 - (videoRect.height / window.innerHeight))
 
+    // TODO: fullscreen if not centered
+
     // Don't select a container if our video is already the full page size
     if (widthFillError <= FILL_THRESHOLD || heightFillError <= FILL_THRESHOLD) {
       console.debug(`FILL% width=${widthFillPercent} height=${heightFillPercent}`)
