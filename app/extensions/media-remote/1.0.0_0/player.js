@@ -56,15 +56,23 @@
     }, '*')
   }
 
+  const USE_VIDEO_CONTAINER = false
+  const FILL_THRESHOLD = 0.95
+
   const getVideoContainer = video => {
     const videoRect = video.getBoundingClientRect()
 
-    const area = videoRect.width * videoRect.height
-    const fillPercent = videoRect.width / window.innerWidth
+    const widthFillPercent = videoRect.width / window.innerWidth
+    const heightFillPercent = videoRect.height / window.innerHeight
 
-    // Don't select a container if our video is already the full width
-    if (fillPercent > 0.95) {
+    // Don't select a container if our video is already the full page size
+    if (widthFillPercent > FILL_THRESHOLD || heightFillPercent > FILL_THRESHOLD) {
+      console.debug(`FILL% width=${widthFillPercent} height=${heightFillPercent}`)
       return;
+    }
+
+    if (!USE_VIDEO_CONTAINER) {
+      return video
     }
 
     let parent = video
@@ -95,7 +103,7 @@
       return
     }
 
-    if (activeMedia) {
+    if (activeMedia && activeMedia instanceof HTMLVideoElement) {
       activeMedia.controls = false
       const container = getVideoContainer(activeMedia)
       if (container) {
