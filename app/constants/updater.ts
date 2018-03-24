@@ -1,4 +1,4 @@
 export default {
   provider: 'generic',
-  url: 'http://samuelmaddock.com/mp/'
+  url: 'https://d3dxb9zhznq01f.cloudfront.net/'
 }
