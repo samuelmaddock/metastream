@@ -46,22 +46,15 @@
       "!node_modules/sodium-native/libsodium",
       "!node_modules/utp-native/deps",
       "browser/resources/",
-      "styles/app.global.css",
+      "styles/*.global.css",
       "styles/common",
+      "styles/components",
       "app.html",
       "main.prod.js",
       "main.prod.js.map",
       "package.json"
     ],
     "extraResources": [
-      {
-        "from": "app/extensions/cjpalhdlnbpafiamejdnhcphjbkeiagm",
-        "to": "extensions/cjpalhdlnbpafiamejdnhcphjbkeiagm"
-      },
-      {
-        "from": "app/extensions/gcbommkclmclpchllfjekcdonpmejbdp",
-        "to": "extensions/gcbommkclmclpchllfjekcdonpmejbdp"
-      },
       {
         "from": "app/extensions/enhanced-media-viewer",
         "to": "extensions/enhanced-media-viewer"
