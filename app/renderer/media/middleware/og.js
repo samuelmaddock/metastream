@@ -122,10 +122,16 @@ const fieldsArray = [
     property: 'og:video:type',
     fieldName: 'ogVideoType'
   },
+  // This format is wrong, but was seen on vk.com
+  {
+    multiple: true,
+    property: 'og:video:duration',
+    fieldName: 'ogVideoDuration'
+  },
   {
     multiple: true,
     property: 'video:duration',
-    fieldName: 'ogVideoDuration'
+    fieldName: 'videoDuration'
   },
   {
     multiple: false,
@@ -380,7 +386,7 @@ export function parse(body, options) {
     ogObject.ogVideoWidth = ogObject.ogVideoWidth ? ogObject.ogVideoWidth : [null];
     ogObject.ogVideoHeight = ogObject.ogVideoHeight ? ogObject.ogVideoHeight : [null];
     ogObject.ogVideoType = ogObject.ogVideoType ? ogObject.ogVideoType : [null];
-    ogObject.ogVideoDuration = ogObject.ogVideoDuration ? ogObject.ogVideoDuration : [null];
+    ogObject.ogVideoDuration = (ogObject.videoDuration || ogObject.ogVideoDuration) || [null];
   }
   var ogVideos = _.zip(
     ogObject.ogVideo,
