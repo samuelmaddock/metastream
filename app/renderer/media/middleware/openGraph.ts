@@ -6,6 +6,9 @@ import { MEDIA_USER_AGENT } from 'constants/http'
 
 import { parse } from './og'
 
+/** Bad video types to not use. */
+const BAD_VIDEO_TYPES = new Set(['application/x-shockwave-flash'])
+
 function buildHTMLMetadata(url: Url, body: string): Partial<IMediaResponse> {
   const og = parse(body, {})
   console.log('og', og)
@@ -25,7 +28,11 @@ function buildHTMLMetadata(url: Url, body: string): Partial<IMediaResponse> {
   }
 
   if (og.ogVideo) {
-    meta.url = og.ogVideo.url || meta.url
+    const type = og.ogVideo.type
+    const useVideo = type ? !BAD_VIDEO_TYPES.has(type) : true
+    if (useVideo) {
+      meta.url = og.ogVideo.url || meta.url
+    }
     meta.duration = og.ogVideo.duration ? og.ogVideo.duration * 1000 : undefined
   }
 
