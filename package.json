@@ -196,7 +196,7 @@
     "stylefmt": "^5.3.2",
     "stylelint": "^7.10.1",
     "stylelint-config-standard": "^16.0.0",
-    "swarm-peer-server": "^1.0.1",
+    "swarm-peer-server": "^1.0.2",
     "typescript": "^2.5.3",
     "url-loader": "^0.5.8",
     "username": "^3.0.0",
