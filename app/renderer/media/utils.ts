@@ -52,3 +52,29 @@ export const mergeMetadata = (base: any, ...objs: any[]): void => {
     }
   }
 }
+
+/** Mimic Node.innerText */
+function cheerioElementToText(this: CheerioElement): string {
+  if (this.type === 'text') {
+    return (this as any).data
+  }
+
+  switch (this.tagName) {
+    case 'br':
+      return '\n'
+    default:
+      return this.children.map(el => cheerioElementToText.call(el)).join('')
+  }
+}
+
+export const parseHtmlDescription = (node: Cheerio): string => {
+  if (node.length === 1) {
+    return cheerioElementToText.call(node.get(0))
+  }
+  const texts = node
+    .children()
+    .toArray()
+    .map((i, el) => cheerioElementToText.call(el))
+    .join('')
+  return texts
+}

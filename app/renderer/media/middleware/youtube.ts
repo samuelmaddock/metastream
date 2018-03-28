@@ -4,7 +4,7 @@ import { MediaThumbnailSize, IMediaMiddleware, IMediaRequest, IMediaResponse } f
 import { fetchText } from 'utils/http'
 import { MEDIA_REFERRER, MEDIA_USER_AGENT } from '../../../constants/http'
 import { load } from 'cheerio'
-import { mergeMetadata } from '../utils'
+import { mergeMetadata, parseHtmlDescription } from '../utils'
 
 const USE_OFFICIAL_API = false
 
@@ -191,7 +191,8 @@ class YouTubeClient {
     }
 
     const metaDescription = $('#eow-description')
-    const description = metaDescription && metaDescription.text()
+    const description =
+      metaDescription.length === 1 ? parseHtmlDescription(metaDescription) : undefined
 
     return {
       url,
