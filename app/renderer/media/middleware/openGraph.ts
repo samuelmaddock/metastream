@@ -49,18 +49,12 @@ const mware: IMediaMiddleware = {
 
   async resolve(ctx, next) {
     const { url } = ctx.req
+    const { $, body } = ctx.state
 
-    const [text, response] = await fetchText(url.href, {
-      headers: {
-        'user-agent': MEDIA_USER_AGENT
-      }
-    })
-
-    ctx.state.body = text
-    ctx.state.$ = load(text)
-
-    const meta = buildHTMLMetadata(url, text)
-    mergeMetadata(ctx.res, meta)
+    if ($ && body) {
+      const meta = buildHTMLMetadata(url, body)
+      mergeMetadata(ctx.res, meta)
+    }
 
     return next()
   }

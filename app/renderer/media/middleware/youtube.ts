@@ -11,7 +11,7 @@ const USE_OFFICIAL_API = false
 const API_URL = 'https://www.googleapis.com/youtube/v3/videos'
 
 // TODO: move into app config
-const API_KEY = 'AIzaSyAlDyii-2FVIOD4lR0lZBzrig3BNQWKA14'
+const API_KEY = '' // 'AIzaSyAlDyii-2FVIOD4lR0lZBzrig3BNQWKA14'
 
 const DEFAULT_QUERY = {
   key: API_KEY,
@@ -97,14 +97,7 @@ class YouTubeClient {
     return match ? match[1] : null
   }
 
-  getVideoMetadata(url: string): Promise<Partial<IMediaResponse>> {
-    if (USE_OFFICIAL_API) {
-      return this.getApiMetadata(url)
-    }
-    return this.getScrapedMetadata(url)
-  }
-
-  private async getApiMetadata(url: string): Promise<Partial<IMediaResponse>> {
+  async getVideoMetadata(url: string): Promise<Partial<IMediaResponse>> {
     const videoId = this.getVideoId(url)
     const apiUrl = buildUrl(API_URL, {
       ...DEFAULT_QUERY,
@@ -166,55 +159,46 @@ class YouTubeClient {
       }
     }
   }
-
-  private async getScrapedMetadata(url: string): Promise<Partial<IMediaResponse>> {
-    const [html] = await fetchText<any>(url, {
-      headers: {
-        'User-Agent': MEDIA_USER_AGENT
-      }
-    })
-
-    const $ = load(html)
-
-    const metaDuration = $('meta[itemprop=duration]')
-    const isoDuration = metaDuration.attr('content')
-
-    const metaBroadcast = $('meta[itemprop=isLiveBroadcast]')
-    const isLiveBroadcast = (metaBroadcast.attr('content') || '').toLowerCase() === 'true'
-
-    let duration
-
-    if (isLiveBroadcast) {
-      duration = 0
-    } else {
-      duration = isoDuration ? parseTime(isoDuration) * 1000 : undefined
-    }
-
-    const metaDescription = $('#eow-description')
-    const description =
-      metaDescription.length === 1 ? parseHtmlDescription(metaDescription) : undefined
-
-    return {
-      url,
-      duration,
-      description
-    }
-  }
 }
 
-const yt = YouTubeClient.getInstance()
+async function getScrapedMetadata($: CheerioStatic): Promise<Partial<IMediaResponse>> {
+  const metaDuration = $('meta[itemprop=duration]')
+  const isoDuration = metaDuration.attr('content')
+
+  const metaBroadcast = $('meta[itemprop=isLiveBroadcast]')
+  const isLiveBroadcast = (metaBroadcast.attr('content') || '').toLowerCase() === 'true'
+
+  let duration
+
+  if (isLiveBroadcast) {
+    duration = 0
+  } else {
+    duration = isoDuration ? parseTime(isoDuration) * 1000 : undefined
+  }
+
+  const metaDescription = $('#eow-description')
+  const description =
+    metaDescription.length === 1 ? parseHtmlDescription(metaDescription) : undefined
+
+  return {
+    duration,
+    description
+  }
+}
 
 const mware: IMediaMiddleware = {
   match(url) {
     const { hostname = '', href = '' } = url
-    return !!URL_PATTERN.exec(hostname) && !!yt.getVideoId(href)
+    return !!URL_PATTERN.exec(hostname) && !!YouTubeClient.getInstance().getVideoId(href)
   },
 
   async resolve(ctx, next) {
     let metadata
 
     try {
-      metadata = await yt.getVideoMetadata(ctx.req.url.href)
+      metadata = USE_OFFICIAL_API
+        ? await YouTubeClient.getInstance().getVideoMetadata(ctx.req.url.href)
+        : await getScrapedMetadata(ctx.state.$)
     } catch (e) {
       console.error('YouTube request failed', e.message)
       return next()

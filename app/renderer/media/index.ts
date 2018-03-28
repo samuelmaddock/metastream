@@ -9,6 +9,7 @@ import subredditMware from './middleware/subreddit'
 import youTubeMware from './middleware/youtube'
 import httpHeadMware from './middleware/httpHead'
 import mediaMware from './middleware/media'
+import htmlMware from './middleware/html'
 import openGraphMware from './middleware/openGraph'
 import oEmbedMware from './middleware/oembed'
 import autoplayMware from './middleware/autoplay'
@@ -19,10 +20,13 @@ import { IMediaItem } from 'renderer/lobby/reducers/mediaPlayer'
 // prettier-ignore
 const middlewares: IMediaMiddleware[] = [
   subredditMware,
-  youTubeMware,
 
   httpHeadMware,
   mediaMware,
+  htmlMware,
+
+  youTubeMware,
+
   openGraphMware,
   oEmbedMware,
   microdataMware,
