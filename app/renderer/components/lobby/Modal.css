@@ -16,6 +16,7 @@
 }
 
 .close {
+  composes: masked-glass from 'styles/effect.css';
   position: absolute;
   top: 20px;
   right: 20px;
