@@ -1,5 +1,5 @@
 import { Url } from 'url'
-import { buildUrl } from 'utils/url'
+import { buildUrl, parseQuery } from 'utils/url'
 import { MediaThumbnailSize, IMediaMiddleware, IMediaRequest, IMediaResponse } from '../types'
 import { fetchText } from 'utils/http'
 import { MEDIA_REFERRER, MEDIA_USER_AGENT } from '../../../constants/http'
@@ -161,7 +161,7 @@ class YouTubeClient {
   }
 }
 
-async function getScrapedMetadata($: CheerioStatic): Promise<Partial<IMediaResponse>> {
+async function getScrapedMetadata(url: Url, $: CheerioStatic): Promise<Partial<IMediaResponse>> {
   const metaDuration = $('meta[itemprop=duration]')
   const isoDuration = metaDuration.attr('content')
 
@@ -179,6 +179,12 @@ async function getScrapedMetadata($: CheerioStatic): Promise<Partial<IMediaRespo
   const metaDescription = $('#eow-description')
   const description =
     metaDescription.length === 1 ? parseHtmlDescription(metaDescription) : undefined
+
+  const query = typeof url.query === 'object' ? url.query : parseQuery(url.query)
+  if (query && query.t) {
+    // TODO: parse '1h2m3s' format
+    // startTime = parseHms(query.t)
+  }
 
   return {
     duration,
@@ -198,7 +204,7 @@ const mware: IMediaMiddleware = {
     try {
       metadata = USE_OFFICIAL_API
         ? await YouTubeClient.getInstance().getVideoMetadata(ctx.req.url.href)
-        : await getScrapedMetadata(ctx.state.$)
+        : await getScrapedMetadata(ctx.req.url, ctx.state.$)
     } catch (e) {
       console.error('YouTube request failed', e.message)
       return next()

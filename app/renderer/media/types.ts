@@ -1,4 +1,4 @@
-import { Url } from 'url';
+import { Url } from 'url'
 
 export const enum MediaThumbnailSize {
   Default,
@@ -13,13 +13,13 @@ export const enum MediaType {
 }
 
 export interface IMediaRequest {
-  type: MediaType;
+  type: MediaType
 
   /** Request URL object */
-  url: Url & { href: string };
+  url: Url & { href: string }
 
   /** Media requester */
-  user: any;
+  user: any
 
   /**
    * TODO
@@ -34,63 +34,66 @@ export interface IMediaRequest {
      * Open Graph
      * http://ogp.me/
      */
-    og?: any;
+    og?: any
 
     /**
      * JSON for Linking Data
      * https://json-ld.org/
      */
-    jsonLD?: any;
+    jsonLD?: any
 
     /**
      * Microdata
      * https://html.spec.whatwg.org/multipage/microdata.html
      */
-    microdata?: any;
-  };
+    microdata?: any
+  }
 
   /** Object for passing state to the frontend */
-  state?: { [key: string]: any };
+  state?: { [key: string]: any }
 }
 
 export interface IMediaResponse {
-  type: MediaType;
+  type: MediaType
 
   /** URL to display on client; defaults to request URL */
-  url: string;
+  url: string
 
   /** Display title */
-  title?: string;
+  title?: string
 
   /** Milliseconds */
-  duration?: number;
+  duration?: number
 
-  description?: string;
+  description?: string
 
   /** Map of thumbnail sizes to URLs */
   // TODO: Use MediaThumbnailSize as key when TS supports it
   // https://github.com/Microsoft/TypeScript/issues/13042
-  thumbnails?: { [key: number]: string };
+  thumbnails?: { [key: number]: string }
 
   /** Object for passing state to the frontend */
-  state: { [key: string]: any };
+  state: { [key: string]: any }
 
-  hasMore?: boolean;
+  hasMore?: boolean
+
+  /** Milliseconds */
+  startTime?: number
 }
 
 export interface IMediaContext {
-  req: IMediaRequest;
-  res: IMediaResponse;
+  req: IMediaRequest
+  res: IMediaResponse
 
   /** Object for passing information through middleware */
-  state: { [key: string]: any };
+  state: { [key: string]: any }
 }
 
 export interface IMediaMiddlewareResolve {
   (ctx: IMediaContext, next: () => PromiseLike<IMediaResponse | void>):
     | PromiseLike<IMediaResponse | void>
     | IMediaResponse
-    | void;
+    | void
 }
 
 /**
@@ -98,8 +101,8 @@ export interface IMediaMiddlewareResolve {
  */
 export interface IMediaMiddleware {
   /** Determine if the given URL is a match for the service. */
-  match(url: Url & { href: string }, ctx: IMediaContext): boolean;
+  match(url: Url & { href: string }, ctx: IMediaContext): boolean
 
   /** Resolve metadata for the given URL. */
-  resolve: IMediaMiddlewareResolve;
+  resolve: IMediaMiddlewareResolve
 }
