@@ -2,8 +2,11 @@ import { Url } from 'url'
 import { buildUrl } from 'utils/url'
 import { MediaThumbnailSize, IMediaMiddleware, IMediaRequest, IMediaResponse } from '../types'
 import { fetchText } from 'utils/http'
+import { MEDIA_REFERRER, MEDIA_USER_AGENT } from '../../../constants/http'
+import { load } from 'cheerio'
+import { mergeMetadata } from '../utils'
 
-const USE_OFFICIAL_API = true
+const USE_OFFICIAL_API = false
 
 const API_URL = 'https://www.googleapis.com/youtube/v3/videos'
 
@@ -95,7 +98,10 @@ class YouTubeClient {
   }
 
   getVideoMetadata(url: string): Promise<Partial<IMediaResponse>> {
-    return USE_OFFICIAL_API ? this.getApiMetadata(url) : this.getScrapedMetadata(url)
+    if (USE_OFFICIAL_API) {
+      return this.getApiMetadata(url)
+    }
+    return this.getScrapedMetadata(url)
   }
 
   private async getApiMetadata(url: string): Promise<Partial<IMediaResponse>> {
@@ -108,7 +114,7 @@ class YouTubeClient {
     const [json] = await fetchText<any>(apiUrl, {
       json: true,
       headers: {
-        Referer: 'http://mediaplayer.samuelmaddock.com'
+        Referer: MEDIA_REFERRER
       }
     })
 
@@ -162,24 +168,35 @@ class YouTubeClient {
   }
 
   private async getScrapedMetadata(url: string): Promise<Partial<IMediaResponse>> {
-    const videoId = this.getVideoId(url)
-    const apiUrl = buildUrl(API_URL, {
-      ...DEFAULT_QUERY,
-      id: videoId
-    })
-
-    const [json] = await fetchText<any>(apiUrl, {
-      json: true,
+    const [html] = await fetchText<any>(url, {
       headers: {
-        Referer: 'http://mediaplayer.samuelmaddock.com'
+        'User-Agent': MEDIA_USER_AGENT
       }
     })
 
-    console.debug('youtube', json)
+    const $ = load(html)
 
-    // TODO
+    const metaDuration = $('meta[itemprop=duration]')
+    const isoDuration = metaDuration.attr('content')
+
+    const metaBroadcast = $('meta[itemprop=isLiveBroadcast]')
+    const isLiveBroadcast = (metaBroadcast.attr('content') || '').toLowerCase() === 'true'
+
+    let duration
+
+    if (isLiveBroadcast) {
+      duration = 0
+    } else {
+      duration = isoDuration ? parseTime(isoDuration) * 1000 : undefined
+    }
+
+    const metaDescription = $('#eow-description')
+    const description = metaDescription && metaDescription.text()
+
     return {
-      url: url
+      url,
+      duration,
+      description
     }
   }
 }
@@ -202,7 +219,7 @@ const mware: IMediaMiddleware = {
       return next()
     }
 
-    Object.assign(ctx.res, metadata)
+    mergeMetadata(ctx.res, metadata)
 
     return USE_OFFICIAL_API ? ctx.res : next()
   }
