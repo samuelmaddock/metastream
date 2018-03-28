@@ -5,8 +5,8 @@
  * Twitch doesn't serve og:meta unless 'Googlebot' is in the UA :|
  */
 export const MEDIA_USER_AGENT =
-  'Mozilla/5.0 (compatible; Mediabot/1.0; Googlebot; +http://samuelmaddock.com/)';
+  'Mozilla/5.0 (compatible; Mediabot/1.0; Googlebot; +https://getmetastream.com/)'
 
-export const MEDIA_REFERRER = 'http://mediaplayer.samuelmaddock.com/';
+export const MEDIA_REFERRER = 'https://getmetastream.com/'
 
-export const WEBVIEW_PARTITION = 'persist:mediaplayer';
+export const WEBVIEW_PARTITION = 'persist:mediaplayer'
