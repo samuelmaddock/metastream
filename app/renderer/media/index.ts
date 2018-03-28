@@ -9,7 +9,7 @@ import subredditMware from './middleware/subreddit'
 import youTubeMware from './middleware/youtube'
 import httpHeadMware from './middleware/httpHead'
 import mediaMware from './middleware/media'
-import ogMware from './middleware/openGraph'
+import openGraphMware from './middleware/openGraph'
 import oEmbedMware from './middleware/oembed'
 import autoplayMware from './middleware/autoplay'
 import microdataMware from './middleware/microdata'
@@ -23,7 +23,7 @@ const middlewares: IMediaMiddleware[] = [
 
   httpHeadMware,
   mediaMware,
-  ogMware,
+  openGraphMware,
   oEmbedMware,
   microdataMware,
   autoplayMware

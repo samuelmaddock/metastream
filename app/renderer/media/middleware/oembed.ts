@@ -3,6 +3,7 @@ import { IMediaMiddleware } from '../types'
 import { fetchText } from 'utils/http'
 import { Url } from 'url'
 import { MEDIA_USER_AGENT } from 'constants/http'
+import { mergeMetadata } from '../utils'
 
 async function fetchOEmbed(url: string) {
   const [json] = await fetchText(url, {
@@ -56,13 +57,12 @@ const mware: IMediaMiddleware = {
       console.info('oembed', json)
       const src = parseOembedUrl(json)
 
-      if (src) {
-        ctx.res.url = src
+      const meta = {
+        url: src,
+        description: json.description
       }
 
-      if (json.description) {
-        ctx.res.description = json.description
-      }
+      mergeMetadata(ctx.res, meta)
     }
 
     return next()
