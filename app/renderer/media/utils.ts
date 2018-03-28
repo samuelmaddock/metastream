@@ -44,6 +44,7 @@ export const mergeMetadata = (base: any, ...objs: any[]): void => {
         switch (k) {
           case 'description':
             base[k] = getLongerString(base[k], obj[k])
+            break
           default:
             base[k] = obj[k] || base[k]
         }
