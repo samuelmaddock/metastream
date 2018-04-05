@@ -1,10 +1,10 @@
-let store: any;
+let storeModule: any
 
 if (process.env.NODE_ENV === 'production') {
-  store = require('./configureStore.prod');
+  storeModule = require('./configureStore.prod')
 } else {
-  store = require('./configureStore.dev');
+  storeModule = require('./configureStore.dev')
 }
 
-export const history = store.history;
-export const configureStore = store.configureStore;
+export const history = storeModule.history
+export const configureStore = storeModule.configureStore

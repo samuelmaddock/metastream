@@ -26,7 +26,7 @@ function init() {
   document.title = packageJson.productName
 
   history = cfgStore.history
-  store = cfgStore.configureStore()
+  store = cfgStore.configureStore().store
 
   render(
     <AppContainer>

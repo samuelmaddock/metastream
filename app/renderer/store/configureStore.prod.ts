@@ -1,22 +1,29 @@
-import { createStore, applyMiddleware } from 'redux';
-import thunk from 'redux-thunk';
-// import { createBrowserHistory } from 'history';
-import { createHashHistory } from 'history';
-import { routerMiddleware } from 'react-router-redux';
-import rootReducer from '../reducers';
-import { IExtra } from 'types/thunk';
-import appMiddleware from 'renderer/store/appMiddleware';
+import { createStore, applyMiddleware } from 'redux'
+import thunk from 'redux-thunk'
+import { persistStore, persistReducer } from 'redux-persist'
+import persistConfig from './persistStore'
+import { createHashHistory } from 'history'
+import { routerMiddleware } from 'react-router-redux'
+import rootReducer, { IAppState } from '../reducers'
+import { IExtra } from 'types/thunk'
+import appMiddleware from 'renderer/store/appMiddleware'
 
-// const history = createBrowserHistory();
-const history = createHashHistory();
+const history = createHashHistory()
 
 function configureStore(extra: IExtra, initialState?: {}) {
-  const thunkMiddleware = thunk.withExtraArgument(extra);
+  const thunkMiddleware = thunk.withExtraArgument(extra)
 
-  const router = routerMiddleware(history);
-  const enhancer = applyMiddleware(thunkMiddleware, ...appMiddleware, router);
+  // Persist Middleware
+  const whitelist: (keyof IAppState)[] = ['mediaPlayer', 'settings']
+  const persistedReducer = persistReducer(persistConfig, rootReducer as any)
 
-  return createStore(rootReducer, initialState, enhancer);
+  const router = routerMiddleware(history)
+  const enhancer = applyMiddleware(thunkMiddleware, ...appMiddleware, router)
+
+  const store = createStore(persistedReducer, initialState, enhancer)
+  const persister = persistStore(store)
+
+  return { store, persister }
 }
 
-export { configureStore, history };
+export { configureStore, history }
