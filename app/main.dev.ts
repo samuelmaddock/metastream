@@ -54,6 +54,7 @@ if (process.env.NODE_ENV === 'production') {
   sourceMapSupport.install()
 }
 
+/* Commented out as unused and LGPL licensed code
 const installExtensions = async () => {
   const installer = require('electron-devtools-installer')
   const forceDownload = !!process.env.UPGRADE_EXTENSIONS
@@ -63,6 +64,7 @@ const installExtensions = async () => {
     extensions.map(name => installer.default(installer[name], forceDownload))
   ).catch(log)
 }
+*/
 
 fixUserDataPath()
 protocols.init()

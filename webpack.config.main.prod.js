@@ -7,8 +7,9 @@ import merge from 'webpack-merge';
 import BabiliPlugin from 'babili-webpack-plugin';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import baseConfig from './webpack.config.base';
+import prodConfig from './webpack.config.prod';
 
-export default merge.smart(baseConfig, {
+export default merge.smart(baseConfig, prodConfig, {
   devtool: 'source-map',
 
   target: 'electron-main',
