@@ -64,6 +64,16 @@
         "to": "extensions/media-remote"
       }
     ],
+    "extraFiles": [
+      {
+        "from": "main.licenses.txt",
+        "to": "LICENSES.browser.txt"
+      },
+      {
+        "from": "app/dist/main.licenses.txt",
+        "to": "LICENSES.renderer.txt"
+      }
+    ],
     "nsis": {
       "artifactName": "${name}-setup-${version}.${ext}"
     },

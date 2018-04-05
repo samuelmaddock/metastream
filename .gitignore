@@ -67,6 +67,7 @@ dist
 dll
 main.js
 main.js.map
+*.licenses.txt
 
 .idea
 npm-debug.log.*
