@@ -79,7 +79,7 @@ const enum LobbyModal {
 }
 
 class _GameLobby extends React.Component<PrivateProps, IState> {
-  private player: VideoPlayer | null
+  private player: VideoPlayer | null = null
 
   private get isInactive() {
     return (
@@ -113,23 +113,21 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
           modalVisible: !!this.state.modal
         })}
       >
-        {this.props.popup ? <PopupWindow {...this.props.popup} /> : null}
         <ActivityMonitor onChange={active => this.setState({ inactive: !active })} />
 
         <VideoPlayer
-          theRef={el => {
-            this.player = el
-          }}
+          theRef={el => (this.player = el)}
           className={styles.video}
           onInteractChange={() => this.forceUpdate()}
         />
 
+        {this.player && this.player.state.interacting ? null : this.renderControls()}
         <TitleBar className={styles.titlebar} title={media && media.title} />
 
-        {this.player && this.player.state.interacting ? null : this.renderControls()}
+        {this.props.popup ? <PopupWindow {...this.props.popup} /> : null}
+        {this.state.modal && this.renderModal()}
 
         {this.isInactive && <div className={styles.inactiveOverlay} />}
-        {this.state.modal && this.renderModal()}
       </div>
     )
   }

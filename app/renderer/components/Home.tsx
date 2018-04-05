@@ -40,6 +40,11 @@ export default class Home extends Component<IProps> {
                 <MenuButton icon="globe">Join Session</MenuButton>
               </Link>
             </li>
+            <li>
+              <Link to="/join" className={styles.btn}>
+                <MenuButton icon="settings">Settings</MenuButton>
+              </Link>
+            </li>
           </ul>
         </section>
       </LayoutMain>
