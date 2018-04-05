@@ -225,6 +225,7 @@
     "react-router-dom": "^4.2.2",
     "react-router-redux": "5.0.0-alpha.8",
     "redux": "^3.7.2",
+    "redux-persist": "^5.9.1",
     "redux-thunk": "^2.2.0",
     "request": "^2.81.0",
     "simple-peer": "^8.1.1",

@@ -7415,6 +7415,10 @@ redux-logger@^3.0.1:
   dependencies:
     deep-diff "^0.3.5"
 
+redux-persist@^5.9.1:
+  version "5.9.1"
+  resolved "https://registry.yarnpkg.com/redux-persist/-/redux-persist-5.9.1.tgz#83bd4abd526ef768f63fceee338fa9d8ed6552d6"
+
 redux-thunk@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/redux-thunk/-/redux-thunk-2.2.0.tgz#e615a16e16b47a19a515766133d1e3e99b7852e5"
@@ -8540,7 +8544,7 @@ svgo@^0.7.0:
     sax "~1.2.1"
     whet.extend "~0.9.9"
 
-swarm-peer-server@^1.0.1:
+swarm-peer-server@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/swarm-peer-server/-/swarm-peer-server-1.0.2.tgz#c40f77d589c8cf70a880e3bbf2a63524d531197c"
   dependencies:
