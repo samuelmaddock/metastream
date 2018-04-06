@@ -35,7 +35,6 @@ export class SessionJoin extends Component<IProps> {
               <TextInput
                 theRef={el => (this.sessionInput = el)}
                 className={styles.peerId}
-                pattern="[a-zA-Z0-9]{64}"
                 placeholder="Friend code"
                 defaultValue={localStorage.getItem('prevFriendCode') || undefined}
                 spellCheck={false}

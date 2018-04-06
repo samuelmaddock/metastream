@@ -10,10 +10,11 @@ import { ILobbyOptions, ILobbySession } from 'renderer/platform/types'
 import * as swarmDefaults from 'dat-swarm-defaults'
 import * as swarm from 'swarm-peer-server'
 import { EncryptedSocket } from 'swarm-peer-server'
+import * as WebSocketServer from 'simple-websocket/server'
 
 import { SimplePeer } from 'simple-peer'
 import { signalRenderer } from 'browser/platform/swarm/signal'
-import { NETWORK_TIMEOUT } from 'constants/network'
+import { NETWORK_TIMEOUT, WEBSOCKET_PORT_DEFAULT } from 'constants/network'
 import { sleep } from 'utils/async'
 import * as username from 'username'
 
@@ -83,44 +84,55 @@ ipcMain.on('platform-swarm-init', async (event: Electron.Event) => {
 })
 
 let swarmServer: any
+let wsServer: typeof WebSocketServer
 let serverOpts: ILobbyOptions
 
 ipcMain.on('platform-create-lobby', (event: Electron.Event, ipcId: number, opts: ILobbyOptions) => {
   const { sender } = event
 
-  checkNativeDeps()
-
-  if (swarmServer) {
-    log.error('Attempt to create new swarm server without closing existing server.')
-    swarmServer.close()
-    swarmServer = null
-  }
+  // until we make them optional in the UI
+  opts.p2p = true
+  opts.websocket = true
 
   updateConnectTime()
-
   serverOpts = opts
-  swarmServer = swarm.listen(
-    {
-      ...swarmDefaults({ hash: false }),
-      ...localKeyPair
-    },
-    async (esocket, peerKey) => {
-      const keyStr = peerKey.toString('hex')
-      log(`New swarm connection from ${keyStr}`)
 
-      try {
-        log(`${keyStr} signaling renderer`)
-        await signalRenderer(esocket, peerKey)
-        log(`${keyStr} connected to renderer`)
-      } catch (e) {
-        log.error(`Failed to connect to peer ${keyStr}:`, e)
-      }
+  if (opts.p2p) {
+    checkNativeDeps()
 
-      esocket.destroy()
+    if (swarmServer) {
+      log.error('Attempt to create new swarm server without closing existing server.')
+      swarmServer.close()
+      swarmServer = null
     }
-  )
 
-  log('Swarm server now listening...')
+    swarmServer = swarm.listen(
+      {
+        ...swarmDefaults({ hash: false }),
+        ...localKeyPair
+      },
+      async (esocket, peerKey) => {
+        const keyStr = peerKey.toString('hex')
+        log(`New swarm connection from ${keyStr}`)
+
+        try {
+          log(`${keyStr} signaling renderer`)
+          await signalRenderer(esocket, peerKey)
+          log(`${keyStr} connected to renderer`)
+        } catch (e) {
+          log.error(`Failed to connect to peer ${keyStr}:`, e)
+        }
+
+        esocket.destroy()
+      }
+    )
+
+    log('Swarm server now listening...')
+  }
+
+  if (opts.websocket) {
+    wsServer = new WebSocketServer({ port: WEBSOCKET_PORT_DEFAULT })
+  }
 
   event.sender.send('platform-create-lobby-result', ipcId, true)
 })
@@ -130,6 +142,10 @@ ipcMain.on('platform-leave-lobby', (event: Electron.Event) => {
     swarmServer.close()
     swarmServer = null
     log('Closed swarm server connection')
+  }
+
+  if (wsServer) {
+    wsServer.close()
   }
 })
 
