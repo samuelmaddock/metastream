@@ -454,6 +454,10 @@ async-foreach@^0.1.3:
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/async-foreach/-/async-foreach-0.1.3.tgz#36121f845c0578172de419a97dbeb1d16ec34542"
 
+async-limiter@~1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/async-limiter/-/async-limiter-1.0.0.tgz#78faed8c3d074ab81f22b4e985d79e8738f720f8"
+
 async@^1.4.0, async@^1.5.2:
   version "1.5.2"
   resolved "https://registry.yarnpkg.com/async/-/async-1.5.2.tgz#ec6a61ae56480c0c3cb241c95618e20892f9672a"
@@ -4571,7 +4575,7 @@ invert-kv@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/invert-kv/-/invert-kv-1.0.0.tgz#104a8e4aaca6d3d8cd157a8ef8bfab2d7a3ffdb6"
 
-ip-regex@^2.1.0:
+ip-regex@^2.0.0, ip-regex@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/ip-regex/-/ip-regex-2.1.0.tgz#fa78bf5d2e6913c911ce9f819ee5146bb6d844e9"
 
@@ -4717,6 +4721,12 @@ is-installed-globally@^0.1.0:
   dependencies:
     global-dirs "^0.1.0"
     is-path-inside "^1.0.0"
+
+is-ip@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/is-ip/-/is-ip-2.0.0.tgz#68eea07e8a0a0a94c2d080dd674c731ab2a461ab"
+  dependencies:
+    ip-regex "^2.0.0"
 
 is-my-ip-valid@^1.0.0:
   version "1.0.0"
@@ -7938,6 +7948,17 @@ simple-sha1@^2.1.0:
   dependencies:
     rusha "^0.8.1"
 
+simple-websocket@^7.0.2:
+  version "7.0.2"
+  resolved "https://registry.yarnpkg.com/simple-websocket/-/simple-websocket-7.0.2.tgz#02d2ebe2f2ad18836e662ddcdc87a5b1741cae29"
+  dependencies:
+    debug "^3.1.0"
+    inherits "^2.0.1"
+    randombytes "^2.0.3"
+    readable-stream "^2.0.5"
+    safe-buffer "^5.0.1"
+    ws "^4.0.0"
+
 single-line-log@^0.4.1:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/single-line-log/-/single-line-log-0.4.1.tgz#87a55649f749d783ec0dcd804e8140d9873c7cee"
@@ -9406,6 +9427,13 @@ ws@^2.3.1:
   dependencies:
     safe-buffer "~5.0.1"
     ultron "~1.1.0"
+
+ws@^4.0.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-4.1.0.tgz#a979b5d7d4da68bf54efe0408967c324869a7289"
+  dependencies:
+    async-limiter "~1.0.0"
+    safe-buffer "~5.1.0"
 
 xdg-basedir@^3.0.0:
   version "3.0.0"
