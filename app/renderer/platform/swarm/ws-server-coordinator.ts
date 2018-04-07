@@ -11,12 +11,12 @@ export class WebSocketServerCoordinator extends PeerCoordinator {
     ipcRenderer.on('websocket-peer-init', this.onInitPeer)
   }
 
-  private onInitPeer = (event: Electron.Event, peerId: string) => {
+  private onInitPeer = (event: Electron.Event, peerId: string, addr: string) => {
     const streamChannel = `websocket/${peerId}`
     const stream = new IPCStream(streamChannel)
 
     const netId = new NetUniqueId(peerId)
-    const conn = new WebSocketProxyConnection(netId, stream)
+    const conn = new WebSocketProxyConnection(netId, stream, addr)
     this.emit('connection', conn)
   }
 
@@ -28,7 +28,7 @@ export class WebSocketServerCoordinator extends PeerCoordinator {
 export class WebSocketProxyConnection extends NetConnection {
   private stream: typeof IPCStream
 
-  constructor(id: NetUniqueId, stream: typeof IPCStream) {
+  constructor(id: NetUniqueId, stream: typeof IPCStream, private ip: string) {
     super(id)
     this.stream = stream
     this.stream.on('data', this.receive)
@@ -45,8 +45,7 @@ export class WebSocketProxyConnection extends NetConnection {
     this.stream.write(data)
   }
   getIP(): string {
-    // TODO
-    return ''
+    return this.ip
   }
   getPort(): string {
     // TODO

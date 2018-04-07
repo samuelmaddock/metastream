@@ -56,12 +56,17 @@ export class WebSocketServer {
       this.connections.set(peerKeyStr, conn)
 
       conn.once('close', () => {
+        log.debug(`Conn 'close' event: ${peerKeyStr}`)
         this.connections.delete(peerKeyStr)
         win.webContents.send(`websocket-peer-close-${peerKeyStr}`)
       })
 
       // TODO: send unique connection ID in case same peer connects twice
-      win.webContents.send('websocket-peer-init', peerKeyStr)
+      win.webContents.send('websocket-peer-init', peerKeyStr, addr)
+
+      // hack to prevent closing websocket
+      ;(esocket as any).socket = null
+      esocket.destroy()
     })
 
     esocket.once('error', err => {
@@ -90,11 +95,11 @@ class WebSocketProxy extends EventEmitter {
     this.stream.on('data', this.write)
   }
 
-  private receive(data: Buffer) {
+  private receive = (data: Buffer) => {
     this.stream.write(data)
   }
 
-  private write(data: Buffer) {
+  private write = (data: Buffer) => {
     this.socket.write(data)
   }
 
