@@ -77,15 +77,15 @@ export class SwarmPlatform extends Platform {
 
   async joinWebSocketLobby(ip: string): Promise<boolean> {
     try {
+      // TODO: handle cancel connection
       this.webSocket = await connectToWebSocketServer(ip)
-      return true
     } catch (e) {
       return false
     }
+    return true
   }
 
   async joinLobby(lobbyId: string): Promise<boolean> {
-    const isP2P = true // TODO: check string
     let success
 
     if (isP2PHash(lobbyId)) {
