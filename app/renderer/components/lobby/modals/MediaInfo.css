@@ -1,6 +1,8 @@
 .container {
   composes: select-text from 'styles/text.css';
+  composes: clearfix from 'styles/layout.css';
   white-space: pre-line;
   width: 100%;
   max-width: 600px;
+  line-height: 1.5;
 }

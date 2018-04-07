@@ -57,3 +57,13 @@
   border: 3px solid transparent;
   border-radius: 7px;
 }
+
+.clearfix:before,
+.clearfix:after {
+  content: ' ';
+  display: table;
+}
+
+.clearfix:after {
+  clear: both;
+}
