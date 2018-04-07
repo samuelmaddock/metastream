@@ -2,19 +2,25 @@ import SimplePeer, { SimplePeerData } from 'simple-peer'
 const { remote, ipcRenderer } = chrome
 import { EventEmitter } from 'events'
 
-import { NetUniqueId } from 'renderer/network'
-import { RTCPeerConn, IRTCPeerCoordinator, SignalData } from 'renderer/network/rtc'
+import { NetServer, NetUniqueId } from 'renderer/network'
+import { PeerCoordinator } from 'renderer/network/server'
+import { RTCPeerConn } from 'renderer/network/rtc'
 
-import { ElectronLobby, IElectronLobbyMessage } from 'renderer/platform/electron/lobby'
-import { PlatformService } from '../index';
+import { PlatformService } from '../index'
 
-const iceServers = [{ url: 'stun:stun3.l.google.com:19302' }]
+const iceServers = [
+  { url: 'stun:stun1.l.google.com:19302' },
+  { url: 'stun:stun2.l.google.com:19302' },
+  { url: 'stun:stun3.l.google.com:19302' },
+  { url: 'stun:stun4.l.google.com:19302' }
+]
 
-export class SwarmRTCPeerCoordinator extends EventEmitter implements IRTCPeerCoordinator {
+export class SwarmRTCPeerCoordinator extends PeerCoordinator {
   private connecting = new Map<string, RTCPeerConn>()
 
-  constructor(private host: boolean) {
+  constructor(host: boolean) {
     super()
+    this.host = host
     ipcRenderer.on('rtc-peer-init', this.onInitPeer)
     ipcRenderer.on('rtc-peer-signal', this.onSignal)
     ipcRenderer.on('rtc-peer-timeout', this.onTimeout)
@@ -42,7 +48,7 @@ export class SwarmRTCPeerCoordinator extends EventEmitter implements IRTCPeerCoo
       console.error(`[PeerCoordinator] Peer errored ${peerId}\n`, e)
       ipcRenderer.send('rtc-peer-error', peerId)
       peer.close()
-    };
+    }
 
     peer.once('connect', () => {
       console.info(`[PeerCoordinator] Peer connected ${peerId}`)

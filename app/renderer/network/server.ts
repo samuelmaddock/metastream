@@ -8,19 +8,27 @@ interface INetServerEvents {
 
 export interface INetServerOptions {
   isHost: boolean
+  coordinators: PeerCoordinator[]
 }
 
-abstract class NetServer extends EventEmitter implements INetServerEvents {
-  protected connections: Map<string, NetConnection> = new Map()
-  protected isHost: boolean
-  protected connected: boolean = false
+class NetServer extends EventEmitter implements INetServerEvents {
+  isHost: boolean
+
+  private connections: Map<string, NetConnection> = new Map()
+  private connected: boolean = false
+  private coordinators: PeerCoordinator[] = []
 
   constructor(opts: INetServerOptions) {
     super()
     this.isHost = opts.isHost
+    this.coordinators = [...opts.coordinators]
+
+    for (let coordinator of this.coordinators) {
+      coordinator.on('connection', this.connect)
+    }
   }
 
-  protected connect(conn: NetConnection): void {
+  private connect = (conn: NetConnection): void => {
     console.log(`[NetServer] New client connection from ${conn}`)
 
     {
@@ -41,7 +49,7 @@ abstract class NetServer extends EventEmitter implements INetServerEvents {
     this.emit('connect', conn)
   }
 
-  protected disconnect(conn: NetConnection): void {
+  private disconnect(conn: NetConnection): void {
     const id = conn.id.toString()
     this.connections.delete(id)
     this.emit('disconnect', conn)
@@ -54,11 +62,11 @@ abstract class NetServer extends EventEmitter implements INetServerEvents {
     }
   }
 
-  protected getClientById(clientId: NetUniqueId) {
+  private getClientById(clientId: NetUniqueId) {
     return this.connections.get(clientId.toString())
   }
 
-  protected forEachClient(func: (conn: NetConnection) => void) {
+  private forEachClient(func: (conn: NetConnection) => void) {
     this.connections.forEach(conn => func(conn))
   }
 
@@ -67,11 +75,17 @@ abstract class NetServer extends EventEmitter implements INetServerEvents {
       this.forEachClient(conn => conn.close())
       this.connections.clear()
       this.connected = false
+
+      this.coordinators.forEach(coord => {
+        coord.removeListener('connection', this.connect)
+        coord.close()
+      })
+
       this.emit('close')
     }
   }
 
-  protected receive(conn: NetConnection, data: Buffer) {
+  private receive(conn: NetConnection, data: Buffer) {
     this.emit('data', conn, data)
   }
 
@@ -99,3 +113,17 @@ abstract class NetServer extends EventEmitter implements INetServerEvents {
 }
 
 export default NetServer
+
+interface IPeerCoordinatorEvents {
+  /** Subscribe to peer connections. */
+  on(eventName: 'connection', listener: (conn: NetConnection) => void): this
+}
+
+/**
+ * Coordinates signaling of peers.
+ */
+export abstract class PeerCoordinator extends EventEmitter implements IPeerCoordinatorEvents {
+  protected host: boolean = false
+
+  abstract close(): void
+}

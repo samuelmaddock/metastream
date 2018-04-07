@@ -1,5 +1,4 @@
-import { NetUniqueId } from 'renderer/network'
-import { IRTCPeerCoordinator } from 'renderer/network/rtc'
+import { NetServer, NetUniqueId } from 'renderer/network'
 
 export const enum LobbyType {
   Private,
@@ -45,14 +44,12 @@ export interface ILobbyData {
 
 export abstract class Platform {
   // Matchmaking
+  abstract getServer(): NetServer | null
   abstract createLobby(opts: ILobbyOptions): Promise<boolean>
   abstract joinLobby(id: string): Promise<boolean>
   abstract leaveLobby(id: string): boolean
   abstract findLobbies(): Promise<ILobbySession[]>
   abstract getLobbyData(): ILobbyData | null
-
-  // RTC
-  abstract createPeerCoordinator(): IRTCPeerCoordinator
 
   // Users
   abstract getLocalId(): NetUniqueId

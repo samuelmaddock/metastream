@@ -2,11 +2,11 @@ const { ipcRenderer, remote } = chrome
 
 import { Platform, ILobbyOptions, ILobbySession, ILobbyData } from 'renderer/platform/types'
 import { Deferred } from 'utils/async'
-import { NetUniqueId } from 'renderer/network'
-import { IRTCPeerCoordinator } from 'renderer/network/rtc'
+import { NetServer, NetUniqueId } from 'renderer/network'
 import { SwarmRTCPeerCoordinator } from 'renderer/platform/swarm/peer-coordinator'
 import { connectToWebSocketServer } from './websocket'
-import { isP2PHash, isIP, isUrlDomain } from '../../../utils/network'
+import { isP2PHash, isIP, isUrlDomain } from 'utils/network'
+import { PeerCoordinator } from '../../network/server'
 
 type SwarmId = string
 
@@ -20,8 +20,8 @@ const MAX_NAME_LEN = 32
 export class SwarmPlatform extends Platform {
   private id: NetUniqueId<SwarmId>
   private username: string
-  private connected: boolean = false
-  private isHosting: boolean = false
+
+  private server: NetServer | null = null
   private webSocket: any = null
 
   constructor() {
@@ -32,11 +32,27 @@ export class SwarmPlatform extends Platform {
     this.username = swarmInfo.username
   }
 
+  getServer() {
+    return this.server
+  }
+
   async createLobby(opts: ILobbyOptions): Promise<boolean> {
     // Send IPC to main with lobby options
 
     // idea: middleware for lobby: max members, password, auth, etc
     // do auth first so encrypted socket can be used for the rest
+
+    const isHost = true
+    const coordinators: PeerCoordinator[] = []
+
+    if (opts.p2p) {
+      coordinators.push(new SwarmRTCPeerCoordinator(isHost))
+    }
+    if (opts.websocket) {
+      // this.wsCoordinator = null // TODO
+    }
+
+    this.server = new NetServer({ isHost, coordinators })
 
     const ipcId = getIpcId()
     ipcRenderer.send('platform-create-lobby', ipcId, opts)
@@ -52,12 +68,15 @@ export class SwarmPlatform extends Platform {
       )
     })
 
-    this.isHosting = true
-    this.connected = success
     return success
   }
 
   private async joinP2PLobby(hash: string): Promise<boolean> {
+    this.server = new NetServer({
+      isHost: false,
+      coordinators: [new SwarmRTCPeerCoordinator(false)]
+    })
+
     const ipcId = getIpcId()
     ipcRenderer.send('platform-join-lobby', ipcId, hash)
 
@@ -96,8 +115,6 @@ export class SwarmPlatform extends Platform {
       success = false
     }
 
-    this.isHosting = false
-    this.connected = success
     return success
   }
 
@@ -109,8 +126,6 @@ export class SwarmPlatform extends Platform {
 
     // TODO: close all webrtc peers
     ipcRenderer.send('platform-leave-lobby')
-    this.connected = false
-    this.isHosting = false
 
     return true
   }
@@ -121,14 +136,6 @@ export class SwarmPlatform extends Platform {
 
   getLobbyData(): ILobbyData | null {
     return null
-  }
-
-  createPeerCoordinator(): IRTCPeerCoordinator {
-    if (!this.connected) {
-      throw new Error('[Swarm Platform] createPeerCoordinator: No active session.')
-    }
-
-    return new SwarmRTCPeerCoordinator(this.isHosting)
   }
 
   getUserName(userId: NetUniqueId): string {

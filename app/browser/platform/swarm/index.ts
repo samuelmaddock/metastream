@@ -49,10 +49,6 @@ let serverOpts: ILobbyOptions
 ipcMain.on('platform-create-lobby', (event: Electron.Event, ipcId: number, opts: ILobbyOptions) => {
   const { sender } = event
 
-  // until we make them optional in the UI
-  opts.p2p = true
-  opts.websocket = true
-
   updateConnectTime()
   serverOpts = opts
 

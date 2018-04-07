@@ -18,7 +18,7 @@ export class NetUniqueId<T = any> {
 
 abstract class NetConnection extends EventEmitter {
   id: NetUniqueId
-  connected: boolean
+  connected?: boolean
 
   constructor(id: NetUniqueId) {
     super()

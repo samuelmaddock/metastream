@@ -1,39 +1,8 @@
 import SimplePeer, { SignalData } from 'simple-peer'
-import { EventEmitter } from 'events'
 import { Deferred } from 'utils/async'
 
 import NetConnection, { NetUniqueId } from './connection'
-import { NetServer } from 'renderer/network'
-import { INetServerOptions } from 'renderer/network/server'
 import { RECONNECT_TIMEOUT } from 'constants/network'
-
-export type SignalData = SignalData
-
-interface IRTCServerOptions extends INetServerOptions {
-  peerCoord: IRTCPeerCoordinator
-}
-
-/** WebRTC server. */
-export class RTCServer extends NetServer {
-  // Dependencies
-  private peerCoord: IRTCPeerCoordinator
-
-  constructor(opts: IRTCServerOptions) {
-    super(opts)
-    this.peerCoord = opts.peerCoord
-    this.peerCoord.on('connection', this.onConnection)
-  }
-
-  private onConnection = (peer: RTCPeerConn): void => {
-    this.connect(peer)
-  }
-
-  close(): void {
-    this.peerCoord.removeListener('connection', this.onConnection)
-    this.peerCoord.close()
-    super.close()
-  }
-}
 
 /** WebRTC peer connection. */
 export class RTCPeerConn extends NetConnection {
@@ -103,14 +72,4 @@ export class RTCPeerConn extends NetConnection {
   getPort(): string {
     return this.peer.address().port
   }
-}
-
-/**
- * Coordinates signaling of WebRTC peers.
- */
-export interface IRTCPeerCoordinator extends EventEmitter {
-  close(): void
-
-  /** Subscribe to peer connections. */
-  on(eventName: 'connection', listener: (peer: RTCPeerConn) => void): this
 }
