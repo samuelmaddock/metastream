@@ -1,7 +1,7 @@
 import { ipcMain } from 'electron'
 import * as IPCStream from 'electron-ipc-stream'
 import * as SimpleWebSocketServer from 'simple-websocket/server'
-import { EncryptedSocket } from 'swarm-peer-server'
+import * as swarm from 'swarm-peer-server'
 import { getKeyPair } from './identity'
 import log from 'browser/log'
 
@@ -22,6 +22,9 @@ export class WebSocketServer {
 
     this.server = new SimpleWebSocketServer({ port: opts.port })
     this.server.once('connection', (socket: any) => {
+      const addr = socket._ws._socket.remoteAddress
+      log.debug(`New WebSocket connection (${addr})`)
+
       /*
       1. send public key
       2. setup EncryptedSocket, perform auth
@@ -31,16 +34,17 @@ export class WebSocketServer {
       */
       socket.write(this.hostPublicKey)
 
+      log.debug(`Authenticating connection... (${addr})`)
       const keypair = getKeyPair()
-      const esocket = new EncryptedSocket(socket, keypair.publicKey, keypair.secretKey)
+      const esocket = new swarm.EncryptedSocket(socket, keypair.publicKey, keypair.secretKey)
       esocket.connect()
 
       esocket.once('connection', () => {
-        log.debug('Established esocket connection')
+        log.debug(`Authenticated connection (${addr})`)
       })
 
       esocket.once('error', err => {
-        log.debug('Esocket connection error', err)
+        log.debug(`Authentication error (${addr})`, err)
       })
     })
   }
@@ -63,7 +67,7 @@ ipcMain.on(
 
     // create EncryptedSocket and perform auth
     const keypair = getKeyPair()
-    const socket = new EncryptedSocket(stream, keypair.publicKey, keypair.secretKey)
+    const socket = new swarm.EncryptedSocket(stream, keypair.publicKey, keypair.secretKey)
     socket.connect(hostPublicKey)
 
     // TODO: close socket?

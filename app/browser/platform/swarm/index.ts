@@ -114,6 +114,7 @@ ipcMain.on('platform-leave-lobby', (event: Electron.Event) => {
 
   if (wsServer) {
     wsServer.close()
+    wsServer = null
   }
 })
 
