@@ -1,4 +1,4 @@
-import { ipcMain } from 'electron'
+import { ipcMain, BrowserWindow } from 'electron'
 import * as IPCStream from 'electron-ipc-stream'
 import * as SimpleWebSocketServer from 'simple-websocket/server'
 import * as swarm from 'swarm-peer-server'
@@ -60,10 +60,16 @@ export class WebSocketServer {
 ipcMain.on(
   'create-auth-stream',
   (event: Electron.Event, ipcId: number, hostPublicKeyStr: string) => {
+    log.debug(`create-auth-stream`)
+
+    const streamWin = BrowserWindow.getAllWindows()[0]
     const streamChannel = `auth/${hostPublicKeyStr}`
-    const stream = new IPCStream(streamChannel)
+    const stream = new IPCStream(streamChannel, streamWin)
+    stream.destroy = () => {}
 
     const hostPublicKey = Buffer.from(hostPublicKeyStr, 'hex')
+
+    log.debug(`create-auth-stream: connecting to host`)
 
     // create EncryptedSocket and perform auth
     const keypair = getKeyPair()
@@ -72,13 +78,14 @@ ipcMain.on(
 
     // TODO: close socket?
     socket.once('connection', () => {
-      stream.destroy()
+      log.debug('Connected to auth')
+      stream.end()
       event.sender.send('create-auth-stream-result', ipcId, true)
     })
 
     socket.once('error', err => {
-      stream.destroy()
       log.error(err)
+      stream.end()
       event.sender.send('create-auth-stream-result', ipcId, false)
     })
   }
