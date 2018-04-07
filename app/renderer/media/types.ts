@@ -86,7 +86,10 @@ export interface IMediaContext {
   res: IMediaResponse
 
   /** Object for passing information through middleware */
-  state: { [key: string]: any }
+  state: {
+    $?: CheerioStatic
+    [key: string]: any
+  }
 }
 
 export interface IMediaMiddlewareResolve {

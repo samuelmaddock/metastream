@@ -14,6 +14,7 @@ import openGraphMware from './middleware/openGraph'
 import oEmbedMware from './middleware/oembed'
 import autoplayMware from './middleware/autoplay'
 import microdataMware from './middleware/microdata'
+import imgurMware from './middleware/imgur'
 
 import { IMediaItem } from 'renderer/lobby/reducers/mediaPlayer'
 
@@ -26,6 +27,7 @@ const middlewares: IMediaMiddleware[] = [
   htmlMware,
 
   youTubeMware,
+  imgurMware,
 
   openGraphMware,
   oEmbedMware,

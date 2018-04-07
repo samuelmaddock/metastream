@@ -204,7 +204,7 @@ const mware: IMediaMiddleware = {
     try {
       metadata = USE_OFFICIAL_API
         ? await YouTubeClient.getInstance().getVideoMetadata(ctx.req.url.href)
-        : await getScrapedMetadata(ctx.req.url, ctx.state.$)
+        : await getScrapedMetadata(ctx.req.url, ctx.state.$!)
     } catch (e) {
       console.error('YouTube request failed', e.message)
       return next()
