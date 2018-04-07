@@ -1,3 +1,4 @@
+import { EventEmitter } from 'events'
 import { ipcMain, BrowserWindow } from 'electron'
 import * as IPCStream from 'electron-ipc-stream'
 import * as SimpleWebSocketServer from 'simple-websocket/server'
@@ -15,45 +16,93 @@ export class WebSocketServer {
   private hostPublicKey: Buffer
   private hostSecretKey: Buffer
   private server: typeof SimpleWebSocketServer | null = null
+  private connections: Map<string, WebSocketProxy> = new Map()
 
   constructor(opts: IServerOptions) {
     this.hostPublicKey = opts.publicKey
     this.hostSecretKey = opts.secretKey
 
     this.server = new SimpleWebSocketServer({ port: opts.port })
-    this.server.once('connection', (socket: any) => {
-      const addr = socket._ws._socket.remoteAddress
-      log.debug(`New WebSocket connection (${addr})`)
+    this.server.on('connection', this.onConnection)
+  }
 
-      /*
-      1. send public key
-      2. setup EncryptedSocket, perform auth
-      3. create renderer proxy socket
-      4. proxy data to proxy socket
-      5. listen for proxy socket close event
-      */
-      socket.write(this.hostPublicKey)
+  private onConnection = (socket: any) => {
+    const addr = socket._ws._socket.remoteAddress
+    log.debug(`New WebSocket connection (${addr})`)
 
-      log.debug(`Authenticating connection... (${addr})`)
-      const keypair = getKeyPair()
-      const esocket = new swarm.EncryptedSocket(socket, keypair.publicKey, keypair.secretKey)
-      esocket.connect()
+    /*
+    1. send public key
+    2. setup EncryptedSocket, perform auth
+    3. create renderer proxy socket
+    4. proxy data to proxy socket
+    5. listen for proxy socket close event
+    */
+    socket.write(this.hostPublicKey)
 
-      esocket.once('connection', () => {
-        log.debug(`Authenticated connection (${addr})`)
+    log.debug(`Authenticating connection... (${addr})`)
+    const keypair = getKeyPair()
+    const esocket = new swarm.EncryptedSocket(socket, keypair.publicKey, keypair.secretKey)
+    esocket.connect()
+
+    esocket.once('connection', () => {
+      log.debug(`Authenticated connection (${addr})`)
+      const peerKey = (esocket as any).peerKey as Buffer
+      const peerKeyStr = peerKey.toString('hex')
+      const win = BrowserWindow.getAllWindows()[0]
+      const streamChannel = `websocket/${peerKeyStr}`
+      const stream = new IPCStream(streamChannel, win)
+
+      const conn = new WebSocketProxy(socket, stream)
+      this.connections.set(peerKeyStr, conn)
+
+      conn.once('close', () => {
+        this.connections.delete(peerKeyStr)
+        win.webContents.send(`websocket-peer-close-${peerKeyStr}`)
       })
 
-      esocket.once('error', err => {
-        log.debug(`Authentication error (${addr})`, err)
-      })
+      // TODO: send unique connection ID in case same peer connects twice
+      win.webContents.send('websocket-peer-init', peerKeyStr)
+    })
+
+    esocket.once('error', err => {
+      log.debug(`Authentication error (${addr})`, err)
     })
   }
 
   close() {
+    // for (let connEntry of this.connections) {
+    //   connEntry[1].close()
+    // }
+    this.connections.clear()
+
     if (this.server) {
       this.server.close()
       this.server = null
     }
+  }
+}
+
+class WebSocketProxy extends EventEmitter {
+  constructor(private socket: any, private stream: any) {
+    super()
+    this.socket.once('close', this.close)
+    this.socket.on('data', this.receive)
+    this.stream.on('data', this.write)
+  }
+
+  private receive(data: Buffer) {
+    this.stream.write(data)
+  }
+
+  private write(data: Buffer) {
+    this.socket.write(data)
+  }
+
+  close = () => {
+    this.socket.removeListener('data', this.receive)
+    this.stream.removeListener('data', this.write)
+    this.stream.end()
+    this.emit('close')
   }
 }
 

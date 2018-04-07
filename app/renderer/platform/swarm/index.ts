@@ -3,10 +3,11 @@ const { ipcRenderer, remote } = chrome
 import { Platform, ILobbyOptions, ILobbySession, ILobbyData } from 'renderer/platform/types'
 import { Deferred } from 'utils/async'
 import { NetServer, NetUniqueId } from 'renderer/network'
-import { SwarmRTCPeerCoordinator } from 'renderer/platform/swarm/peer-coordinator'
-import { connectToWebSocketServer } from './websocket'
+import { SwarmRTCPeerCoordinator } from 'renderer/platform/swarm/rtc-coordinator'
 import { isP2PHash, isIP, isUrlDomain } from 'utils/network'
 import { PeerCoordinator } from '../../network/server'
+import { WebSocketClientCoordinator } from './ws-client-coordinator'
+import { WebSocketServerCoordinator } from './ws-server-coordinator'
 
 type SwarmId = string
 
@@ -49,7 +50,7 @@ export class SwarmPlatform extends Platform {
       coordinators.push(new SwarmRTCPeerCoordinator(isHost))
     }
     if (opts.websocket) {
-      // this.wsCoordinator = null // TODO
+      coordinators.push(new WebSocketServerCoordinator())
     }
 
     this.server = new NetServer({ isHost, coordinators })
@@ -95,12 +96,22 @@ export class SwarmPlatform extends Platform {
   }
 
   async joinWebSocketLobby(ip: string): Promise<boolean> {
+    const coord = new WebSocketClientCoordinator()
+
+    const server = new NetServer({
+      isHost: false,
+      coordinators: [coord]
+    })
+
     try {
       // TODO: handle cancel connection
-      this.webSocket = await connectToWebSocketServer(ip)
+      this.webSocket = await coord.connect(ip)
     } catch (e) {
+      server.close()
       return false
     }
+
+    this.server = server
     return true
   }
 
