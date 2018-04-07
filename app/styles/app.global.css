@@ -108,3 +108,7 @@ a {
   text-decoration: none;
   -webkit-user-drag: none;
 }
+
+::selection {
+  background: rgba(249, 134, 115, 0.44);
+}
