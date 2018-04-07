@@ -131,6 +131,12 @@ ipcMain.on('platform-create-lobby', (event: Electron.Event, ipcId: number, opts:
   }
 
   if (opts.websocket) {
+    if (wsServer) {
+      log.error('Attempt to create new WebSocket without closing existing server.')
+      wsServer.close()
+      wsServer = null
+    }
+
     wsServer = new WebSocketServer({ port: WEBSOCKET_PORT_DEFAULT })
   }
 
