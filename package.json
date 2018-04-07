@@ -180,6 +180,7 @@
     "electron": "brave/electron-prebuilt",
     "electron-builder": "^19.54.0",
     "electron-devtools-installer": "^2.2.1",
+    "electron-ipc-stream": "git+ssh://git@github.com/samuelmaddock/electron-ipc-stream.git#master",
     "electron-rebuild": "^1.5.7",
     "enzyme": "^3.1.0",
     "express": "^4.15.2",

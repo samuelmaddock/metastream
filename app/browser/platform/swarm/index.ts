@@ -1,22 +1,17 @@
-import fs from 'fs-extra'
-import path from 'path'
-import { app, ipcMain, webContents } from 'electron'
+import { ipcMain } from 'electron'
 const { productName } = require('package.json')
 
 import log from 'browser/log'
-import { keyPair, KeyPair, Key } from './crypto'
-import { ILobbyOptions, ILobbySession } from 'renderer/platform/types'
+import { ILobbyOptions } from 'renderer/platform/types'
 
 import * as swarmDefaults from 'dat-swarm-defaults'
 import * as swarm from 'swarm-peer-server'
-import { EncryptedSocket } from 'swarm-peer-server'
-import * as WebSocketServer from 'simple-websocket/server'
 
-import { SimplePeer } from 'simple-peer'
 import { signalRenderer } from 'browser/platform/swarm/signal'
-import { NETWORK_TIMEOUT, WEBSOCKET_PORT_DEFAULT } from 'constants/network'
-import { sleep } from 'utils/async'
+import { WEBSOCKET_PORT_DEFAULT } from 'constants/network'
 import * as username from 'username'
+import { WebSocketServer } from './websocket'
+import { initIdentity, getKeyPair } from './identity'
 
 function checkNativeDeps() {
   try {
@@ -27,45 +22,9 @@ function checkNativeDeps() {
   }
 }
 
-let localId: string
-let localKeyPair: KeyPair
-
 let prevLobbyConnectTime = 0
 const updateConnectTime = () => (prevLobbyConnectTime = Date.now())
 const isPrevConnectTime = (time: number) => prevLobbyConnectTime === time
-
-const KEYNAME = 'idkey'
-
-async function initIdentity() {
-  // 1. check if identity exists
-  const userPath = app.getPath('userData')
-  const userDataPath = path.join(userPath, 'userdata')
-  const keyPath = path.join(userPath, `${KEYNAME}.pub`)
-  const skeyPath = path.join(userPath, KEYNAME)
-
-  const exists = await fs.pathExists(keyPath)
-
-  // TODO: allow multiple userdata dirs with unique keypairs
-
-  // 2. create keypair
-  if (!exists) {
-    // 3. save keypair on disk
-    localKeyPair = keyPair()
-    await fs.writeFile(keyPath, localKeyPair.publicKey)
-    await fs.writeFile(skeyPath, localKeyPair.secretKey)
-  } else {
-    localKeyPair = {
-      publicKey: await fs.readFile(keyPath),
-      secretKey: await fs.readFile(skeyPath)
-    }
-  }
-
-  // 4. send id back to sender
-  localId = localKeyPair.publicKey.toString('hex')
-  log(`Init swarm ID: ${localId}`)
-
-  return localId
-}
 
 ipcMain.on('platform-swarm-init', async (event: Electron.Event) => {
   let id
@@ -84,7 +43,7 @@ ipcMain.on('platform-swarm-init', async (event: Electron.Event) => {
 })
 
 let swarmServer: any
-let wsServer: typeof WebSocketServer
+let wsServer: WebSocketServer | null
 let serverOpts: ILobbyOptions
 
 ipcMain.on('platform-create-lobby', (event: Electron.Event, ipcId: number, opts: ILobbyOptions) => {
@@ -109,7 +68,7 @@ ipcMain.on('platform-create-lobby', (event: Electron.Event, ipcId: number, opts:
     swarmServer = swarm.listen(
       {
         ...swarmDefaults({ hash: false }),
-        ...localKeyPair
+        ...getKeyPair()
       },
       async (esocket, peerKey) => {
         const keyStr = peerKey.toString('hex')
@@ -137,7 +96,10 @@ ipcMain.on('platform-create-lobby', (event: Electron.Event, ipcId: number, opts:
       wsServer = null
     }
 
-    wsServer = new WebSocketServer({ port: WEBSOCKET_PORT_DEFAULT })
+    wsServer = new WebSocketServer({
+      port: WEBSOCKET_PORT_DEFAULT,
+      ...getKeyPair()
+    })
   }
 
   event.sender.send('platform-create-lobby-result', ipcId, true)
@@ -171,7 +133,7 @@ ipcMain.on(
     try {
       conn = await swarm.connect({
         ...swarmDefaults({ hash: false }),
-        ...localKeyPair,
+        ...getKeyPair(),
         hostPublicKey
       })
     } catch (e) {

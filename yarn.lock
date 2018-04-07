@@ -1799,6 +1799,10 @@ buffer-indexof@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/buffer-indexof/-/buffer-indexof-1.1.0.tgz#f54f647c4f4e25228baa656a2e57e43d5f270982"
 
+buffer-json@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/buffer-json/-/buffer-json-1.0.0.tgz#39f5ca5e00cc44ed8463ae422265ff083ef17b3f"
+
 buffer-xor@^1.0.2:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/buffer-xor/-/buffer-xor-1.0.3.tgz#26e61ed1422fb70dd42e6e36729ed51d855fe8d9"
@@ -3141,6 +3145,13 @@ electron-download@brave/electron-download:
     nugget "^1.5.1"
     path-exists "^1.0.0"
     rc "^1.1.2"
+
+"electron-ipc-stream@git+ssh://git@github.com/samuelmaddock/electron-ipc-stream.git#master":
+  version "0.2.0"
+  resolved "git+ssh://git@github.com/samuelmaddock/electron-ipc-stream.git#a976ac36d8970c408b33151df558ce4f3dd865ab"
+  dependencies:
+    buffer-json "^1.0.0"
+    is-electron-renderer "^2.0.0"
 
 electron-is-accelerator@^0.1.0:
   version "0.1.2"
@@ -4668,6 +4679,10 @@ is-directory@^0.3.1:
 is-dotfile@^1.0.0:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/is-dotfile/-/is-dotfile-1.0.3.tgz#a6a2f32ffd2dfb04f5ca25ecd0f6b83cf798a1e1"
+
+is-electron-renderer@^2.0.0:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/is-electron-renderer/-/is-electron-renderer-2.0.1.tgz#a469d056f975697c58c98c6023eb0aa79af895a2"
 
 is-equal-shallow@^0.1.3:
   version "0.1.3"
