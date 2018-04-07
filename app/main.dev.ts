@@ -132,9 +132,7 @@ const setupWindow = () => {
       webSecurity: false
     },
     frame: false,
-    // macOS doesn't work with titlebar 'hidden'
-    // https://github.com/brave/muon/issues/445
-    titleBarStyle: os.platform() === 'darwin' ? 'hiddenInset' : 'hidden'
+    titleBarStyle: 'hidden'
   })
 
   win.loadURL(`chrome://brave/${__dirname}/app.html`)
