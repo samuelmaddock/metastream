@@ -99,6 +99,10 @@ function authWS(socket: SimpleWebSocket, hostPublicKey: Buffer) {
     stream.pipe(socket)
 
     const success = await ipcRendererRpc<boolean>('create-auth-stream', hostId)
+
+    socket.unpipe(stream)
+    stream.unpipe(socket)
+
     if (success) {
       resolve()
     } else {

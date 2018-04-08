@@ -119,7 +119,7 @@ ipcMain.on(
     const streamWin = BrowserWindow.getAllWindows()[0]
     const streamChannel = `auth/${hostPublicKeyStr}`
     const stream = new IPCStream(streamChannel, streamWin)
-    stream.destroy = () => {}
+    stream.destroy = stream.end // HACK for esocket
 
     const hostPublicKey = Buffer.from(hostPublicKeyStr, 'hex')
 
@@ -127,19 +127,18 @@ ipcMain.on(
 
     // create EncryptedSocket and perform auth
     const keypair = getKeyPair()
-    const socket = new swarm.EncryptedSocket(stream, keypair.publicKey, keypair.secretKey)
-    socket.connect(hostPublicKey)
+    const esocket = new swarm.EncryptedSocket(stream, keypair.publicKey, keypair.secretKey)
+    esocket.connect(hostPublicKey)
 
-    // TODO: close socket?
-    socket.once('connection', () => {
+    esocket.once('connection', () => {
       log.debug('Connected to auth')
-      stream.end()
+      esocket.destroy()
       event.sender.send('create-auth-stream-result', ipcId, true)
     })
 
-    socket.once('error', err => {
+    esocket.once('error', err => {
       log.error(err)
-      stream.end()
+      esocket.destroy()
       event.sender.send('create-auth-stream-result', ipcId, false)
     })
   }

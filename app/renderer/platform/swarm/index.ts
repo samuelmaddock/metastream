@@ -23,7 +23,6 @@ export class SwarmPlatform extends Platform {
   private username: string
 
   private server: NetServer | null = null
-  private webSocket: any = null
 
   constructor() {
     super()
@@ -105,7 +104,7 @@ export class SwarmPlatform extends Platform {
 
     try {
       // TODO: handle cancel connection
-      this.webSocket = await coord.connect(ip)
+      await coord.connect(ip)
     } catch (e) {
       server.close()
       return false
@@ -130,9 +129,9 @@ export class SwarmPlatform extends Platform {
   }
 
   leaveLobby(id: string): boolean {
-    if (this.webSocket) {
-      this.webSocket.close()
-      this.webSocket = null
+    if (this.server) {
+      this.server.close()
+      this.server = null
     }
 
     // TODO: close all webrtc peers
