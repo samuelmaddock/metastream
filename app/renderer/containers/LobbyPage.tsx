@@ -73,14 +73,6 @@ export class _LobbyPage extends Component<PrivateProps> {
     this.server = server
     this.server.once('close', this.disconnect)
 
-    this.props.dispatch(
-      NetActions.connect({
-        server: this.server!,
-        host: this.host,
-        replicated: AppReplicatedState as ReplicatedState<any>
-      })
-    )
-
     if (this.host) {
       // Server is ready
       this.onConnection()
@@ -109,6 +101,14 @@ export class _LobbyPage extends Component<PrivateProps> {
   }
 
   private onConnection(): void {
+    this.props.dispatch(
+      NetActions.connect({
+        server: this.server!,
+        host: this.host,
+        replicated: AppReplicatedState as ReplicatedState<any>
+      })
+    )
+
     this.connected = true
     this.forceUpdate()
   }

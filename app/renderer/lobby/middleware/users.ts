@@ -45,9 +45,7 @@ export const usersMiddleware = (): Middleware => {
           dispatch(removeUser(id))
         })
       } else {
-        server.once('connect', () => {
-          dispatch((initialize as any)())
-        })
+        dispatch((initialize as any)())
       }
     }
 
