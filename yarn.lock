@@ -8586,9 +8586,9 @@ svgo@^0.7.0:
     sax "~1.2.1"
     whet.extend "~0.9.9"
 
-"swarm-peer-server@git+ssh://git@github.com/samuelmaddock/swarm-peer-server.git#esocket":
-  version "1.0.2"
-  resolved "git+ssh://git@github.com/samuelmaddock/swarm-peer-server.git#c6914149ae11bb76694bd27c3524525dd79c3b41"
+"swarm-peer-server@git+ssh://git@github.com/samuelmaddock/swarm-peer-server.git#1.0.3":
+  version "1.0.3"
+  resolved "git+ssh://git@github.com/samuelmaddock/swarm-peer-server.git#c8a57ff07dc27760f634e8273206ce09668d87fd"
   dependencies:
     debug "^3.1.0"
     discovery-swarm "^4.4.2"
