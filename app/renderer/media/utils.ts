@@ -46,7 +46,7 @@ export const mergeMetadata = (base: any, ...objs: any[]): void => {
             base[k] = getLongerString(base[k], obj[k])
             break
           default:
-            base[k] = obj[k] || base[k]
+            base[k] = typeof obj[k] !== 'undefined' ? obj[k] : base[k]
         }
       }
     }
