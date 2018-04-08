@@ -21,8 +21,8 @@ interface IState {
 }
 
 export class Chat extends Component<IProps, IState> {
-  private form: ChatForm | null
-  private messages: Messages | null
+  private form: ChatForm | null = null
+  private messages: Messages | null = null
 
   state: IState = {}
 
@@ -74,7 +74,7 @@ export class Chat extends Component<IProps, IState> {
               ref={e => {
                 this.form = e
               }}
-              send={this.props.sendMessage}
+              send={this.onSend}
               onFocus={this.onFocus}
               onBlur={this.onBlur}
             />
@@ -90,6 +90,11 @@ export class Chat extends Component<IProps, IState> {
 
   private onBlur = (): void => {
     this.setState({ focused: false })
+  }
+
+  private onSend = (message: string) => {
+    this.props.sendMessage(message)
+    this.messages!.scrollToBottom()
   }
 
   private onKeyPress = (event: KeyboardEvent): void => {
