@@ -111,6 +111,7 @@ class WebSocketProxy extends EventEmitter {
   close = () => {
     if (this.socket) {
       this.socket.removeListener('data', this.receive)
+      this.socket.destroy()
       this.socket = null
     }
     if (this.stream) {
