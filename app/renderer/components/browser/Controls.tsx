@@ -182,6 +182,7 @@ export class WebControls extends Component<IProps, IState> {
       }
 
       this.webview.addEventListener('will-navigate', updateUrl)
+      this.webview.addEventListener('did-navigate', updateUrl)
       this.webview.addEventListener('did-navigate-in-page', updateUrl)
 
       const setLoading = (loading: boolean) => this.setState({ loading })
@@ -204,7 +205,11 @@ export class WebControls extends Component<IProps, IState> {
     }
 
     if (this.addressInput) {
-      this.addressInput.value = url
+      const prevUrl = this.addressInput.value
+      if (prevUrl !== url) {
+        this.addressInput.value = url
+        this.forceUpdate()
+      }
     }
   }
 
