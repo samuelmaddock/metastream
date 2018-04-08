@@ -45,6 +45,11 @@
   -webkit-app-region: drag;
 }
 
+.clickable {
+  z-index: 99999;
+  -webkit-app-region: no-drag;
+}
+
 .title {
   composes: single-line from 'styles/text.css';
   position: absolute;
@@ -54,10 +59,8 @@
 }
 
 .actions {
-  composes: header-item;
-  -webkit-app-region: no-drag;
+  composes: header-item clickable;
   right: 0;
-  z-index: 99999;
 }
 
 .actionButton {
@@ -88,6 +91,7 @@
 }
 
 .updateButton {
+  composes: clickable;
   background: var(--color-highlight);
   color: var(--app-text-color);
   padding: 0 3px;
