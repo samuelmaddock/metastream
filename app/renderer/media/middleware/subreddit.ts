@@ -187,7 +187,9 @@ const mware: IMediaMiddleware = {
     }
 
     if (!parseItem(ctx, child)) {
-      return next()
+      await next()
+      ctx.res.title = child.title || ctx.res.title
+      return ctx.res
     }
   }
 }
