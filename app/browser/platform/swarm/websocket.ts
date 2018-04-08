@@ -55,16 +55,13 @@ export class WebSocketServer {
       const streamChannel = `websocket/${peerKeyStr}/${id}`
       const stream = new IPCStream(streamChannel, win)
 
-      // hack to prevent closing websocket
-      socket.unpipe()
-      // ;(esocket as any).socket = null
-      // esocket.destroy()
+      ;(esocket as any).destroy(false)
 
       const conn = new WebSocketProxy(socket, stream)
       this.connections.set(peerKeyStr, conn)
 
       conn.once('close', () => {
-        log.debug(`Conn 'close' event: ${peerKeyStr}`)
+        log.debug(`Conn closed for ${peerKeyStr}`)
         this.connections.delete(peerKeyStr)
         win.webContents.send(`websocket-peer-close-${peerKeyStr}`)
       })
@@ -104,19 +101,14 @@ class WebSocketProxy extends EventEmitter {
   }
 
   private receive = (data: Buffer) => {
-    if (this.stream) {
-      this.stream.write(data)
-    }
+    this.stream.write(data)
   }
 
   private write = (data: Buffer) => {
-    if (this.socket) {
-      this.socket.write(data)
-    }
+    this.socket.write(data)
   }
 
   close = () => {
-    console.log('Closing proxy socket')
     if (this.socket) {
       this.socket.removeListener('data', this.receive)
       this.socket = null
