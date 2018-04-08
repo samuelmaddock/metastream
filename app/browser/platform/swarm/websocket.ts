@@ -6,6 +6,8 @@ import * as swarm from 'swarm-peer-server'
 import { getKeyPair } from './identity'
 import log from 'browser/log'
 
+let connId = 0
+
 interface IServerOptions {
   port: number
   publicKey: Buffer
@@ -49,8 +51,14 @@ export class WebSocketServer {
       const peerKey = (esocket as any).peerKey as Buffer
       const peerKeyStr = peerKey.toString('hex')
       const win = BrowserWindow.getAllWindows()[0]
-      const streamChannel = `websocket/${peerKeyStr}`
+      const id = ++connId
+      const streamChannel = `websocket/${peerKeyStr}/${id}`
       const stream = new IPCStream(streamChannel, win)
+
+      // hack to prevent closing websocket
+      socket.unpipe()
+      // ;(esocket as any).socket = null
+      // esocket.destroy()
 
       const conn = new WebSocketProxy(socket, stream)
       this.connections.set(peerKeyStr, conn)
@@ -62,11 +70,11 @@ export class WebSocketServer {
       })
 
       // TODO: send unique connection ID in case same peer connects twice
-      win.webContents.send('websocket-peer-init', peerKeyStr, addr)
-
-      // hack to prevent closing websocket
-      ;(esocket as any).socket = null
-      esocket.destroy()
+      win.webContents.send('websocket-peer-init', {
+        streamId: id,
+        peerId: peerKeyStr,
+        address: addr,
+      })
     })
 
     esocket.once('error', err => {
@@ -75,9 +83,9 @@ export class WebSocketServer {
   }
 
   close() {
-    // for (let connEntry of this.connections) {
-    //   connEntry[1].close()
-    // }
+    for (let connEntry of this.connections) {
+      connEntry[1].close()
+    }
     this.connections.clear()
 
     if (this.server) {
@@ -96,17 +104,28 @@ class WebSocketProxy extends EventEmitter {
   }
 
   private receive = (data: Buffer) => {
-    this.stream.write(data)
+    if (this.stream) {
+      this.stream.write(data)
+    }
   }
 
   private write = (data: Buffer) => {
-    this.socket.write(data)
+    if (this.socket) {
+      this.socket.write(data)
+    }
   }
 
   close = () => {
-    this.socket.removeListener('data', this.receive)
-    this.stream.removeListener('data', this.write)
-    this.stream.end()
+    console.log('Closing proxy socket')
+    if (this.socket) {
+      this.socket.removeListener('data', this.receive)
+      this.socket = null
+    }
+    if (this.stream) {
+      this.stream.removeListener('data', this.write)
+      this.stream.end()
+      this.stream = null
+    }
     this.emit('close')
   }
 }

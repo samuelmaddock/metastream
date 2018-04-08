@@ -11,12 +11,12 @@ export class WebSocketServerCoordinator extends PeerCoordinator {
     ipcRenderer.on('websocket-peer-init', this.onInitPeer)
   }
 
-  private onInitPeer = (event: Electron.Event, peerId: string, addr: string) => {
-    const streamChannel = `websocket/${peerId}`
+  private onInitPeer = (event: Electron.Event, peerInfo: any) => {
+    const streamChannel = `websocket/${peerInfo.peerId}/${peerInfo.streamId}`
     const stream = new IPCStream(streamChannel)
 
-    const netId = new NetUniqueId(peerId)
-    const conn = new WebSocketProxyConnection(netId, stream, addr)
+    const netId = new NetUniqueId(peerInfo.peerId)
+    const conn = new WebSocketProxyConnection(netId, stream, peerInfo.address)
     this.emit('connection', conn)
   }
 
