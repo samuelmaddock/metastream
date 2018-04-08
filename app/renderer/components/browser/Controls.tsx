@@ -157,6 +157,7 @@ export class WebControls extends Component<IProps, IState> {
             onChange={() => {
               /* force react controlled input */
             }}
+            spellCheck={false}
             autoFocus
           />
         </div>
