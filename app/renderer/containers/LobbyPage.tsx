@@ -114,9 +114,7 @@ export class _LobbyPage extends Component<PrivateProps> {
   }
 
   private onConnectionFailed(): void {
-    if (this.server) {
-      this.disconnect('Failed to join lobby')
-    }
+    this.disconnect('Failed to join lobby')
   }
 
   private disconnect = (reason?: string) => {

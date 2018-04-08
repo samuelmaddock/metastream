@@ -68,6 +68,7 @@ export class WebSocketClientCoordinator extends PeerCoordinator {
         }
 
         console.debug('Connected and authed!')
+        cleanup()
 
         const netId = new NetUniqueId(hostPublicKeyStr)
         const conn = new WebSocketClientConnection(netId, socket)
@@ -102,8 +103,12 @@ function authWS(socket: SimpleWebSocket, hostPublicKey: Buffer) {
 
     const success = await ipcRendererRpc<boolean>('create-auth-stream', hostId)
 
-    socket.unpipe(stream)
-    stream.unpipe(socket)
+    // HACK: FIXME: ending stream and unpiping socket fucks things up
+    // This might leak memory
+
+    // socket.unpipe(stream)
+    stream.unpipe()
+    // stream.end()
 
     if (success) {
       resolve()
@@ -113,7 +118,6 @@ function authWS(socket: SimpleWebSocket, hostPublicKey: Buffer) {
   })
 }
 
-/** WebRTC peer connection. */
 export class WebSocketClientConnection extends NetConnection {
   private socket: SimpleWebSocket
   private ip?: string
@@ -122,7 +126,7 @@ export class WebSocketClientConnection extends NetConnection {
     super(id)
     this.socket = socket
 
-    this.socket.on('close', this.close)
+    this.socket.once('close', this.close)
     this.socket.on('error', this.onError)
     this.socket.on('data', this.receive)
   }
