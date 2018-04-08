@@ -72,6 +72,8 @@ export class WebSocketClientCoordinator extends PeerCoordinator {
         const netId = new NetUniqueId(hostPublicKeyStr)
         const conn = new WebSocketClientConnection(netId, socket)
         this.emit('connection', conn)
+
+        resolve()
       })
 
       socket.once('error', onError)

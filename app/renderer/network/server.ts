@@ -14,8 +14,8 @@ export interface INetServerOptions {
 class NetServer extends EventEmitter implements INetServerEvents {
   isHost: boolean
 
+  connected: boolean = false
   private connections: Map<string, NetConnection> = new Map()
-  private connected: boolean = false
   private coordinators: PeerCoordinator[] = []
 
   constructor(opts: INetServerOptions) {

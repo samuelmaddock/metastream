@@ -92,12 +92,16 @@ export class _LobbyPage extends Component<PrivateProps> {
   /** Connect client to server */
   private async connectToHost() {
     const peerPromise = new Promise(resolve => {
-      this.server!.once('connect', resolve)
+      if (this.server!.connected) {
+        resolve()
+      } else {
+        this.server!.once('connect', resolve)
+      }
     })
 
     const conn = await Promise.race([peerPromise, sleep(NETWORK_TIMEOUT)])
 
-    if (typeof conn !== 'undefined') {
+    if (this.server!.connected) {
       this.onConnection()
     } else {
       this.onConnectionFailed()
