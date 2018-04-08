@@ -15,7 +15,7 @@ import { NetActions } from 'renderer/network/actions'
 import { ReplicatedState } from 'renderer/network/types'
 import { push } from 'react-router-redux'
 import { sleep } from 'utils/async'
-import { NETWORK_TIMEOUT } from 'constants/network'
+import { NETWORK_TIMEOUT, NetworkDisconnectReason } from 'constants/network'
 import { Connect } from '../components/lobby/Connect'
 
 interface IRouteParams {
@@ -26,13 +26,19 @@ interface IProps extends RouteComponentProps<IRouteParams> {}
 
 interface IConnectedProps {}
 
+interface IState {
+  disconnectMessage?: string
+}
+
 function mapStateToProps(state: IAppState): IConnectedProps {
   return {}
 }
 
 type PrivateProps = IProps & IConnectedProps & IReactReduxProps
 
-export class _LobbyPage extends Component<PrivateProps> {
+export class _LobbyPage extends Component<PrivateProps, IState> {
+  state: IState = {}
+
   private connected: boolean = false
   private server?: NetServer
   private host: boolean
@@ -114,14 +120,24 @@ export class _LobbyPage extends Component<PrivateProps> {
   }
 
   private onConnectionFailed(): void {
-    this.disconnect('Failed to join lobby')
+    this.disconnect(NetworkDisconnectReason.Timeout)
   }
 
-  private disconnect = (reason?: string) => {
-    // TODO: display reason
-    reason = reason || 'Disconnected'
-    console.info(reason)
+  private disconnect = (reason?: NetworkDisconnectReason) => {
+    let msg
+    switch (reason) {
+      case NetworkDisconnectReason.Timeout:
+        msg = 'Network timeout'
+        break
+    }
+    console.info(`Disconnected [${reason}]: ${msg}`)
+    this.connected = false
+
+    // if (msg) {
+    //   this.setState({ disconnectMessage: msg })
+    // } else {
     this.props.dispatch(push('/'))
+    // }
   }
 
   componentWillMount(): void {
@@ -145,6 +161,10 @@ export class _LobbyPage extends Component<PrivateProps> {
   }
 
   render(): JSX.Element {
+    if (this.state.disconnectMessage) {
+      return <Connect onCancel={this.disconnect} />
+    }
+
     if (!this.connected) {
       return <Connect onCancel={this.disconnect} />
     }
