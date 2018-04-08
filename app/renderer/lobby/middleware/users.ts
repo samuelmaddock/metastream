@@ -52,7 +52,9 @@ export const usersMiddleware = (): Middleware => {
     }
 
     const destroy = () => {
-      server!.removeListener('disconnect', onDisconnect)
+      if (server) {
+        server.removeListener('disconnect', onDisconnect)
+      }
       server = null
       host = false
       dispatch(clearUsers())
