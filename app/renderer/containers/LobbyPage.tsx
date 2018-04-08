@@ -130,12 +130,12 @@ export class _LobbyPage extends Component<PrivateProps> {
 
   componentWillUnmount(): void {
     if (this.server) {
-      this.props.dispatch(NetActions.disconnect())
-      PlatformService.leaveLobby(this.lobbyId || '')
-      this.server.removeAllListeners()
-      this.server.close()
+      this.server.removeListener('close', this.disconnect)
       this.server = undefined
     }
+
+    this.props.dispatch(NetActions.disconnect())
+    PlatformService.leaveLobby(this.lobbyId || '')
   }
 
   private get lobbyId(): string | undefined {

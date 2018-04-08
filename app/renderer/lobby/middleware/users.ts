@@ -25,6 +25,12 @@ export const usersMiddleware = (): Middleware => {
 
     let server: NetServer | null, host: boolean
 
+    const onDisconnect = (conn: NetConnection) => {
+      const id = conn.id.toString()
+      dispatch(multi_userLeft(id))
+      dispatch(removeUser(id))
+    }
+
     const init = (options: NetMiddlewareOptions) => {
       server = options.server
       host = options.host
@@ -39,17 +45,14 @@ export const usersMiddleware = (): Middleware => {
           })
         )
 
-        server.on('disconnect', (conn: NetConnection) => {
-          const id = conn.id.toString()
-          dispatch(multi_userLeft(id))
-          dispatch(removeUser(id))
-        })
+        server.on('disconnect', onDisconnect)
       } else {
         dispatch((initialize as any)())
       }
     }
 
     const destroy = () => {
+      server!.removeListener('disconnect', onDisconnect)
       server = null
       host = false
       dispatch(clearUsers())
