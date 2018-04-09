@@ -93,10 +93,11 @@ export const resolveMediaPlaylist = async (
   const ctx = createContext(urlObj)
 
   // Transfer old state to new request
-  Object.assign(ctx.req, {
+  ctx.req = {
+    ...ctx.req,
     type: media.type,
     state: media.state
-  })
+  }
 
   console.log('resolving playlist', ctx)
 

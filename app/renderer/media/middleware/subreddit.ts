@@ -140,6 +140,11 @@ const mware: IMediaMiddleware = {
       const json = await getListing(redditUrl)
       console.log('Subreddit JSON', json)
 
+      if (json.error) {
+        console.debug('Error fetching subreddit posts')
+        return next()
+      }
+
       const posts = getNextPosts(json)
 
       if (posts.length === 0) {

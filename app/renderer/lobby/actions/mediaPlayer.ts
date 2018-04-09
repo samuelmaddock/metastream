@@ -14,7 +14,7 @@ import {
   getPlaybackTime
 } from 'renderer/lobby/reducers/mediaPlayer.helpers'
 import { IAppState } from 'renderer/reducers'
-import { getUserName } from 'renderer/lobby/reducers/users';
+import { getUserName } from 'renderer/lobby/reducers/users'
 
 export const playPauseMedia = actionCreator<number>('PLAY_PAUSE_MEDIA')
 export const repeatMedia = actionCreator<number>('REPEAT_MEDIA')
@@ -69,6 +69,7 @@ const advanceMedia = (playlist: IMediaItem): ThunkAction<void, IAppState, void> 
       url: res.url,
       title: res.title,
       duration: res.duration,
+      description: res.description,
       imageUrl: res.thumbnails && res.thumbnails[MediaThumbnailSize.Default],
       hasMore: res.hasMore
     }
