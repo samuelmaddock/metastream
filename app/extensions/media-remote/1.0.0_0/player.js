@@ -20,7 +20,7 @@
   }
 
   let player
-  let mediaList = new WeakSet()
+  let mediaList = new Set()
   let activeMedia
 
   const SEC2MS = 1000
@@ -114,11 +114,44 @@
     }
   }
 
+  const AUTOPLAY_TIMEOUT = 3000
+  let autoplayTimerId = -1
+
+  const attemptAutoplay = () => {
+    function descRectArea(a, b) {
+      const areaA = a.width * a.height;
+      const areaB = b.width * b.height;
+      if (areaA > areaB) return -1;
+      if (areaA < areaB) return 1;
+      return 0;
+    }
+
+    const videos = Array.from(mediaList).filter(media => media instanceof HTMLVideoElement)
+    if (videos.length === 0) return
+
+    const rects = videos.map(video => video.getBoundingClientRect())
+    rects.sort(descRectArea)
+
+    // Assumes largest video rect is most relevant
+    const rect = rects[0]
+    const playButton = document.elementFromPoint(rect.x + rect.width / 2, rect.y + rect.height / 2)
+
+    if (playButton instanceof HTMLElement) {
+      console.debug('Attempting autoplay click', playButton)
+      playButton.click()
+    }
+  }
+
   const setMedia = media => {
     activeMedia = media
     player = new HTMLMediaPlayer(media)
     console.debug('Set active media', media, media.src, media.duration)
     window.MEDIA = media
+
+    if (autoplayTimerId) {
+      clearTimeout(autoplayTimerId)
+      autoplayTimerId = -1
+    }
 
     // Prevent media seeking
     ;['seekable', 'seeked'].forEach(eventName => {
@@ -194,6 +227,9 @@
     if (media.paused || !checkMediaReady()) {
       media.addEventListener('playing', checkMediaReady)
       media.addEventListener('durationchange', checkMediaReady)
+
+      clearTimeout(autoplayTimerId)
+      autoplayTimerId = setTimeout(attemptAutoplay, AUTOPLAY_TIMEOUT)
     }
   }
 
