@@ -165,7 +165,7 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
       return <Connect onCancel={this.disconnect} />
     }
 
-    if (!this.connected) {
+    if (!this.connected && !this.host) {
       return <Connect onCancel={this.disconnect} />
     }
 
