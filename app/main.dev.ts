@@ -37,6 +37,7 @@ import log from 'browser/log'
 import './browser/fetch'
 
 app.commandLine.appendSwitch('enable-blink-features', 'CSSBackdropFilter')
+app.commandLine.appendSwitch('no-user-gesture-required')
 
 const fixUserDataPath = () => {
   const BRAVE_STR = 'brave'
