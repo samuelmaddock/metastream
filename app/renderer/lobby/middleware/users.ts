@@ -8,6 +8,7 @@ import { RpcThunk } from '../types'
 import { rpc, RpcRealm } from '../../network/middleware/rpc'
 import { multi_userJoined, multi_userLeft } from '../actions/users'
 import { initialize } from 'renderer/lobby/actions/user-init'
+import { getLocalUsername } from '../../reducers/settings';
 
 interface IUserPayload {
   conn: NetConnection
@@ -40,7 +41,7 @@ export const usersMiddleware = (): Middleware => {
         dispatch(
           addUser({
             conn: localUser(),
-            name: PlatformService.getUserName(localUser().id),
+            name: getLocalUsername(getState() as any),
             host: true
           })
         )

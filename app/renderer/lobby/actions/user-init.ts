@@ -8,6 +8,8 @@ import { multi_userJoined } from 'renderer/lobby/actions/users'
 import { rpc, RpcRealm } from 'renderer/network/middleware/rpc'
 import { getUser } from 'renderer/lobby/reducers/users'
 import { syncServerTime } from 'renderer/lobby/actions/clock'
+import { getLocalUsername } from '../../reducers/settings';
+import { USERNAME_MAX_LEN } from '../../../constants/settings';
 
 const { version } = require('package.json')
 
@@ -19,32 +21,42 @@ type ClientInfo = {
 /** Initialize client */
 export const initialize = (): ThunkAction<void, IAppState, void> => {
   return (dispatch, getState) => {
-    const name = PlatformService.getUserName(localUser().id)
-
     dispatch(
       server_initClient({
-        name,
+        name: getLocalUsername(getState()),
         version
       })
     )
   }
 }
 
+const validateClientInfo = (info: ClientInfo, id: string, state: IAppState) => {
+  if (version !== info.version) {
+    console.debug(`Client '${info.version}'[${id}] kicked for version mismatch (${info.version})`)
+    return false
+  }
+
+  const existingUser = !!getUser(state, id)
+
+  if (existingUser) {
+    console.debug(`Client with existing ID already active in session ${id}`)
+    return false
+  }
+
+  if (!info.name || info.name.length > USERNAME_MAX_LEN) {
+    console.debug(`Client ${id} kicked for name overflow (${info.name})`)
+    return false
+  }
+
+  return true
+}
+
 const initClient = (info: ClientInfo): RpcThunk<void> => (dispatch, getState, { client }) => {
   const id = client.id.toString()
 
-  if (version !== info.version) {
-    // TODO: send disconnect reason to client
+  // TODO: send disconnect reason to client
+  if (!validateClientInfo(info, id, getState())) {
     client.close()
-    console.debug(`Client '${info.version}'[${id}] kicked for version mismatch (${info.version})`)
-    return
-  }
-
-  const existingUser = !!getUser(getState(), id)
-
-  if (existingUser) {
-    client.close()
-    console.debug(`Client with existing ID already active in session ${id}`)
     return
   }
 
