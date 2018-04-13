@@ -207,7 +207,7 @@ class _PlaybackControls extends Component<PrivateProps> {
     )
 
     const extensionsBtn = (
-      <ButtonListItem icon="settings" onClick={() => this.props.openBrowser(EXTENSIONS_URL)}>
+      <ButtonListItem icon="package" onClick={() => this.props.openBrowser(EXTENSIONS_URL)}>
         Extensions
       </ButtonListItem>
     )
