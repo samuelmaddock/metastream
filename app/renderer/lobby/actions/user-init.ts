@@ -8,13 +8,14 @@ import { multi_userJoined } from 'renderer/lobby/actions/users'
 import { rpc, RpcRealm } from 'renderer/network/middleware/rpc'
 import { getUser } from 'renderer/lobby/reducers/users'
 import { syncServerTime } from 'renderer/lobby/actions/clock'
-import { getLocalUsername } from '../../reducers/settings';
-import { USERNAME_MAX_LEN } from '../../../constants/settings';
+import { getLocalUsername, getLocalColor } from '../../reducers/settings'
+import { USERNAME_MAX_LEN, COLOR_LEN } from '../../../constants/settings'
 
 const { version } = require('package.json')
 
 type ClientInfo = {
   name: string
+  color: string
   version: string
 }
 
@@ -23,8 +24,9 @@ export const initialize = (): ThunkAction<void, IAppState, void> => {
   return (dispatch, getState) => {
     dispatch(
       server_initClient({
+        version,
         name: getLocalUsername(getState()),
-        version
+        color: getLocalColor(getState())
       })
     )
   }
@@ -48,6 +50,11 @@ const validateClientInfo = (info: ClientInfo, id: string, state: IAppState) => {
     return false
   }
 
+  if (!info.color || info.color.length !== COLOR_LEN) {
+    console.debug(`Client ${id} kicked for invalid color (${info.color})`)
+    return false
+  }
+
   return true
 }
 
@@ -63,7 +70,8 @@ const initClient = (info: ClientInfo): RpcThunk<void> => (dispatch, getState, { 
   dispatch(
     addUser({
       conn: client,
-      name: info.name
+      name: info.name,
+      color: info.color
     })
   )
 

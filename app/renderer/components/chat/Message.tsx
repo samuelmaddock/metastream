@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import * as cx from 'classnames'
 import { IMessage } from 'renderer/lobby/reducers/chat'
+import { ChatUsername } from './Username'
 import styles from './Chat.css'
 
 interface IProps {
@@ -17,9 +18,7 @@ export class Message extends Component<IProps> {
     return (
       <li className={styles.message}>
         {author && (
-          <span className={styles.username} title={author.id}>
-            {author.username}
-          </span>
+          <ChatUsername userId={author.id} name={author.username} />
         )}
         <span className={cx({
           [styles.broadcast]: broadcast

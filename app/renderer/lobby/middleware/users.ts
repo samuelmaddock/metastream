@@ -8,12 +8,14 @@ import { RpcThunk } from '../types'
 import { rpc, RpcRealm } from '../../network/middleware/rpc'
 import { multi_userJoined, multi_userLeft } from '../actions/users'
 import { initialize } from 'renderer/lobby/actions/user-init'
-import { getLocalUsername } from '../../reducers/settings';
+import { getLocalUsername, getLocalColor } from '../../reducers/settings';
+import { IAppState } from '../../reducers/index';
 
 interface IUserPayload {
   conn: NetConnection
   name?: string
   host?: boolean
+  color: string
 }
 
 export const addUser = actionCreator<IUserPayload>('ADD_USER')
@@ -37,12 +39,15 @@ export const usersMiddleware = (): Middleware => {
       host = options.host
 
       if (host) {
+        const state = getState() as any as IAppState
+
         // Add local user as initial user
         dispatch(
           addUser({
             conn: localUser(),
-            name: getLocalUsername(getState() as any),
-            host: true
+            host: true,
+            name: getLocalUsername(state),
+            color: getLocalColor(state),
           })
         )
 

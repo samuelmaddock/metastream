@@ -3,11 +3,13 @@ import { isType } from 'utils/redux'
 import { IAppState } from 'renderer/reducers'
 import { addUser, removeUser, clearUsers } from '../middleware/users'
 import { PlatformService } from 'renderer/platform'
+import { DEFAULT_USERNAME, DEFAULT_COLOR } from '../../../constants/settings';
 
 export interface IUser {
   id: string
   name: string
   avatar?: string
+  color: string
 }
 
 export interface IUsersState {
@@ -33,7 +35,7 @@ export const users: Reducer<IUsersState> = (state: IUsersState = initialState, a
       host: action.payload.host ? id : state.host,
       map: {
         ...state.map,
-        [id]: { id, name }
+        [id]: { id, name, color: action.payload.color }
       }
     }
   } else if (isType(action, removeUser)) {
@@ -54,7 +56,12 @@ export const getUser = (state: IAppState, userId: string) => state.users.map[use
 
 export const getUserName = (state: IAppState, userId: string): string => {
   const user = getUser(state, userId)
-  return user ? user.name : 'Unknown'
+  return user ? user.name : DEFAULT_USERNAME
+}
+
+export const getUserColor = (state: IAppState, userId: string): string => {
+  const user = getUser(state, userId)
+  return user ? user.color : DEFAULT_COLOR
 }
 
 export const getHostId = (state: IAppState) => state.users.host
