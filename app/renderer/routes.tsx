@@ -7,6 +7,7 @@ import { LobbyPage } from './containers/LobbyPage'
 import { SessionJoinPage } from './containers/SessionJoinPage'
 import { hasValidLicense } from 'renderer/license'
 import { LicenseGate } from 'renderer/components/license/LicenseGate'
+import { SettingsPage } from './containers/SettingsPage';
 
 export default () => (
   <App>
@@ -15,6 +16,7 @@ export default () => (
       <LicensedRoute path="/lobby/:lobbyId" component={LobbyPage} />
       <LicensedRoute path="/servers" component={ServerBrowserPage} />
       <LicensedRoute path="/join" component={SessionJoinPage} />
+      <LicensedRoute path="/settings" component={SettingsPage} />
     </Switch>
   </App>
 )

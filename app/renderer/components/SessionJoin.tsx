@@ -8,6 +8,8 @@ import LayoutMain from 'renderer/components/layout/Main'
 import { Icon } from 'renderer/components/Icon'
 import { MenuButton } from 'renderer/components/menu/MenuButton'
 import { TextInput, InputGroup } from './common/input'
+import { GoBackButton } from './menu/GoBackButton';
+import { MenuHeader } from './menu/MenuHeader';
 
 interface IProps {
   connect: (sessionId: string) => void
@@ -19,16 +21,9 @@ export class SessionJoin extends Component<IProps> {
   render(): JSX.Element | null {
     return (
       <LayoutMain className={styles.container}>
-        <Link to="/" className={cx('link', styles.goBack)}>
-          <Icon name="arrow-left" />
-          Go back
-        </Link>
+        <GoBackButton />
         <section>
-          <header className={styles.header}>
-            <div className={styles.left}>
-              <h1>Join Session</h1>
-            </div>
-          </header>
+          <MenuHeader text="Join Session" />
           <form>
             <p>Enter a 64-character friend code.</p>
             <InputGroup>

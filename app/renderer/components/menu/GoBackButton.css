@@ -1,0 +1,15 @@
+.goBack {
+  position: absolute;
+  margin-top: -28px;
+  text-decoration: none;
+  line-height: 30px;
+  font-size: 14px;
+  color: var(--color-highlight);
+}
+
+.goBack svg {
+  width: 16px;
+  height: 16px;
+  vertical-align: text-bottom;
+  margin-right: 2px;
+}

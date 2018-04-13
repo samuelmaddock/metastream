@@ -41,7 +41,7 @@ export default class Home extends Component<IProps> {
               </Link>
             </li>
             <li>
-              <Link to="/join" className={styles.btn}>
+              <Link to="/settings" className={styles.btn}>
                 <MenuButton icon="settings">Settings</MenuButton>
               </Link>
             </li>

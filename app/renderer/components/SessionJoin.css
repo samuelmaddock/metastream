@@ -5,34 +5,6 @@
   flex-direction: column;
 }
 
-.header {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.header h1 {
-  font-size: 36px;
-  font-weight: bold;
-}
-
-.goBack {
-  position: absolute;
-  margin-top: -28px;
-  text-decoration: none;
-  line-height: 30px;
-  font-size: 14px;
-}
-
-.goBack svg {
-  width: 16px;
-  height: 16px;
-  vertical-align: text-bottom;
-  margin-right: 2px;
-}
-
 .table {
   text-align: left;
   min-width: 600px;
