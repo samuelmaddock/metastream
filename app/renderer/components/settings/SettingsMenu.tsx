@@ -10,6 +10,7 @@ import { MenuButton } from 'renderer/components/menu/MenuButton'
 import { TextInput, InputGroup } from '../common/input'
 import { GoBackButton } from '../menu/GoBackButton';
 import { MenuHeader } from '../menu/MenuHeader';
+import { ProfileSettings } from './Profile';
 
 interface IProps {
 }
@@ -19,10 +20,8 @@ export class SettingsMenu extends Component<IProps> {
     return (
       <LayoutMain className={styles.container}>
         <GoBackButton />
-        <section>
-          <MenuHeader text="Settings" />
-          <div>todo</div>
-        </section>
+        <MenuHeader text="Settings" />
+        <ProfileSettings />
       </LayoutMain>
     )
   }
