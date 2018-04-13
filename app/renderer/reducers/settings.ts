@@ -1,18 +1,18 @@
 import { Reducer } from 'redux'
 import { isType } from 'utils/redux'
 import { clamp } from 'utils/math'
-import { setVolume, setMute, setUsername } from 'renderer/actions/settings'
-import { USERNAME_MAX_LEN } from 'constants/settings'
+import { setVolume, setMute, setUsername, setColor } from 'renderer/actions/settings'
+import { USERNAME_MAX_LEN, COLOR_LEN, DEFAULT_COLOR, DEFAULT_USERNAME } from 'constants/settings'
 import { IAppState } from './index';
 
 export interface ISettingsState {
   mute: boolean
   volume: number
-  username?: string
+  username?: string,
+  color?: string
 }
 
 const initialState: ISettingsState = {
-  username: '',
   mute: false,
   volume: 0.75
 }
@@ -39,7 +39,13 @@ export const settings: Reducer<ISettingsState> = (
     return { ...state, username }
   }
 
+  if (isType(action, setColor)) {
+    const color = action.payload.substr(0, COLOR_LEN)
+    return { ...state, color }
+  }
+
   return state
 }
 
-export const getLocalUsername = (state: IAppState) => state.settings.username || 'Unknown'
+export const getLocalUsername = (state: IAppState) => state.settings.username || DEFAULT_USERNAME
+export const getLocalColor = (state: IAppState) => state.settings.color || DEFAULT_COLOR

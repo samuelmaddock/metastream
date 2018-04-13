@@ -23,5 +23,31 @@
   font-weight: bold;
   letter-spacing: 1px;
   text-transform: uppercase;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  color: var(--color-highlight);
+}
+
+.section label {
+  display: block;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.section input {
+  margin-bottom: 15px;
+}
+
+.colorSwatch,
+.colorSwatch::-webkit-color-swatch-wrapper,
+.colorSwatch::-webkit-color-swatch {
+  padding: 0;
+  border: none;
+}
+
+.colorSwatch {
+  composes: circle from 'styles/layout.css';
+  width: 40px;
+  height: 40px;
 }

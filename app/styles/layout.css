@@ -15,6 +15,11 @@
   /* -webkit-mask-image: linear-gradient(#000, #000); */
 }
 
+.circle {
+  border-radius: 50%;
+  overflow: hidden;
+}
+
 .rounded {
   border-radius: var(--rounded-radius);
 }
