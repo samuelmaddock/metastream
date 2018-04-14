@@ -29,7 +29,7 @@ const transformPost = ({ data }: any) => {
   let result: any = {
     id: data.id,
     url: data.url,
-    title: data.title
+    title: `${data.title} - /r/${data.subreddit}`
   }
 
   const xpost = data.crosspost_parent_list
@@ -193,7 +193,9 @@ const mware: IMediaMiddleware = {
 
     if (!parseItem(ctx, child)) {
       await next()
-      ctx.res.title = child.title || ctx.res.title
+
+      let title = child.title || ctx.res.title
+      ctx.res.title = title
       return ctx.res
     }
   }
