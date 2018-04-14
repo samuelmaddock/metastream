@@ -12,6 +12,7 @@ import { PlatformService } from 'renderer/platform'
 
 let store: any
 let history: any
+let persistor: any
 
 function logger() {
   chrome.ipcRenderer.on('log', (event: Electron.Event, payload: { type: string; args: any[] }) => {
@@ -26,16 +27,15 @@ function init() {
   document.title = packageJson.productName
 
   history = cfgStore.history
-  store = cfgStore.configureStore().store
+  const storeCfg = cfgStore.configureStore()
+  store = storeCfg.store
+  persistor = storeCfg.persistor
 
   render(
     <AppContainer>
-      <Root store={store} history={history} />
+      <Root store={store} history={history} persistor={persistor} />
     </AppContainer>,
-    document.getElementById('root'),
-    function() {
-      console.info('Render complete', arguments)
-    }
+    document.getElementById('root')
   )
 
   // DEBUG
@@ -51,10 +51,10 @@ init()
 
 if (module.hot) {
   module.hot.accept('./containers/Root', () => {
-    const NextRoot = require('./containers/Root').default
+    const NextRoot = require('./containers/Root').default as typeof Root
     render(
       <AppContainer>
-        <NextRoot store={store} history={history} />
+        <NextRoot store={store} history={history} persistor={persistor} />
       </AppContainer>,
       document.getElementById('root')
     )

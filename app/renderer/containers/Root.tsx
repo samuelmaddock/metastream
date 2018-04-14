@@ -4,20 +4,26 @@ import { Provider } from 'react-redux';
 import { History } from 'history';
 import { ConnectedRouter } from 'react-router-redux';
 import Routes from '../routes';
+import { IAppState } from '../reducers/index';
+import { PersistGate } from 'redux-persist/integration/react';
+import { Persistor } from 'redux-persist';
 
 interface IProps {
-  store: Store<any>; // TODO: type this
+  store: Store<IAppState>;
   history: History;
+  persistor: Persistor;
 }
 
 export default class Root extends Component<IProps> {
   render() {
-    const { store, history } = this.props;
+    const { store, history, persistor } = this.props;
     return (
       <Provider store={store}>
-        <ConnectedRouter history={history}>
-          <Routes />
-        </ConnectedRouter>
+        <PersistGate persistor={persistor}>
+          <ConnectedRouter history={history}>
+            <Routes />
+          </ConnectedRouter>
+        </PersistGate>
       </Provider>
     );
   }

@@ -21,9 +21,9 @@ function configureStore(extra: IExtra, initialState?: {}) {
   const enhancer = applyMiddleware(thunkMiddleware, ...appMiddleware, router)
 
   const store = createStore(persistedReducer, initialState, enhancer)
-  const persister = persistStore(store)
+  const persistor = persistStore(store)
 
-  return { store, persister }
+  return { store, persistor }
 }
 
 export { configureStore, history }

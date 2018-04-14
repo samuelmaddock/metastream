@@ -55,13 +55,13 @@ const configureStore = (extra: IExtra, initialState?: {}) => {
 
   // Create Store
   const store = createStore(persistedReducer, initialState, enhancer)
-  const persister = persistStore(store)
+  const persistor = persistStore(store)
 
   if (module.hot) {
     module.hot.accept('../reducers', () => store.replaceReducer(require('../reducers')))
   }
 
-  return { store, persister }
+  return { store, persistor }
 }
 
 export { configureStore, history }

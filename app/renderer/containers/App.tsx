@@ -8,18 +8,14 @@ import { localUserId, localUser } from '../network/index';
 import { setUsername } from '../actions/settings';
 
 interface IConnectedProps {
-  bootstrapped: boolean
   username?: string
 }
 
 type Props = IConnectedProps & DispatchProp<IAppState>
 
 class App extends Component<Props> {
-  componentDidUpdate(prevProps: Props) {
-    // Wait for redux-persist state to rehydrate
-    if (!prevProps.bootstrapped && this.props.bootstrapped){
-      this.init()
-    }
+  componentWillMount() {
+    this.init()
   }
 
   private init() {
@@ -42,9 +38,8 @@ class App extends Component<Props> {
   }
 }
 
-export default connect((state: IAppState) => {
+export default connect<IConnectedProps>((state: IAppState) => {
   return {
-    bootstrapped: (state as any)._persist.rehydrated,
     username: state.settings.username
   }
-})(App as any)
+})(App)
