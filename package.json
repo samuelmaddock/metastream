@@ -75,10 +75,12 @@
       }
     ],
     "nsis": {
-      "artifactName": "${name}-setup-${version}.${ext}"
+      "artifactName": "${name}-setup-${version}.${ext}",
+      "license": "resources/license_en.txt"
     },
     "nsisWeb": {
-      "artifactName": "${name}-setup-${version}.${ext}"
+      "artifactName": "${name}-setup-${version}.${ext}",
+      "license": "resources/license_en.txt"
     },
     "dmg": {
       "contents": [
