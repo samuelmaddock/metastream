@@ -142,7 +142,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
         <ListOverlay
           className={styles.users}
           title="Users"
-          tagline={`${userIds.length} online`}
+          tagline={`${userIds.length}`}
           action={
             <HighlightButton icon="mail" onClick={() => this.openModal(LobbyModal.Invite)}>
               Invite
@@ -157,7 +157,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
         <ListOverlay
           className={styles.queue}
           title="Next up"
-          tagline={`${this.props.mediaQueue.length} items`}
+          tagline={this.props.mediaQueue.length ? `${this.props.mediaQueue.length}` : undefined}
           action={
             <HighlightButton icon="plus" onClick={() => this.openBrowser()}>
               Add

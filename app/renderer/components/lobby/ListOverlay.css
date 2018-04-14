@@ -20,12 +20,15 @@
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 2px;
-  margin-right: 10px;
+  margin-right: 5px;
 }
 
 .tagline {
+  border: 1px solid rgba(255,255,255,0.22);
+  padding: 2px 4px;
   font-size: 12px;
-  font-style: italic;
+  min-width: 18px;
+  text-align: center;
 }
 
 .list {
