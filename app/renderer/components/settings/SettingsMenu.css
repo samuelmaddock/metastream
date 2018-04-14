@@ -35,4 +35,5 @@
   composes: circle from 'styles/layout.css';
   width: 40px;
   height: 40px;
+  outline: none;
 }
