@@ -8,6 +8,7 @@ import { TitleBar } from 'renderer/components/TitleBar'
 import LayoutMain from 'renderer/components/layout/Main'
 import { Icon } from 'renderer/components/Icon'
 import { MenuButton } from 'renderer/components/menu/MenuButton'
+import { MenuHeader } from './menu/MenuHeader';
 
 interface IProps {}
 
@@ -17,13 +18,12 @@ export default class Home extends Component<IProps> {
     return (
       <LayoutMain className={styles.container}>
         <section>
-          <header className={styles.header}>
-            <h1>{packageJson.productName}</h1>
+          <MenuHeader text={packageJson.productName}>
             <h3>
               Alpha {packageJson.version} ({gitv})
             </h3>
             <h3>{process.env.NODE_ENV === 'production' ? 'Production' : 'Development'} build</h3>
-          </header>
+          </MenuHeader>
           <ul>
             <li>
               <Link to="/lobby/create" className={styles.btn}>

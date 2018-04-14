@@ -12,6 +12,7 @@ export const MenuHeader: React.SFC<IProps> = props => {
   return (
     <header className={styles.header}>
       <h1>{props.text}</h1>
+      <div>{props.children}</div>
     </header>
   )
 }

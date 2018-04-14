@@ -12,15 +12,6 @@
   flex-direction: column;
 }
 
-.header {
-  margin-bottom: 30px;
-}
-
-.header h1 {
-  font-size: 36px;
-  font-weight: bold;
-}
-
 .btn {
   display: inline-block;
   margin-bottom: 15px;
