@@ -2,8 +2,9 @@ import { Reducer } from 'redux'
 import { isType } from 'utils/redux'
 import { clamp } from 'utils/math'
 import { setVolume, setMute, setUsername, setColor } from 'renderer/actions/settings'
-import { USERNAME_MAX_LEN, COLOR_LEN, DEFAULT_COLOR, DEFAULT_USERNAME } from 'constants/settings'
+import { USERNAME_MAX_LEN, COLOR_LEN, DEFAULT_COLOR, DEFAULT_USERNAME, USERNAME_MIN_LEN } from 'constants/settings'
 import { IAppState } from './index';
+import { stripEmoji } from 'utils/string';
 
 export interface ISettingsState {
   mute: boolean
@@ -35,11 +36,12 @@ export const settings: Reducer<ISettingsState> = (
   }
 
   if (isType(action, setUsername)) {
-    const username = action.payload && action.payload.trim().substr(0, USERNAME_MAX_LEN)
-    return { ...state, username }
-  }
+    let username = action.payload && stripEmoji(action.payload.trim()).substr(0, USERNAME_MAX_LEN)
 
-  if (isType(action, setColor)) {
+    if (typeof username === 'undefined' || username.length >= USERNAME_MIN_LEN) {
+      return { ...state, username }
+    }
+  } else if (isType(action, setColor)) {
     const color = action.payload.substr(0, COLOR_LEN)
     return { ...state, color }
   }

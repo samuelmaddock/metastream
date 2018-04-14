@@ -36,6 +36,11 @@ class _ProfileSettings extends Component<Props> {
           defaultValue={this.props.username}
           maxLength={USERNAME_MAX_LEN}
           onChange={this.onChangeUsername}
+          onBlur={e => {
+            if (this.usernameInput) {
+              this.usernameInput.value = this.props.username
+            }
+          }}
         />
 
 
@@ -56,7 +61,9 @@ class _ProfileSettings extends Component<Props> {
     const { username } = this
     if (!username) return
 
-    this.props.dispatch!(setUsername(username))
+    if (username !== this.props.username) {
+      this.props.dispatch!(setUsername(username))
+    }
   }
 }
 
