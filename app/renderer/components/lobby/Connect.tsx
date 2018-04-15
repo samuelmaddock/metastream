@@ -2,9 +2,11 @@ import React, { Component } from 'react'
 import { DispatchProp, connect } from 'react-redux'
 import cx from 'classnames'
 import styles from './Connect.css'
-import { TitleBar } from '../TitleBar';
-import { IAppState } from '../../reducers/index';
-import { MenuButton } from '../menu/MenuButton';
+import { TitleBar } from '../TitleBar'
+import { IAppState } from '../../reducers/index'
+import { MenuButton } from '../menu/MenuButton'
+import { Icon } from '../Icon'
+import { Spinner } from '../common/spinner'
 
 interface IProps {
   className?: string
@@ -19,8 +21,12 @@ class _Connect extends Component<PrivateProps> {
       <div className={styles.container}>
         <TitleBar className={styles.titlebar} />
 
-        <p>Connecting&hellip;</p>
-        <MenuButton icon="x" size="medium" onClick={this.props.onCancel}>Cancel</MenuButton>
+        <p className={styles.info}>
+          <Spinner />Connecting&hellip;
+        </p>
+        <MenuButton icon="x" size="medium" onClick={this.props.onCancel}>
+          Cancel
+        </MenuButton>
       </div>
     )
   }

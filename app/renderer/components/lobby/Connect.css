@@ -1,6 +1,11 @@
 .container {
-  background: var(--app-bg-lobby);
   composes: fill-center from 'styles/layout.css';
+  background: var(--app-bg-lobby);
+}
+
+.info {
+  composes: center-vertical from 'styles/layout.css';
+  font-size: 1.2rem;
 }
 
 .titlebar {
