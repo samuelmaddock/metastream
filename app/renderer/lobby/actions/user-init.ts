@@ -6,10 +6,11 @@ import { localUser } from 'renderer/network'
 import { RpcThunk } from 'renderer/lobby/types'
 import { multi_userJoined } from 'renderer/lobby/actions/users'
 import { rpc, RpcRealm } from 'renderer/network/middleware/rpc'
-import { getUser } from 'renderer/lobby/reducers/users'
+import { getUser, getNumUsers } from 'renderer/lobby/reducers/users'
 import { syncServerTime } from 'renderer/lobby/actions/clock'
 import { getLocalUsername, getLocalColor } from '../../reducers/settings'
-import { USERNAME_MAX_LEN, COLOR_LEN } from '../../../constants/settings'
+import { USERNAME_MAX_LEN, COLOR_LEN, USERS_MAX_FREE } from '../../../constants/settings'
+import { hasValidLicense } from '../../license';
 
 const { version } = require('package.json')
 
@@ -59,10 +60,17 @@ const validateClientInfo = (info: ClientInfo, id: string, state: IAppState) => {
 }
 
 const initClient = (info: ClientInfo): RpcThunk<void> => (dispatch, getState, { client }) => {
+  const state = getState()
   const id = client.id.toString()
 
   // TODO: send disconnect reason to client
-  if (!validateClientInfo(info, id, getState())) {
+  if (!validateClientInfo(info, id, state)) {
+    client.close()
+    return
+  }
+
+  const maxUsers = hasValidLicense() ? Infinity : USERS_MAX_FREE
+  if (getNumUsers(state) >= maxUsers) {
     client.close()
     return
   }
@@ -75,7 +83,7 @@ const initClient = (info: ClientInfo): RpcThunk<void> => (dispatch, getState, { 
     })
   )
 
-  dispatch(multi_userJoined(id.toString()))
+  dispatch(multi_userJoined(id))
   dispatch(syncServerTime())
 }
 const server_initClient = rpc(RpcRealm.Server, initClient)

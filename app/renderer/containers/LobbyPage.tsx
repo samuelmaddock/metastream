@@ -59,8 +59,7 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
     } else {
       successPromise = PlatformService.createLobby({
         p2p: true,
-        websocket: true,
-        maxMembers: 4
+        websocket: true
       })
     }
 

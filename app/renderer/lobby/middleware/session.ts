@@ -1,26 +1,19 @@
 import { Middleware, MiddlewareAPI, Action, Dispatch } from 'redux';
 import { NetServer, NetConnection, localUser } from 'renderer/network';
 import { actionCreator } from 'utils/redux';
-import { Platform, ILobbyData } from 'renderer/platform/types';
+import { Platform } from 'renderer/platform/types';
 import { PlatformService } from 'renderer/platform';
 
 interface ISessionMiddlewareOptions {
   host: boolean;
 }
-
-export const setSessionData = actionCreator<ILobbyData>('session/SET_SESSION_DATA');
-
 export const sessionMiddleware = (): Middleware => {
   return <S extends Object>(store: MiddlewareAPI<S>) => {
     const { dispatch, getState } = store;
 
     const init = (options: ISessionMiddlewareOptions) => {
       if (options.host) {
-        const lobbyData = PlatformService.getLobbyData();
-
-        if (lobbyData) {
-          dispatch(setSessionData(lobbyData));
-        }
+        // TODO
       }
     }
 

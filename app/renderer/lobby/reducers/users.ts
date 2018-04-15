@@ -2,7 +2,7 @@ import { Reducer } from 'redux'
 import { isType } from 'utils/redux'
 import { IAppState } from 'renderer/reducers'
 import { addUser, removeUser, clearUsers } from '../middleware/users'
-import { PlatformService } from 'renderer/platform'
+import { localUserId } from 'renderer/network';
 import { DEFAULT_USERNAME, DEFAULT_COLOR } from '../../../constants/settings';
 
 export interface IUser {
@@ -16,12 +16,14 @@ export interface IUsersState {
   host: string
   map: {
     [key: string]: IUser | undefined
-  }
+  },
+  count: number
 }
 
 const initialState: IUsersState = {
   host: '',
-  map: {}
+  map: {},
+  count: 0
 }
 
 export const users: Reducer<IUsersState> = (state: IUsersState = initialState, action: any) => {
@@ -36,14 +38,16 @@ export const users: Reducer<IUsersState> = (state: IUsersState = initialState, a
       map: {
         ...state.map,
         [id]: { id, name, color: action.payload.color }
-      }
+      },
+      count: state.count + 1
     }
   } else if (isType(action, removeUser)) {
     const id = action.payload
     const { [id]: _, ...rest } = state.map
     return {
       ...state,
-      map: rest
+      map: rest,
+      count: state.count - 1
     }
   } else if (isType(action, clearUsers)) {
     return initialState
@@ -66,6 +70,6 @@ export const getUserColor = (state: IAppState, userId: string): string => {
 
 export const getHostId = (state: IAppState) => state.users.host
 export const getHost = (state: IAppState) => getUser(state, getHostId(state))!
+export const isHost = (state: IAppState) => getHostId(state) === localUserId()
 
-export const isHost = (state: IAppState) =>
-  getHostId(state) === PlatformService.getLocalId().id.toString()
+export const getNumUsers = (state: IAppState) => state.users.count

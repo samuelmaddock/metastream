@@ -1,6 +1,6 @@
 const { ipcRenderer, remote } = chrome
 
-import { Platform, ILobbyOptions, ILobbySession, ILobbyData } from 'renderer/platform/types'
+import { Platform, ILobbyOptions, ILobbySession } from 'renderer/platform/types'
 import { Deferred } from 'utils/async'
 import { NetServer, NetUniqueId } from 'renderer/network'
 import { SwarmRTCPeerCoordinator } from 'renderer/platform/swarm/rtc-coordinator'
@@ -37,11 +37,6 @@ export class SwarmPlatform extends Platform {
   }
 
   async createLobby(opts: ILobbyOptions): Promise<boolean> {
-    // Send IPC to main with lobby options
-
-    // idea: middleware for lobby: max members, password, auth, etc
-    // do auth first so encrypted socket can be used for the rest
-
     const isHost = true
     const coordinators: PeerCoordinator[] = []
 
@@ -134,7 +129,6 @@ export class SwarmPlatform extends Platform {
       this.server = null
     }
 
-    // TODO: close all webrtc peers
     ipcRenderer.send('platform-leave-lobby')
 
     return true
@@ -142,10 +136,6 @@ export class SwarmPlatform extends Platform {
 
   async findLobbies(): Promise<ILobbySession[]> {
     return []
-  }
-
-  getLobbyData(): ILobbyData | null {
-    return null
   }
 
   getUserName(userId: NetUniqueId): string {
