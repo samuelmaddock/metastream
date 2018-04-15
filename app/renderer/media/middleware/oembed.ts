@@ -36,12 +36,16 @@ const mware: IMediaMiddleware = {
   },
 
   async resolve(ctx, next) {
+    if (typeof ctx.state.oEmbed === 'boolean' && !ctx.state.oEmbed) {
+      return next()
+    }
+
     const { url } = ctx.req
 
     let json
 
-    if (ctx.state.oembed) {
-      json = ctx.state.oembed
+    if (ctx.state.oEmbedJson) {
+      json = ctx.state.oEmbedJson
     } else if (ctx.state.$) {
       const { $ } = ctx.state
       const link = $(`link[type='text/json+oembed'], link[type='application/json+oembed']`).attr(

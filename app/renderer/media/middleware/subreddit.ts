@@ -105,7 +105,7 @@ const parseItem = (ctx: IMediaContext, item: any): any => {
       return true
     } else if (media.oembed) {
       // Defer parse to oembed middleware
-      // ctx.state.oembed = media.oembed
+      // ctx.state.oEmbedJson = media.oembed
       return false
     }
   }

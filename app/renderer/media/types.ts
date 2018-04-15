@@ -87,7 +87,15 @@ export interface IMediaContext {
 
   /** Object for passing information through middleware */
   state: {
+    /** Cheerio query engine */
     $?: CheerioStatic
+
+    /** Whether to use oEmbed */
+    oEmbed?: boolean
+
+    /** Preloaded oEmbed json */
+    oEmbedJson?: string
+
     [key: string]: any
   }
 }

@@ -212,6 +212,9 @@ const mware: IMediaMiddleware = {
 
     mergeMetadata(ctx.res, metadata)
 
+    // Disable oEmbed for playlists
+    ctx.state.oEmbed = false
+
     return USE_OFFICIAL_API ? ctx.res : next()
   }
 }
