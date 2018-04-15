@@ -26,22 +26,26 @@
   const SEC2MS = 1000
   const MIN_DURATION = 1
   const MAX_DURATION = 60 * 60 * 20 * SEC2MS
-  const isValidDuration = duration => typeof duration === 'number' && !isNaN(duration) && duration < MAX_DURATION && duration > MIN_DURATION
+  const isValidDuration = duration =>
+    typeof duration === 'number' &&
+    !isNaN(duration) &&
+    duration < MAX_DURATION &&
+    duration > MIN_DURATION
 
   const getVideoDuration = () => {
     let duration
 
     if (activeMedia) {
       duration = activeMedia.duration
-      if (isValidDuration(duration)) return duration;
+      if (isValidDuration(duration)) return duration
     }
 
-    const { player } = window;
+    const { player } = window
     if (typeof player === 'object' && typeof player.getDuration === 'function') {
       try {
         duration = player.getDuration()
       } catch (e) {}
-      if (isValidDuration(duration)) return duration;
+      if (isValidDuration(duration)) return duration
     }
   }
 
@@ -62,15 +66,15 @@
   const getVideoContainer = video => {
     const videoRect = video.getBoundingClientRect()
 
-    const widthFillError = Math.abs(1 - (videoRect.width / window.innerWidth))
-    const heightFillError = Math.abs(1 - (videoRect.height / window.innerHeight))
+    const widthFillError = Math.abs(1 - videoRect.width / window.innerWidth)
+    const heightFillError = Math.abs(1 - videoRect.height / window.innerHeight)
 
     // TODO: fullscreen if not centered
 
     // Don't select a container if our video is already the full page size
     if (widthFillError <= FILL_THRESHOLD || heightFillError <= FILL_THRESHOLD) {
-      console.debug(`FILL% width=${widthFillPercent} height=${heightFillPercent}`)
-      return;
+      console.debug(`FILL% width=${widthFillError} height=${heightFillError}`)
+      return
     }
 
     if (!USE_VIDEO_CONTAINER) {
@@ -84,14 +88,14 @@
 
       // Container expands past video
       if (rect.width > videoRect.width) {
-        continue;
+        continue
       }
 
-      const vidMidY = videoRect.top + (videoRect.height / 2)
-      const parentMidY = rect.top + (rect.height / 2)
-      const isVideoVerticallyCentered = Math.abs(vidMidY - parentMidY) < 50; // px
+      const vidMidY = videoRect.top + videoRect.height / 2
+      const parentMidY = rect.top + rect.height / 2
+      const isVideoVerticallyCentered = Math.abs(vidMidY - parentMidY) < 50 // px
       if (!isVideoVerticallyCentered) {
-        continue;
+        continue
       }
 
       // Save last known container element
@@ -119,11 +123,11 @@
 
   const attemptAutoplay = () => {
     function descRectArea(a, b) {
-      const areaA = a.width * a.height;
-      const areaB = b.width * b.height;
-      if (areaA > areaB) return -1;
-      if (areaA < areaB) return 1;
-      return 0;
+      const areaA = a.width * a.height
+      const areaB = b.width * b.height
+      if (areaA > areaB) return -1
+      if (areaA < areaB) return 1
+      return 0
     }
 
     const videos = Array.from(mediaList).filter(media => media instanceof HTMLVideoElement)
