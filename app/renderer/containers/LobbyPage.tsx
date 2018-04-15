@@ -17,6 +17,7 @@ import { push } from 'react-router-redux'
 import { sleep } from 'utils/async'
 import { NETWORK_TIMEOUT, NetworkDisconnectReason } from 'constants/network'
 import { Connect } from '../components/lobby/Connect'
+import { Disconnect } from '../components/lobby/Disconnect'
 
 interface IRouteParams {
   lobbyId: string
@@ -123,21 +124,27 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
     this.disconnect(NetworkDisconnectReason.Timeout)
   }
 
-  private disconnect = (reason?: NetworkDisconnectReason) => {
+  private disconnect = (
+    reason: NetworkDisconnectReason = NetworkDisconnectReason.HostDisconnect
+  ) => {
+    this.connected = false
+
+    if (this.host) {
+      this.props.dispatch(push('/'))
+      return
+    }
+
     let msg
     switch (reason) {
       case NetworkDisconnectReason.Timeout:
         msg = 'Network timeout'
         break
+      default:
+        msg = 'Host closed connection'
     }
-    console.info(`Disconnected [${reason}]: ${msg}`)
-    this.connected = false
 
-    // if (msg) {
-    //   this.setState({ disconnectMessage: msg })
-    // } else {
-    this.props.dispatch(push('/'))
-    // }
+    console.debug(`Disconnected [${reason}]: ${msg}`)
+    this.setState({ disconnectMessage: msg })
   }
 
   componentWillMount(): void {
@@ -162,7 +169,7 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
 
   render(): JSX.Element {
     if (this.state.disconnectMessage) {
-      return <Connect onCancel={this.disconnect} />
+      return <Disconnect message={this.state.disconnectMessage} />
     }
 
     if (!this.connected && !this.host) {

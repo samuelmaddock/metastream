@@ -3,5 +3,6 @@ export const RECONNECT_TIMEOUT = 30000
 export const WEBSOCKET_PORT_DEFAULT = 27064
 
 export const enum NetworkDisconnectReason {
-  Timeout = 1
+  HostDisconnect = 1,
+  Timeout = 2
 }

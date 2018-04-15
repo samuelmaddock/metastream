@@ -11,6 +11,15 @@ Variables
   --color-nice-blue: #00bfff;
   /* --color-highlight: #f98673; */
   --color-highlight: rgb(249, 134, 115);
+
+  --app-bg-lobby: linear-gradient(
+    170deg,
+    #20202f 0%,
+    #273550 16%,
+    #416081 41%,
+    #adacb2 78%,
+    #eac3a2 100%
+  );
 }
 
 /*
@@ -93,7 +102,7 @@ button:disabled {
 }
 
 p:not(:last-child) {
-  margin-bottom: 15px;
+  margin-bottom: 1rem;
 }
 
 a {
