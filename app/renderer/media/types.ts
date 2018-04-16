@@ -75,7 +75,7 @@ export interface IMediaResponse {
   /** Object for passing state to the frontend */
   state: {
     /** Requires custom referrer */
-    referrer: boolean
+    referrer?: boolean
 
     [key: string]: any
   }
