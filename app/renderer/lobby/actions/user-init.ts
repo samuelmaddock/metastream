@@ -9,8 +9,8 @@ import { rpc, RpcRealm } from 'renderer/network/middleware/rpc'
 import { getUser, getNumUsers } from 'renderer/lobby/reducers/users'
 import { syncServerTime } from 'renderer/lobby/actions/clock'
 import { getLocalUsername, getLocalColor } from '../../reducers/settings'
-import { USERNAME_MAX_LEN, COLOR_LEN, USERS_MAX_FREE } from '../../../constants/settings'
-import { hasValidLicense } from '../../license';
+import { USERNAME_MAX_LEN, COLOR_LEN } from 'constants/settings'
+import { getMaxUsers } from '../reducers/session';
 
 const { version } = require('package.json')
 
@@ -69,8 +69,7 @@ const initClient = (info: ClientInfo): RpcThunk<void> => (dispatch, getState, { 
     return
   }
 
-  const maxUsers = hasValidLicense() ? Infinity : USERS_MAX_FREE
-  if (getNumUsers(state) >= maxUsers) {
+  if (getNumUsers(state) >= getMaxUsers(state)) {
     client.close()
     return
   }

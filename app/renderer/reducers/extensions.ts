@@ -1,7 +1,6 @@
 import { Reducer } from 'redux'
 import { isType } from 'utils/redux'
 import { IAppState } from 'renderer/reducers'
-import { setSessionData } from 'renderer/lobby/middleware/session'
 import { setUpdateState } from 'renderer/actions/ui'
 import { updateExtensions, showExtensionPopup } from 'renderer/actions/extensions'
 import { chromeUrl } from 'utils/appUrl'

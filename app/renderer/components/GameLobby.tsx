@@ -7,7 +7,6 @@ import { Lobby } from 'renderer/components/Lobby'
 import { IReactReduxProps } from 'types/redux'
 import { IUsersState } from 'renderer/lobby/reducers/users'
 import { server_addChat } from 'renderer/lobby/actions/chat'
-import { getSessionName } from 'renderer/lobby/reducers/session'
 import { VideoPlayer } from 'renderer/components/lobby/VideoPlayer'
 import { IMediaItem, PlaybackState } from 'renderer/lobby/reducers/mediaPlayer'
 import { isUrl } from 'utils/url'
@@ -65,7 +64,6 @@ interface IConnectedProps {
   messages: IMessage[]
   playback: PlaybackState
   users: IUsersState
-  sessionName?: string
   updateAvailable: boolean
   popup?: IPopupState
 }
@@ -265,7 +263,6 @@ export const GameLobby = connect((state: IAppState): IConnectedProps => {
     messages: state.chat.messages,
     playback: getPlaybackState(state),
     users: state.users,
-    sessionName: getSessionName(state),
     updateAvailable: isUpdateAvailable(state),
     popup: state.extensions.popup
   }
