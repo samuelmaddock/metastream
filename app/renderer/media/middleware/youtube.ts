@@ -212,6 +212,9 @@ const mware: IMediaMiddleware = {
 
     mergeMetadata(ctx.res, metadata)
 
+    // Bypass restricted embed playback
+    ctx.res.state.referrer = true
+
     // Disable oEmbed for playlists
     ctx.state.oEmbed = false
 

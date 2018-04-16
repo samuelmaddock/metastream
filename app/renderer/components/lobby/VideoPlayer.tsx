@@ -75,6 +75,12 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
 
   // HACK: Set http referrer to itself to avoid referral blocking
   get httpReferrer() {
+    const media = this.props.current
+
+    if (media && media.state && media.state.referrer) {
+      return MEDIA_REFERRER
+    }
+
     const { mediaUrl } = this
 
     try {

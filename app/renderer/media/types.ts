@@ -73,7 +73,12 @@ export interface IMediaResponse {
   thumbnails?: { [key: number]: string }
 
   /** Object for passing state to the frontend */
-  state: { [key: string]: any }
+  state: {
+    /** Requires custom referrer */
+    referrer: boolean
+
+    [key: string]: any
+  }
 
   hasMore?: boolean
 
