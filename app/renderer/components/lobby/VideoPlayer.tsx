@@ -215,7 +215,7 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
   }
 
   private requestFullScreen(x: number = 0, y: number = 0) {
-    console.info(`CLICK FRAME ${x},${y}`)
+    console.debug(`CLICK FRAME ${x},${y}`)
     this.webContents.sendInputEvent({
       type: 'mouseUp',
       x,
@@ -225,8 +225,8 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
   }
 
   private requestFullScreenIFrame(points: { x: number; y: number }[]) {
-    console.log('FS POINTS', points)
-    points.forEach((p, idx) => this.requestFullScreen(p.x + 10, idx === 0 ? 0 : p.y + 10))
+    console.debug('FS POINTS', points)
+    points.forEach((p, idx) => this.requestFullScreen(p.x, p.y))
   }
 
   private updatePlaybackTime = () => {

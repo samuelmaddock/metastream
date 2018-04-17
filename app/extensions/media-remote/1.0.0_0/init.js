@@ -48,34 +48,29 @@
       return 0;
     }
 
+    function isIFrameAtPoint(p) {
+      const elem = document.elementFromPoint(p.x, p.y)
+      return elem instanceof HTMLIFrameElement
+    }
+
     ipcRenderer.on('media-iframes', (event, href) => {
       const frame = document.querySelector(`iframe[src='${href}']`)
       if (frame) {
-        const rect = frame.getBoundingClientRect()
+        let rect = frame.getBoundingClientRect()
+
         window.scrollTo(0, rect.top)
-        const point = { x: rect.left, y: rect.top }
-        ipcRenderer.sendToHost('media-iframes', [point])
+        window.scrollY // trigger reflow
+
+        rect = frame.getBoundingClientRect()
+        const point = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }
+        if (isIFrameAtPoint(point)) {
+          ipcRenderer.sendToHost('media-iframes', [point])
+        } else {
+          console.debug(`IFrame not found at ${JSON.stringify(point)}`)
+        }
       } else {
         console.error(`[MediaRemote] Couldn't find iframe for href=${href}`)
       }
-
-      /*
-      const frames = Array.from(document.querySelectorAll(`iframe[src='${href}']`))
-      if (frames.length === 0) return
-
-      const rects = frames.map(frame => frame.getBoundingClientRect())
-      rects.sort(compareElementArea)
-
-      // Place biggest rect in view
-      const biggestRect = rects[0]
-      window.scrollTo(0, biggestRect.top)
-
-      const points = rects.map(rect => {
-        return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }
-      })
-
-      ipcRenderer.sendToHost('media-iframes', points)
-      */
     })
 
     ipcRenderer.send('media-register-listener', location.href)

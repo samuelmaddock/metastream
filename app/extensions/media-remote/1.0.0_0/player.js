@@ -65,16 +65,19 @@
 
   const getVideoContainer = video => {
     const videoRect = video.getBoundingClientRect()
+    const isTopFrame = window.self === window.top
 
-    const widthFillError = Math.abs(1 - videoRect.width / window.innerWidth)
-    const heightFillError = Math.abs(1 - videoRect.height / window.innerHeight)
+    if (isTopFrame) {
+      const widthFillError = Math.abs(1 - videoRect.width / window.innerWidth)
+      const heightFillError = Math.abs(1 - videoRect.height / window.innerHeight)
 
-    // TODO: fullscreen if not centered
+      // TODO: fullscreen if not centered
 
-    // Don't select a container if our video is already the full page size
-    if (widthFillError <= FILL_THRESHOLD || heightFillError <= FILL_THRESHOLD) {
-      console.debug(`FILL% width=${widthFillError} height=${heightFillError}`)
-      return
+      // Don't select a container if our video is already the full page size
+      if (widthFillError <= FILL_THRESHOLD || heightFillError <= FILL_THRESHOLD) {
+        console.debug(`FILL% width=${widthFillError} height=${heightFillError}`)
+        return
+      }
     }
 
     if (!USE_VIDEO_CONTAINER) {
