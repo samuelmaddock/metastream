@@ -117,8 +117,6 @@
     // Hide controls
     activeMedia.controls = false
 
-    debugger;
-
     // Attempt to click fullscreen button
     const fullscreenBtn = document.querySelector('button[class*=fullscreen]')
     if (fullscreenBtn instanceof HTMLButtonElement) {
