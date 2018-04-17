@@ -1,5 +1,6 @@
 import { parse as parseUrl } from 'url'
 import { actionCreator } from 'utils/redux'
+import shortid from 'shortid'
 import { IMediaItem, PlaybackState } from 'renderer/lobby/reducers/mediaPlayer'
 import { Thunk } from 'types/thunk'
 import { ThunkAction } from 'redux-thunk'
@@ -11,7 +12,8 @@ import { MediaThumbnailSize, MediaType } from 'renderer/media/types'
 import {
   getCurrentMedia,
   getPlaybackState,
-  getPlaybackTime
+  getPlaybackTime,
+  getCurrentMediaId
 } from 'renderer/lobby/reducers/mediaPlayer.helpers'
 import { IAppState } from 'renderer/reducers'
 import { getUserName } from 'renderer/lobby/reducers/users'
@@ -23,18 +25,19 @@ export const setMedia = actionCreator<IMediaItem>('SET_MEDIA')
 export const endMedia = actionCreator<void>('END_MEDIA')
 export const queueMedia = actionCreator<IMediaItem>('QUEUE_MEDIA')
 export const updateMedia = actionCreator<{ duration: number }>('UPDATE_MEDIA')
+export const deleteMedia = actionCreator<string>('DELETE_MEDIA')
 
 /** Media timer until playback ends. This assumes only one media player exists at a time.*/
 let mediaTimeoutId: number | null = null
 
-export const nextMedia = (): ThunkAction<void, IAppState, void> => {
+export const nextMedia = (force?: boolean): ThunkAction<void, IAppState, void> => {
   return (dispatch, getState) => {
     const state = getState()
     const media = getCurrentMedia(state)
 
     if (media) {
-      if (media.hasMore) {
-        dispatch(advanceMedia(media))
+      if (!force && media.hasMore) {
+        return dispatch(advanceMedia(media))
       } else {
         dispatch(endMedia())
         dispatch(updatePlaybackTimer())
@@ -147,6 +150,7 @@ const requestMedia = (url: string): RpcThunk<void> => async (dispatch, getState,
 
   const userId = context.client.id.toString()
   const media: IMediaItem = {
+    id: shortid(),
     type: res.type,
     url: res.url,
     title: res.title,
@@ -208,3 +212,14 @@ const requestSeek = (time: number): RpcThunk<void> => (dispatch, getState, conte
   dispatch(updatePlaybackTimer())
 }
 export const server_requestSeek = rpc(RpcRealm.Server, requestSeek)
+
+const requestDeleteMedia = (mediaId: string): RpcThunk<void> => (dispatch, getState, context) => {
+  const currentId = getCurrentMediaId(getState())
+  if (currentId === mediaId) {
+    dispatch(nextMedia(true))
+    return
+  }
+
+  dispatch(deleteMedia(mediaId))
+}
+export const server_requestDeleteMedia = rpc(RpcRealm.Server, requestDeleteMedia)

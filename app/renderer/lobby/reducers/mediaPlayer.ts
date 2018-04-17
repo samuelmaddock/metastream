@@ -9,7 +9,8 @@ import {
   seekMedia,
   queueMedia,
   repeatMedia,
-  updateMedia
+  updateMedia,
+  deleteMedia
 } from 'renderer/lobby/actions/mediaPlayer'
 import { MediaType } from 'renderer/media/types'
 import { NetActions } from 'renderer/network/actions'
@@ -22,6 +23,9 @@ export const enum PlaybackState {
 }
 
 export interface IMediaItem {
+  /** Unique ID */
+  id: string
+
   type: MediaType
 
   url: string
@@ -170,6 +174,14 @@ export const mediaPlayer: Reducer<IMediaPlayerState> = (
         ...state.current,
         duration: hasNextDuration ? nextDuration : prevDuration
       }
+    }
+  } else if (isType(action, deleteMedia)) {
+    const mediaId = action.payload
+    const mediaIdx = state.queue.findIndex(media => media.id === mediaId)
+    if (mediaIdx > -1) {
+      const queue = [...state.queue]
+      queue.splice(mediaIdx, 1)
+      return { ...state, queue }
     }
   }
 

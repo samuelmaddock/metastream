@@ -5,6 +5,11 @@ export const getCurrentMedia = (state: IAppState) => {
   return state.mediaPlayer.current
 }
 
+export const getCurrentMediaId = (state: IAppState) => {
+  const { current } = state.mediaPlayer
+  return current && current.id
+}
+
 export const getPlaybackState = (state: IAppState) => {
   return state.mediaPlayer.playback
 }
@@ -34,4 +39,8 @@ export const getPlaybackTime2 = (state: IMediaPlayerState) =>
 
 export const getMediaQueue = (state: IAppState) => {
   return state.mediaPlayer.queue
+}
+
+export const getMediaById = (state: IAppState, id: string) => {
+  return state.mediaPlayer.queue.find(media => media.id === id)
 }

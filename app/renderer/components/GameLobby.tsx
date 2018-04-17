@@ -14,7 +14,8 @@ import {
   server_requestMedia,
   server_requestPlayPause,
   server_requestNextMedia,
-  server_requestSeek
+  server_requestSeek,
+  server_requestDeleteMedia
 } from 'renderer/lobby/actions/mediaPlayer'
 import { IMessage } from 'renderer/lobby/reducers/chat'
 import { Messages } from 'renderer/components/chat/Messages'
@@ -162,9 +163,26 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
             </HighlightButton>
           }
         >
-          {media && media.hasMore && <MediaItem key="current" media={media} />}
+          {media &&
+            media.hasMore && (
+              <MediaItem
+                key="current"
+                media={media}
+                onClick={() => {
+                  this.props.dispatch!(server_requestDeleteMedia(media.id))
+                }}
+              />
+            )}
           {this.props.mediaQueue.map((media, idx) => {
-            return <MediaItem key={idx} media={media} />
+            return (
+              <MediaItem
+                key={idx}
+                media={media}
+                onClick={() => {
+                  this.props.dispatch!(server_requestDeleteMedia(media.id))
+                }}
+              />
+            )
           })}
         </ListOverlay>
 

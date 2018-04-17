@@ -6,6 +6,7 @@ import { isNumber } from 'utils/type'
 
 interface IProps {
   media: IMediaItem
+  onClick: () => void
 }
 
 export class MediaItem extends Component<IProps> {
@@ -13,7 +14,7 @@ export class MediaItem extends Component<IProps> {
     const { media } = this.props
 
     return (
-      <figure className={styles.media}>
+      <figure className={styles.media} onClick={this.props.onClick}>
         <div className={styles.title}>{media.title}</div>
         {isNumber(media.duration) &&
           media.duration !== 0 && (
