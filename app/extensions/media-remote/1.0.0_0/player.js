@@ -229,7 +229,6 @@
 
     // Checks for media when it starts playing
     function checkMediaReady() {
-      // Soundcloud fix
       if (isNaN(media.duration)) {
         return false
       }
@@ -238,6 +237,7 @@
         setMedia(media)
         media.removeEventListener('playing', checkMediaReady)
         media.removeEventListener('durationchange', checkMediaReady)
+        media.removeEventListener('canplay', checkMediaReady)
         return true
       }
 
@@ -247,6 +247,7 @@
     if (media.paused || !checkMediaReady()) {
       media.addEventListener('playing', checkMediaReady)
       media.addEventListener('durationchange', checkMediaReady)
+      media.addEventListener('canplay', checkMediaReady)
 
       clearTimeout(autoplayTimerId)
       autoplayTimerId = setTimeout(attemptAutoplay, AUTOPLAY_TIMEOUT)
