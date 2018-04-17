@@ -209,7 +209,8 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
       if (info.iframe) {
         this.webContents.send('media-iframes', info.href)
       } else {
-        this.requestFullScreen()
+        // Delay to prevent embed-disabled YouTube vids from fullscreening then closing
+        setTimeout(() => this.requestFullScreen(), 500)
       }
     }
   }

@@ -67,16 +67,19 @@
     const videoRect = video.getBoundingClientRect()
     const isTopFrame = window.self === window.top
 
-    if (isTopFrame) {
-      const widthFillError = Math.abs(1 - videoRect.width / window.innerWidth)
-      const heightFillError = Math.abs(1 - videoRect.height / window.innerHeight)
+    const widthFillError = Math.abs(1 - videoRect.width / window.innerWidth)
+    const heightFillError = Math.abs(1 - videoRect.height / window.innerHeight)
 
-      // TODO: fullscreen if not centered
+    // TODO: fullscreen if not centered
 
-      // Don't select a container if our video is already the full page size
-      if (widthFillError <= FILL_THRESHOLD || heightFillError <= FILL_THRESHOLD) {
-        console.debug(`FILL% width=${widthFillError} height=${heightFillError}`)
+    const isVideoFullFrame = widthFillError <= FILL_THRESHOLD || heightFillError <= FILL_THRESHOLD
+    if (isVideoFullFrame) {
+      if (isTopFrame) {
+        // Don't select a container if our video is already the full page size
         return
+      } else {
+        // Fullscreen IFrame document
+        return document.documentElement
       }
     }
 
@@ -108,17 +111,29 @@
   }
 
   const fullscreenMedia = () => {
-    if (document.webkitFullscreenElement) {
-      return
-    }
+    if (document.webkitFullscreenElement) return
+    if (!(activeMedia && activeMedia instanceof HTMLVideoElement)) return
 
-    if (activeMedia && activeMedia instanceof HTMLVideoElement) {
-      activeMedia.controls = false
-      const container = getVideoContainer(activeMedia)
-      if (container) {
-        container.webkitRequestFullScreen()
+    // Hide controls
+    activeMedia.controls = false
+
+    debugger;
+
+    // Attempt to click fullscreen button
+    const fullscreenBtn = document.querySelector('button[class*=fullscreen]')
+    if (fullscreenBtn instanceof HTMLButtonElement) {
+      fullscreenBtn.click()
+      if (document.webkitFullscreenElement) {
+        console.debug('Clicked fullscreen button')
+        return
       }
     }
+
+    const container = getVideoContainer(activeMedia)
+    if (!container) return
+
+    // Otherwise fullscreen the container
+    container.webkitRequestFullScreen()
   }
 
   const AUTOPLAY_TIMEOUT = 3000
