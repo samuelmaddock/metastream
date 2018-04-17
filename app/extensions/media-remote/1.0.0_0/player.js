@@ -117,6 +117,9 @@
     // Hide controls
     activeMedia.controls = false
 
+    const container = getVideoContainer(activeMedia)
+    if (!container) return
+
     // Attempt to click fullscreen button
     const fullscreenBtn = document.querySelector('button[class*=fullscreen]')
     if (fullscreenBtn instanceof HTMLButtonElement) {
@@ -126,9 +129,6 @@
         return
       }
     }
-
-    const container = getVideoContainer(activeMedia)
-    if (!container) return
 
     // Otherwise fullscreen the container
     container.webkitRequestFullScreen()
