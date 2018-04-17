@@ -13,7 +13,8 @@ const mware: IMediaMiddleware = {
 
     const [text, response] = await fetchText(url.href, {
       headers: {
-        'user-agent': MEDIA_USER_AGENT
+        'user-agent': MEDIA_USER_AGENT,
+        host: url.host
       }
     })
 

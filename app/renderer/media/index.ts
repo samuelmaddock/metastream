@@ -79,6 +79,7 @@ export const resolveMediaUrl = async (url: string): Promise<Readonly<IMediaRespo
 
   const fn = compose(middlewares)
   const result = (await fn(ctx)) || ctx.res
+  console.debug('Resolved media', ctx)
   return finalizeMedia(result)
 }
 
