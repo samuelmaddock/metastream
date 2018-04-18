@@ -9,7 +9,7 @@ export const setSessionData = actionCreator<Partial<ISessionState>>('SET_SESSION
 
 export const initHostSession = (): ThunkAction<void, IAppState, void> => {
   return (dispatch, getState) => {
-    const maxUsers = hasValidLicense() ? Infinity : USERS_MAX_FREE
+    const maxUsers = hasValidLicense() ? undefined : USERS_MAX_FREE
 
     dispatch(setSessionData({ maxUsers }))
   }

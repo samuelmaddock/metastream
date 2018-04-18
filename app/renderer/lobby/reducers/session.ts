@@ -2,15 +2,13 @@ import { Reducer } from 'redux'
 import { isType } from 'utils/redux'
 import { IAppState } from 'renderer/reducers'
 import { DEFAULT_USERS_MAX } from 'constants/settings'
-import { setSessionData } from '../actions/session';
+import { setSessionData } from '../actions/session'
 
 export interface ISessionState {
-  maxUsers: number
+  maxUsers?: number
 }
 
-const initialState: ISessionState = {
-  maxUsers: DEFAULT_USERS_MAX
-}
+const initialState: ISessionState = {}
 
 export const session: Reducer<ISessionState> = (
   state: ISessionState = initialState,
@@ -23,4 +21,4 @@ export const session: Reducer<ISessionState> = (
   return state
 }
 
-export const getMaxUsers = (state: IAppState) => state.session.maxUsers
+export const getMaxUsers = (state: IAppState) => state.session.maxUsers || Infinity

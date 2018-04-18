@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 
 import { IAppState } from '../../reducers/index'
 import { IUsersState } from '../../lobby/reducers/users'
+import { getMaxUsers } from '../../lobby/reducers/session'
 
 import { HighlightButton } from '../common/button'
 import { ListOverlay } from './ListOverlay'
@@ -14,6 +15,7 @@ interface IProps {
 }
 
 interface IConnectedProps {
+  maxUsers?: number
   users: IUsersState
 }
 
@@ -21,13 +23,17 @@ type Props = IProps & IConnectedProps
 
 class _UserList extends Component<Props> {
   render(): JSX.Element | null {
-    const { users } = this.props
+    const { users, maxUsers } = this.props
     const userIds = Object.keys(users.map)
+
+    const numUsers = userIds.length
+    const userSlots = `${numUsers}` + (maxUsers && isFinite(maxUsers) ? `/${maxUsers}` : '')
+
     return (
       <ListOverlay
         className={this.props.className}
         title="Users"
-        tagline={`${userIds.length}`}
+        tagline={userSlots}
         action={
           <HighlightButton icon="mail" onClick={this.props.onInvite}>
             Invite
@@ -45,6 +51,7 @@ class _UserList extends Component<Props> {
 
 export const UserList = connect((state: IAppState): IConnectedProps => {
   return {
+    maxUsers: getMaxUsers(state),
     users: state.users
   }
 })(_UserList) as React.ComponentClass<IProps>
