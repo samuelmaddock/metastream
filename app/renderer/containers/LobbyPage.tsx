@@ -7,7 +7,6 @@ import { IReactReduxProps } from 'types/redux'
 import { IAppState, AppReplicatedState } from 'renderer/reducers'
 
 import { NetworkState } from 'types/network'
-import { Lobby } from 'renderer/components/Lobby'
 import { GameLobby } from 'renderer/components/GameLobby'
 import { PlatformService } from 'renderer/platform'
 import { NetServer } from 'renderer/network'

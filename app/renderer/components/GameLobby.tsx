@@ -3,7 +3,6 @@ import { DispatchProp, connect } from 'react-redux'
 import cx from 'classnames'
 const { ipcRenderer } = chrome
 
-import { Lobby } from 'renderer/components/Lobby'
 import { IReactReduxProps } from 'types/redux'
 import { IUsersState } from 'renderer/lobby/reducers/users'
 import { server_addChat } from 'renderer/lobby/actions/chat'
