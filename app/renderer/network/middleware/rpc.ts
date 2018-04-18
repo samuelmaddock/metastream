@@ -242,7 +242,7 @@ export function rpc(realm: RpcRealm, action: (...args: any[]) => any, validate?:
 
   // Register global RPC handler
   if (rpcMap.hasOwnProperty(name)) {
-    throw new Error(`RPC action name ("${name}") collides with existing action`)
+    console.warn(`RPC action name ("${name}") collides with existing action, overriding...`)
   }
 
   rpcMap[name] = { realm, action, validate }

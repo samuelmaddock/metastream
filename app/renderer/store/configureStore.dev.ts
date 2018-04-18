@@ -58,7 +58,10 @@ const configureStore = (extra: IExtra, initialState?: {}) => {
   const persistor = persistStore(store)
 
   if (module.hot) {
-    module.hot.accept('../reducers', () => store.replaceReducer(require('../reducers')))
+    module.hot.accept('../reducers', () => {
+      const newReducer = require('../reducers').default
+      store.replaceReducer(newReducer)
+    })
   }
 
   return { store, persistor }
