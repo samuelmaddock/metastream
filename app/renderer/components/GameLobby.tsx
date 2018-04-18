@@ -39,7 +39,6 @@ import { MediaType } from 'renderer/media/types'
 import { WebBrowser } from 'renderer/components/browser/WebBrowser'
 import { Icon } from 'renderer/components/Icon'
 import { registerMediaShortcuts, unregisterMediaShortcuts } from 'renderer/lobby/actions/shortcuts'
-import { isUpdateAvailable } from 'renderer/reducers/ui'
 import { IAppState } from 'renderer/reducers'
 import { HighlightButton } from 'renderer/components/common/button'
 import { Modal } from 'renderer/components/lobby/Modal'
@@ -48,6 +47,8 @@ import { MediaInfo } from 'renderer/components/lobby/modals/MediaInfo'
 import { addExtensionListeners, removeExtensionListeners } from '../actions/extensions'
 import { PopupWindow } from './browser/PopupWindow'
 import { IPopupState } from '../reducers/extensions'
+import { UserList } from './lobby/UserList'
+import { MediaList } from './lobby/MediaList'
 
 interface IProps {
   host: boolean
@@ -61,11 +62,8 @@ interface IState {
 
 interface IConnectedProps {
   currentMedia?: IMediaItem
-  mediaQueue: IMediaItem[]
   messages: IMessage[]
   playback: PlaybackState
-  users: IUsersState
-  updateAvailable: boolean
   popup?: IPopupState
 }
 
@@ -132,59 +130,12 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
   }
 
   private renderControls() {
-    const { currentMedia: media } = this.props
-    const userIds = Object.keys(this.props.users.map)
-
     return (
       <section className={styles.controls}>
         {this.renderPlaybackControls()}
-        <ListOverlay
-          className={styles.users}
-          title="Users"
-          tagline={`${userIds.length}`}
-          action={
-            <HighlightButton icon="mail" onClick={() => this.openModal(LobbyModal.Invite)}>
-              Invite
-            </HighlightButton>
-          }
-        >
-          {userIds.map((userId: string) => {
-            const user = this.props.users.map[userId]!
-            return <UserItem key={userId} user={user} />
-          })}
-        </ListOverlay>
-        <ListOverlay
-          className={styles.queue}
-          title="Next up"
-          tagline={this.props.mediaQueue.length ? `${this.props.mediaQueue.length}` : undefined}
-          action={
-            <HighlightButton icon="plus" onClick={() => this.openBrowser()}>
-              Add
-            </HighlightButton>
-          }
-        >
-          {media &&
-            media.hasMore && (
-              <MediaItem
-                key="current"
-                media={media}
-                onClick={() => {
-                  this.props.dispatch!(server_requestDeleteMedia(media.id))
-                }}
-              />
-            )}
-          {this.props.mediaQueue.map((media, idx) => {
-            return (
-              <MediaItem
-                key={idx}
-                media={media}
-                onClick={() => {
-                  this.props.dispatch!(server_requestDeleteMedia(media.id))
-                }}
-              />
-            )
-          })}
-        </ListOverlay>
+
+        <UserList className={styles.users} onInvite={() => this.openModal(LobbyModal.Invite)} />
+        <MediaList className={styles.queue} onAddMedia={this.openBrowser} />
 
         <Chat
           className={styles.chat}
@@ -277,11 +228,8 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
 export const GameLobby = connect((state: IAppState): IConnectedProps => {
   return {
     currentMedia: getCurrentMedia(state),
-    mediaQueue: getMediaQueue(state),
     messages: state.chat.messages,
     playback: getPlaybackState(state),
-    users: state.users,
-    updateAvailable: isUpdateAvailable(state),
     popup: state.extensions.popup
   }
 })(_GameLobby) as React.ComponentClass<IProps>
