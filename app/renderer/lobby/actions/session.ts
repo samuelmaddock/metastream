@@ -10,6 +10,7 @@ export const setSessionData = actionCreator<Partial<ISessionState>>('SET_SESSION
 export const setDisconnectReason = actionCreator<NetworkDisconnectReason | string | undefined>(
   'SET_DISCONNECT_REASON'
 )
+export const setAuthorized = actionCreator<boolean>('SET_AUTHORIZED')
 
 export const initHostSession = (): ThunkAction<void, IAppState, void> => {
   return (dispatch, getState) => {

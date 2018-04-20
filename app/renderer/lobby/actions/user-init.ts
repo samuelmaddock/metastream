@@ -7,7 +7,7 @@ import { RpcThunk } from 'renderer/lobby/types'
 import { multi_userJoined } from 'renderer/lobby/actions/users'
 import { rpc, RpcRealm } from 'renderer/network/middleware/rpc'
 import { getUser, getNumUsers } from 'renderer/lobby/reducers/users'
-import { syncServerTime } from 'renderer/lobby/actions/clock'
+import { updateServerTimeDelta } from 'renderer/lobby/actions/clock'
 import { getLocalUsername, getLocalColor } from '../../reducers/settings'
 import { USERNAME_MAX_LEN, COLOR_LEN } from 'constants/settings'
 import { getMaxUsers } from '../reducers/session'
@@ -20,6 +20,10 @@ type ClientInfo = {
   name: string
   color: string
   version: string
+}
+
+type AuthorizeInfo = {
+  serverTime: number
 }
 
 /** Initialize client */
@@ -70,6 +74,13 @@ const kickClient = (reason: NetworkDisconnectReason | string): RpcThunk<void> =>
 }
 const client_kick = rpc(RpcRealm.Client, kickClient)
 
+const clientAuthorized = (info: AuthorizeInfo): RpcThunk<void> => (dispatch, getState) => {
+  // TODO: take average of multiple samples?
+  const dt = Date.now() - info.serverTime
+  dispatch(updateServerTimeDelta(dt))
+}
+const client_authorized = rpc(RpcRealm.Client, clientAuthorized)
+
 const initClient = (info: ClientInfo): RpcThunk<void> => (dispatch, getState, { client }) => {
   const state = getState()
   const id = client.id.toString()
@@ -98,6 +109,9 @@ const initClient = (info: ClientInfo): RpcThunk<void> => (dispatch, getState, { 
   )
 
   dispatch(multi_userJoined(id))
-  dispatch(syncServerTime())
+
+  dispatch(client_authorized({
+    serverTime: Date.now()
+  })(id))
 }
 const server_initClient = rpc(RpcRealm.Server, initClient)

@@ -32,6 +32,7 @@ interface IProps extends RouteComponentProps<IRouteParams> {}
 
 interface IConnectedProps {
   disconnectReason?: NetworkDisconnectReason | string
+  clientAuthorized?: boolean
 }
 
 interface IState {
@@ -40,7 +41,8 @@ interface IState {
 
 function mapStateToProps(state: IAppState): IConnectedProps {
   return {
-    disconnectReason: getDisconnectReason(state)
+    disconnectReason: getDisconnectReason(state),
+    clientAuthorized: state.session.authorized
   }
 }
 
@@ -197,7 +199,7 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
       return <Disconnect message={this.state.disconnectMessage} />
     }
 
-    if (!this.connected && !this.host) {
+    if (!this.host && !(this.connected && this.props.clientAuthorized)) {
       return <Connect onCancel={this.disconnectImmediate} />
     }
 
