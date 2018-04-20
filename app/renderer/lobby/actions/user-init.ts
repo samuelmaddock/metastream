@@ -59,17 +59,24 @@ const validateClientInfo = (info: ClientInfo, id: string, state: IAppState) => {
   return true
 }
 
+const kickClient = (reason: string): RpcThunk<void> => (dispatch, getState) => {
+  console.log(`Received kick with reason: '${reason}'`)
+}
+const client_kick = rpc(RpcRealm.Client, kickClient)
+
 const initClient = (info: ClientInfo): RpcThunk<void> => (dispatch, getState, { client }) => {
   const state = getState()
   const id = client.id.toString()
 
   // TODO: send disconnect reason to client
   if (!validateClientInfo(info, id, state)) {
+    dispatch(client_kick('Failed to validate')(id))
     client.close()
     return
   }
 
   if (getNumUsers(state) >= getMaxUsers(state)) {
+    dispatch(client_kick('Session is full')(id))
     client.close()
     return
   }

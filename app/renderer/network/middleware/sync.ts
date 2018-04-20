@@ -80,7 +80,7 @@ export const netSyncMiddleware = (): Middleware => {
           const action = { type: NetActionTypes.FULL_UPDATE, v: COMMIT_NUMBER, state }
           const jsonStr = JSON.stringify(action)
           const buf = new Buffer(SYNC_HEADER + jsonStr)
-          server!.sendTo(conn.id, buf)
+          server!.sendTo(conn.id.toString(), buf)
         })
       }
 

@@ -32,7 +32,7 @@ class NetServer extends EventEmitter implements INetServerEvents {
     console.log(`[NetServer] New client connection from ${conn}`)
 
     {
-      const prevConn = this.getClientById(conn.id)
+      const prevConn = this.getClientById(conn.id.toString())
       if (prevConn) {
         // TODO: notify dropped
         prevConn.close()
@@ -62,8 +62,8 @@ class NetServer extends EventEmitter implements INetServerEvents {
     }
   }
 
-  private getClientById(clientId: NetUniqueId) {
-    return this.connections.get(clientId.toString())
+  private getClientById(clientId: string) {
+    return this.connections.get(clientId)
   }
 
   private forEachClient(func: (conn: NetConnection) => void) {
@@ -93,7 +93,7 @@ class NetServer extends EventEmitter implements INetServerEvents {
     this.forEachClient(conn => conn.send(data))
   }
 
-  sendTo(clientId: NetUniqueId, data: Buffer): void {
+  sendTo(clientId: string, data: Buffer): void {
     const conn = this.getClientById(clientId)
     if (conn) {
       conn.send(data)
