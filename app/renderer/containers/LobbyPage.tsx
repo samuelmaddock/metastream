@@ -98,7 +98,7 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
 
     const conn = await Promise.race([peerPromise, sleep(NETWORK_TIMEOUT)])
 
-    if (this.server!.connected) {
+    if (this.server && this.server.connected) {
       this.onConnection()
     } else {
       this.onConnectionFailed()
