@@ -12,7 +12,7 @@ import { getLocalUsername, getLocalColor } from '../../reducers/settings'
 import { USERNAME_MAX_LEN, COLOR_LEN } from 'constants/settings'
 import { getMaxUsers } from '../reducers/session'
 import { NetworkDisconnectReason } from 'constants/network'
-import { setDisconnectReason } from './session'
+import { setDisconnectReason, setAuthorized } from './session'
 
 const { version } = require('package.json')
 
@@ -78,6 +78,7 @@ const clientAuthorized = (info: AuthorizeInfo): RpcThunk<void> => (dispatch, get
   // TODO: take average of multiple samples?
   const dt = Date.now() - info.serverTime
   dispatch(updateServerTimeDelta(dt))
+  dispatch(setAuthorized(true))
 }
 const client_authorized = rpc(RpcRealm.Client, clientAuthorized)
 
