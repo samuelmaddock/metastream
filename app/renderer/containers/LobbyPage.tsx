@@ -14,7 +14,7 @@ import { NetActions } from 'renderer/network/actions'
 import { ReplicatedState } from 'renderer/network/types'
 import { push } from 'react-router-redux'
 import { sleep } from 'utils/async'
-import { NETWORK_TIMEOUT, NetworkDisconnectReason } from 'constants/network'
+import { NETWORK_TIMEOUT, NetworkDisconnectReason, NetworkDisconnectMessages } from 'constants/network'
 import { Connect } from '../components/lobby/Connect'
 import { Disconnect } from '../components/lobby/Disconnect'
 
@@ -39,6 +39,7 @@ type PrivateProps = IProps & IConnectedProps & IReactReduxProps
 export class _LobbyPage extends Component<PrivateProps, IState> {
   state: IState = {}
 
+  private mounted: boolean = false
   private connected: boolean = false
   private server?: NetServer
   private host: boolean
@@ -64,8 +65,8 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
 
     // TODO: will this reject the promise that loses?
     const result = await Promise.race([successPromise, sleep(NETWORK_TIMEOUT)])
-
     const success = typeof result === 'boolean' ? result : false
+    if (!this.mounted) return
 
     if (success) {
       this.onJoinLobby(PlatformService.getServer()!)
@@ -123,30 +124,31 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
   }
 
   private disconnect = (
-    reason: NetworkDisconnectReason = NetworkDisconnectReason.HostDisconnect
+    reason: NetworkDisconnectReason = NetworkDisconnectReason.HostDisconnect,
+    immediate?: boolean
   ) => {
     this.connected = false
 
-    if (this.host) {
+    if (immediate || this.host) {
       this.props.dispatch(push('/'))
       return
     }
 
-    let msg
-    switch (reason) {
-      case NetworkDisconnectReason.Timeout:
-        msg = 'Network timeout'
-        break
-      default:
-        msg = 'Host closed connection'
-    }
-
+    let msg = NetworkDisconnectMessages[reason]
     console.debug(`Disconnected [${reason}]: ${msg}`)
     this.setState({ disconnectMessage: msg })
   }
 
+  private disconnectImmediate = (reason: NetworkDisconnectReason = NetworkDisconnectReason.HostDisconnect) => {
+    this.disconnect(reason, true)
+  }
+
   componentWillMount(): void {
     this.setupLobby()
+  }
+
+  componentDidMount() {
+    this.mounted = true
   }
 
   componentWillUnmount(): void {
@@ -157,6 +159,8 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
 
     this.props.dispatch(NetActions.disconnect())
     PlatformService.leaveLobby(this.lobbyId || '')
+
+    this.mounted = false
   }
 
   private get lobbyId(): string | undefined {
@@ -171,7 +175,7 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
     }
 
     if (!this.connected && !this.host) {
-      return <Connect onCancel={this.disconnect} />
+      return <Connect onCancel={this.disconnectImmediate} />
     }
 
     return <GameLobby host={this.host} />

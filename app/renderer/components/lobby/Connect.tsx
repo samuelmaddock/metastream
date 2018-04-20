@@ -24,7 +24,7 @@ class _Connect extends Component<PrivateProps> {
         <p className={styles.info}>
           <Spinner />Connecting&hellip;
         </p>
-        <MenuButton icon="x" size="medium" onClick={this.props.onCancel}>
+        <MenuButton icon="x" size="medium" onClick={() => this.props.onCancel()}>
           Cancel
         </MenuButton>
       </div>

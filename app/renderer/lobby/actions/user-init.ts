@@ -11,6 +11,7 @@ import { syncServerTime } from 'renderer/lobby/actions/clock'
 import { getLocalUsername, getLocalColor } from '../../reducers/settings'
 import { USERNAME_MAX_LEN, COLOR_LEN } from 'constants/settings'
 import { getMaxUsers } from '../reducers/session';
+import { NetworkDisconnectReason } from 'constants/network';
 
 const { version } = require('package.json')
 
@@ -36,30 +37,30 @@ export const initialize = (): ThunkAction<void, IAppState, void> => {
 const validateClientInfo = (info: ClientInfo, id: string, state: IAppState) => {
   if (version !== info.version) {
     console.debug(`Client '${info.version}'[${id}] kicked for version mismatch (${info.version})`)
-    return false
+    return NetworkDisconnectReason.VersionMismatch
   }
 
   const existingUser = !!getUser(state, id)
 
   if (existingUser) {
     console.debug(`Client with existing ID already active in session ${id}`)
-    return false
+    return NetworkDisconnectReason.InvalidClientInfo
   }
 
   if (!info.name || info.name.length > USERNAME_MAX_LEN) {
     console.debug(`Client ${id} kicked for name overflow (${info.name})`)
-    return false
+    return NetworkDisconnectReason.InvalidClientInfo
   }
 
   if (!info.color || info.color.length !== COLOR_LEN) {
     console.debug(`Client ${id} kicked for invalid color (${info.color})`)
-    return false
+    return NetworkDisconnectReason.InvalidClientInfo
   }
 
   return true
 }
 
-const kickClient = (reason: string): RpcThunk<void> => (dispatch, getState) => {
+const kickClient = (reason: NetworkDisconnectReason | string): RpcThunk<void> => (dispatch, getState) => {
   console.log(`Received kick with reason: '${reason}'`)
 }
 const client_kick = rpc(RpcRealm.Client, kickClient)
@@ -68,15 +69,17 @@ const initClient = (info: ClientInfo): RpcThunk<void> => (dispatch, getState, { 
   const state = getState()
   const id = client.id.toString()
 
-  // TODO: send disconnect reason to client
-  if (!validateClientInfo(info, id, state)) {
-    dispatch(client_kick('Failed to validate')(id))
-    client.close()
-    return
+  let reason
+
+  const validOrReason = validateClientInfo(info, id, state)
+  if (validOrReason !== true) {
+    reason = validOrReason
+  } else if (getNumUsers(state) >= getMaxUsers(state)) {
+    reason = NetworkDisconnectReason.Full
   }
 
-  if (getNumUsers(state) >= getMaxUsers(state)) {
-    dispatch(client_kick('Session is full')(id))
+  if (reason) {
+    dispatch(client_kick(reason)(id))
     client.close()
     return
   }
