@@ -162,7 +162,7 @@
     }
   }
 
-  const setMedia = media => {
+  const setActiveMedia = media => {
     activeMedia = media
     player = new HTMLMediaPlayer(media)
     console.debug('Set active media', media, media.src, media.duration)
@@ -234,7 +234,7 @@
       }
 
       if (media.readyState >= MediaReadyState.HAVE_CURRENT_DATA) {
-        setMedia(media)
+        setActiveMedia(media)
         media.removeEventListener('playing', checkMediaReady)
         media.removeEventListener('durationchange', checkMediaReady)
         media.removeEventListener('canplay', checkMediaReady)
