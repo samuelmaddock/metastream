@@ -46,9 +46,9 @@ export class RTCPeerConn extends NetConnection {
   }
 
   protected onClose(): void {
-    this.peer.removeAllListeners()
-    this.peer.destroy()
     super.onClose()
+    this.peer.destroy()
+    this.peer.removeAllListeners()
   }
 
   async getSignal(): Promise<SignalData> {
