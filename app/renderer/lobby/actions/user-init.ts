@@ -10,8 +10,9 @@ import { getUser, getNumUsers } from 'renderer/lobby/reducers/users'
 import { syncServerTime } from 'renderer/lobby/actions/clock'
 import { getLocalUsername, getLocalColor } from '../../reducers/settings'
 import { USERNAME_MAX_LEN, COLOR_LEN } from 'constants/settings'
-import { getMaxUsers } from '../reducers/session';
-import { NetworkDisconnectReason } from 'constants/network';
+import { getMaxUsers } from '../reducers/session'
+import { NetworkDisconnectReason } from 'constants/network'
+import { setDisconnectReason } from './session'
 
 const { version } = require('package.json')
 
@@ -60,8 +61,12 @@ const validateClientInfo = (info: ClientInfo, id: string, state: IAppState) => {
   return true
 }
 
-const kickClient = (reason: NetworkDisconnectReason | string): RpcThunk<void> => (dispatch, getState) => {
-  console.log(`Received kick with reason: '${reason}'`)
+const kickClient = (reason: NetworkDisconnectReason | string): RpcThunk<void> => (
+  dispatch,
+  getState
+) => {
+  console.debug(`Received kick with reason: '${reason}'`)
+  dispatch(setDisconnectReason(reason))
 }
 const client_kick = rpc(RpcRealm.Client, kickClient)
 

@@ -14,9 +14,15 @@ import { NetActions } from 'renderer/network/actions'
 import { ReplicatedState } from 'renderer/network/types'
 import { push } from 'react-router-redux'
 import { sleep } from 'utils/async'
-import { NETWORK_TIMEOUT, NetworkDisconnectReason, NetworkDisconnectMessages } from 'constants/network'
+import {
+  NETWORK_TIMEOUT,
+  NetworkDisconnectReason,
+  NetworkDisconnectMessages
+} from 'constants/network'
 import { Connect } from '../components/lobby/Connect'
 import { Disconnect } from '../components/lobby/Disconnect'
+import { getDisconnectReason } from '../lobby/reducers/session'
+import { setDisconnectReason } from '../lobby/actions/session'
 
 interface IRouteParams {
   lobbyId: string
@@ -24,14 +30,18 @@ interface IRouteParams {
 
 interface IProps extends RouteComponentProps<IRouteParams> {}
 
-interface IConnectedProps {}
+interface IConnectedProps {
+  disconnectReason?: NetworkDisconnectReason | string
+}
 
 interface IState {
   disconnectMessage?: string
 }
 
 function mapStateToProps(state: IAppState): IConnectedProps {
-  return {}
+  return {
+    disconnectReason: getDisconnectReason(state)
+  }
 }
 
 type PrivateProps = IProps & IConnectedProps & IReactReduxProps
@@ -43,6 +53,10 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
   private connected: boolean = false
   private server?: NetServer
   private host: boolean
+
+  private get disconnectReason() {
+    return this.props.disconnectReason || this.state.disconnectMessage
+  }
 
   constructor(props: PrivateProps) {
     super(props)
@@ -134,12 +148,21 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
       return
     }
 
-    let msg = NetworkDisconnectMessages[reason]
+    let msg =
+      typeof this.props.disconnectReason === 'string'
+        ? this.props.disconnectReason
+        : NetworkDisconnectMessages[this.props.disconnectReason || reason]
     console.debug(`Disconnected [${reason}]: ${msg}`)
     this.setState({ disconnectMessage: msg })
+
+    if (this.props.disconnectReason) {
+      this.props.dispatch!(setDisconnectReason())
+    }
   }
 
-  private disconnectImmediate = (reason: NetworkDisconnectReason = NetworkDisconnectReason.HostDisconnect) => {
+  private disconnectImmediate = (
+    reason: NetworkDisconnectReason = NetworkDisconnectReason.HostDisconnect
+  ) => {
     this.disconnect(reason, true)
   }
 

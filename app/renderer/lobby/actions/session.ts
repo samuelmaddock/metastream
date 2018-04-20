@@ -4,8 +4,12 @@ import { ThunkAction } from 'redux-thunk'
 import { IAppState } from '../../reducers/index'
 import { hasValidLicense } from '../../license'
 import { USERS_MAX_FREE } from 'constants/settings'
+import { NetworkDisconnectReason } from 'constants/network'
 
 export const setSessionData = actionCreator<Partial<ISessionState>>('SET_SESSION_DATA')
+export const setDisconnectReason = actionCreator<NetworkDisconnectReason | string | undefined>(
+  'SET_DISCONNECT_REASON'
+)
 
 export const initHostSession = (): ThunkAction<void, IAppState, void> => {
   return (dispatch, getState) => {
