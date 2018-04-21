@@ -6,13 +6,14 @@ import { localUser } from 'renderer/network'
 import { RpcThunk } from 'renderer/lobby/types'
 import { multi_userJoined } from 'renderer/lobby/actions/users'
 import { rpc, RpcRealm } from 'renderer/network/middleware/rpc'
-import { getUser, getNumUsers } from 'renderer/lobby/reducers/users'
+import { getUser, getNumUsers, findUser } from 'renderer/lobby/reducers/users'
 import { updateServerTimeDelta } from 'renderer/lobby/actions/clock'
 import { getLocalUsername, getLocalColor } from '../../reducers/settings'
 import { USERNAME_MAX_LEN, COLOR_LEN } from 'constants/settings'
 import { getMaxUsers } from '../reducers/session'
 import { NetworkDisconnectReason } from 'constants/network'
 import { setDisconnectReason, setAuthorized } from './session'
+import { getLicenseHash } from '../../license'
 
 const { version } = require('package.json')
 
@@ -20,6 +21,7 @@ type ClientInfo = {
   name: string
   color: string
   version: string
+  licenseHash?: string
 }
 
 type AuthorizeInfo = {
@@ -28,12 +30,13 @@ type AuthorizeInfo = {
 
 /** Initialize client */
 export const initialize = (): ThunkAction<void, IAppState, void> => {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     dispatch(
       server_initClient({
         version,
         name: getLocalUsername(getState()),
-        color: getLocalColor(getState())
+        color: getLocalColor(getState()),
+        licenseHash: await getLicenseHash()
       })
     )
   }
@@ -62,6 +65,19 @@ const validateClientInfo = (info: ClientInfo, id: string, state: IAppState) => {
     return NetworkDisconnectReason.InvalidClientInfo
   }
 
+  if (info.licenseHash) {
+    if (typeof info.licenseHash !== 'string') {
+      console.debug(`Client ${id} kicked for invalid license (${info.licenseHash})`)
+      return NetworkDisconnectReason.InvalidClientInfo
+    }
+
+    const existingLicenseUser = findUser(state, user => user.license === info.licenseHash)
+    if (existingLicenseUser) {
+      console.debug(`Client with existing license active in session ${id}`)
+      return NetworkDisconnectReason.DuplicateLicense
+    }
+  }
+
   return true
 }
 
@@ -86,6 +102,8 @@ const initClient = (info: ClientInfo): RpcThunk<void> => (dispatch, getState, { 
   const state = getState()
   const id = client.id.toString()
 
+  console.debug(`Received client info for ${id}`, info)
+
   let reason
 
   const validOrReason = validateClientInfo(info, id, state)
@@ -105,14 +123,17 @@ const initClient = (info: ClientInfo): RpcThunk<void> => (dispatch, getState, { 
     addUser({
       conn: client,
       name: info.name,
-      color: info.color
+      color: info.color,
+      license: info.licenseHash
     })
   )
 
   dispatch(multi_userJoined(id))
 
-  dispatch(client_authorized({
-    serverTime: Date.now()
-  })(id))
+  dispatch(
+    client_authorized({
+      serverTime: Date.now()
+    })(id)
+  )
 }
 const server_initClient = rpc(RpcRealm.Server, initClient)

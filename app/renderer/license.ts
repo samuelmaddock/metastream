@@ -1,13 +1,30 @@
 const { ipcRenderer } = chrome
+import { sha1 } from 'crypto-hash'
 
 let valid: boolean | null = null
+let license: string | null = null
 
 export function hasValidLicense() {
   if (typeof valid === 'boolean') {
     return valid
   } else {
-    valid = ipcRenderer.sendSync('validate-license')
+    const result = ipcRenderer.sendSync('validate-license')
+    valid = result.valid
+    license = result.license
     return valid
+  }
+}
+
+export function getLicense() {
+  if (hasValidLicense()) {
+    return typeof license === 'string' ? license : undefined
+  }
+}
+
+export async function getLicenseHash(): Promise<string | undefined> {
+  const license = getLicense()
+  if (license) {
+    return await sha1(license)
   }
 }
 

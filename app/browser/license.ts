@@ -39,7 +39,10 @@ const validate = (license: string) => {
 
 ipcMain.on('validate-license', (event: Electron.Event) => {
   const license = readLicense()
-  event.returnValue = license ? validate(license) : false
+  event.returnValue = {
+    license,
+    valid: license ? validate(license) : false
+  }
 })
 
 ipcMain.on('register-license', (event: Electron.Event, license: string) => {

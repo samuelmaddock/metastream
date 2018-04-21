@@ -7,6 +7,7 @@ export const enum NetworkDisconnectReason {
   Timeout,
   InvalidClientInfo,
   VersionMismatch,
+  DuplicateLicense,
   Full
 }
 
@@ -15,5 +16,6 @@ export const NetworkDisconnectMessages = {
   [NetworkDisconnectReason.Timeout]: 'Network timeout',
   [NetworkDisconnectReason.InvalidClientInfo]: 'Invalid client info',
   [NetworkDisconnectReason.VersionMismatch]: `Client version mismatch`,
+  [NetworkDisconnectReason.DuplicateLicense]: `Shared license found in session`,
   [NetworkDisconnectReason.Full]: 'Session is full'
 }
