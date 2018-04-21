@@ -7,7 +7,7 @@ interface IProps {
   onClose?: Function
 }
 
-export class MediaInfo extends Component<IProps> {
+export default class MediaInfo extends Component<IProps> {
   componentDidUpdate() {
     this.checkValid()
   }

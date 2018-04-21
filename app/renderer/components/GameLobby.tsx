@@ -42,7 +42,7 @@ import { IAppState } from 'renderer/reducers'
 import { HighlightButton } from 'renderer/components/common/button'
 import { Modal } from 'renderer/components/lobby/Modal'
 import { Invite } from 'renderer/components/lobby/Invite'
-import { MediaInfo } from 'renderer/components/lobby/modals/MediaInfo'
+import { MediaInfo, PurchaseLicense } from 'renderer/components/lobby/modals'
 import { addExtensionListeners, removeExtensionListeners } from '../actions/extensions'
 import { PopupWindow } from './browser/PopupWindow'
 import { IPopupState } from '../reducers/extensions'
@@ -71,7 +71,8 @@ type PrivateProps = IProps & IConnectedProps & DispatchProp<IAppState>
 const enum LobbyModal {
   Browser = 'browser',
   Invite = 'invite',
-  MediaInfo = 'media-info'
+  MediaInfo = 'media-info',
+  Purchase = 'purchase'
 }
 
 class _GameLobby extends React.Component<PrivateProps, IState> {
@@ -166,6 +167,12 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
         return (
           <Modal className={styles.modal} onClose={this.closeModal}>
             <MediaInfo media={this.props.currentMedia} onClose={this.closeModal} />
+          </Modal>
+        )
+      case LobbyModal.Purchase:
+        return (
+          <Modal className={styles.modal} onClose={this.closeModal}>
+            <PurchaseLicense />
           </Modal>
         )
     }
