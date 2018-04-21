@@ -10,6 +10,7 @@ import { multi_userJoined, multi_userLeft } from '../actions/users'
 import { initialize } from 'renderer/lobby/actions/user-init'
 import { getLocalUsername, getLocalColor } from '../../reducers/settings'
 import { IAppState } from '../../reducers/index'
+import { getLicenseHash } from '../../license'
 
 interface IUserPayload {
   conn: NetConnection
@@ -35,7 +36,7 @@ export const usersMiddleware = (): Middleware => {
       dispatch(removeUser(id))
     }
 
-    const init = (options: NetMiddlewareOptions) => {
+    const init = async (options: NetMiddlewareOptions) => {
       server = options.server
       host = options.host
 
@@ -48,7 +49,8 @@ export const usersMiddleware = (): Middleware => {
             conn: localUser(),
             host: true,
             name: getLocalUsername(state),
-            color: getLocalColor(state)
+            color: getLocalColor(state),
+            license: await getLicenseHash()
           })
         )
 
