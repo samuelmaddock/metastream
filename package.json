@@ -225,6 +225,7 @@
   "dependencies": {
     "cheerio": "^1.0.0-rc.2",
     "classnames": "^2.2.5",
+    "crypto-hash": "^0.1.0",
     "deep-diff": "^0.3.8",
     "electron-debug": "^1.4.0",
     "electron-localshortcut": "^2.0.2",
