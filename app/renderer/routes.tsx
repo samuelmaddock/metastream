@@ -1,13 +1,15 @@
 import React from 'react'
 import { Switch, Route, Redirect, RouteProps } from 'react-router'
+
+import { hasValidLicense } from 'renderer/license'
+
 import App from './containers/App'
 import { HomePage } from './containers/HomePage'
 import { ServerBrowserPage } from './containers/ServerBrowserPage'
 import { LobbyPage } from './containers/LobbyPage'
 import { SessionJoinPage } from './containers/SessionJoinPage'
-import { hasValidLicense } from 'renderer/license'
-import { LicenseGate } from 'renderer/components/license/LicenseGate'
-import { SettingsPage } from './containers/SettingsPage';
+import { SettingsPage } from './containers/SettingsPage'
+import { LicenseGate } from './containers/LicenseGate'
 
 export default () => (
   <App>
@@ -17,6 +19,7 @@ export default () => (
       <LicensedRoute path="/servers" component={ServerBrowserPage} />
       <LicensedRoute path="/join" component={SessionJoinPage} />
       <LicensedRoute path="/settings" component={SettingsPage} />
+      <LicensedRoute path="/license" component={LicenseGate} />
     </Switch>
   </App>
 )

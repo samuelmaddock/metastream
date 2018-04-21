@@ -3,13 +3,15 @@ import { Link } from 'react-router-dom'
 
 import * as packageJson from 'package.json'
 
+import { LICENSE_PURCHASE_URL } from 'constants/license'
 import styles from './Home.css'
 import { TitleBar } from 'renderer/components/TitleBar'
 import LayoutMain from 'renderer/components/layout/Main'
 import { Icon } from 'renderer/components/Icon'
 import { MenuButton } from 'renderer/components/menu/MenuButton'
 import { MenuHeader } from './menu/MenuHeader'
-import { ExternalLink } from './common/link';
+import { ExternalLink } from './common/link'
+import { hasValidLicense } from '../license'
 
 interface IProps {}
 
@@ -48,11 +50,13 @@ export default class Home extends Component<IProps> {
                 <MenuButton icon="settings">Settings</MenuButton>
               </Link>
             </li>
-            <li>
-              <ExternalLink href="https://getmetastream.com/buy">
-                <MenuButton icon="credit-card">Purchase</MenuButton>
-              </ExternalLink>
-            </li>
+            {!hasValidLicense() && (
+              <li>
+                <Link to="/license" className={styles.btn}>
+                  <MenuButton icon="file-text">Enter License</MenuButton>
+                </Link>
+              </li>
+            )}
           </ul>
         </section>
       </LayoutMain>

@@ -12,6 +12,15 @@ Variables
   /* --color-highlight: #f98673; */
   --color-highlight: rgb(249, 134, 115);
 
+  --app-bg-home: radial-gradient(
+    circle at 10% -40%,
+    #6f749e 0%,
+    #9a8daf 31%,
+    #d0a8b9 58%,
+    #f8bbb1 80%,
+    #fde6b1 100%
+  );
+  --app-bg-other: linear-gradient(200deg, #42275a, #734b6d);
   --app-bg-lobby: linear-gradient(
     170deg,
     #20202f 0%,

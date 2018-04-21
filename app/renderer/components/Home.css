@@ -1,12 +1,5 @@
 .container {
-  background: radial-gradient(
-    circle at 10% -40%,
-    #6f749e 0%,
-    #9a8daf 31%,
-    #d0a8b9 58%,
-    #f8bbb1 80%,
-    #fde6b1 100%
-  );
+  background: var(--app-bg-home);
   height: 100%;
   display: flex;
   flex-direction: column;
