@@ -18,7 +18,9 @@ import { LICENSE_PURCHASE_URL } from '../../constants/license'
 
 const { productName, version } = require('package.json')
 
-interface IProps extends RouteComponentProps<any> {}
+interface IProps extends RouteComponentProps<any> {
+  gate?: boolean
+}
 
 interface IState {
   redirectToReferrer: boolean
@@ -35,11 +37,13 @@ export class LicenseGate extends Component<IProps, IState> {
       return <Redirect to={from} />
     }
 
+    const title = this.props.gate ? `${productName} Alpha ${version}` : 'Enter license'
+
     return (
       <LayoutMain className={styles.container}>
         <section className={styles.column}>
-          {process.env.NODE_ENV === 'development' ? <GoBackButton /> : null}
-          <MenuHeader text={`${productName} Alpha ${version}`} />
+          {this.props.gate ? null : <GoBackButton />}
+          <MenuHeader text={title} />
           <TextAreaInput theRef={e => (this.licenseInput = e)} className={styles.input} autoFocus />
           <div className={styles.buttons}>
             <MenuButton

@@ -36,7 +36,7 @@ const LicensedRoute = ({ component: Component, ...rest }: PrivateRouteProps) => 
       (process.env.NODE_ENV === 'development' || hasValidLicense()) ? (
         <Component {...props} />
       ) : (
-        <LicenseGate {...props} />
+        <LicenseGate {...props} gate />
       )
     }
   />
