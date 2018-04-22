@@ -2,10 +2,10 @@ import React, { Component, Children } from 'react'
 import { connect, DispatchProp, Store } from 'react-redux'
 import { IAppState } from 'renderer/reducers'
 import { listenForUiEvents } from 'renderer/actions/ui'
-import { getLocalUsername } from '../reducers/settings';
-import { PlatformService } from '../platform/index';
-import { localUserId, localUser } from '../network/index';
-import { setUsername } from '../actions/settings';
+import { getLocalUsername } from '../reducers/settings'
+import { PlatformService } from '../platform/index'
+import { localUserId, localUser } from '../network/index'
+import { setUsername } from '../actions/settings'
 
 interface IConnectedProps {
   username?: string
@@ -20,6 +20,7 @@ class App extends Component<Props> {
 
   private init() {
     this.initSettings()
+    this.initAnalytics()
     this.props.dispatch!(listenForUiEvents())
   }
 
@@ -31,6 +32,17 @@ class App extends Component<Props> {
       const platformUsername = PlatformService.getUserName(localUser().id)
       dispatch!(setUsername(platformUsername))
     }
+  }
+
+  private initAnalytics() {
+    const ANALYTICS_ID = 'metastreamAnalytics'
+    if (document.getElementById(ANALYTICS_ID)) return
+
+    const script = document.createElement('script')
+    script.id = ANALYTICS_ID
+    script.async = true
+    script.src = 'https://www.googletagmanager.com/gtag/js?id=UA-115004557-2'
+    document.head.appendChild(script)
   }
 
   render() {
