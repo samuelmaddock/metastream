@@ -17,6 +17,7 @@ import {
 } from 'renderer/lobby/reducers/mediaPlayer.helpers'
 import { IAppState } from 'renderer/reducers'
 import { getUserName } from 'renderer/lobby/reducers/users'
+import { maybeShowPurchaseModal } from '../../actions/ui'
 
 export const playPauseMedia = actionCreator<number>('PLAY_PAUSE_MEDIA')
 export const repeatMedia = actionCreator<number>('REPEAT_MEDIA')
@@ -124,6 +125,18 @@ const enqueueMedia = (media: IMediaItem): ThunkAction<void, IAppState, void> => 
       dispatch(setMedia(media))
       dispatch(updatePlaybackTimer())
     }
+  }
+}
+
+export const sendMediaRequest = (url: string): ThunkAction<void, IAppState, void> => {
+  return dispatch => {
+    dispatch(server_requestMedia(url))
+
+    const requestCount = parseInt(localStorage.getItem('requestCount') || '0', 10) || 0
+    if (requestCount > 0) {
+      dispatch(maybeShowPurchaseModal())
+    }
+    localStorage.setItem('requestCount', `${requestCount + 1}`)
   }
 }
 

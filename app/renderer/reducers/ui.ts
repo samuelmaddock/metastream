@@ -1,25 +1,34 @@
-import { Reducer } from 'redux';
-import { isType } from 'utils/redux';
-import { IAppState } from 'renderer/reducers';
-import { setUpdateState } from 'renderer/actions/ui';
+import { Reducer } from 'redux'
+import { isType } from 'utils/redux'
+import { IAppState } from 'renderer/reducers'
+import { setUpdateState, setLobbyModal } from 'renderer/actions/ui'
 
-export interface IUIState {
-  updateAvailable?: boolean;
+export const enum LobbyModal {
+  Browser = 'browser',
+  Invite = 'invite',
+  MediaInfo = 'media-info',
+  Purchase = 'purchase'
 }
 
-const initialState: IUIState = {};
+export interface IUIState {
+  updateAvailable?: boolean
+  lobbyModal?: LobbyModal
+}
 
-export const ui: Reducer<IUIState> = (
-  state: IUIState = initialState,
-  action: any
-) => {
+const initialState: IUIState = {}
+
+export const ui: Reducer<IUIState> = (state: IUIState = initialState, action: any) => {
   if (isType(action, setUpdateState)) {
-    return {...state, updateAvailable: action.payload};
+    return { ...state, updateAvailable: action.payload }
   }
 
-  return state;
-};
+  if (isType(action, setLobbyModal)) {
+    return { ...state, lobbyModal: action.payload }
+  }
+
+  return state
+}
 
 export const isUpdateAvailable = (state: IAppState): boolean => {
   return !!state.ui.updateAvailable
-};
+}

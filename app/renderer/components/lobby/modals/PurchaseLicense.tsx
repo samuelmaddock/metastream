@@ -19,7 +19,9 @@ export default class PurchaseLicense extends Component<IProps> {
         </p>
         <p>Would you like to purchase a license now?</p>
         <ExternalLink href={LICENSE_PURCHASE_URL}>
-          <MenuButton icon="credit-card">Purchase</MenuButton>
+          <MenuButton icon="credit-card" size="medium">
+            Purchase
+          </MenuButton>
         </ExternalLink>
       </div>
     )

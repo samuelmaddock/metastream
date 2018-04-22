@@ -5,7 +5,7 @@ import cx from 'classnames'
 import styles from './WebBrowser.css'
 import { WEBVIEW_PARTITION } from 'constants/http'
 import { WebControls } from 'renderer/components/browser/Controls'
-import { server_requestMedia } from 'renderer/lobby/actions/mediaPlayer'
+import { sendMediaRequest } from 'renderer/lobby/actions/mediaPlayer'
 import { absoluteUrl } from 'utils/appUrl'
 import { IAppState } from 'renderer/reducers'
 const { ipcRenderer, remote } = chrome
@@ -115,7 +115,7 @@ export class _WebBrowser extends Component<PrivateProps> {
           initialUrl={this.initialUrl}
           onClose={this.props.onClose}
           onRequestUrl={url => {
-            this.props.dispatch!(server_requestMedia(url))
+            this.props.dispatch!(sendMediaRequest(url))
 
             if (this.props.onClose) {
               this.props.onClose()

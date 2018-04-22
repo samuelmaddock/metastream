@@ -10,11 +10,11 @@ import { VideoPlayer } from 'renderer/components/lobby/VideoPlayer'
 import { IMediaItem, PlaybackState } from 'renderer/lobby/reducers/mediaPlayer'
 import { isUrl } from 'utils/url'
 import {
-  server_requestMedia,
   server_requestPlayPause,
   server_requestNextMedia,
   server_requestSeek,
-  server_requestDeleteMedia
+  server_requestDeleteMedia,
+  sendMediaRequest
 } from 'renderer/lobby/actions/mediaPlayer'
 import { IMessage } from 'renderer/lobby/reducers/chat'
 import { Messages } from 'renderer/components/chat/Messages'
@@ -48,6 +48,8 @@ import { PopupWindow } from './browser/PopupWindow'
 import { IPopupState } from '../reducers/extensions'
 import { UserList } from './lobby/UserList'
 import { MediaList } from './lobby/MediaList'
+import { LobbyModal } from '../reducers/ui'
+import { setLobbyModal } from '../actions/ui'
 
 interface IProps {
   host: boolean
@@ -64,16 +66,10 @@ interface IConnectedProps {
   messages: IMessage[]
   playback: PlaybackState
   popup?: IPopupState
+  modal?: LobbyModal
 }
 
 type PrivateProps = IProps & IConnectedProps & DispatchProp<IAppState>
-
-const enum LobbyModal {
-  Browser = 'browser',
-  Invite = 'invite',
-  MediaInfo = 'media-info',
-  Purchase = 'purchase'
-}
 
 class _GameLobby extends React.Component<PrivateProps, IState> {
   private player: VideoPlayer | null = null
@@ -99,6 +95,12 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
     ipcRenderer.removeListener('command', this.onWindowCommand)
     this.props.dispatch!(unregisterMediaShortcuts())
     this.props.dispatch!(removeExtensionListeners())
+  }
+
+  componentWillUpdate(nextProps: PrivateProps) {
+    if (nextProps.modal && this.props.modal !== nextProps.modal) {
+      this.setState({ modal: nextProps.modal })
+    }
   }
 
   render(): JSX.Element {
@@ -208,7 +210,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
 
   private sendChat = (text: string): void => {
     if (isUrl(text)) {
-      this.props.dispatch!(server_requestMedia(text))
+      this.props.dispatch!(sendMediaRequest(text))
     } else {
       this.props.dispatch!(server_addChat(text))
     }
@@ -228,6 +230,10 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
 
   private closeModal = () => {
     this.setState({ modal: undefined })
+
+    if (this.props.modal) {
+      this.props.dispatch!(setLobbyModal())
+    }
   }
 }
 
@@ -236,6 +242,7 @@ export const GameLobby = connect((state: IAppState): IConnectedProps => {
     currentMedia: getCurrentMedia(state),
     messages: state.chat.messages,
     playback: getPlaybackState(state),
-    popup: state.extensions.popup
+    popup: state.extensions.popup,
+    modal: state.ui.lobbyModal
   }
 })(_GameLobby) as React.ComponentClass<IProps>
