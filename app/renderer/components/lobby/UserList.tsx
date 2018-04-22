@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import { IAppState } from '../../reducers/index'
-import { IUsersState } from '../../lobby/reducers/users'
+import { IUsersState, isHost } from '../../lobby/reducers/users'
 import { getMaxUsers } from '../../lobby/reducers/session'
 
 import { HighlightButton } from '../common/button'
@@ -17,6 +17,7 @@ interface IProps {
 interface IConnectedProps {
   maxUsers?: number
   users: IUsersState
+  isHost: boolean
 }
 
 type Props = IProps & IConnectedProps
@@ -35,7 +36,11 @@ class _UserList extends Component<Props> {
         title="Users"
         tagline={userSlots}
         action={
-          <HighlightButton icon="mail" onClick={this.props.onInvite}>
+          <HighlightButton
+            icon="mail"
+            highlight={(this.props.isHost || numUsers === 0) && numUsers < 2}
+            onClick={this.props.onInvite}
+          >
             Invite
           </HighlightButton>
         }
@@ -52,6 +57,7 @@ class _UserList extends Component<Props> {
 export const UserList = connect((state: IAppState): IConnectedProps => {
   return {
     maxUsers: getMaxUsers(state),
-    users: state.users
+    users: state.users,
+    isHost: isHost(state)
   }
 })(_UserList) as React.ComponentClass<IProps>

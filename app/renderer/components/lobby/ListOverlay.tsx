@@ -16,7 +16,7 @@ export class ListOverlay extends Component<IProps> {
         <header className={styles.header}>
           <h2 className={styles.title}>{this.props.title}</h2>
           {this.props.tagline && <span className={styles.tagline}>{this.props.tagline}</span>}
-          {this.props.action}
+          <div className={styles.actions}>{this.props.action}</div>
         </header>
         <div className={styles.list}>{this.props.children}</div>
       </div>

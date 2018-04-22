@@ -6,6 +6,7 @@ import { Icon } from 'renderer/components/Icon'
 export interface IIconButtonProps {
   icon: string
   title?: string
+  size?: 'medium' | 'large'
 
   /** Disable button interaction */
   disabled?: boolean
@@ -21,17 +22,29 @@ export const IconButton: React.SFC<IIconButtonProps> = props => {
     <button
       type="button"
       disabled={props.disabled}
-      className={props.className}
+      className={cx(props.className)}
       title={props.title}
       onClick={props.onClick}
     >
       <Icon name={props.icon} />
       {!!props.children && nbsp}
-      {props.children}
+      {props.children ? <span>{props.children}</span> : undefined}
     </button>
   )
 }
 
-export const HighlightButton: React.SFC<IIconButtonProps> = props => {
-  return <IconButton {...props} className={cx(props.className, styles.highlightBtn)} />
+interface IHighlightButtonProps extends IIconButtonProps {
+  highlight?: boolean
+  glass?: boolean
+  blend?: boolean
+}
+
+export const HighlightButton: React.SFC<IHighlightButtonProps> = props => {
+  const className = cx(props.className, styles.highlightBtn, styles[props.size || 'small'], {
+    [styles.highlight]: props.highlight,
+    [styles.outline]: !props.highlight,
+    [styles.glass]: props.glass,
+    [styles.blend]: props.blend
+  })
+  return <IconButton {...props} className={className} />
 }

@@ -103,6 +103,7 @@ export class WebControls extends Component<IProps, IState> {
           icon="play"
           onClick={this.onPlayClicked.bind(this)}
           disabled={!this.canRequestUrl}
+          highlight={this.canRequestUrl}
         >
           Request URL
         </HighlightButton>

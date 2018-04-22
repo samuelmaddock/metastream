@@ -23,11 +23,16 @@ interface IConnectedProps {
 type Props = IProps & IConnectedProps & DispatchProp<IAppState>
 
 class _MediaList extends Component<Props> {
+  private get hasRequested() {
+    return (parseInt(localStorage.getItem('requestCount') || '0', 10) || 0) > 0
+  }
+
   render(): JSX.Element | null {
     const { mediaQueue, currentMedia } = this.props
 
     const mediaList =
       currentMedia && currentMedia.hasMore ? [currentMedia, ...mediaQueue] : mediaQueue
+    const isEmpty = mediaList.length === 0
 
     return (
       <ListOverlay
@@ -37,6 +42,7 @@ class _MediaList extends Component<Props> {
         action={
           <HighlightButton
             icon="plus"
+            highlight={(!currentMedia && isEmpty) || !this.hasRequested}
             onClick={() => {
               if (this.props.onAddMedia) {
                 this.props.onAddMedia()

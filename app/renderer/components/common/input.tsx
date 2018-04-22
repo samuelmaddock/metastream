@@ -46,7 +46,7 @@ export class ClipboardTextInput extends React.Component<IClipboardTextInputProps
           defaultValue={this.props.defaultValue}
           disabled={this.props.disabled}
         />
-        <HighlightButton icon="clipboard" onClick={this.copy}>
+        <HighlightButton icon="clipboard" onClick={this.copy} highlight>
           Copy
         </HighlightButton>
       </div>

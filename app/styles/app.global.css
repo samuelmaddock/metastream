@@ -4,13 +4,14 @@
 Variables
 */
 :root {
-  --app-text-color: #efefef;
+  --app-text-color: #fcfcfc;
   --app-titlebar-height: 30px;
   --app-titlebar-background-color: rgba(0, 0, 0, 0.5);
 
   --color-nice-blue: #00bfff;
   /* --color-highlight: #f98673; */
   --color-highlight: rgb(249, 134, 115);
+  --color-highlight-transparent: rgb(249, 134, 115, 0.7);
 
   --app-bg-home: radial-gradient(
     circle at 10% -40%,
@@ -115,6 +116,7 @@ p:not(:last-child) {
 }
 
 a {
+  color: unset;
   text-decoration: none;
   -webkit-user-drag: none;
 }

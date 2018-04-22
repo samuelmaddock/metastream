@@ -24,11 +24,15 @@
 }
 
 .tagline {
-  border: 1px solid rgba(255,255,255,0.22);
+  border: 1px solid rgba(255, 255, 255, 0.22);
   padding: 2px 4px;
   font-size: 12px;
   min-width: 18px;
   text-align: center;
+}
+
+.actions {
+  margin-left: auto;
 }
 
 .list {

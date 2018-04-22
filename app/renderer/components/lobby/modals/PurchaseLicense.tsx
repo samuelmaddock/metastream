@@ -5,6 +5,7 @@ import { LICENSE_PURCHASE_URL } from 'constants/license'
 
 import { MenuButton } from '../../menu/MenuButton'
 import { ExternalLink } from '../../common/link'
+import { HighlightButton } from '../../common/button'
 
 interface IProps {}
 
@@ -19,9 +20,9 @@ export default class PurchaseLicense extends Component<IProps> {
         </p>
         <p>Would you like to purchase a license now?</p>
         <ExternalLink href={LICENSE_PURCHASE_URL}>
-          <MenuButton icon="credit-card" size="medium">
+          <HighlightButton icon="credit-card" size="large" highlight>
             Purchase
-          </MenuButton>
+          </HighlightButton>
         </ExternalLink>
       </div>
     )
