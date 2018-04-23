@@ -10,6 +10,7 @@ import 'styles/app.global.css'
 
 import * as packageJson from 'package.json'
 import { PlatformService } from 'renderer/platform'
+import { ANALYTICS_HOST } from 'constants/analytics'
 
 let store: any
 let history: History
@@ -39,7 +40,7 @@ function init() {
       pathname = '/lobby/join'
     }
 
-    ga('pageview', { dh: 'https://app.getmetastream.com', dp: pathname })
+    ga('pageview', { dh: ANALYTICS_HOST, dp: pathname })
   })
 
   render(
@@ -50,12 +51,15 @@ function init() {
   )
 
   // DEBUG
-  const app = Object.create(null)
-  Object.assign(app, {
-    store,
-    platform: PlatformService
-  })
-  ;(window as any).app = app
+  if (process.env.NODE_ENV === 'development') {
+    const app = Object.create(null)
+    Object.assign(app, {
+      history,
+      store,
+      platform: PlatformService
+    })
+    ;(window as any).app = app
+  }
 }
 
 init()

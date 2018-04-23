@@ -8,6 +8,7 @@ import { localUserId, localUser } from '../network/index'
 import { setUsername } from '../actions/settings'
 import { Analytics } from 'renderer/analytics'
 import appJson from 'package.json'
+import { ANALYTICS_HOST } from 'constants/analytics'
 
 interface IConnectedProps {
   username?: string
@@ -70,6 +71,8 @@ class App extends Component<Props> {
     this.heartbeatIntervalId = (setInterval(() => {
       ga('event', { ec: 'app', ea: 'heartbeat', ni: 1 })
     }, 10 * 60 * 1000) as any) as number
+
+    ga('pageview', { dh: ANALYTICS_HOST, dp: '/' })
   }
 
   render() {
