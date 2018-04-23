@@ -19,7 +19,7 @@ export default class PurchaseLicense extends Component<IProps> {
           must be purchased for continued use.
         </p>
         <p>Would you like to purchase a license now?</p>
-        <ExternalLink href={LICENSE_PURCHASE_URL}>
+        <ExternalLink href={`${LICENSE_PURCHASE_URL}&utm_source=modal`}>
           <HighlightButton icon="credit-card" size="large" highlight>
             Purchase
           </HighlightButton>

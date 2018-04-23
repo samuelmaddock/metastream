@@ -4,7 +4,7 @@ export const LICENSE_PUBLIC_KEY = Buffer.from(
   'hex'
 )
 
-export const LICENSE_PURCHASE_URL = 'https://getmetastream.com/buy'
+export const LICENSE_PURCHASE_URL = 'https://getmetastream.com/buy?utm_medium=app'
 
 /** Minimum interval between showing purchase request screen */
 export const PURCHASE_REQUEST_INTERVAL = 5 * 60 * 1000 // minutes

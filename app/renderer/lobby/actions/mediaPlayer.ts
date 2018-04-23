@@ -128,7 +128,10 @@ const enqueueMedia = (media: IMediaItem): ThunkAction<void, IAppState, void> => 
   }
 }
 
-export const sendMediaRequest = (url: string): ThunkAction<void, IAppState, void> => {
+export const sendMediaRequest = (
+  url: string,
+  source: string
+): ThunkAction<void, IAppState, void> => {
   return dispatch => {
     dispatch(server_requestMedia(url))
 
@@ -137,6 +140,8 @@ export const sendMediaRequest = (url: string): ThunkAction<void, IAppState, void
       dispatch(maybeShowPurchaseModal())
     }
     localStorage.setItem('requestCount', `${requestCount + 1}`)
+
+    ga('event', { ec: 'session', ea: 'request_media', el: source })
   }
 }
 

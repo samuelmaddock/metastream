@@ -67,6 +67,8 @@ export class SwarmPlatform extends Platform {
   }
 
   private async joinP2PLobby(hash: string): Promise<boolean> {
+    ga('event', { ec: 'session', ea: 'connect', el: 'p2p' })
+
     this.server = new NetServer({
       isHost: false,
       coordinators: [new SwarmRTCPeerCoordinator(false)]
@@ -90,6 +92,8 @@ export class SwarmPlatform extends Platform {
   }
 
   async joinWebSocketLobby(ip: string): Promise<boolean> {
+    ga('event', { ec: 'session', ea: 'connect', el: 'ws' })
+
     const coord = new WebSocketClientCoordinator()
 
     const server = new NetServer({

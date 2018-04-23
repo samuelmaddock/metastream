@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 
 import * as packageJson from 'package.json'
 
-import { LICENSE_PURCHASE_URL } from 'constants/license'
 import styles from './Home.css'
 import { TitleBar } from 'renderer/components/TitleBar'
 import LayoutMain from 'renderer/components/layout/Main'

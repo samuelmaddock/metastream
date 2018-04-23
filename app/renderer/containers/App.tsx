@@ -6,6 +6,8 @@ import { getLocalUsername } from '../reducers/settings'
 import { PlatformService } from '../platform/index'
 import { localUserId, localUser } from '../network/index'
 import { setUsername } from '../actions/settings'
+import { Analytics } from 'renderer/analytics'
+import appJson from 'package.json'
 
 interface IConnectedProps {
   username?: string
@@ -35,14 +37,20 @@ class App extends Component<Props> {
   }
 
   private initAnalytics() {
-    const ANALYTICS_ID = 'metastreamAnalytics'
-    if (document.getElementById(ANALYTICS_ID)) return
-
-    const script = document.createElement('script')
-    script.id = ANALYTICS_ID
-    script.async = true
-    script.src = 'https://www.googletagmanager.com/gtag/js?id=UA-115004557-2'
-    document.head.appendChild(script)
+    // https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters
+    // TODO: get consent from user, maybe in EULA?
+    const analytics = new Analytics('UA-115004557-2', {
+      appName: appJson.productName,
+      appVersion: appJson.version,
+      clientId: localUserId()
+    })
+    window.ga = (...args: any[]) => {
+      try {
+        analytics.send(...args)
+      } catch (e) {
+        console.error(e)
+      }
+    }
   }
 
   render() {

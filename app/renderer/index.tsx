@@ -1,8 +1,8 @@
 import React from 'react'
 import { render } from 'react-dom'
 import { AppContainer } from 'react-hot-loader'
+import { History } from 'history'
 
-import './cookies'
 import Root from './containers/Root'
 import * as cfgStore from './store/configureStore'
 
@@ -12,7 +12,7 @@ import * as packageJson from 'package.json'
 import { PlatformService } from 'renderer/platform'
 
 let store: any
-let history: any
+let history: History
 let persistor: any
 
 function logger() {
@@ -31,6 +31,16 @@ function init() {
   const storeCfg = cfgStore.configureStore()
   store = storeCfg.store
   persistor = storeCfg.persistor
+
+  history.listen(location => {
+    let pathname = location.pathname
+
+    if (pathname.startsWith('/lobby/') && pathname.indexOf('/create') === -1) {
+      pathname = '/lobby/join'
+    }
+
+    ga('pageview', { dh: 'https://app.getmetastream.com', dp: pathname })
+  })
 
   render(
     <AppContainer>

@@ -17,7 +17,8 @@ import { sleep } from 'utils/async'
 import {
   NETWORK_TIMEOUT,
   NetworkDisconnectReason,
-  NetworkDisconnectMessages
+  NetworkDisconnectMessages,
+  NetworkDisconnectLabels
 } from 'constants/network'
 import { Connect } from '../components/lobby/Connect'
 import { Disconnect } from '../components/lobby/Disconnect'
@@ -155,7 +156,7 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
     console.debug(`Disconnected [${reason}]: ${msg}`)
     this.setState({ disconnectMessage: msg })
 
-    gtag('event', 'session_disconnect', { reason })
+    ga('event', { ec: 'session', ea: 'disconnect', el: NetworkDisconnectLabels[reason] })
 
     if (this.props.disconnectReason) {
       this.props.dispatch!(setDisconnectReason())

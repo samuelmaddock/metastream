@@ -19,3 +19,12 @@ export const NetworkDisconnectMessages = {
   [NetworkDisconnectReason.DuplicateLicense]: `Shared license found in session`,
   [NetworkDisconnectReason.Full]: 'Session is full'
 }
+
+export const NetworkDisconnectLabels = {
+  [NetworkDisconnectReason.HostDisconnect]: 'host-disconnect',
+  [NetworkDisconnectReason.Timeout]: 'timeout',
+  [NetworkDisconnectReason.InvalidClientInfo]: 'invalid-client-info',
+  [NetworkDisconnectReason.VersionMismatch]: `version-mismatch`,
+  [NetworkDisconnectReason.DuplicateLicense]: `shared-license`,
+  [NetworkDisconnectReason.Full]: 'full'
+}

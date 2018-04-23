@@ -210,7 +210,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
 
   private sendChat = (text: string): void => {
     if (isUrl(text)) {
-      this.props.dispatch!(sendMediaRequest(text))
+      this.props.dispatch!(sendMediaRequest(text, 'chat'))
     } else {
       this.props.dispatch!(server_addChat(text))
     }

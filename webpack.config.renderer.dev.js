@@ -205,7 +205,7 @@ export default merge.smart(baseConfig, {
 
     new ExtractTextPlugin({
       filename: '[name].css'
-    }),
+    })
   ],
 
   devServer: {

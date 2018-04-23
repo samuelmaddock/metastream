@@ -57,7 +57,7 @@ export class LicenseGate extends Component<IProps, IState> {
             >
               Use License
             </MenuButton>
-            <ExternalLink href={LICENSE_PURCHASE_URL}>
+            <ExternalLink href={`${LICENSE_PURCHASE_URL}&utm_source=register`}>
               <MenuButton icon="credit-card" size="medium">
                 Purchase License
               </MenuButton>
