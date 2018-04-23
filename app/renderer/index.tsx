@@ -10,7 +10,7 @@ import 'styles/app.global.css'
 
 import * as packageJson from 'package.json'
 import { PlatformService } from 'renderer/platform'
-import { ANALYTICS_HOST } from 'constants/analytics'
+import { GA_HOST } from 'constants/analytics'
 
 let store: any
 let history: History
@@ -40,7 +40,7 @@ function init() {
       pathname = '/lobby/join'
     }
 
-    ga('pageview', { dh: ANALYTICS_HOST, dp: pathname })
+    ga('pageview', { dh: GA_HOST, dp: pathname })
   })
 
   render(
@@ -75,3 +75,7 @@ if (module.hot) {
     )
   })
 }
+
+window.addEventListener('beforeunload', () => {
+  debugger
+})

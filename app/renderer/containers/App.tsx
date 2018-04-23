@@ -8,7 +8,7 @@ import { localUserId, localUser } from '../network/index'
 import { setUsername } from '../actions/settings'
 import { Analytics } from 'renderer/analytics'
 import appJson from 'package.json'
-import { ANALYTICS_HOST } from 'constants/analytics'
+import { GA_HOST, GA_HEARTBEAT_INTERVAL } from 'constants/analytics'
 
 interface IConnectedProps {
   allowTracking: boolean
@@ -76,9 +76,9 @@ class App extends Component<Props> {
 
     this.heartbeatIntervalId = (setInterval(() => {
       ga('event', { ec: 'app', ea: 'heartbeat', ni: 1 })
-    }, 10 * 60 * 1000) as any) as number
+    }, GA_HEARTBEAT_INTERVAL) as any) as number
 
-    ga('pageview', { dh: ANALYTICS_HOST, dp: '/' })
+    ga('pageview', { dh: GA_HOST, dp: '/' })
   }
 
   render() {
