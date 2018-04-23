@@ -16,6 +16,8 @@ interface IConnectedProps {
 type Props = IConnectedProps & DispatchProp<IAppState>
 
 class App extends Component<Props> {
+  private heartbeatIntervalId?: number
+
   componentWillMount() {
     this.init()
   }
@@ -37,13 +39,26 @@ class App extends Component<Props> {
   }
 
   private initAnalytics() {
+    if (this.heartbeatIntervalId) {
+      clearInterval(this.heartbeatIntervalId)
+      this.heartbeatIntervalId = undefined
+    }
+
+    // TODO: check for opt-out setting
+    const allowTracking = true
+
+    if (!allowTracking) {
+      window.ga = () => {}
+      return
+    }
+
     // https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters
-    // TODO: get consent from user, maybe in EULA?
     const analytics = new Analytics('UA-115004557-2', {
       appName: appJson.productName,
       appVersion: appJson.version,
       clientId: localUserId()
     })
+
     window.ga = (...args: any[]) => {
       try {
         analytics.send(...args)
@@ -51,6 +66,10 @@ class App extends Component<Props> {
         console.error(e)
       }
     }
+
+    this.heartbeatIntervalId = (setInterval(() => {
+      ga('event', { ec: 'app', ea: 'heartbeat', ni: 1 })
+    }, 10 * 60 * 1000) as any) as number
   }
 
   render() {
