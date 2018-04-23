@@ -2,20 +2,28 @@ import { Reducer } from 'redux'
 import { isType } from 'utils/redux'
 import { clamp } from 'utils/math'
 import { setVolume, setMute, setUsername, setColor } from 'renderer/actions/settings'
-import { USERNAME_MAX_LEN, COLOR_LEN, DEFAULT_COLOR, DEFAULT_USERNAME, USERNAME_MIN_LEN } from 'constants/settings'
-import { IAppState } from './index';
-import { stripEmoji } from 'utils/string';
+import {
+  USERNAME_MAX_LEN,
+  COLOR_LEN,
+  DEFAULT_COLOR,
+  DEFAULT_USERNAME,
+  USERNAME_MIN_LEN
+} from 'constants/settings'
+import { IAppState } from './index'
+import { stripEmoji } from 'utils/string'
 
 export interface ISettingsState {
   mute: boolean
   volume: number
-  username?: string,
+  username?: string
   color?: string
+  allowTracking: boolean
 }
 
 const initialState: ISettingsState = {
   mute: false,
-  volume: 0.75
+  volume: 0.75,
+  allowTracking: true
 }
 
 export const settings: Reducer<ISettingsState> = (

@@ -11,6 +11,7 @@ import appJson from 'package.json'
 import { ANALYTICS_HOST } from 'constants/analytics'
 
 interface IConnectedProps {
+  allowTracking: boolean
   username?: string
 }
 
@@ -21,6 +22,12 @@ class App extends Component<Props> {
 
   componentWillMount() {
     this.init()
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    if (this.props.allowTracking !== prevProps.allowTracking) {
+      this.initAnalytics()
+    }
   }
 
   private init() {
@@ -45,10 +52,9 @@ class App extends Component<Props> {
       this.heartbeatIntervalId = undefined
     }
 
-    // TODO: check for opt-out setting
-    const allowTracking = true
-
+    const { allowTracking } = this.props
     if (!allowTracking) {
+      console.debug('Disabling analytics tracking')
       window.ga = () => {}
       return
     }
@@ -82,6 +88,7 @@ class App extends Component<Props> {
 
 export default connect<IConnectedProps>((state: IAppState) => {
   return {
+    allowTracking: state.settings.allowTracking,
     username: state.settings.username
   }
 })(App)
