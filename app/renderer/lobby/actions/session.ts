@@ -7,7 +7,7 @@ import { USERS_MAX_FREE } from 'constants/settings'
 import { NetworkDisconnectReason } from 'constants/network'
 
 export const setSessionData = actionCreator<Partial<ISessionState>>('SET_SESSION_DATA')
-export const setDisconnectReason = actionCreator<NetworkDisconnectReason | string | undefined>(
+export const setDisconnectReason = actionCreator<NetworkDisconnectReason | undefined>(
   'SET_DISCONNECT_REASON'
 )
 export const setAuthorized = actionCreator<boolean>('SET_AUTHORIZED')

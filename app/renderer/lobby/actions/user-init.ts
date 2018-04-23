@@ -81,10 +81,7 @@ const validateClientInfo = (info: ClientInfo, id: string, state: IAppState) => {
   return true
 }
 
-const kickClient = (reason: NetworkDisconnectReason | string): RpcThunk<void> => (
-  dispatch,
-  getState
-) => {
+const kickClient = (reason: NetworkDisconnectReason): RpcThunk<void> => (dispatch, getState) => {
   console.debug(`Received kick with reason: '${reason}'`)
   dispatch(setDisconnectReason(reason))
 }

@@ -31,7 +31,7 @@ interface IRouteParams {
 interface IProps extends RouteComponentProps<IRouteParams> {}
 
 interface IConnectedProps {
-  disconnectReason?: NetworkDisconnectReason | string
+  disconnectReason?: NetworkDisconnectReason
   clientAuthorized?: boolean
 }
 
@@ -150,12 +150,12 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
       return
     }
 
-    let msg =
-      typeof this.props.disconnectReason === 'string'
-        ? this.props.disconnectReason
-        : NetworkDisconnectMessages[this.props.disconnectReason || reason]
+    reason = this.props.disconnectReason || reason
+    let msg = NetworkDisconnectMessages[reason]
     console.debug(`Disconnected [${reason}]: ${msg}`)
     this.setState({ disconnectMessage: msg })
+
+    gtag('event', 'session_disconnect', { reason })
 
     if (this.props.disconnectReason) {
       this.props.dispatch!(setDisconnectReason())

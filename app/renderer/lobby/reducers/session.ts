@@ -4,13 +4,13 @@ import { IAppState } from 'renderer/reducers'
 import { NetworkDisconnectReason } from 'constants/network'
 import { DEFAULT_USERS_MAX } from 'constants/settings'
 import { setSessionData, setDisconnectReason, setAuthorized } from '../actions/session'
-import { NetActions } from '../../network/actions';
+import { NetActions } from '../../network/actions'
 
 export interface ISessionState {
   maxUsers?: number
 
   /** CLIENT: Reason for disconnect */
-  disconnectReason?: NetworkDisconnectReason | string
+  disconnectReason?: NetworkDisconnectReason
 
   /** CLIENT: Whether they're authorized */
   authorized?: boolean
