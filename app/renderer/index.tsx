@@ -11,6 +11,7 @@ import 'styles/app.global.css'
 import * as packageJson from 'package.json'
 import { PlatformService } from 'renderer/platform'
 import { GA_HOST } from 'constants/analytics'
+import { initAnalytics } from './analytics/index'
 
 let store: any
 let history: History
@@ -33,15 +34,7 @@ function init() {
   store = storeCfg.store
   persistor = storeCfg.persistor
 
-  history.listen(location => {
-    let pathname = location.pathname
-
-    if (pathname.startsWith('/lobby/') && pathname.indexOf('/create') === -1) {
-      pathname = '/lobby/join'
-    }
-
-    ga('pageview', { dh: GA_HOST, dp: pathname })
-  })
+  initAnalytics(store, history)
 
   render(
     <AppContainer>
@@ -76,6 +69,8 @@ if (module.hot) {
   })
 }
 
-window.addEventListener('beforeunload', () => {
-  debugger
-})
+if (process.env.NODE_ENV === 'development') {
+  window.addEventListener('beforeunload', () => {
+    debugger
+  })
+}

@@ -14,6 +14,8 @@ export const getPlaybackState = (state: IAppState) => {
   return state.mediaPlayer.playback
 }
 
+export const isPlaying = (state: IAppState) => getPlaybackState(state) === PlaybackState.Playing
+
 const calcTime = (playback: PlaybackState, startTime: number, pauseTime: number, delta: number) => {
   switch (playback) {
     case PlaybackState.Playing:

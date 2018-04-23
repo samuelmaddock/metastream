@@ -6,12 +6,8 @@ import { getLocalUsername } from '../reducers/settings'
 import { PlatformService } from '../platform/index'
 import { localUserId, localUser } from '../network/index'
 import { setUsername } from '../actions/settings'
-import { Analytics } from 'renderer/analytics'
-import appJson from 'package.json'
-import { GA_HOST, GA_HEARTBEAT_INTERVAL } from 'constants/analytics'
 
 interface IConnectedProps {
-  allowTracking: boolean
   username?: string
 }
 
@@ -24,15 +20,8 @@ class App extends Component<Props> {
     this.init()
   }
 
-  componentDidUpdate(prevProps: Props) {
-    if (this.props.allowTracking !== prevProps.allowTracking) {
-      this.initAnalytics()
-    }
-  }
-
   private init() {
     this.initSettings()
-    this.initAnalytics()
     this.props.dispatch!(listenForUiEvents())
   }
 
@@ -46,41 +35,6 @@ class App extends Component<Props> {
     }
   }
 
-  private initAnalytics() {
-    if (this.heartbeatIntervalId) {
-      clearInterval(this.heartbeatIntervalId)
-      this.heartbeatIntervalId = undefined
-    }
-
-    const { allowTracking } = this.props
-    if (!allowTracking) {
-      console.debug('Disabling analytics tracking')
-      window.ga = () => {}
-      return
-    }
-
-    // https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters
-    const analytics = new Analytics('UA-115004557-2', {
-      appName: appJson.productName,
-      appVersion: appJson.version,
-      clientId: localUserId()
-    })
-
-    window.ga = (...args: any[]) => {
-      try {
-        analytics.send(...args)
-      } catch (e) {
-        console.error(e)
-      }
-    }
-
-    this.heartbeatIntervalId = (setInterval(() => {
-      ga('event', { ec: 'app', ea: 'heartbeat', ni: 1 })
-    }, GA_HEARTBEAT_INTERVAL) as any) as number
-
-    ga('pageview', { dh: GA_HOST, dp: '/' })
-  }
-
   render() {
     return <div className="app">{this.props.children}</div>
   }
@@ -88,7 +42,6 @@ class App extends Component<Props> {
 
 export default connect<IConnectedProps>((state: IAppState) => {
   return {
-    allowTracking: state.settings.allowTracking,
     username: state.settings.username
   }
 })(App)
