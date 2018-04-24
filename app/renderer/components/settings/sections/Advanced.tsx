@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
-import styles from './SettingsMenu.css'
-import { Icon } from 'renderer/components/Icon'
-import { TextInput, InputGroup } from '../common/input'
-import { IAppState } from '../../reducers/index'
-import { getLocalUsername, getLocalColor, ISettingsState } from '../../reducers/settings'
 import { connect, DispatchProp } from 'react-redux'
-import { USERNAME_MIN_LEN, USERNAME_MAX_LEN } from '../../../constants/settings'
-import { setUsername, setColor, setSetting } from '../../actions/settings'
-import { SwitchOption } from './controls'
+import styles from '../SettingsMenu.css'
+import { Icon } from 'renderer/components/Icon'
+import { TextInput, InputGroup } from 'renderer/components/common/input'
+import { IAppState } from 'renderer/reducers/index'
+import { getLocalUsername, getLocalColor, ISettingsState } from 'renderer/reducers/settings'
+import { USERNAME_MIN_LEN, USERNAME_MAX_LEN } from 'constants/settings'
+import { setUsername, setColor, setSetting } from 'renderer/actions/settings'
+import { SwitchOption } from '../controls'
 
 interface IProps {}
 

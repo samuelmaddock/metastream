@@ -32,3 +32,8 @@ export function registerLicense(license: string) {
   valid = ipcRenderer.sendSync('register-license', license)
   return !!valid
 }
+
+export function removeLicense() {
+  ipcRenderer.send('remove-license')
+  valid = false
+}

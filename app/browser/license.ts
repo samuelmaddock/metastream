@@ -1,4 +1,4 @@
-import fs from 'fs'
+import fs from 'fs-extra'
 import path from 'path'
 import { app, ipcMain } from 'electron'
 import { validateLicense } from 'license-gen'
@@ -27,6 +27,15 @@ function readLicense() {
   }
 }
 
+function removeLicense() {
+  const filepath = getLicensePath()
+  try {
+    return fs.removeSync(filepath)
+  } catch (e) {
+    log.error('Failed to remove license')
+  }
+}
+
 const validate = (license: string) => {
   let valid
   try {
@@ -51,4 +60,8 @@ ipcMain.on('register-license', (event: Electron.Event, license: string) => {
     writeLicense(license)
   }
   event.returnValue = valid
+})
+
+ipcMain.on('remove-license', () => {
+  removeLicense()
 })

@@ -5,6 +5,10 @@
   flex-direction: column;
 }
 
+.section {
+  margin-bottom: 2rem;
+}
+
 .section h2 {
   font-size: 18px;
   font-weight: bold;
@@ -20,7 +24,7 @@
   margin-bottom: 4px;
 }
 
-.section > input {
+.section > input:not(:last-child) {
   margin-bottom: 15px;
 }
 

@@ -5,6 +5,7 @@
     'a b' 2.5rem
     'c c' auto / 100% auto;
   align-items: center;
+  margin-top: 1rem;
 }
 
 .option::after {
@@ -13,7 +14,7 @@
   height: 1px;
   background: white;
   mix-blend-mode: overlay;
-  margin-top: 20px;
+  margin-top: 1.5rem;
 }
 
 .title {

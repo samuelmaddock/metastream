@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
-import styles from './SettingsMenu.css'
-import { Icon } from 'renderer/components/Icon'
-import { TextInput, InputGroup } from '../common/input'
-import { IAppState } from '../../reducers/index'
-import { getLocalUsername, getLocalColor } from '../../reducers/settings'
 import { connect, DispatchProp } from 'react-redux'
-import { USERNAME_MIN_LEN, USERNAME_MAX_LEN } from '../../../constants/settings'
-import { setUsername, setColor } from '../../actions/settings'
+import styles from '../SettingsMenu.css'
+import { Icon } from 'renderer/components/Icon'
+import { TextInput, InputGroup } from 'renderer/components/common/input'
+import { IAppState } from 'renderer/reducers/index'
+import { getLocalUsername, getLocalColor, ISettingsState } from 'renderer/reducers/settings'
+import { USERNAME_MIN_LEN, USERNAME_MAX_LEN } from 'constants/settings'
+import { setUsername, setColor, setSetting } from 'renderer/actions/settings'
 
 interface IProps {}
 
@@ -17,7 +17,7 @@ interface IConnectedProps {
 
 type Props = IProps & IConnectedProps & DispatchProp<{}>
 
-class _ProfileSettings extends Component<Props> {
+class ProfileSettings extends Component<Props> {
   private usernameInput: HTMLInputElement | null = null
 
   private get username() {
@@ -43,7 +43,6 @@ class _ProfileSettings extends Component<Props> {
           }}
         />
 
-
         <label htmlFor="profile_color">Chat Color</label>
         <input
           id="profile_color"
@@ -67,9 +66,9 @@ class _ProfileSettings extends Component<Props> {
   }
 }
 
-export const ProfileSettings = connect((state: IAppState): IConnectedProps => {
+export default connect((state: IAppState): IConnectedProps => {
   return {
     username: getLocalUsername(state),
-    color: getLocalColor(state),
+    color: getLocalColor(state)
   }
-})(_ProfileSettings) as React.ComponentClass<IProps>
+})(ProfileSettings) as React.ComponentClass<IProps>
