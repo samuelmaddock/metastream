@@ -18,12 +18,14 @@ export interface ISettingsState {
   username?: string
   color?: string
   allowTracking: boolean
+  developer: boolean
 }
 
 const initialState: ISettingsState = {
   mute: false,
   volume: 0.75,
-  allowTracking: true
+  allowTracking: true,
+  developer: process.env.NODE_ENV === 'development'
 }
 
 export const settings: Reducer<ISettingsState> = (
@@ -64,3 +66,4 @@ export const settings: Reducer<ISettingsState> = (
 
 export const getLocalUsername = (state: IAppState) => state.settings.username || DEFAULT_USERNAME
 export const getLocalColor = (state: IAppState) => state.settings.color || DEFAULT_COLOR
+export const isDeveloper = (state: IAppState) => state.settings.developer

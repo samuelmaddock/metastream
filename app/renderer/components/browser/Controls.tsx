@@ -13,6 +13,7 @@ interface IProps {
   className?: string
   onRequestUrl?: (url: string) => void
   onClose?: () => void
+  devTools?: boolean
 }
 
 interface IState {
@@ -110,8 +111,7 @@ export class WebControls extends Component<IProps, IState> {
       </div>
     )
 
-    const canDebug = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true'
-    const debugBtn = canDebug ? (
+    const debugBtn = this.props.devTools ? (
       <IconButton
         className={styles.button}
         icon="settings"

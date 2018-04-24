@@ -50,6 +50,7 @@ import { UserList } from './lobby/UserList'
 import { MediaList } from './lobby/MediaList'
 import { LobbyModal } from '../reducers/ui'
 import { setLobbyModal } from '../actions/ui'
+import { isDeveloper } from '../reducers/settings'
 
 interface IProps {
   host: boolean
@@ -67,6 +68,7 @@ interface IConnectedProps {
   playback: PlaybackState
   popup?: IPopupState
   modal?: LobbyModal
+  developer: boolean
 }
 
 type PrivateProps = IProps & IConnectedProps & DispatchProp<IAppState>
@@ -157,6 +159,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
             className={styles.modal}
             onClose={this.closeModal}
             {...this.state.modalProps}
+            devTools={this.props.developer}
           />
         )
       case LobbyModal.Invite:
@@ -243,6 +246,7 @@ export const GameLobby = connect((state: IAppState): IConnectedProps => {
     messages: state.chat.messages,
     playback: getPlaybackState(state),
     popup: state.extensions.popup,
-    modal: state.ui.lobbyModal
+    modal: state.ui.lobbyModal,
+    developer: isDeveloper(state)
   }
 })(_GameLobby) as React.ComponentClass<IProps>

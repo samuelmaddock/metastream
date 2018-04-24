@@ -33,6 +33,7 @@ import { IconButton } from 'renderer/components/common/button'
 import { getPlaybackTime2 } from 'renderer/lobby/reducers/mediaPlayer.helpers'
 import { absoluteUrl } from 'utils/appUrl'
 import { BrowserActionList } from '../browser/BrowserActionList'
+import { isDeveloper } from '../../reducers/settings'
 
 const EXTENSIONS_URL = absoluteUrl('./browser/resources/extensions.html')
 
@@ -92,23 +93,21 @@ interface IProps {
 interface IConnectedProps extends IMediaPlayerState {
   mute: boolean
   volume: number
+  developer: boolean
 }
 
 const mapStateToProps = (state: IAppState): IConnectedProps => {
   return {
     ...state.mediaPlayer,
     mute: state.settings.mute,
-    volume: state.settings.volume
+    volume: state.settings.volume,
+    developer: isDeveloper(state)
   }
 }
 
 type PrivateProps = IProps & IConnectedProps & DispatchProp<IAppState>
 
 class _PlaybackControls extends Component<PrivateProps> {
-  private get canDebug() {
-    return process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true'
-  }
-
   private getCuePoints() {
     const { current: media } = this.props
     if (media) {
@@ -200,7 +199,7 @@ class _PlaybackControls extends Component<PrivateProps> {
       </ButtonListItem>
     )
 
-    const debugBtn = this.canDebug && (
+    const debugBtn = this.props.developer && (
       <ButtonListItem icon="settings" onClick={this.props.debug}>
         Debug
       </ButtonListItem>
