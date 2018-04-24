@@ -1,0 +1,32 @@
+.option {
+  max-width: 400px;
+  display: grid;
+  grid-template:
+    'a b' 2.5rem
+    'c c' auto / 100% auto;
+  align-items: center;
+}
+
+.option::after {
+  content: '';
+  grid-column: 1 / 3;
+  height: 1px;
+  background: white;
+  mix-blend-mode: overlay;
+  margin-top: 20px;
+}
+
+.title {
+  grid-area: a;
+}
+
+.switchContainer {
+  grid-area: b;
+}
+
+.description {
+  align-self: stretch;
+  grid-area: c;
+  font-size: 0.8rem;
+  mix-blend-mode: overlay;
+}

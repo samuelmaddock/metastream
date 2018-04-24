@@ -1,7 +1,7 @@
 import { Reducer } from 'redux'
 import { isType } from 'utils/redux'
 import { clamp } from 'utils/math'
-import { setVolume, setMute, setUsername, setColor } from 'renderer/actions/settings'
+import { setVolume, setMute, setUsername, setColor, setSetting } from 'renderer/actions/settings'
 import {
   USERNAME_MAX_LEN,
   COLOR_LEN,
@@ -30,6 +30,11 @@ export const settings: Reducer<ISettingsState> = (
   state: ISettingsState = initialState,
   action: any
 ) => {
+  if (isType(action, setSetting as any)) {
+    const { key, value } = action.payload as any
+    return { ...state, [key]: value }
+  }
+
   if (isType(action, setVolume)) {
     return {
       ...state,

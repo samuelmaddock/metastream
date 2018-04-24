@@ -12,7 +12,7 @@
   margin-bottom: 15px;
 }
 
-.section label {
+.section > label {
   display: block;
   font-size: 12px;
   letter-spacing: 0.5px;
@@ -20,7 +20,7 @@
   margin-bottom: 4px;
 }
 
-.section input {
+.section > input {
   margin-bottom: 15px;
 }
 
