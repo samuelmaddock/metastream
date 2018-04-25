@@ -111,6 +111,10 @@ button:disabled {
   cursor: auto;
 }
 
+p {
+  line-height: 1.5rem;
+}
+
 p:not(:last-child) {
   margin-bottom: 1rem;
 }
@@ -119,6 +123,15 @@ a {
   color: unset;
   text-decoration: none;
   -webkit-user-drag: none;
+}
+
+b {
+  font-weight: bold;
+}
+
+em {
+  font-weight: bold;
+  color: var(--color-highlight);
 }
 
 .link,

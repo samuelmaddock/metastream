@@ -8,8 +8,8 @@ import LayoutMain from 'renderer/components/layout/Main'
 import { Icon } from 'renderer/components/Icon'
 import { MenuButton } from 'renderer/components/menu/MenuButton'
 import { TextInput, InputGroup } from './common/input'
-import { GoBackButton } from './menu/GoBackButton';
-import { MenuHeader } from './menu/MenuHeader';
+import { GoBackButton } from './menu/GoBackButton'
+import { MenuHeader } from './menu/MenuHeader'
 
 interface IProps {
   connect: (sessionId: string) => void
@@ -25,7 +25,7 @@ export class SessionJoin extends Component<IProps> {
         <section>
           <MenuHeader text="Join Session" />
           <form>
-            <p>Enter a 64-character friend code.</p>
+            <p>Enter a friend code or IP address.</p>
             <InputGroup>
               <TextInput
                 theRef={el => (this.sessionInput = el)}

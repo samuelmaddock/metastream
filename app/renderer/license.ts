@@ -4,14 +4,14 @@ import { sha1 } from 'crypto-hash'
 let valid: boolean | null = null
 let license: string | null = null
 
-export function hasValidLicense() {
+export function hasValidLicense(): boolean {
   if (typeof valid === 'boolean') {
     return valid
   } else {
     const result = ipcRenderer.sendSync('validate-license')
     valid = result.valid
     license = result.license
-    return valid
+    return !!valid
   }
 }
 

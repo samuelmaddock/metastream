@@ -1,18 +1,33 @@
 .container {
-  text-align: center;
   max-width: 680px;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  text-align: center;
 }
 
 .idContainer {
-  max-width: 644px;
+  max-width: 600px;
   width: 100%;
 }
 
 .idText {
-  font-family: 'Courier New', Courier, monospace;
   font-size: 14px;
+  text-align: center;
+}
+
+.notice {
+  composes: rounded from 'styles/layout.css';
+  position: relative;
+  border: 1px solid white;
+  text-align: left;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.noticeDismiss {
+  position: absolute;
+  top: 1.4rem;
+  right: 1.4rem;
 }

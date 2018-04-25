@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
-import packageJson from 'package.json'
 import styles from './PurchaseLicense.css'
+import packageJson from 'package.json'
 import { LICENSE_PURCHASE_URL } from 'constants/license'
-
-import { MenuButton } from '../../menu/MenuButton'
-import { ExternalLink } from '../../common/link'
-import { HighlightButton } from '../../common/button'
+import { MenuButton } from 'renderer/components/menu/MenuButton'
+import { ExternalLink } from 'renderer/components/common/link'
+import { HighlightButton } from 'renderer/components/common/button'
 
 interface IProps {}
 
