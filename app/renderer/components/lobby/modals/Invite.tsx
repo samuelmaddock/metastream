@@ -28,7 +28,7 @@ const mapStateToProps = (state: IAppState): IConnectedProps => {
 
 type PrivateProps = IProps & IConnectedProps & DispatchProp<IAppState>
 
-class _Invite extends Component<PrivateProps> {
+class Invite extends Component<PrivateProps> {
   render(): JSX.Element {
     const msg = this.props.isHost
       ? 'Send your friend code to peeps to invite them'
@@ -47,4 +47,4 @@ class _Invite extends Component<PrivateProps> {
   }
 }
 
-export const Invite = connect(mapStateToProps)(_Invite) as React.ComponentClass<IProps>
+export default connect(mapStateToProps)(Invite) as React.ComponentClass<IProps>
