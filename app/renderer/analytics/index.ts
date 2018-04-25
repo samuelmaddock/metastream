@@ -13,9 +13,6 @@ import { PlaybackState } from '../lobby/reducers/mediaPlayer'
 
 type StoreState = IAppState & PersistedState
 
-let analytics: Analytics
-let store: Store<StoreState>
-
 let heartbeatIntervalId: number | null = null
 
 export async function initAnalytics(store: Store<StoreState>, history: History) {
@@ -55,12 +52,12 @@ function setupAnalytics(store: Store<StoreState>) {
     } finally {
       // Reset session heartbeat timer; keeps number of heartbeats sent only to
       // what's absolutely necessary to keep the session alive.
-      startSession()
+      startSession(store)
     }
   }
 }
 
-const startSession = () => {
+const startSession = (store: Store<IAppState>) => {
   stopSession()
   heartbeatIntervalId = (setInterval(pacemaker(store), GA_HEARTBEAT_INTERVAL) as any) as number
 }
