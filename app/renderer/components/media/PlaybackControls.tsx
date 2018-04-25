@@ -277,8 +277,6 @@ class _PlaybackControls extends Component<PrivateProps> {
   }
 
   private disconnect = () => {
-    // TODO: Use react-router-redux actions after refactoring to not use
-    // multiple redux stores
     this.props.dispatch!(push('/'))
   }
 }

@@ -30,10 +30,7 @@ export async function initAnalytics(store: Store<StoreState>, history: History) 
 }
 
 function setupAnalytics(store: Store<StoreState>) {
-  if (heartbeatIntervalId) {
-    clearInterval(heartbeatIntervalId)
-    heartbeatIntervalId = null
-  }
+  stopSession()
 
   const state = store.getState()
   const { allowTracking } = state.settings
@@ -55,10 +52,24 @@ function setupAnalytics(store: Store<StoreState>) {
       analytics.send(...args)
     } catch (e) {
       console.error(e)
+    } finally {
+      // Reset session heartbeat timer; keeps number of heartbeats sent only to
+      // what's absolutely necessary to keep the session alive.
+      startSession()
     }
   }
+}
 
+const startSession = () => {
+  stopSession()
   heartbeatIntervalId = (setInterval(pacemaker(store), GA_HEARTBEAT_INTERVAL) as any) as number
+}
+
+const stopSession = () => {
+  if (heartbeatIntervalId) {
+    clearInterval(heartbeatIntervalId)
+    heartbeatIntervalId = null
+  }
 }
 
 async function sleepUntilHydrated(store: Store<PersistedState>) {
