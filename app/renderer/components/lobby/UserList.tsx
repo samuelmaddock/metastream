@@ -36,11 +36,7 @@ class _UserList extends Component<Props> {
         title="Users"
         tagline={userSlots}
         action={
-          <HighlightButton
-            icon="mail"
-            highlight={(this.props.isHost || numUsers === 0) && numUsers < 2}
-            onClick={this.props.onInvite}
-          >
+          <HighlightButton icon="mail" highlight={numUsers < 2} onClick={this.props.onInvite}>
             Invite
           </HighlightButton>
         }
