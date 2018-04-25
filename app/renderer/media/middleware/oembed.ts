@@ -5,6 +5,8 @@ import { Url } from 'url'
 import { MEDIA_USER_AGENT } from 'constants/http'
 import { mergeMetadata } from '../utils'
 
+const WORDPRESS_OEMBED_PATH = /\/wp-json\/oembed\/.*?\/embed/i
+
 async function fetchOEmbed(url: string) {
   const [json] = await fetchText(url, {
     json: true,
@@ -52,7 +54,11 @@ const mware: IMediaMiddleware = {
         'href'
       )
 
-      if (link) {
+      if (
+        link &&
+        // Wordpress embeds are super generic
+        !WORDPRESS_OEMBED_PATH.test(link)
+      ) {
         json = await fetchOEmbed(link)
       }
     }
