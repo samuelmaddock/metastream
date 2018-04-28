@@ -171,7 +171,10 @@ export default merge.smart(baseConfig, prodConfig, {
       ]
     }),*/
 
-    new ExtractTextPlugin('style.css'),
+    new ExtractTextPlugin({
+      filename: 'style.css',
+      ignoreOrder: true
+    }),
 
     new BundleAnalyzerPlugin({
       analyzerMode: process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',
