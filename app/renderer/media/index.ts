@@ -1,5 +1,3 @@
-import { Url, parse } from 'url'
-
 import { cleanObject } from '../../utils/object'
 import compose from './compose'
 
@@ -7,6 +5,7 @@ import { IMediaMiddleware, IMediaRequest, IMediaResponse, IMediaContext, MediaTy
 
 import subredditMware from './middleware/subreddit'
 import youTubeMware from './middleware/youtube'
+import youTubePlaylistMware from './middleware/youtube-playlist'
 import httpHeadMware from './middleware/httpHead'
 import mediaMware from './middleware/media'
 import htmlMware from './middleware/html'
@@ -21,6 +20,7 @@ import { IMediaItem } from 'renderer/lobby/reducers/mediaPlayer'
 // prettier-ignore
 const middlewares: IMediaMiddleware[] = [
   subredditMware,
+  youTubePlaylistMware,
 
   httpHeadMware,
   mediaMware,
@@ -35,7 +35,7 @@ const middlewares: IMediaMiddleware[] = [
   autoplayMware
 ];
 
-type MediaUrl = Url & { href: string }
+type MediaUrl = URL
 
 const createContext = (url: MediaUrl) => {
   const req: IMediaRequest = {
@@ -70,7 +70,7 @@ const finalizeMedia = (media: IMediaResponse) => {
 }
 
 export const resolveMediaUrl = async (url: string): Promise<Readonly<IMediaResponse> | null> => {
-  const urlObj = parse(url) as MediaUrl
+  const urlObj: MediaUrl = new URL(url)
   if (!urlObj.href) {
     return null
   }
@@ -86,7 +86,7 @@ export const resolveMediaUrl = async (url: string): Promise<Readonly<IMediaRespo
 export const resolveMediaPlaylist = async (
   media: IMediaItem
 ): Promise<Readonly<IMediaResponse> | null> => {
-  const urlObj = parse(media.url) as MediaUrl
+  const urlObj: MediaUrl = new URL(media.url)
   if (!urlObj.href) {
     return null
   }

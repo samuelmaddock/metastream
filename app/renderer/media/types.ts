@@ -16,7 +16,7 @@ export interface IMediaRequest {
   type: MediaType
 
   /** Request URL object */
-  url: Url & { href: string }
+  url: URL
 
   /** Media requester */
   user: any
@@ -117,7 +117,7 @@ export interface IMediaMiddlewareResolve {
  */
 export interface IMediaMiddleware {
   /** Determine if the given URL is a match for the service. */
-  match(url: Url & { href: string }, ctx: IMediaContext): boolean
+  match(url: URL, ctx: IMediaContext): boolean
 
   /** Resolve metadata for the given URL. */
   resolve: IMediaMiddlewareResolve
