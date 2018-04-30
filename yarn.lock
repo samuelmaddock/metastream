@@ -5466,9 +5466,9 @@ levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
-"license-gen@git+ssh://git@github.com/samuelmaddock/license-gen.git#0.0.1":
+"license-gen@git+ssh://git@github.com/samuelmaddock/license-gen.git#0.0.2":
   version "1.0.0"
-  resolved "git+ssh://git@github.com/samuelmaddock/license-gen.git#65fc3ead28a706fb429d7c26f9dbbfffd3e9b8d4"
+  resolved "git+ssh://git@github.com/samuelmaddock/license-gen.git#7670fafb62e98bd7304d5374881a05079d5c3482"
   dependencies:
     ramda "^0.25.0"
     sodium-native "^2.1.2"
@@ -6123,6 +6123,10 @@ node-libs-browser@^2.0.0:
     url "^0.11.0"
     util "^0.10.3"
     vm-browserify "0.0.4"
+
+node-machine-id@^1.1.10:
+  version "1.1.10"
+  resolved "https://registry.yarnpkg.com/node-machine-id/-/node-machine-id-1.1.10.tgz#b4cb8f01b25b90d4e0675be00df30e61ee75179b"
 
 node-notifier@^5.0.1:
   version "5.1.2"
