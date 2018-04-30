@@ -10,7 +10,7 @@ import { mergeMetadata } from '../utils'
 /** Bad video types to not use. */
 const BAD_VIDEO_TYPES = new Set(['application/x-shockwave-flash'])
 
-function buildHTMLMetadata(url: Url, body: string): Partial<IMediaResponse> {
+function buildHTMLMetadata(url: URL, body: string): Partial<IMediaResponse> {
   const og = parse(body, {})
   console.log('og', og)
   const { ogTitle: title, ogImage: image, ogDescription: description } = og

@@ -5,7 +5,7 @@ import { IMediaMiddleware, IMediaResponse } from '../types'
 
 const MIME_MEDIA_TYPES = new Set(['audio', 'image', 'video'])
 
-function buildMediaMetadata(url: Url): Partial<IMediaResponse> {
+function buildMediaMetadata(url: URL): Partial<IMediaResponse> {
   // TODO: get ID3 metadata from MP3s
   return {
     url: url.href!,

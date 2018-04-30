@@ -92,6 +92,9 @@ export interface IMediaContext {
 
   /** Object for passing information through middleware */
   state: {
+    /** Raw HTML string */
+    body?: string
+
     /** Cheerio query engine */
     $?: CheerioStatic
 

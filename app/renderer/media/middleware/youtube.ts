@@ -161,7 +161,7 @@ class YouTubeClient {
   }
 }
 
-async function getScrapedMetadata(url: Url, $: CheerioStatic): Promise<Partial<IMediaResponse>> {
+async function getScrapedMetadata(url: URL, $: CheerioStatic): Promise<Partial<IMediaResponse>> {
   const metaDuration = $('meta[itemprop=duration]')
   const isoDuration = metaDuration.attr('content')
 
@@ -180,8 +180,7 @@ async function getScrapedMetadata(url: Url, $: CheerioStatic): Promise<Partial<I
   const description =
     metaDescription.length === 1 ? parseHtmlDescription(metaDescription) : undefined
 
-  const query = typeof url.query === 'object' ? url.query : parseQuery(url.query)
-  if (query && query.t) {
+  if (url.searchParams.has('t')) {
     // TODO: parse '1h2m3s' format
     // startTime = parseHms(query.t)
   }

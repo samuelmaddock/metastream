@@ -9,7 +9,7 @@ const getContentType = (val: string | undefined) =>
   val ? (val.split('/').shift() || '').toLowerCase() : ''
 
 const mware: IMediaMiddleware = {
-  match({ protocol }: Url) {
+  match({ protocol }: URL) {
     return protocol === 'http:' || protocol === 'https:'
   },
 
