@@ -36,9 +36,12 @@
     "productName": "Metastream",
     "appId": "com.samuelmaddock.metastream",
     "copyright": "Metastream © 2018. All rights reserved.",
-    "muonVersion": "5.1.2",
+    "muonVersion": "5.2.7",
     "nodeGypRebuild": false,
     "npmRebuild": false,
+    "asarUnpack": [
+      "./node_modules/sodium-native/**"
+    ],
     "files": [
       "assets/",
       "dist/",
