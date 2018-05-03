@@ -32,7 +32,7 @@ const mware: IMediaMiddleware = {
     const { state } = ctx.req
     const ytpl: IYouTubePlaylistState = (state && state.ytpl) || {}
 
-    const isInitialRequest = !ytpl.index
+    const isInitialRequest = typeof ytpl.index === 'undefined'
 
     if (isInitialRequest) {
       await next()

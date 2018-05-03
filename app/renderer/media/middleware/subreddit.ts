@@ -91,9 +91,9 @@ const parseItem = (ctx: IMediaContext, item: any): any => {
   ctx.res.title = item.title
 
   // Overwrite request url with subreddit post
-  const url = parse(item.url)
+  const url = new URL(item.url)
   if (url && url.href) {
-    ctx.req.url = url as any
+    ctx.req.url = url
   }
 
   const { media } = item
