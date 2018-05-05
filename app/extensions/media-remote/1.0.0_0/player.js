@@ -375,16 +375,16 @@
     }
   }
 
-  /** Detect video content on page */
+  /** Detect media content on page */
   const detectPlayer = () => {
-    const video = document.querySelector('video')
+    const mediaElement = document.querySelector('video, audio')
 
-    if (video) {
-      console.debug(`Found video element!`, player, video)
-      addMedia(video)
+    if (mediaElement) {
+      console.debug(`Found media element!`, mediaElement.tagName, mediaElement, player)
+      addMedia(mediaElement)
     } else {
       setTimeout(detectPlayer, DETECT_INTERVAL)
-      // console.info(`Couldn't find video element on page, trying again in 2 sec.`);
+      // console.debug(`Couldn't find media element on page, trying again...`);
     }
   }
 
