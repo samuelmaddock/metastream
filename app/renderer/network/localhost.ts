@@ -10,7 +10,7 @@ class LocalHostConnection extends NetConnection {
     throw new Error('Attempted to send data to LocalHost');
   }
   getIP(): string {
-    throw '127.0.0.1';
+    return '127.0.0.1';
   }
   getPort(): string {
     return '0';
