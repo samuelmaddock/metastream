@@ -151,7 +151,7 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
 
       const wv = this.webview as any
       wv.addEventListener('did-attach', (e: any) => {
-        ;(remote as any).getWebContents(e.tabId, (webContents: Electron.WebContents) => {
+        ; (remote as any).getWebContents(e.tabId, (webContents: Electron.WebContents) => {
           this.webContents = webContents
           this.reload()
 
@@ -186,6 +186,8 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
   }
 
   private onMediaReady = (info?: any) => {
+    console.debug('onMediaReady', info)
+
     this.updatePlaybackTime()
     this.updatePlayback(this.props.playback)
     this.updateVolume()
@@ -205,6 +207,7 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
       }
     }
 
+    // Auto-fullscreen
     if (info) {
       if (info.iframe) {
         this.webContents.send('media-iframes', info.href)
@@ -216,13 +219,12 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
   }
 
   private requestFullScreen(x: number = 0, y: number = 0) {
-    console.debug(`CLICK FRAME ${x},${y}`)
-    this.webContents.sendInputEvent({
-      type: 'mouseUp',
-      x,
-      y,
-      movementX: 1234
-    } as any)
+    // Insert gesture event to allow triggering fullscreen
+    console.debug(`requestFullscreen x=${x} y=${y}`)
+    this.webContents.sendInputEvent({ type: 'mouseMove', x: 1, y: 1, movementX: 1234 } as any)
+
+    // Hide player controls
+    this.webContents.sendInputEvent({ type: 'mouseLeave', x: 0, y: 0 } as any)
   }
 
   private requestFullScreenIFrame(points: { x: number; y: number }[]) {
@@ -233,7 +235,7 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
   private updatePlaybackTime = () => {
     const { current: media } = this.props
 
-    if (media && media.duration === 0) {
+    if (media && (media.duration === 0 || typeof media.duration === 'undefined')) {
       console.debug('Preventing updating playback since duration indicates livestream')
       return // live stream
     }
