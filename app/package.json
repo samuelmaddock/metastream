@@ -1,7 +1,7 @@
 {
   "name": "metastream",
   "productName": "Metastream",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Watch or listen to media with friends",
   "main": "./main.prod.js",
   "author": {
