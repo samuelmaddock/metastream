@@ -1,7 +1,7 @@
 {
   "name": "Enhanced Media Viewer",
   "version": "0.1",
-  "description": "Make vids full sized",
+  "description": "Improves display of media in the app.",
   "content_scripts": [
     {
       "matches": ["*://*/*"],
