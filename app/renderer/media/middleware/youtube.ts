@@ -9,9 +9,7 @@ import { mergeMetadata, parseHtmlDescription } from '../utils'
 const USE_OFFICIAL_API = false
 
 const API_URL = 'https://www.googleapis.com/youtube/v3/videos'
-
-// TODO: move into app config
-const API_KEY = '' // 'AIzaSyAlDyii-2FVIOD4lR0lZBzrig3BNQWKA14'
+const API_KEY = ''
 
 const DEFAULT_QUERY = {
   key: API_KEY,
@@ -140,13 +138,13 @@ class YouTubeClient {
     // Show fullscreen embed if video supports it
     const embedUrl = item.status.embeddable
       ? buildUrl(`https://www.youtube.com/embed/${videoId}`, {
-          autoplay: 1,
-          controls: 0,
-          fs: 0,
-          rel: 0,
-          showinfo: 0,
-          iv_load_policy: 3 // disable annotations
-        })
+        autoplay: 1,
+        controls: 0,
+        fs: 0,
+        rel: 0,
+        showinfo: 0,
+        iv_load_policy: 3 // disable annotations
+      })
       : url
 
     return {
