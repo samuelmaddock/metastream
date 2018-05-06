@@ -86,10 +86,6 @@
 }
 
 .modal {
-  position: absolute;
-  top: var(--app-titlebar-height);
-  bottom: 0;
-  left: 0;
-  right: 0;
+  top: var(--app-titlebar-height) !important;
   z-index: var(--overlay-z-index);
 }

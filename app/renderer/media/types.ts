@@ -21,34 +21,6 @@ export interface IMediaRequest {
   /** Media requester */
   user: any
 
-  /**
-   * TODO
-   *
-   * Clients prerender HTML using hidden window with JavaScript enabled.
-   * Semantic HTML is extracted as hints for the backend.
-   *
-   * Full HTML is not sent to the server in case sensitive data is included.
-   */
-  hints?: {
-    /**
-     * Open Graph
-     * http://ogp.me/
-     */
-    og?: any
-
-    /**
-     * JSON for Linking Data
-     * https://json-ld.org/
-     */
-    jsonLD?: any
-
-    /**
-     * Microdata
-     * https://html.spec.whatwg.org/multipage/microdata.html
-     */
-    microdata?: any
-  }
-
   /** Object for passing state to the frontend */
   state?: { [key: string]: any }
 }
