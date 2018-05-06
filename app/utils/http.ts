@@ -4,6 +4,17 @@ import { CoreOptions, RequestResponse } from 'request';
 let fetchId = 0;
 const mainFetch = (url: string, options?: CoreOptions): Promise<RequestResponse> => {
   return new Promise((resolve, reject) => {
+    if (url.startsWith('//')) {
+      url = `https:${url}`
+    }
+
+    try {
+      new URL(url)
+    } catch (e) {
+      reject(e)
+      return
+    }
+
     const requestId = fetchId++;
 
     const handler = (event: any, responseId: number, err: any, resp: any) => {
