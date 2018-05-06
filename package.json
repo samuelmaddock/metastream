@@ -39,6 +39,7 @@
     "muonVersion": "5.2.7",
     "nodeGypRebuild": false,
     "npmRebuild": false,
+    "afterPack": "scripts/after-pack.js",
     "asarUnpack": [
       "./node_modules/sodium-native/**"
     ],
@@ -72,9 +73,7 @@
       {
         "from": "app/extensions/media-remote",
         "to": "extensions/media-remote"
-      }
-    ],
-    "extraFiles": [
+      },
       {
         "from": "main.licenses.txt",
         "to": "LICENSES.browser.txt"
