@@ -78,3 +78,44 @@ export const parseHtmlDescription = (node: Cheerio): string => {
     .join('')
   return texts
 }
+
+export const parseISO8601 = (duration: string): number => {
+  let a = duration.match(/\d+/g)
+  if (!a) {
+    return -1
+  }
+
+  let vector = a as (string | number)[]
+
+  if (duration.indexOf('M') >= 0 && duration.indexOf('H') == -1 && duration.indexOf('S') == -1) {
+    vector = [0, a[0], 0]
+  }
+  if (duration.indexOf('H') >= 0 && duration.indexOf('M') == -1) {
+    vector = [a[0], 0, a[1]]
+  }
+  if (duration.indexOf('H') >= 0 && duration.indexOf('M') == -1 && duration.indexOf('S') == -1) {
+    vector = [a[0], 0, 0]
+  }
+
+  if (!vector) {
+    return -1
+  }
+
+  let time = 0
+
+  if (vector.length == 3) {
+    time = time + parseInt(vector[0] as string, 10) * 3600
+    time = time + parseInt(vector[1] as string, 10) * 60
+    time = time + parseInt(vector[2] as string, 10)
+  }
+
+  if (vector.length == 2) {
+    time = time + parseInt(vector[0] as string, 10) * 60
+    time = time + parseInt(vector[1] as string, 10)
+  }
+
+  if (vector.length == 1) {
+    time = time + parseInt(vector[0] as string, 10)
+  }
+  return time
+}

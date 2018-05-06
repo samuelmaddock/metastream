@@ -4,7 +4,7 @@ import { MediaThumbnailSize, IMediaMiddleware, IMediaRequest, IMediaResponse } f
 import { fetchText } from 'utils/http'
 import { MEDIA_REFERRER, MEDIA_USER_AGENT } from '../../../constants/http'
 import { load } from 'cheerio'
-import { mergeMetadata, parseHtmlDescription } from '../utils'
+import { mergeMetadata, parseHtmlDescription, parseISO8601 } from '../utils'
 
 const USE_OFFICIAL_API = false
 
@@ -29,48 +29,6 @@ const VIDEO_ID_PATTERNS = [
   /embed\/([^#\&\?]{11})/, // embed/<id>
   /\/v\/([^#\&\?]{11})/ // /v/<id>
 ]
-
-/** Parse YouTube's duration format */
-const parseTime = (duration: string): number => {
-  let a = duration.match(/\d+/g)
-  if (!a) {
-    return -1
-  }
-
-  let vector = a as (string | number)[]
-
-  if (duration.indexOf('M') >= 0 && duration.indexOf('H') == -1 && duration.indexOf('S') == -1) {
-    vector = [0, a[0], 0]
-  }
-  if (duration.indexOf('H') >= 0 && duration.indexOf('M') == -1) {
-    vector = [a[0], 0, a[1]]
-  }
-  if (duration.indexOf('H') >= 0 && duration.indexOf('M') == -1 && duration.indexOf('S') == -1) {
-    vector = [a[0], 0, 0]
-  }
-
-  if (!vector) {
-    return -1
-  }
-
-  let time = 0
-
-  if (vector.length == 3) {
-    time = time + parseInt(vector[0] as string, 10) * 3600
-    time = time + parseInt(vector[1] as string, 10) * 60
-    time = time + parseInt(vector[2] as string, 10)
-  }
-
-  if (vector.length == 2) {
-    time = time + parseInt(vector[0] as string, 10) * 60
-    time = time + parseInt(vector[1] as string, 10)
-  }
-
-  if (vector.length == 1) {
-    time = time + parseInt(vector[0] as string, 10)
-  }
-  return time
-}
 
 class YouTubeClient {
   static getInstance(): YouTubeClient {
@@ -128,7 +86,7 @@ class YouTubeClient {
 
     if (snippet.liveBroadcastContent === 'none') {
       const str = item.contentDetails.duration
-      duration = parseTime(str) * 1000 // sec to ms
+      duration = parseISO8601(str) * 1000 // sec to ms
     } else {
       duration = 0
     }
@@ -171,7 +129,7 @@ async function getScrapedMetadata(url: URL, $: CheerioStatic): Promise<Partial<I
   if (isLiveBroadcast) {
     duration = 0
   } else {
-    duration = isoDuration ? parseTime(isoDuration) * 1000 : undefined
+    duration = isoDuration ? parseISO8601(isoDuration) * 1000 : undefined
   }
 
   const metaDescription = $('#eow-description')
