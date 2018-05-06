@@ -5,9 +5,9 @@
 import path from 'path';
 import webpack from 'webpack';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
-import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+// import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import merge from 'webpack-merge';
-import BabiliPlugin from 'babili-webpack-plugin';
+// import BabiliPlugin from 'babili-webpack-plugin';
 import baseConfig from './webpack.config.base';
 import prodConfig from './webpack.config.prod';
 
@@ -176,9 +176,9 @@ export default merge.smart(baseConfig, prodConfig, {
       ignoreOrder: true
     }),
 
-    new BundleAnalyzerPlugin({
-      analyzerMode: process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',
-      openAnalyzer: process.env.OPEN_ANALYZER === 'true'
-    })
+    // new BundleAnalyzerPlugin({
+    //   analyzerMode: process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',
+    //   openAnalyzer: process.env.OPEN_ANALYZER === 'true'
+    // })
   ]
 });
