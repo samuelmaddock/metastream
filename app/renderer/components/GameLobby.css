@@ -86,6 +86,7 @@
 }
 
 .modal {
+  composes: absolute-full from 'styles/layout.css';
   top: var(--app-titlebar-height) !important;
   z-index: var(--overlay-z-index);
 }

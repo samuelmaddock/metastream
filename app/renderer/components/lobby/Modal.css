@@ -1,5 +1,5 @@
 .container {
-  composes: dark-overlay absolute-full from 'styles/layout.css';
+  composes: dark-overlay from 'styles/layout.css';
   display: flex;
   justify-content: center;
   align-items: center;
