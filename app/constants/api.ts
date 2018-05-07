@@ -3,6 +3,6 @@ export const API_URL =
     ? 'https://getmetastream.com/api'
     : 'http://localhost:5000/getmetastream/us-central1/api'
 
-export const CDN_URL = 'https://d3dxb9zhznq01f.cloudfront.net'
+export const CDN_URL = 'http://cdn.getmetastream.com/'
 
 export const API_ORIGIN = 'https://app.getmetastream.com/'

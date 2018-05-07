@@ -197,7 +197,7 @@ function installExtension(extId: string) {
     // TODO: fetch version from remote?
     const version = '1.15.2'
     const extDest = path.join(getExtensionsPath(), extId, version)
-    const extUrl = `${CDN_URL}/extensions/${extId}.crx`
+    const extUrl = `${CDN_URL}a/extensions/${extId}.crx`
 
     const req = request({ uri: extUrl, encoding: null }, (err, res, body) => {
       activeInstalls[extId] = null
