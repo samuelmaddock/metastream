@@ -1,4 +1,6 @@
 const { ipcRenderer } = chrome
+import isIp from 'is-ip'
+import { format as urlFormat } from 'url'
 
 import { NetConnection, NetServer, NetUniqueId } from 'renderer/network'
 import { PeerCoordinator } from 'renderer/network/server'
@@ -13,14 +15,19 @@ import { ipcRendererRpc } from 'utils/ipcRenderer'
 
 type SimpleWebSocket = typeof WebSocket
 
+const formatDestAddress = (ip: string) => {
+  const hasPort = !isNaN(ip.split(':').pop() || ('' as any))
+  if (isIp.v4(ip) && hasPort) {
+    return ip
+  }
+  return urlFormat({ hostname: ip, port: WEBSOCKET_PORT_DEFAULT })
+}
+
 export class WebSocketClientCoordinator extends PeerCoordinator {
   connect(ip: string) {
     // TODO: timeout
     return new Promise<SimpleWebSocket>((resolve, reject) => {
-      const hasPort = !isNaN(ip.split(':').pop() || ('' as any))
-      if (!hasPort) {
-        ip = `${ip}:${WEBSOCKET_PORT_DEFAULT}`
-      }
+      ip = formatDestAddress(ip)
 
       const addr = `ws://${ip}`
       const socket = new WebSocket(addr)
