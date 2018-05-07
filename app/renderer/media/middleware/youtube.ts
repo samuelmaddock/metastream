@@ -6,19 +6,6 @@ import { MEDIA_REFERRER, MEDIA_USER_AGENT } from '../../../constants/http'
 import { load } from 'cheerio'
 import { mergeMetadata, parseHtmlDescription, parseISO8601 } from '../utils'
 
-const USE_OFFICIAL_API = false
-
-const API_URL = 'https://www.googleapis.com/youtube/v3/videos'
-const API_KEY = ''
-
-const DEFAULT_QUERY = {
-  key: API_KEY,
-  type: 'video',
-  part: 'contentDetails,snippet,status',
-  videoEmbeddable: true,
-  videoSyndicated: true
-}
-
 const URL_PATTERN = /youtu\.?be(?:.com)?/i
 
 // TODO: https://www.youtube.com/attribution_link?a=ShEHdkiTDq4&u=%2Fwatch%3Fv%3Dm-6zjXLPRHg%26feature%3Dshare
@@ -51,69 +38,6 @@ class YouTubeClient {
     }
 
     return match ? match[1] : null
-  }
-
-  async getVideoMetadata(url: string): Promise<Partial<IMediaResponse>> {
-    const videoId = this.getVideoId(url)
-    const apiUrl = buildUrl(API_URL, {
-      ...DEFAULT_QUERY,
-      id: videoId
-    })
-
-    const [json] = await fetchText<any>(apiUrl, {
-      json: true,
-      headers: {
-        Referer: MEDIA_REFERRER
-      }
-    })
-
-    console.debug('youtube', json)
-
-    if (json.error) {
-      throw new Error(JSON.stringify(json.error))
-    }
-
-    const { pageInfo } = json
-    const { totalResults } = pageInfo
-
-    if (totalResults < 1) {
-      throw new Error('No results')
-    }
-
-    const item = json.items[0]
-    const { snippet } = item
-    let duration = 0
-
-    if (snippet.liveBroadcastContent === 'none') {
-      const str = item.contentDetails.duration
-      duration = parseISO8601(str) * 1000 // sec to ms
-    } else {
-      duration = 0
-    }
-
-    // TODO: how to handle paid content?
-
-    // Show fullscreen embed if video supports it
-    const embedUrl = item.status.embeddable
-      ? buildUrl(`https://www.youtube.com/embed/${videoId}`, {
-        autoplay: 1,
-        controls: 0,
-        fs: 0,
-        rel: 0,
-        showinfo: 0,
-        iv_load_policy: 3 // disable annotations
-      })
-      : url
-
-    return {
-      url: embedUrl,
-      title: snippet.title,
-      description: snippet.description,
-      duration,
-      thumbnails: {
-        [MediaThumbnailSize.Default]: snippet.thumbnails.medium.url
-      }
-    }
   }
 }
 
@@ -157,9 +81,7 @@ const mware: IMediaMiddleware = {
     let metadata
 
     try {
-      metadata = USE_OFFICIAL_API
-        ? await YouTubeClient.getInstance().getVideoMetadata(ctx.req.url.href)
-        : await getScrapedMetadata(ctx.req.url, ctx.state.$!)
+      metadata = await getScrapedMetadata(ctx.req.url, ctx.state.$!)
     } catch (e) {
       console.error('YouTube request failed', e.message)
       return next()
@@ -173,7 +95,7 @@ const mware: IMediaMiddleware = {
     // Disable oEmbed for playlists
     ctx.state.oEmbed = false
 
-    return USE_OFFICIAL_API ? ctx.res : next()
+    return next()
   }
 }
 
