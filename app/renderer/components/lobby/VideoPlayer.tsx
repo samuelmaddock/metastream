@@ -221,7 +221,7 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
   private requestFullScreen(x: number = 0, y: number = 0) {
     // Insert gesture event to allow triggering fullscreen
     console.debug(`requestFullscreen x=${x} y=${y}`)
-    this.webContents.sendInputEvent({ type: 'mouseMove', x: 1, y: 1, movementX: 1234 } as any)
+    this.webContents.sendInputEvent({ type: 'mouseUp', x, y, movementX: 1234 } as any)
 
     // Hide player controls
     this.webContents.sendInputEvent({ type: 'mouseLeave', x: 0, y: 0 } as any)
