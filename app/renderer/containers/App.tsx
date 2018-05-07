@@ -1,3 +1,4 @@
+const { ipcRenderer } = chrome
 import React, { Component, Children } from 'react'
 import { connect, DispatchProp, Store } from 'react-redux'
 import { IAppState } from 'renderer/reducers'
@@ -8,6 +9,7 @@ import { localUserId, localUser } from '../network/index'
 import { setUsername } from '../actions/settings'
 
 interface IConnectedProps {
+  developer: boolean
   username?: string
 }
 
@@ -18,6 +20,12 @@ class App extends Component<Props> {
 
   componentWillMount() {
     this.init()
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    if (this.props.developer !== prevProps.developer) {
+      this.onDeveloperChanged()
+    }
   }
 
   private init() {
@@ -33,6 +41,13 @@ class App extends Component<Props> {
       const platformUsername = PlatformService.getUserName(localUser().id)
       dispatch!(setUsername(platformUsername))
     }
+
+    this.onDeveloperChanged()
+  }
+
+  private onDeveloperChanged() {
+    // Apply developer menu settings
+    ipcRenderer.send('menu-rebuild', this.props.developer)
   }
 
   render() {
@@ -42,6 +57,7 @@ class App extends Component<Props> {
 
 export default connect<IConnectedProps>((state: IAppState) => {
   return {
+    developer: state.settings.developer,
     username: state.settings.username
   }
 })(App)
