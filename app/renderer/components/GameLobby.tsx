@@ -79,7 +79,8 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
     return (
       this.state.inactive &&
       this.props.playback === PlaybackState.Playing &&
-      !(this.player && this.player.state.interacting)
+      !(this.player && this.player.state.interacting) &&
+      !this.state.modal
     )
   }
 
