@@ -109,9 +109,9 @@
       "target": [
         "dir",
         "nsis",
-        "nsis-web",
         "zip"
-      ]
+      ],
+      "certificateFile": "C:/Users/Sam/source/my_signing_key.pfx"
     },
     "mac": {
       "artifactName": "${name}-${version}-${os}.${ext}"
