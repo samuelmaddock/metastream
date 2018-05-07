@@ -113,6 +113,9 @@
         "zip"
       ]
     },
+    "mac": {
+      "artifactName": "${name}-${version}-${os}.${ext}"
+    },
     "linux": {
       "target": [
         "deb",
