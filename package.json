@@ -110,8 +110,7 @@
         "dir",
         "nsis",
         "zip"
-      ],
-      "certificateFile": "C:/Users/Sam/source/my_signing_key.pfx"
+      ]
     },
     "mac": {
       "artifactName": "${name}-${version}-${os}.${ext}"
