@@ -1,7 +1,6 @@
 import { Url } from 'url'
 import { buildUrl, parseQuery } from 'utils/url'
 import { MediaThumbnailSize, IMediaMiddleware, IMediaRequest, IMediaResponse } from '../types'
-import { fetchText } from 'utils/http'
 import { MEDIA_REFERRER, MEDIA_USER_AGENT } from '../../../constants/http'
 import { load } from 'cheerio'
 import { mergeMetadata, parseHtmlDescription, parseISO8601 } from '../utils'

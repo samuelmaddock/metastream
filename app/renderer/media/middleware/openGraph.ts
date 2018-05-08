@@ -1,6 +1,5 @@
 import { load } from 'cheerio'
 import { MediaThumbnailSize, IMediaMiddleware, IMediaResponse } from '../types'
-import { fetchText } from 'utils/http'
 import { Url } from 'url'
 import { MEDIA_USER_AGENT } from 'constants/http'
 

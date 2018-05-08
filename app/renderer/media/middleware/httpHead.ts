@@ -1,5 +1,5 @@
 import { MediaThumbnailSize, IMediaRequest, IMediaMiddleware, IMediaResponse } from '../types'
-import { fetchText, fetchResponse } from 'utils/http'
+import { fetchResponse } from 'utils/http'
 import { Url } from 'url'
 import { basename } from 'path'
 import { MEDIA_USER_AGENT } from 'constants/http'

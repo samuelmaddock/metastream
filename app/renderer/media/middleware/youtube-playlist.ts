@@ -8,7 +8,6 @@ import {
   MediaType,
   IMediaContext
 } from '../types'
-import { fetchText } from 'utils/http'
 import { MEDIA_REFERRER } from 'constants/http'
 
 const URL_PATTERN = /youtu\.?be(?:.com)?/i
