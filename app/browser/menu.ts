@@ -1,7 +1,7 @@
 import { app, Menu, shell, BrowserWindow, ipcMain } from 'electron';
 import log from './log'
 
-import * as packageJson from './package.json'
+import * as packageJson from '../package.json'
 const { productName } = packageJson
 
 export default class MenuBuilder {
