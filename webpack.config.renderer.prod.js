@@ -7,7 +7,6 @@ import webpack from 'webpack';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 // import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import merge from 'webpack-merge';
-// import BabiliPlugin from 'babili-webpack-plugin';
 import baseConfig from './webpack.config.base';
 import prodConfig from './webpack.config.prod';
 
@@ -155,21 +154,6 @@ export default merge.smart(baseConfig, prodConfig, {
       DEV: JSON.stringify(false),
       PRODUCTION: JSON.stringify(true)
     }),
-
-    /**
-     * Babli is an ES6+ aware minifier based on the Babel toolchain (beta)
-     */
-    /*new BabiliPlugin({
-      presets: [
-        [
-          'minify',
-          {
-            // Need to keep RPC function names intact
-            keepFnName: true
-          }
-        ]
-      ]
-    }),*/
 
     new ExtractTextPlugin({
       filename: 'style.css',
