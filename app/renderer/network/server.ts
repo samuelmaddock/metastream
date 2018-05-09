@@ -98,7 +98,7 @@ class NetServer extends EventEmitter implements INetServerEvents {
     if (conn) {
       conn.send(data)
     } else {
-      throw new Error(`No client found with an ID of '${clientId}'`)
+      console.error(`No client found with an ID of '${clientId}'`)
     }
   }
 
