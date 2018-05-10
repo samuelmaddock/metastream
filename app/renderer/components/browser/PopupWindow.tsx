@@ -35,7 +35,7 @@ export class _PopupWindow extends Component<PrivateProps> {
     window.addEventListener('keydown', this.onKeyDown)
 
     if (this.props.src) {
-      let webview = document.createElement('webview')
+      let webview = document.createElement('webview') as any
       webview.setAttribute('src', this.src)
       webview.setAttribute('name', 'browserAction')
       webview.setAttribute('partition', WEBVIEW_PARTITION)
@@ -46,7 +46,7 @@ export class _PopupWindow extends Component<PrivateProps> {
         webview.enablePreferredSizeMode(true)
       })
       webview.addEventListener('preferred-size-changed' as any, () => {
-        webview.getPreferredSize(preferredSize => {
+        webview.getPreferredSize((preferredSize: any) => {
           const width = preferredSize.width
           const height = preferredSize.height
           webview.style.height = height + 'px'

@@ -41,7 +41,7 @@ export class Timeline extends PureComponent<IProps, IState> {
 
   state: IState = { time: this.calcTime(), progress: this.calcProgress() }
 
-  private slider: Slider | null
+  private slider: Slider | null = null
 
   componentDidUpdate(prevProps: IProps): void {
     if (this.props.time !== prevProps.time) {

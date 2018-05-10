@@ -1,29 +1,29 @@
-import React, { Component } from 'react';
-import cx from 'classnames';
-import { IMediaItem } from 'renderer/lobby/reducers/mediaPlayer';
-import styles from './MoreButton.css';
+import React, { Component } from 'react'
+import cx from 'classnames'
+import { IMediaItem } from 'renderer/lobby/reducers/mediaPlayer'
+import styles from './MoreButton.css'
 
-import { Icon } from 'renderer/components/Icon';
+import { Icon } from 'renderer/components/Icon'
 
 interface IProps {
-  className?: string;
-  buttonClassName?: string;
+  className?: string
+  buttonClassName?: string
 }
 
 interface IState {
-  isOpen: boolean;
+  isOpen: boolean
 }
 
 export class MoreButton extends Component<IProps> {
-  private menu: HTMLElement | null;
+  private menu: HTMLElement | null = null
 
   state: IState = {
     isOpen: false
-  };
+  }
 
   componentWillUnmount(): void {
     if (this.state.isOpen) {
-      this.close();
+      this.close()
     }
   }
 
@@ -31,13 +31,13 @@ export class MoreButton extends Component<IProps> {
     return (
       <div
         ref={e => {
-          this.menu = e;
+          this.menu = e
         }}
         className={styles.menu}
       >
         {this.props.children}
       </div>
-    );
+    )
   }
 
   render(): JSX.Element | null {
@@ -48,24 +48,24 @@ export class MoreButton extends Component<IProps> {
         </button>
         {this.state.isOpen && this.renderMenu()}
       </div>
-    );
+    )
   }
 
   open() {
-    document.addEventListener('click', this.onDocumentClick, false);
-    this.setState({ isOpen: true });
+    document.addEventListener('click', this.onDocumentClick, false)
+    this.setState({ isOpen: true })
   }
 
   close() {
-    document.removeEventListener('click', this.onDocumentClick, false);
-    this.setState({ isOpen: false });
+    document.removeEventListener('click', this.onDocumentClick, false)
+    this.setState({ isOpen: false })
   }
 
   private toggleMenu = () => {
-    this.state.isOpen ? this.close() : this.open();
-  };
+    this.state.isOpen ? this.close() : this.open()
+  }
 
   private onDocumentClick = (event: MouseEvent) => {
-    this.close();
-  };
+    this.close()
+  }
 }

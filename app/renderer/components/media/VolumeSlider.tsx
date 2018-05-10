@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
-import { clamp } from 'utils/math';
-import { Slider } from 'renderer/components/media/Slider';
+import React, { Component } from 'react'
+import { clamp } from 'utils/math'
+import { Slider } from 'renderer/components/media/Slider'
 
-import styles from './VolumeSlider.css';
-import { Icon } from 'renderer/components/Icon';
-import { Ticker } from 'renderer/components/Ticker';
+import styles from './VolumeSlider.css'
+import { Icon } from 'renderer/components/Icon'
+import { Ticker } from 'renderer/components/Ticker'
 
 const enum VolumeLevel {
   Mute = -1,
@@ -14,52 +14,52 @@ const enum VolumeLevel {
 }
 
 interface IProps {
-  volume: number;
-  mute?: boolean;
-  onChange?: (volume: number) => void;
-  onMute?: () => void;
+  volume: number
+  mute?: boolean
+  onChange?: (volume: number) => void
+  onMute?: () => void
 }
 
 interface IState {
-  level: VolumeLevel;
-  dragging?: boolean;
+  level: VolumeLevel
+  dragging?: boolean
 }
 
 export class VolumeSlider extends Component<IProps> {
-  state: IState = { level: this.calcLevel() };
+  state: IState = { level: this.calcLevel() }
 
-  private slider: Slider | null;
+  private slider: Slider | null = null
 
   componentDidUpdate(prevProps: IProps): void {
     if (this.props.mute !== prevProps.mute || this.props.volume !== prevProps.volume) {
-      this.tick();
+      this.tick()
     }
   }
 
   private calcLevel(): VolumeLevel {
     if (this.props.mute) {
-      return VolumeLevel.Mute;
+      return VolumeLevel.Mute
     }
 
-    let volume;
+    let volume
 
     if (this.slider && this.slider.state.dragging) {
-      const { dragProgress } = this.slider.state;
-      volume = dragProgress!;
+      const { dragProgress } = this.slider.state
+      volume = dragProgress!
     } else {
-      volume = this.props.volume;
+      volume = this.props.volume
     }
 
-    return Math.ceil(volume * VolumeLevel.High);
+    return Math.ceil(volume * VolumeLevel.High)
   }
 
   private tick = () => {
-    this.setState({ level: this.calcLevel() });
-  };
+    this.setState({ level: this.calcLevel() })
+  }
 
   render(): JSX.Element | null {
-    const { level } = this.state;
-    const icon = level === VolumeLevel.Mute ? 'volume-x' : `volume-${level}`;
+    const { level } = this.state
+    const icon = level === VolumeLevel.Mute ? 'volume-x' : `volume-${level}`
 
     return (
       <div className={styles.container}>
@@ -68,7 +68,7 @@ export class VolumeSlider extends Component<IProps> {
         </button>
         <Slider
           ref={el => {
-            this.slider = el;
+            this.slider = el
           }}
           className={styles.slider}
           value={this.props.volume}
@@ -76,15 +76,15 @@ export class VolumeSlider extends Component<IProps> {
           changeOnStart
           onChange={this.props.onChange}
           onDragStart={() => {
-            this.setState({ dragging: true });
+            this.setState({ dragging: true })
           }}
           onDrag={this.props.onChange}
           onDragEnd={() => {
-            this.setState({ dragging: false });
+            this.setState({ dragging: false })
           }}
         />
         <Ticker onTick={this.tick} disabled={!this.state.dragging} />
       </div>
-    );
+    )
   }
 }

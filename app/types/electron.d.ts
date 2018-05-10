@@ -1685,6 +1685,11 @@ declare namespace Electron {
     unmaximize(): void;
     id: number;
     webContents: WebContents;
+    
+    // MUON EDIT:
+    openDevTools(): void
+    toggleDevTools(): void
+    inspectElement(x: number, y: number): void
   }
 
   class BrowserWindowProxy extends EventEmitter {
@@ -5854,6 +5859,10 @@ declare namespace Electron {
      */
     addEventListener(event: 'devtools-focused', listener: (event: Event) => void, useCapture?: boolean): this;
     removeEventListener(event: 'devtools-focused', listener: (event: Event) => void): this;
+    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, useCapture?: boolean): void;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, useCapture?: boolean): void;
+    removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, useCapture?: boolean): void;
+    removeEventListener(type: string, listener: EventListenerOrEventListenerObject, useCapture?: boolean): void;
     canGoBack(): boolean;
     canGoForward(): boolean;
     canGoToOffset(offset: number): boolean;
@@ -5894,11 +5903,10 @@ declare namespace Electron {
      */
     executeJavaScript(code: string, userGesture?: boolean, callback?: (result: any) => void): void;
     /**
-     * Starts a request to find all matches for the text in the web page and returns an
-     * Integer representing the request id used for the request. The result of the
-     * request can be obtained by subscribing to found-in-page event.
+     * Starts a request to find all matches for the text in the web page. The result of
+     * the request can be obtained by subscribing to found-in-page event.
      */
-    findInPage(text: string, options?: FindInPageOptions): void;
+    findInPage(text: string, options?: FindInPageOptions): number;
     getTitle(): string;
     getURL(): string;
     getUserAgent(): string;
@@ -6042,6 +6050,11 @@ declare namespace Electron {
      * Executes editing command unselect in page.
      */
     unselect(): void;
+
+    // MUON EDIT:
+    enablePreferredSizeMode(enabled: boolean): void
+    getPreferredSize(cb: (size: { width: number; height: number }) => void): void
+    
     /**
      * When this attribute is present the guest page will be allowed to open new
      * windows. Popups are disabled by default.
@@ -6146,6 +6159,7 @@ declare namespace Electron {
      */
     webpreferences?: string;
   }
+
 
   interface AboutPanelOptionsOptions {
     /**

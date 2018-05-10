@@ -15,7 +15,7 @@ function configureStore(extra: IExtra, initialState?: {}) {
 
   // Persist Middleware
   const whitelist: (keyof IAppState)[] = ['mediaPlayer', 'settings']
-  const persistedReducer = persistReducer(persistConfig, rootReducer as any)
+  const persistedReducer = persistReducer<any, any>(persistConfig, rootReducer)
 
   const router = routerMiddleware(history)
   const enhancer = applyMiddleware(thunkMiddleware, ...appMiddleware, router)

@@ -43,7 +43,7 @@ export class Slider extends Component<IProps> {
 
   state: IState = {}
 
-  private rootEl: HTMLElement | null
+  private rootEl: HTMLElement | null = null
   private preventClick?: boolean
 
   componentDidMount(): void {

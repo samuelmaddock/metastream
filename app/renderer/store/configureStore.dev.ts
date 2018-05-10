@@ -35,7 +35,7 @@ const configureStore = (extra: IExtra, initialState?: {}) => {
   middleware.push(router)
 
   // Persist Middleware
-  const persistedReducer = persistReducer(persistConfig, rootReducer as any)
+  const persistedReducer = persistReducer<any, any>(persistConfig, rootReducer)
 
   // Redux DevTools Configuration
   const actionCreators = {

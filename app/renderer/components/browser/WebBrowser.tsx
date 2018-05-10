@@ -25,7 +25,7 @@ type PrivateProps = IProps & DispatchProp<IAppState>
 
 export class _WebBrowser extends Component<PrivateProps> {
   private webview?: Electron.WebviewTag | null
-  private webContents: Electron.webContents
+  private webContents!: Electron.webContents
   private controls?: WebControls | null
 
   private hasSetupControls?: boolean

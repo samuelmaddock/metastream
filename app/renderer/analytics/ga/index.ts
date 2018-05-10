@@ -11,15 +11,15 @@ import { BATCH_SIZE, RETRY } from './consts'
 
 export class Analytics {
   private trackId: Param<string>
-  private protocolVersion: Param<string>
-  private clientId: Param<string>
-  private userId: Param<string>
-  private appName: Param<string>
-  private appVersion: Param<string>
-  private language: Param<string>
-  private userAgent: Param<string>
-  private viewport: Param<string>
-  private screenResolution: Param<string>
+  private protocolVersion: Param<string> = ''
+  private clientId: Param<string> = ''
+  private userId: Param<string> = ''
+  private appName: Param<string> = ''
+  private appVersion: Param<string> = ''
+  private language: Param<string> = ''
+  private userAgent: Param<string> = ''
+  private viewport: Param<string> = ''
+  private screenResolution: Param<string> = ''
 
   constructor(trackId: string, params: InitParams = {}) {
     this.trackId = trackId

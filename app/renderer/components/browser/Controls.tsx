@@ -23,9 +23,9 @@ interface IState {
 }
 
 export class WebControls extends Component<IProps, IState> {
-  private webview: Electron.WebviewTag | null
-  private webContents: Electron.WebContents
-  private addressInput: HTMLInputElement | null
+  private webview: Electron.WebviewTag | null = null
+  private webContents!: Electron.WebContents
+  private addressInput: HTMLInputElement | null = null
 
   state: IState = {}
 

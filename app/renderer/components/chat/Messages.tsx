@@ -1,72 +1,72 @@
-import React, { Component } from 'react';
-import { IMessage } from 'renderer/lobby/reducers/chat';
-import { Message } from './Message';
-import styles from './Chat.css';
+import React, { Component } from 'react'
+import { IMessage } from 'renderer/lobby/reducers/chat'
+import { Message } from './Message'
+import styles from './Chat.css'
 
 interface IProps {
-  messages: IMessage[];
+  messages: IMessage[]
 }
 
 interface IState {
-  hasNewMessage: boolean;
+  hasNewMessage: boolean
 }
 
 export class Messages extends Component<IProps, IState> {
-  private list: HTMLElement | null;
+  private list: HTMLElement | null = null
 
-  private wasAtBottom: boolean;
-  state: IState = { hasNewMessage: false };
+  private wasAtBottom: boolean = true
+  state: IState = { hasNewMessage: false }
 
   private get scrollBottom() {
-    return this.list ? this.list.scrollHeight - this.list.clientHeight : 0;
+    return this.list ? this.list.scrollHeight - this.list.clientHeight : 0
   }
 
   componentDidMount(): void {
     if (this.list) {
-      this.list.addEventListener('scroll', this.handleScroll);
+      this.list.addEventListener('scroll', this.handleScroll)
     }
   }
 
   componentWillUnmount() {
     if (this.list) {
-      this.list.removeEventListener('scroll', this.handleScroll);
+      this.list.removeEventListener('scroll', this.handleScroll)
     }
   }
 
   componentWillReceiveProps(nextProps: IProps): void {
-    this.wasAtBottom = this.isScrolledToBottom();
+    this.wasAtBottom = this.isScrolledToBottom()
   }
 
   componentDidUpdate(prevProps: IProps): void {
     if (this.props.messages !== prevProps.messages) {
       if (this.wasAtBottom) {
-        this.scrollToBottom();
+        this.scrollToBottom()
       } else {
-        this.setState({ hasNewMessage: true });
+        this.setState({ hasNewMessage: true })
       }
     }
   }
 
   private isScrolledToBottom(): boolean {
-    return !!(this.list && this.list.scrollTop === this.scrollBottom);
+    return !!(this.list && this.list.scrollTop === this.scrollBottom)
   }
 
   scrollToBottom(): void {
     if (this.list) {
-      this.list.scrollTop = this.scrollBottom;
+      this.list.scrollTop = this.scrollBottom
     }
   }
 
   private handleScroll = (): void => {
     if (this.isScrolledToBottom()) {
-      this.setState({ hasNewMessage: false });
+      this.setState({ hasNewMessage: false })
     }
-  };
+  }
 
   render(): JSX.Element | null {
     const messages = this.props.messages.map((message, idx) => {
-      return <Message key={idx} message={message} />;
-    });
+      return <Message key={idx} message={message} />
+    })
 
     return (
       <div className={styles.chatWrapper}>
@@ -79,6 +79,6 @@ export class Messages extends Component<IProps, IState> {
           </div>
         )}
       </div>
-    );
+    )
   }
 }

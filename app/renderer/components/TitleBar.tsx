@@ -25,7 +25,7 @@ interface IConnectedProps {
 type PrivateProps = IProps & IConnectedProps & DispatchProp<IAppState>
 
 class _TitleBar extends Component<PrivateProps> {
-  private _platform: string
+  private _platform?: string
 
   get window() {
     return remote.getCurrentWindow()

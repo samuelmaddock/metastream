@@ -54,8 +54,8 @@ const mapStateToProps = (state: IAppState): IConnectedProps => {
 type PrivateProps = IProps & IConnectedProps & DispatchProp<IAppState>
 
 class _VideoPlayer extends Component<PrivateProps, IState> {
-  private webview: Electron.WebviewTag | null
-  private webContents: Electron.WebContents
+  private webview: Electron.WebviewTag | null = null
+  private webContents!: Electron.WebContents
   private initTimeoutId?: number
 
   state: IState = { initializing: true, interacting: false }
@@ -151,7 +151,7 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
 
       const wv = this.webview as any
       wv.addEventListener('did-attach', (e: any) => {
-        ; (remote as any).getWebContents(e.tabId, (webContents: Electron.WebContents) => {
+        ;(remote as any).getWebContents(e.tabId, (webContents: Electron.WebContents) => {
           this.webContents = webContents
           this.reload()
 
