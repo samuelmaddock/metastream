@@ -11,6 +11,7 @@ const GIT_BRANCH = childProcess.execSync('git rev-parse --abbrev-ref HEAD').toSt
 const GIT_COMMIT = childProcess.execSync('git rev-parse --short HEAD').toString().trim();
 
 export default {
+  mode: process.env.NODE_ENV || 'development',
   externals: Object.keys(externals || {}),
 
   module: {
@@ -48,7 +49,6 @@ export default {
 
   plugins: [
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production'),
       'process.env.GIT_BRANCH': JSON.stringify(GIT_BRANCH),
       'process.env.GIT_COMMIT': JSON.stringify(GIT_COMMIT)
     }),
