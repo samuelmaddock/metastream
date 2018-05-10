@@ -51,7 +51,7 @@ class Invite extends Component<PrivateProps, IState> {
     const msg = this.props.isHost
       ? // ? 'Send your friend code to people to invite them.'
         'Invite friends using your friend code below.'
-      : `Send ${this.props.hostName}’s friend code to invite people.`
+      : `Send ${this.props.hostName}’s friend code to invite friends.`
 
     const notice = !this.state.dismissed ? (
       <div className={styles.notice}>
