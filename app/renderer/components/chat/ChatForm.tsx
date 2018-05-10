@@ -52,7 +52,7 @@ export class ChatForm extends Component<IProps, IState> {
           }}
           type="text"
           className={styles.messageInput}
-          placeholder="Message"
+          placeholder="Message or URL"
           spellCheck={this.state.spellcheck}
           onKeyPress={this.submitText}
           maxLength={CHAT_MAX_MESSAGE_LENGTH}
