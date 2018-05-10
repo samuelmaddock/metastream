@@ -8,7 +8,7 @@ const defaultUserAgent =
   'Mozilla/5.0 (compatible; Mediabot/1.0; Googlebot; +https://getmetastream.com/)'
 const userAgent = typeof navigator !== 'undefined' ? navigator.userAgent : defaultUserAgent
 export const MEDIA_USER_AGENT = `${userAgent} (Googlebot)`
-console.log(`USER AGENT: ${MEDIA_USER_AGENT}`)
+
 export const MEDIA_REFERRER = 'https://getmetastream.com/'
 
 export const WEBVIEW_PARTITION = 'persist:mediaplayer'
