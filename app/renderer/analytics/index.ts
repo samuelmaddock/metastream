@@ -16,6 +16,9 @@ type StoreState = IAppState & PersistedState
 let heartbeatIntervalId: number | null = null
 
 export async function initAnalytics(store: Store<StoreState>, history: History) {
+  // Edge case: reload on lobby page
+  window.ga = () => {}
+
   await sleepUntilHydrated(store)
 
   setupAnalytics(store)
@@ -94,8 +97,8 @@ function addSettingListener(store: Store<IAppState>, cb: Function) {
 
 function getHistoryPath(history: History) {
   let pathname = history.location.pathname
-  if (pathname.startsWith('/lobby/') && pathname.endsWith('/create')) {
-    pathname = '/lobby/join'
+  if (pathname.startsWith('/lobby/') && !pathname.endsWith('/create')) {
+    pathname = '/lobby/join' // hide identifying info
   }
   return pathname
 }
