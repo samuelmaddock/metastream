@@ -24,6 +24,7 @@ import { Connect } from '../components/lobby/Connect'
 import { Disconnect } from '../components/lobby/Disconnect'
 import { getDisconnectReason } from '../lobby/reducers/session'
 import { setDisconnectReason } from '../lobby/actions/session'
+import { t } from 'locale'
 
 interface IRouteParams {
   lobbyId: string
@@ -152,7 +153,8 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
     }
 
     reason = this.props.disconnectReason || reason
-    let msg = NetworkDisconnectMessages[reason]
+    const reasonKey: any = NetworkDisconnectMessages[reason]
+    let msg = t(reasonKey) || reasonKey
     console.debug(`Disconnected [${reason}]: ${msg}`)
     this.setState({ disconnectMessage: msg })
 

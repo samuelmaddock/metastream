@@ -12,12 +12,12 @@ export const enum NetworkDisconnectReason {
 }
 
 export const NetworkDisconnectMessages = {
-  [NetworkDisconnectReason.HostDisconnect]: 'Host closed connection',
-  [NetworkDisconnectReason.Timeout]: 'Network timeout',
-  [NetworkDisconnectReason.InvalidClientInfo]: 'Invalid client info',
-  [NetworkDisconnectReason.VersionMismatch]: `Client version mismatch`,
-  [NetworkDisconnectReason.DuplicateLicense]: `Shared license found in session`,
-  [NetworkDisconnectReason.Full]: 'Session is full'
+  [NetworkDisconnectReason.HostDisconnect]: 'networkDisconnectHostDisconnect',
+  [NetworkDisconnectReason.Timeout]: 'networkDisconnectTimeout',
+  [NetworkDisconnectReason.InvalidClientInfo]: 'networkDisconnectInvalidClientInfo',
+  [NetworkDisconnectReason.VersionMismatch]: `networkDisconnectVersionMismatch`,
+  [NetworkDisconnectReason.DuplicateLicense]: `networkDisconnectDuplicateLicense`,
+  [NetworkDisconnectReason.Full]: 'networkDisconnectFull'
 }
 
 export const NetworkDisconnectLabels = {
