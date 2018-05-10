@@ -166,7 +166,7 @@
     "@types/shortid": "^0.0.29",
     "@types/simple-peer": "^6.1.4",
     "adm-zip": "^0.4.7",
-    "awesome-typescript-loader": "5.0.0-1",
+    "awesome-typescript-loader": "^5.0.0",
     "babel-core": "^6.24.1",
     "babel-jest": "^19.0.0",
     "babel-loader": "^7.1.4",
