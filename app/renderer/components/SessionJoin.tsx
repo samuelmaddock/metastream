@@ -10,6 +10,7 @@ import { MenuButton } from 'renderer/components/menu/MenuButton'
 import { TextInput, InputGroup } from './common/input'
 import { GoBackButton } from './menu/GoBackButton'
 import { MenuHeader } from './menu/MenuHeader'
+import { t } from '../../locale/index'
 
 interface IProps {
   connect: (sessionId: string) => void
@@ -23,14 +24,14 @@ export class SessionJoin extends Component<IProps> {
       <LayoutMain className={styles.container}>
         <GoBackButton />
         <section>
-          <MenuHeader text="Join Session" />
+          <MenuHeader text={t('joinSession')} />
           <form>
-            <p>Enter a friend code or IP address.</p>
+            <p>{t('enterJoinDest')}</p>
             <InputGroup>
               <TextInput
                 theRef={el => (this.sessionInput = el)}
                 className={styles.peerId}
-                placeholder="Friend code"
+                placeholder={t('friendCode')}
                 defaultValue={localStorage.getItem('prevFriendCode') || undefined}
                 spellCheck={false}
                 autoFocus
@@ -50,7 +51,7 @@ export class SessionJoin extends Component<IProps> {
                   }
                 }}
               >
-                Join
+                {t('join')}
               </MenuButton>
             </InputGroup>
           </form>

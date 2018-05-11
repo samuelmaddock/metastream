@@ -7,6 +7,7 @@ import { IAppState } from '../../reducers/index'
 import { MenuButton } from '../menu/MenuButton'
 import { Icon } from '../Icon'
 import { Spinner } from '../common/spinner'
+import { t } from '../../../locale/index'
 
 interface IProps {
   className?: string
@@ -22,10 +23,11 @@ class _Connect extends Component<PrivateProps> {
         <TitleBar className={styles.titlebar} />
 
         <p className={styles.info}>
-          <Spinner />Connecting&hellip;
+          <Spinner />
+          {t('connecting')}&hellip;
         </p>
         <MenuButton icon="x" size="medium" onClick={() => this.props.onCancel()}>
-          Cancel
+          {t('cancel')}
         </MenuButton>
       </div>
     )

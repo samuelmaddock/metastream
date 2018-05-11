@@ -10,6 +10,7 @@ import { setUsername, setColor, setSetting } from 'renderer/actions/settings'
 import { SwitchOption } from '../controls'
 import { MenuButton } from '../../menu/MenuButton'
 import { removeLicense, hasValidLicense } from 'renderer/license'
+import { t } from '../../../../locale/index'
 
 interface IProps {}
 
@@ -26,7 +27,7 @@ class LicenseSettings extends Component<Props> {
     const { dispatch } = this.props
     return (
       <section className={styles.section}>
-        <h2>License</h2>
+        <h2>{t('license')}</h2>
 
         <MenuButton
           size="medium"
@@ -35,7 +36,7 @@ class LicenseSettings extends Component<Props> {
             this.forceUpdate()
           }}
         >
-          Remove license
+          {t('removeLicense')}
         </MenuButton>
       </section>
     )

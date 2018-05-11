@@ -7,6 +7,7 @@ import { IAppState } from 'renderer/reducers/index'
 import { getLocalUsername, getLocalColor, ISettingsState } from 'renderer/reducers/settings'
 import { USERNAME_MIN_LEN, USERNAME_MAX_LEN } from 'constants/settings'
 import { setUsername, setColor, setSetting } from 'renderer/actions/settings'
+import { t } from '../../../../locale/index'
 
 interface IProps {}
 
@@ -27,9 +28,9 @@ class ProfileSettings extends Component<Props> {
   render(): JSX.Element | null {
     return (
       <section className={styles.section}>
-        <h2>Profile</h2>
+        <h2>{t('profile')}</h2>
 
-        <label htmlFor="profile_username">Username</label>
+        <label htmlFor="profile_username">{t('username')}</label>
         <TextInput
           id="profile_username"
           theRef={e => (this.usernameInput = e)}
@@ -43,7 +44,7 @@ class ProfileSettings extends Component<Props> {
           }}
         />
 
-        <label htmlFor="profile_color">Chat Color</label>
+        <label htmlFor="profile_color">{t('chatColor')}</label>
         <input
           id="profile_color"
           type="color"

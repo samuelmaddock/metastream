@@ -11,6 +11,7 @@ import { MenuButton } from 'renderer/components/menu/MenuButton'
 import { MenuHeader } from './menu/MenuHeader'
 import { ExternalLink } from './common/link'
 import { hasValidLicense } from '../license'
+import { t } from '../../locale/index'
 
 interface IProps {}
 
@@ -31,7 +32,7 @@ export default class Home extends Component<IProps> {
           <ul>
             <li>
               <Link to="/lobby/create" className={styles.btn}>
-                <MenuButton icon="play">Start Session</MenuButton>
+                <MenuButton icon="play">{t('startSession')}</MenuButton>
               </Link>
             </li>
             {/* <li>
@@ -41,18 +42,18 @@ export default class Home extends Component<IProps> {
             </li> */}
             <li>
               <Link to="/join" className={styles.btn}>
-                <MenuButton icon="globe">Join Session</MenuButton>
+                <MenuButton icon="globe">{t('joinSession')}</MenuButton>
               </Link>
             </li>
             <li>
               <Link to="/settings" className={styles.btn}>
-                <MenuButton icon="settings">Settings</MenuButton>
+                <MenuButton icon="settings">{t('settings')}</MenuButton>
               </Link>
             </li>
             {!hasValidLicense() && (
               <li>
                 <Link to="/license" className={styles.btn}>
-                  <MenuButton icon="file-text">Enter License</MenuButton>
+                  <MenuButton icon="file-text">{t('enterLicense')}</MenuButton>
                 </Link>
               </li>
             )}

@@ -16,6 +16,7 @@ import { MenuButton } from 'renderer/components/menu/MenuButton'
 import { ExternalLink } from 'renderer/components/common/link'
 import { HighlightButton } from 'renderer/components/common/button'
 import { IconButton } from 'renderer/components/common/button'
+import { t } from '../../../../locale/index'
 
 interface IProps {
   className?: string
@@ -75,7 +76,7 @@ class Invite extends Component<PrivateProps, IState> {
         <p>Would you like to purchase a license now?</p>
         <ExternalLink href={`${LICENSE_PURCHASE_URL}&utm_source=invite`}>
           <HighlightButton icon="credit-card" size="medium" highlight>
-            Purchase
+            {t('purchase')}
           </HighlightButton>
         </ExternalLink>
       </div>

@@ -16,6 +16,7 @@ import { MenuHeader } from '../menu/MenuHeader'
 import ProfileSettings from './sections/Profile'
 import AdvancedSettings from './sections/Advanced'
 import LicenseSettings from './sections/License'
+import { t } from '../../../locale/index'
 
 interface IProps {}
 
@@ -24,7 +25,7 @@ export class SettingsMenu extends Component<IProps> {
     return (
       <LayoutMain className={styles.container}>
         <GoBackButton />
-        <MenuHeader text="Settings" />
+        <MenuHeader text={t('settings')} />
         <ProfileSettings />
         <AdvancedSettings />
         {hasValidLicense() ? <LicenseSettings /> : null}

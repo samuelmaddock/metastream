@@ -4,5 +4,5 @@ type LocaleKey = keyof typeof en
 
 /** Translate locale key */
 export function t(key: LocaleKey, vars?: { [key: string]: any }) {
-  return `TEST: ${en[key]}` || null
+  return en[key]
 }

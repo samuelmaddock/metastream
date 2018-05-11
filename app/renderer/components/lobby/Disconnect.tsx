@@ -7,6 +7,7 @@ import { IAppState } from '../../reducers/index'
 import { MenuButton } from '../menu/MenuButton'
 import { Link } from 'react-router-dom'
 import { Icon } from '../Icon'
+import { t } from '../../../locale/index'
 
 interface IProps {
   message: string
@@ -24,7 +25,7 @@ export class Disconnect extends Component<IProps> {
           {this.props.message}
         </p>
         <Link to="/">
-          <MenuButton size="medium">OK</MenuButton>
+          <MenuButton size="medium">{t('ok')}</MenuButton>
         </Link>
       </div>
     )

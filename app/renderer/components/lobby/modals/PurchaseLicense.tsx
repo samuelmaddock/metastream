@@ -5,6 +5,7 @@ import { LICENSE_PURCHASE_URL } from 'constants/license'
 import { MenuButton } from 'renderer/components/menu/MenuButton'
 import { ExternalLink } from 'renderer/components/common/link'
 import { HighlightButton } from 'renderer/components/common/button'
+import { t } from '../../../../locale/index'
 
 interface IProps {}
 
@@ -20,7 +21,7 @@ export default class PurchaseLicense extends Component<IProps> {
         <p>Would you like to purchase a license now?</p>
         <ExternalLink href={`${LICENSE_PURCHASE_URL}&utm_source=modal`}>
           <HighlightButton icon="credit-card" size="large" highlight>
-            Purchase
+            {t('purchase')}
           </HighlightButton>
         </ExternalLink>
       </div>

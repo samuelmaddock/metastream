@@ -8,6 +8,7 @@ import { getLocalUsername, getLocalColor, ISettingsState } from 'renderer/reduce
 import { USERNAME_MIN_LEN, USERNAME_MAX_LEN } from 'constants/settings'
 import { setUsername, setColor, setSetting } from 'renderer/actions/settings'
 import { SwitchOption } from '../controls'
+import { t } from '../../../../locale/index'
 
 interface IProps {}
 
@@ -22,20 +23,20 @@ class AdvancedSettings extends Component<Props> {
     const { dispatch } = this.props
     return (
       <section className={styles.section}>
-        <h2>Advanced</h2>
+        <h2>{t('advanced')}</h2>
 
         <SwitchOption
           inputId="advanced_tracking"
-          title="Allow Tracking"
-          description="Send app usage information to the developer."
+          title={t('allowTracking')}
+          description={t('allowTrackingDesc')}
           checked={this.props.settings.allowTracking}
           onChange={checked => dispatch!(setSetting('allowTracking', checked))}
         />
 
         <SwitchOption
           inputId="advanced_developer"
-          title="Developer Mode"
-          description="Show developer tools for inspecting web pages."
+          title={t('developerMode')}
+          description={t('developerModeDesc')}
           checked={this.props.settings.developer}
           onChange={checked => dispatch!(setSetting('developer', checked))}
         />

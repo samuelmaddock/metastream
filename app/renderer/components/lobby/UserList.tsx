@@ -8,6 +8,7 @@ import { getMaxUsers } from '../../lobby/reducers/session'
 import { HighlightButton } from '../common/button'
 import { ListOverlay } from './ListOverlay'
 import { UserItem } from './UserItem'
+import { t } from '../../../locale/index'
 
 interface IProps {
   className?: string
@@ -33,11 +34,11 @@ class _UserList extends Component<Props> {
     return (
       <ListOverlay
         className={this.props.className}
-        title="Users"
+        title={t('users')}
         tagline={userSlots}
         action={
           <HighlightButton icon="mail" highlight={numUsers < 2} onClick={this.props.onInvite}>
-            Invite
+            {t('invite')}
           </HighlightButton>
         }
       >

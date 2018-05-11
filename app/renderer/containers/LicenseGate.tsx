@@ -15,6 +15,7 @@ import { GoBackButton } from 'renderer/components/menu/GoBackButton'
 import { MenuHeader } from 'renderer/components/menu/MenuHeader'
 import { ExternalLink } from '../components/common/link'
 import { LICENSE_PURCHASE_URL } from '../../constants/license'
+import { t } from '../../locale/index'
 
 const { productName, version } = require('package.json')
 
@@ -37,7 +38,7 @@ export class LicenseGate extends Component<IProps, IState> {
       return <Redirect to={from} />
     }
 
-    const title = this.props.gate ? `${productName} Alpha ${version}` : 'Enter license'
+    const title = this.props.gate ? `${productName} Alpha ${version}` : t('enterLicense')
 
     return (
       <LayoutMain className={styles.container}>
@@ -55,11 +56,11 @@ export class LicenseGate extends Component<IProps, IState> {
                 this.setState({ redirectToReferrer: valid })
               }}
             >
-              Use License
+              {t('useLicense')}
             </MenuButton>
             <ExternalLink href={`${LICENSE_PURCHASE_URL}&utm_source=register`}>
               <MenuButton icon="credit-card" size="medium">
-                Purchase License
+                {t('purchaseLicense')}
               </MenuButton>
             </ExternalLink>
           </div>

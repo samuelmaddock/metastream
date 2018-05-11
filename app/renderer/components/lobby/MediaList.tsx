@@ -9,6 +9,7 @@ import { server_requestDeleteMedia } from '../../lobby/actions/mediaPlayer'
 import { HighlightButton } from '../common/button'
 import { ListOverlay } from './ListOverlay'
 import { MediaItem } from '../media/MediaItem'
+import { t } from '../../../locale/index'
 
 interface IProps {
   className?: string
@@ -37,7 +38,7 @@ class _MediaList extends Component<Props> {
     return (
       <ListOverlay
         className={this.props.className}
-        title="Next up"
+        title={t('nextUp')}
         tagline={this.props.mediaQueue.length ? `${this.props.mediaQueue.length}` : undefined}
         action={
           <HighlightButton
@@ -49,7 +50,7 @@ class _MediaList extends Component<Props> {
               }
             }}
           >
-            Add
+            {t('add')}
           </HighlightButton>
         }
       >

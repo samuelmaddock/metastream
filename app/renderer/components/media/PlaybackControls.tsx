@@ -34,6 +34,7 @@ import { getPlaybackTime2 } from 'renderer/lobby/reducers/mediaPlayer.helpers'
 import { absoluteUrl } from 'utils/appUrl'
 import { BrowserActionList } from '../browser/BrowserActionList'
 import { isDeveloper } from '../../reducers/settings'
+import { t } from '../../../locale/index'
 
 const EXTENSIONS_URL = absoluteUrl('./browser/resources/extensions.html')
 
@@ -133,7 +134,7 @@ class _PlaybackControls extends Component<PrivateProps> {
           this.props.openBrowser()
         }}
       >
-        Add Media
+        {t('addMedia')}
       </Button>
     )
 
@@ -142,13 +143,19 @@ class _PlaybackControls extends Component<PrivateProps> {
     )
 
     const nextBtn = (
-      <Button key="next" icon="skip-forward" title="Next" disabled={isIdle} onClick={this.next} />
+      <Button
+        key="next"
+        icon="skip-forward"
+        title={t('next')}
+        disabled={isIdle}
+        onClick={this.next}
+      />
     )
 
     const repeatBtn = (
       <Button
         icon="repeat"
-        title="Repeat"
+        title={t('repeat')}
         enabled={this.props.repeatMode === RepeatMode.On}
         disabled={isIdle}
         onClick={this.repeat}
@@ -179,41 +186,43 @@ class _PlaybackControls extends Component<PrivateProps> {
     )
 
     const infoBtn = media &&
-      media.description && <Button icon="info" title="Info" onClick={() => this.props.showInfo()} />
+      media.description && (
+        <Button icon="info" title={t('info')} onClick={() => this.props.showInfo()} />
+      )
 
     const reloadBtn = (
       <ButtonListItem icon="rotate-cw" onClick={this.props.reload}>
-        Reload
+        {t('reload')}
       </ButtonListItem>
     )
 
     const externalLinkBtn = media && (
       <ButtonListItem icon="external-link" onClick={this.openLink}>
-        Open in browser
+        {t('openInBrowser')}
       </ButtonListItem>
     )
 
     const copyLinkBtn = media && (
       <ButtonListItem icon="clipboard" onClick={this.copyLink}>
-        Copy link
+        {t('copyLink')}
       </ButtonListItem>
     )
 
     const debugBtn = this.props.developer && (
       <ButtonListItem icon="settings" onClick={this.props.debug}>
-        Debug
+        {t('debug')}
       </ButtonListItem>
     )
 
     const extensionsBtn = (
       <ButtonListItem icon="package" onClick={() => this.props.openBrowser(EXTENSIONS_URL)}>
-        Extensions
+        {t('extensions')}
       </ButtonListItem>
     )
 
     const disconnectBtn = (
       <ButtonListItem icon="log-out" onClick={this.disconnect}>
-        Disconnect
+        {t('disconnect')}
       </ButtonListItem>
     )
 

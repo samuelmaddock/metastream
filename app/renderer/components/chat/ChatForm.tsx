@@ -3,6 +3,7 @@ import { IMessage } from 'renderer/lobby/reducers/chat'
 
 import styles from './Chat.css'
 import { CHAT_MAX_MESSAGE_LENGTH } from 'constants/chat'
+import { t } from '../../../locale/index'
 
 interface IProps {
   send: (text: string) => void
@@ -52,7 +53,7 @@ export class ChatForm extends Component<IProps, IState> {
           }}
           type="text"
           className={styles.messageInput}
-          placeholder="Message or URL"
+          placeholder={t('chatPlaceholder')}
           spellCheck={this.state.spellcheck}
           onKeyPress={this.submitText}
           maxLength={CHAT_MAX_MESSAGE_LENGTH}

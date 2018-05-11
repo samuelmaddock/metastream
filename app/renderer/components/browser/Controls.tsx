@@ -7,6 +7,7 @@ import { IconButton, HighlightButton } from 'renderer/components/common/button'
 import styles from './Controls.css'
 import { MenuButton } from 'renderer/components/menu/MenuButton'
 import { BrowserActionList } from './BrowserActionList'
+import { t } from '../../../locale/index'
 
 interface IProps {
   initialUrl: string
@@ -106,7 +107,7 @@ export class WebControls extends Component<IProps, IState> {
           disabled={!this.canRequestUrl}
           highlight={this.canRequestUrl}
         >
-          Request URL
+          {t('requestUrl')}
         </HighlightButton>
       </div>
     )

@@ -3,6 +3,7 @@ import * as cx from 'classnames'
 import styles from './input.css'
 import { Icon } from 'renderer/components/Icon'
 import { HighlightButton } from 'renderer/components/common/button'
+import { t } from '../../../locale/index'
 
 interface ITextInputProps extends React.HTMLProps<HTMLInputElement> {
   theRef?: (e: HTMLInputElement | null) => void
@@ -47,7 +48,7 @@ export class ClipboardTextInput extends React.Component<IClipboardTextInputProps
           disabled={this.props.disabled}
         />
         <HighlightButton icon="clipboard" onClick={this.copy} highlight>
-          Copy
+          {t('copy')}
         </HighlightButton>
       </div>
     )
