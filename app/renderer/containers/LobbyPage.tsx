@@ -97,27 +97,8 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
     this.server = server
     this.server.once('close', this.disconnect)
 
-    if (this.host) {
+    if (this.host || this.server.connected) {
       // Server is ready
-      this.onConnection()
-    } else {
-      this.connectToHost()
-    }
-  }
-
-  /** Connect client to server */
-  private async connectToHost() {
-    const peerPromise = new Promise(resolve => {
-      if (this.server!.connected) {
-        resolve()
-      } else {
-        this.server!.once('connect', resolve)
-      }
-    })
-
-    const conn = await Promise.race([peerPromise, sleep(NETWORK_TIMEOUT)])
-
-    if (this.server && this.server.connected) {
       this.onConnection()
     } else {
       this.onConnectionFailed()

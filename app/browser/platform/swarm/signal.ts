@@ -80,7 +80,6 @@ export async function signalRenderer(socket: EncryptedSocket, peerKey: Key): Pro
     ipcMain.once('rtc-peer-connect', onPeerConnect)
     ipcMain.once('rtc-peer-error', onPeerError)
 
-    log(`INITING SIGNAL FOR ${keyStr}`)
     webContents.send('rtc-peer-init', keyStr)
 
     setupTimeout(NETWORK_TIMEOUT)

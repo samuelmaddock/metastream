@@ -44,13 +44,11 @@ ipcMain.on('platform-swarm-init', async (event: Electron.Event) => {
 
 let swarmServer: any
 let wsServer: WebSocketServer | null
-let serverOpts: ILobbyOptions
 
 ipcMain.on('platform-create-lobby', (event: Electron.Event, ipcId: number, opts: ILobbyOptions) => {
   const { sender } = event
 
   updateConnectTime()
-  serverOpts = opts
 
   if (opts.p2p) {
     checkNativeDeps()
@@ -76,9 +74,9 @@ ipcMain.on('platform-create-lobby', (event: Electron.Event, ipcId: number, opts:
           log(`${keyStr} connected to renderer`)
         } catch (e) {
           log.error(`Failed to connect to peer ${keyStr}:`, e)
+        } finally {
+          esocket.destroy()
         }
-
-        esocket.destroy()
       }
     )
 
@@ -101,26 +99,29 @@ ipcMain.on('platform-create-lobby', (event: Electron.Event, ipcId: number, opts:
   event.sender.send('platform-create-lobby-result', ipcId, true)
 })
 
-ipcMain.on('platform-leave-lobby', (event: Electron.Event) => {
+const shutdownServers = () => {
   if (swarmServer) {
     swarmServer.close()
     swarmServer = null
-    log('Closed swarm server connection')
+    log('Closed swarm server')
   }
 
   if (wsServer) {
     wsServer.close()
     wsServer = null
+    log('Closed WebSocket server')
   }
+}
+
+ipcMain.on('platform-leave-lobby', (event: Electron.Event) => {
+  shutdownServers()
 })
 
 ipcMain.on(
   'platform-join-lobby',
   async (event: Electron.Event, ipcId: number, serverId: string) => {
-    // TODO: check if already connected
-    // TODO: check if serverId is an IP, not a public key
-
     checkNativeDeps()
+    shutdownServers()
 
     let connectTime = updateConnectTime()
 
@@ -137,20 +138,24 @@ ipcMain.on(
       log.error(`Join lobby error`, e)
     }
 
-    const success = !!conn && isPrevConnectTime(connectTime)
-    event.sender.send('platform-join-lobby-result', ipcId, success)
+    // HACK: handle join cancellation and retry - only consider most recent result
+    const shouldSignal = isPrevConnectTime(connectTime)
+    let success = false
 
-    if (success && conn) {
+    if (shouldSignal && conn) {
       try {
         await signalRenderer(conn.socket, hostPublicKey)
-        log(`Finished signaling connection to host ${serverId}`)
+        success = true
+        log.debug(`Finished signaling connection to host ${serverId}`)
       } catch (e) {
         log.error(`Failed to connect to peer ${serverId}\n`, e)
       }
+    }
 
-      conn.socket.destroy()
-    } else if (conn) {
+    if (conn) {
       conn.socket.destroy()
     }
+
+    event.sender.send('platform-join-lobby-result', ipcId, success)
   }
 )
