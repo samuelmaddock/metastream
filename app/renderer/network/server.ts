@@ -72,9 +72,6 @@ class NetServer extends EventEmitter implements INetServerEvents {
   }
 
   close(): void {
-    if (!this.connected) return
-    this.connected = false
-
     this.forEachClient(conn => conn.close())
     this.connections.clear()
 
@@ -82,8 +79,12 @@ class NetServer extends EventEmitter implements INetServerEvents {
       coord.removeListener('connection', this.connect)
       coord.close()
     })
+    this.coordinators = []
 
-    this.emit('close')
+    if (this.connected) {
+      this.emit('close')
+      this.connected = false
+    }
   }
 
   private receive(conn: NetConnection, data: Buffer) {

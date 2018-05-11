@@ -53,9 +53,9 @@ export class SwarmRTCPeerCoordinator extends PeerCoordinator {
     peer.once('connect', () => {
       console.debug(`[PeerCoordinator] Peer connected ${peerId}`)
       ipcRenderer.send('rtc-peer-connect', peerId)
+      peer.removeListener('signal', onSignalOffer)
       peer.removeListener('error', onError)
       peer.removeListener('close', onError)
-      peer.removeListener('signal', onSignalOffer)
     })
 
     peer.on('signal', onSignalOffer)
