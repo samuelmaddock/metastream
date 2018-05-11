@@ -14,13 +14,14 @@ export interface INetServerOptions {
 class NetServer extends EventEmitter implements INetServerEvents {
   isHost: boolean
 
-  connected: boolean = false
+  connected: boolean
   private connections: Map<string, NetConnection> = new Map()
   private coordinators: PeerCoordinator[] = []
 
   constructor(opts: INetServerOptions) {
     super()
     this.isHost = opts.isHost
+    this.connected = opts.isHost
     this.coordinators = [...opts.coordinators]
 
     for (let coordinator of this.coordinators) {
@@ -71,18 +72,18 @@ class NetServer extends EventEmitter implements INetServerEvents {
   }
 
   close(): void {
-    if (this.connected) {
-      this.forEachClient(conn => conn.close())
-      this.connections.clear()
-      this.connected = false
+    if (!this.connected) return
+    this.connected = false
 
-      this.coordinators.forEach(coord => {
-        coord.removeListener('connection', this.connect)
-        coord.close()
-      })
+    this.forEachClient(conn => conn.close())
+    this.connections.clear()
 
-      this.emit('close')
-    }
+    this.coordinators.forEach(coord => {
+      coord.removeListener('connection', this.connect)
+      coord.close()
+    })
+
+    this.emit('close')
   }
 
   private receive(conn: NetConnection, data: Buffer) {
