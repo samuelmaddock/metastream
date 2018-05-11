@@ -39,26 +39,28 @@ export class SwarmRTCPeerCoordinator extends PeerCoordinator {
     console.debug(`[PeerCoordinator] Init ${peerId}`)
     const peer = this.createPeer(peerId)
 
-    peer.on('signal', (signal: SimplePeerData) => {
-      console.info(`[PeerCoordinator] Got signal for ${peerId}`)
+    const onSignalOffer = (signal: SimplePeerData) => {
+      console.debug(`[PeerCoordinator] Got signal for ${peerId}`)
       ipcRenderer.send('rtc-peer-signal', peerId, signal)
-    })
+    }
 
-    const error = (e: Error) => {
+    const onError = (e: Error) => {
       console.error(`[PeerCoordinator] Peer errored ${peerId}\n`, e)
       ipcRenderer.send('rtc-peer-error', peerId)
       peer.close()
     }
 
     peer.once('connect', () => {
-      console.info(`[PeerCoordinator] Peer connected ${peerId}`)
+      console.debug(`[PeerCoordinator] Peer connected ${peerId}`)
       ipcRenderer.send('rtc-peer-connect', peerId)
-      peer.removeListener('error', error)
-      peer.removeListener('close', error)
+      peer.removeListener('error', onError)
+      peer.removeListener('close', onError)
+      peer.removeListener('signal', onSignalOffer)
     })
 
-    peer.once('error', error)
-    peer.once('close', error)
+    peer.on('signal', onSignalOffer)
+    peer.once('error', onError)
+    peer.once('close', onError)
   }
 
   private onSignal = (event: Electron.Event, peerId: string, signal: SimplePeer.SignalData) => {

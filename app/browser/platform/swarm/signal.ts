@@ -60,7 +60,7 @@ export async function signalRenderer(socket: EncryptedSocket, peerKey: Key): Pro
       log.debug(`Signaling connection closed`)
 
       // Give small delay to allow time for connect IPC
-      setupTimeout(2000)
+      setupTimeout(10000)
     }
     socket.once('close', onSocketClose)
 
