@@ -1,8 +1,8 @@
-import React from 'React';
-import { assetUrl } from 'utils/appUrl';
+import React from 'React'
+import { assetUrl } from 'utils/appUrl'
 
 interface IProps {
-  className?: string;
+  className?: string
 
   /**
    * Name of SVG file to use in 'assets/icons/'
@@ -12,13 +12,15 @@ interface IProps {
    * same name as the file. Make sure to add an 'id' attribute to the file's
    * <svg> root element.
    */
-  name: string;
+  name: string
+
+  title?: string
 }
 
 // too lazy to move into css
 const DEFAULT_STYLE = {
   display: 'inline-block'
-};
+}
 
 /** SVG icon component */
 export const Icon = ({ name, ...rest }: IProps) => {
@@ -27,5 +29,5 @@ export const Icon = ({ name, ...rest }: IProps) => {
     <svg width="24" height="24" style={DEFAULT_STYLE} {...rest}>
       <use xlinkHref={path} />
     </svg>
-  );
-};
+  )
+}

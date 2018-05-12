@@ -17,3 +17,9 @@
 .name {
   composes: single-line from 'styles/text.css';
 }
+
+.role {
+  color: var(--color-highlight);
+  transform: scale(0.8);
+  margin-left: 5px;
+}

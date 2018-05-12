@@ -11,8 +11,11 @@ export interface IUser {
   avatar?: string
   color: string
 
-  /** Hash of license for verifying no dupes in session */
+  /** Hash of license for verifying no dupes in session. */
   license?: string
+
+  /** User can administrate media player. */
+  admin: boolean
 }
 
 export interface IUsersState {
@@ -33,12 +36,19 @@ export const users: Reducer<IUsersState> = (state: IUsersState = initialState, a
     const id = conn.id.toString()
     const userState = state.map[id]
     const name = action.payload.name || (userState && userState.name) || id
+    const hostId = action.payload.host ? id : state.host
 
     return {
-      host: action.payload.host ? id : state.host,
+      host: hostId,
       map: {
         ...state.map,
-        [id]: { id, name, color: action.payload.color, license: action.payload.license }
+        [id]: {
+          id,
+          name,
+          color: action.payload.color,
+          license: action.payload.license,
+          admin: id === hostId
+        }
       }
     }
   } else if (isType(action, removeUser)) {
@@ -69,7 +79,13 @@ export const getUserColor = (state: IAppState, userId: string): string => {
 
 export const getHostId = (state: IAppState) => state.users.host
 export const getHost = (state: IAppState) => getUser(state, getHostId(state))!
-export const isHost = (state: IAppState) => getHostId(state) === localUserId()
+export const isHost = (state: IAppState, userId: string = localUserId()) =>
+  getHostId(state) === userId
+
+export const isAdmin = (state: IAppState, userId: string = localUserId()) => {
+  const user = getUser(state, userId)
+  return Boolean(user && user.admin)
+}
 
 export const getNumUsers = (state: IAppState) => Object.keys(state.users.map).length
 
