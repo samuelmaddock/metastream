@@ -67,8 +67,8 @@ class NetServer extends EventEmitter implements INetServerEvents {
     return this.connections.get(clientId)
   }
 
-  private forEachClient(func: (conn: NetConnection) => void) {
-    this.connections.forEach(conn => func(conn))
+  private forEachClient(cb: (conn: NetConnection) => void) {
+    this.connections.forEach(cb)
   }
 
   close(): void {
@@ -92,7 +92,11 @@ class NetServer extends EventEmitter implements INetServerEvents {
   }
 
   send(data: Buffer): void {
-    this.forEachClient(conn => conn.send(data))
+    this.forEachClient(conn => {
+      if (conn.isAuthed()) {
+        conn.send(data)
+      }
+    })
   }
 
   sendTo(clientId: string, data: Buffer): void {

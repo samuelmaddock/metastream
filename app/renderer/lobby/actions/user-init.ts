@@ -127,6 +127,9 @@ const initClient = (info: ClientInfo): RpcThunk<void> => (dispatch, getState, { 
 
   dispatch(multi_userJoined(id))
 
+  // Client has been fully authenticated
+  client.auth()
+
   dispatch(
     client_authorized({
       serverTime: Date.now()

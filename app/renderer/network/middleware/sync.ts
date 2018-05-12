@@ -76,11 +76,13 @@ export const netSyncMiddleware = (): Middleware => {
 
       if (host) {
         server.on('connect', (conn: NetConnection) => {
-          const state = getReplicatedState()
-          const action = { type: NetActionTypes.FULL_UPDATE, v: COMMIT_NUMBER, state }
-          const jsonStr = JSON.stringify(action)
-          const buf = new Buffer(SYNC_HEADER + jsonStr)
-          server!.sendTo(conn.id.toString(), buf)
+          conn.once('authed', () => {
+            const state = getReplicatedState()
+            const action = { type: NetActionTypes.FULL_UPDATE, v: COMMIT_NUMBER, state }
+            const jsonStr = JSON.stringify(action)
+            const buf = new Buffer(SYNC_HEADER + jsonStr)
+            server!.sendTo(conn.id.toString(), buf)
+          })
         })
       }
 

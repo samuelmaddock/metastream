@@ -20,6 +20,8 @@ abstract class NetConnection extends EventEmitter {
   id: NetUniqueId
   connected?: boolean
 
+  protected authed: boolean = false
+
   constructor(id: NetUniqueId) {
     super()
     this.id = id
@@ -56,6 +58,21 @@ abstract class NetConnection extends EventEmitter {
 
   toString(): string {
     return `${this.id.toString()} (${this.getIP()}:${this.getPort()})`
+  }
+
+  /** Invoked when the client is fully authenticated. */
+  auth() {
+    if (this.authed) {
+      throw new Error(`Client already authed [${this}]`)
+    }
+
+    this.authed = true
+    this.emit('authed')
+  }
+
+  /** Whether the client is fully authenticated. Should only send messages if this is true. */
+  isAuthed() {
+    return this.authed
   }
 }
 

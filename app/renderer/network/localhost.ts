@@ -1,31 +1,32 @@
-import NetConnection from './connection';
-import { PlatformService } from 'renderer/platform';
+import NetConnection from './connection'
+import { PlatformService } from 'renderer/platform'
 
 class LocalHostConnection extends NetConnection {
   constructor() {
-    const id = PlatformService.getLocalId();
-    super(id);
+    const id = PlatformService.getLocalId()
+    super(id)
+    this.authed = true
   }
   send(data: Buffer): void {
-    throw new Error('Attempted to send data to LocalHost');
+    throw new Error('Attempted to send data to LocalHost')
   }
   getIP(): string {
-    return '127.0.0.1';
+    return '127.0.0.1'
   }
   getPort(): string {
-    return '0';
+    return '0'
   }
 }
 
-let client: LocalHostConnection;
+let client: LocalHostConnection
 
 const localUser = (): NetConnection => {
   if (!client) {
-    client = new LocalHostConnection();
+    client = new LocalHostConnection()
   }
-  return client;
-};
+  return client
+}
 
 export const localUserId = () => localUser().id.toString()
 
-export default localUser;
+export default localUser
