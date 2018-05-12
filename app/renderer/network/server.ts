@@ -46,6 +46,10 @@ class NetServer extends EventEmitter implements INetServerEvents {
     conn.once('close', () => this.disconnect(conn))
     conn.on('data', (data: Buffer) => this.receive(conn, data))
 
+    if (!this.isHost) {
+      conn.auth() // auth host
+    }
+
     this.connected = true
     this.emit('connect', conn)
   }
