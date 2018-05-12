@@ -246,6 +246,7 @@
     "history": "^4.7.2",
     "iso8601-duration": "^1.1.1",
     "lodash": "^4.17.4",
+    "material-ui": "^1.0.0-beta.47",
     "qs": "6.5.1",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",

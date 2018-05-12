@@ -1,17 +1,13 @@
-import React, { Component } from 'react';
-import Home from 'renderer/components/Home';
-import { RouteComponentProps } from 'react-router';
-import { IReactReduxProps } from 'types/redux';
-import { connect } from 'react-redux';
+import React, { Component } from 'react'
+import Home from 'renderer/components/Home'
+import { RouteComponentProps } from 'react-router'
 
 interface IProps extends RouteComponentProps<any> {}
 
-type PrivateProps = IProps & IReactReduxProps;
+type PrivateProps = IProps
 
-class _HomePage extends Component<PrivateProps> {
+export class HomePage extends Component<PrivateProps> {
   render() {
-    return <Home />;
+    return <Home />
   }
 }
-
-export const HomePage = connect()(_HomePage);
