@@ -102,13 +102,15 @@ export const netRpcMiddleware = (): Middleware => {
 
     /** Dispatch RPC on local Redux store. */
     const dispatchRpc = (action: RpcAction, client: NetConnection) => {
-      const result = execRpc(action)
+      const result = execRpc(action, client)
 
       if (isRpcThunk(result)) {
         const context = { client, host }
         result(dispatch, getState, context)
       } else if (typeof result === 'object') {
         dispatch(result as Action)
+      } else if (typeof result === 'string') {
+        console.error(result)
       }
     }
 
@@ -191,16 +193,20 @@ interface RpcAction extends Action {
 }
 
 interface IRPCOptions {
-  realm: RpcRealm
-  action: Function
   validate?: (...args: any[]) => boolean
+  allowUnauthed?: boolean
 }
 
-const rpcMap: { [key: string]: IRPCOptions | undefined } = {}
+interface IRPC extends IRPCOptions {
+  realm: RpcRealm
+  action: Function
+}
+
+const rpcMap: { [key: string]: IRPC | undefined } = {}
 
 const getRpc = (name: string) => rpcMap[name]
 
-const execRpc = <T>({ payload }: RpcAction): T => {
+const execRpc = <T>({ payload }: RpcAction, client: NetConnection): T | string => {
   const { name, args } = payload
 
   if (!rpcMap.hasOwnProperty(name)) {
@@ -209,31 +215,35 @@ const execRpc = <T>({ payload }: RpcAction): T => {
 
   const opts = rpcMap[name]!
 
+  if (!client.isAuthed() && !opts.allowUnauthed) {
+    return `Client not authorized to dispatch RPC "${name}"`
+  }
+
   if (opts.validate && !opts.validate(args)) {
-    throw new Error(`Invalidate arguments for RPC "${name}"`)
+    return `Invalidate arguments for RPC "${name}"`
   }
 
   return opts.action.apply(null, args)
 }
 
 // prettier-ignore
-export function rpc<TResult>(realm: RpcRealm.Multicast | RpcRealm.Server, action: () => TResult, validate?: (...args: any[]) => boolean): (() => ActionCreator<void>);
+export function rpc<TResult>(realm: RpcRealm.Multicast | RpcRealm.Server, action: () => TResult, opts?: IRPCOptions): (() => ActionCreator<void>);
 // prettier-ignore
-export function rpc<T1, TResult>(realm: RpcRealm.Multicast | RpcRealm.Server, action: (a: T1) => TResult, validate?: (...args: any[]) => boolean): ((a: T1) => ActionCreator<void>);
+export function rpc<T1, TResult>(realm: RpcRealm.Multicast | RpcRealm.Server, action: (a: T1) => TResult, opts?: IRPCOptions): ((a: T1) => ActionCreator<void>);
 // prettier-ignore
-export function rpc<T1, T2, TResult>(realm: RpcRealm.Multicast | RpcRealm.Server, action: (a: T1, b: T2) => TResult, validate?: (...args: any[]) => boolean): ((a: T1, b: T2) => ActionCreator<void>);
+export function rpc<T1, T2, TResult>(realm: RpcRealm.Multicast | RpcRealm.Server, action: (a: T1, b: T2) => TResult, opts?: IRPCOptions): ((a: T1, b: T2) => ActionCreator<void>);
 // prettier-ignore
-export function rpc<T1, T2, T3, TResult>(realm: RpcRealm.Multicast | RpcRealm.Server, action: (a: T1, b: T2, c: T3) => TResult, validate?: (...args: any[]) => boolean): ((a: T1, b: T2, c: T3) => ActionCreator<void>);
+export function rpc<T1, T2, T3, TResult>(realm: RpcRealm.Multicast | RpcRealm.Server, action: (a: T1, b: T2, c: T3) => TResult, opts?: IRPCOptions): ((a: T1, b: T2, c: T3) => ActionCreator<void>);
 // prettier-ignore
-export function rpc<TResult>(realm: RpcRealm.Client, action: () => TResult, validate?: (...args: any[]) => boolean): (() => (...clients: RecipientFilter) => ActionCreator<void>);
+export function rpc<TResult>(realm: RpcRealm.Client, action: () => TResult, opts?: IRPCOptions): (() => (...clients: RecipientFilter) => ActionCreator<void>);
 // prettier-ignore
-export function rpc<T1, TResult>(realm: RpcRealm.Client, action: (a: T1) => TResult, validate?: (...args: any[]) => boolean): ((a: T1) => (...clients: RecipientFilter) => ActionCreator<void>);
+export function rpc<T1, TResult>(realm: RpcRealm.Client, action: (a: T1) => TResult, opts?: IRPCOptions): ((a: T1) => (...clients: RecipientFilter) => ActionCreator<void>);
 // prettier-ignore
-export function rpc<T1, T2, TResult>(realm: RpcRealm.Client, action: (a: T1, b: T2) => TResult, validate?: (...args: any[]) => boolean): ((a: T1, b: T2) => (...clients: RecipientFilter) => ActionCreator<void>);
+export function rpc<T1, T2, TResult>(realm: RpcRealm.Client, action: (a: T1, b: T2) => TResult, opts?: IRPCOptions): ((a: T1, b: T2) => (...clients: RecipientFilter) => ActionCreator<void>);
 // prettier-ignore
-export function rpc<T1, T2, T3, TResult>(realm: RpcRealm.Client, action: (a: T1, b: T2, c: T3) => TResult, validate?: (...args: any[]) => boolean): ((a: T1, b: T2, c: T3) => (...clients: RecipientFilter) => ActionCreator<void>);
+export function rpc<T1, T2, T3, TResult>(realm: RpcRealm.Client, action: (a: T1, b: T2, c: T3) => TResult, opts?: IRPCOptions): ((a: T1, b: T2, c: T3) => (...clients: RecipientFilter) => ActionCreator<void>);
 // prettier-ignore
-export function rpc(realm: RpcRealm, action: (...args: any[]) => any, validate?: (...args: any[]) => boolean): Function {
+export function rpc(realm: RpcRealm, action: (...args: any[]) => any, opts?: IRPCOptions): Function {
   const { name } = action
 
   if (name === 'action') {
@@ -245,7 +255,7 @@ export function rpc(realm: RpcRealm, action: (...args: any[]) => any, validate?:
     console.warn(`RPC action name ("${name}") collides with existing action, overriding...`)
   }
 
-  rpcMap[name] = { realm, action, validate }
+  rpcMap[name] = { ...opts, realm, action }
 
   // Return Redux action creator;
   // intercepted by redux-rpc middleware

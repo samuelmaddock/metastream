@@ -136,4 +136,6 @@ const initClient = (info: ClientInfo): RpcThunk<void> => (dispatch, getState, { 
     })(id)
   )
 }
-const server_initClient = rpc(RpcRealm.Server, initClient)
+const server_initClient = rpc(RpcRealm.Server, initClient, {
+  allowUnauthed: true
+})
