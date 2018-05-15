@@ -22,4 +22,15 @@
   color: var(--color-highlight);
   transform: scale(0.8);
   margin-left: 5px;
+  flex-shrink: 0;
+}
+
+.menuBtn {
+  opacity: 0;
+  margin-left: auto;
+}
+
+.menuBtn:focus,
+.container:hover .menuBtn {
+  opacity: 1;
 }

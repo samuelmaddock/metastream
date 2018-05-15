@@ -4,9 +4,9 @@ import { PlatformService } from 'renderer/platform'
 import { addUser } from 'renderer/lobby/middleware/users'
 import { localUser } from 'renderer/network'
 import { RpcThunk } from 'renderer/lobby/types'
-import { multi_userJoined } from 'renderer/lobby/actions/users'
+import { multi_userJoined, client_kick } from 'renderer/lobby/actions/users'
 import { rpc, RpcRealm } from 'renderer/network/middleware/rpc'
-import { getUser, getNumUsers, findUser } from 'renderer/lobby/reducers/users'
+import { getUser, getNumUsers, findUser } from 'renderer/lobby/reducers/users.helpers'
 import { updateServerTimeDelta } from 'renderer/lobby/actions/clock'
 import { getLocalUsername, getLocalColor } from '../../reducers/settings'
 import { USERNAME_MAX_LEN, COLOR_LEN } from 'constants/settings'
@@ -80,12 +80,6 @@ const validateClientInfo = (info: ClientInfo, id: string, state: IAppState) => {
 
   return true
 }
-
-const kickClient = (reason: NetworkDisconnectReason): RpcThunk<void> => (dispatch, getState) => {
-  console.debug(`Received kick with reason: '${reason}'`)
-  dispatch(setDisconnectReason(reason))
-}
-const client_kick = rpc(RpcRealm.Client, kickClient)
 
 const clientAuthorized = (info: AuthorizeInfo): RpcThunk<void> => (dispatch, getState) => {
   // TODO: take average of multiple samples?

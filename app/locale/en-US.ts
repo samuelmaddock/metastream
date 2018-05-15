@@ -32,6 +32,7 @@ export default {
   networkDisconnectVersionMismatch: `Client version mismatch`,
   networkDisconnectDuplicateLicense: `Shared license found in session`,
   networkDisconnectFull: 'Session is full',
+  networkDisconnectKicked: 'Kicked',
   ok: 'OK',
   openInBrowser: 'Open in browser',
   profile: 'Profile',

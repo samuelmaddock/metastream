@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import { IAppState } from '../../reducers/index'
-import { IUsersState, isHost } from '../../lobby/reducers/users'
+import { IUsersState } from '../../lobby/reducers/users'
+import { isHost } from '../../lobby/reducers/users.helpers'
 import { getMaxUsers } from '../../lobby/reducers/session'
 
 import { HighlightButton } from '../common/button'

@@ -8,7 +8,8 @@ export const enum NetworkDisconnectReason {
   InvalidClientInfo,
   VersionMismatch,
   DuplicateLicense,
-  Full
+  Full,
+  Kicked
 }
 
 export const NetworkDisconnectMessages = {
@@ -17,7 +18,8 @@ export const NetworkDisconnectMessages = {
   [NetworkDisconnectReason.InvalidClientInfo]: 'networkDisconnectInvalidClientInfo',
   [NetworkDisconnectReason.VersionMismatch]: `networkDisconnectVersionMismatch`,
   [NetworkDisconnectReason.DuplicateLicense]: `networkDisconnectDuplicateLicense`,
-  [NetworkDisconnectReason.Full]: 'networkDisconnectFull'
+  [NetworkDisconnectReason.Full]: 'networkDisconnectFull',
+  [NetworkDisconnectReason.Kicked]: 'networkDisconnectKicked'
 }
 
 export const NetworkDisconnectLabels = {
@@ -26,5 +28,6 @@ export const NetworkDisconnectLabels = {
   [NetworkDisconnectReason.InvalidClientInfo]: 'invalid-client-info',
   [NetworkDisconnectReason.VersionMismatch]: `version-mismatch`,
   [NetworkDisconnectReason.DuplicateLicense]: `shared-license`,
-  [NetworkDisconnectReason.Full]: 'full'
+  [NetworkDisconnectReason.Full]: 'full',
+  [NetworkDisconnectReason.Kicked]: 'kicked'
 }
