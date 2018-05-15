@@ -1,7 +1,7 @@
 import { IAppState } from 'renderer/reducers'
-import { DEFAULT_USERNAME, DEFAULT_COLOR } from 'constants/settings';
-import { localUserId } from '../../network';
-import { IUser } from './users';
+import { DEFAULT_USERNAME, DEFAULT_COLOR } from 'constants/settings'
+import { localUserId } from '../../network'
+import { IUser, UserRole } from './users'
 
 export const getUser = (state: IAppState, userId: string) => state.users.map[userId]
 
@@ -20,10 +20,15 @@ export const getHost = (state: IAppState) => getUser(state, getHostId(state))!
 export const isHost = (state: IAppState, userId: string = localUserId()) =>
   getHostId(state) === userId
 
-export const isAdmin = (state: IAppState, userId: string = localUserId()) => {
+export const hasRole = (state: IAppState, userId: string, role: UserRole) => {
   const user = getUser(state, userId)
-  return Boolean(user && user.admin)
+  return user ? (user.role & role) !== 0 : false
 }
+
+export const isDJ = (state: IAppState, userId: string = localUserId()) =>
+  hasRole(state, userId, UserRole.DJ)
+export const isAdmin = (state: IAppState, userId: string = localUserId()) =>
+  hasRole(state, userId, UserRole.Admin)
 
 export const getNumUsers = (state: IAppState) => Object.keys(state.users.map).length
 

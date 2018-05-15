@@ -9,16 +9,21 @@ import { IconButton } from '../common/button';
 import { connect, DispatchProp } from 'react-redux';
 import { IAppState } from '../../reducers/index';
 import { server_kickUser } from '../../lobby/actions/users';
+import { isAdmin } from '../../lobby/reducers/users.helpers';
 
 interface IProps {
   user: IUser
+}
+
+interface IConnectedProps {
+  admin: boolean
 }
 
 interface IState {
   anchorEl?: HTMLElement
 }
 
-type PrivateProps = IProps & DispatchProp<IAppState>
+type PrivateProps = IProps & IConnectedProps & DispatchProp<IAppState>
 
 class _UserItem extends Component<PrivateProps, IState> {
   state: IState = {}
@@ -32,7 +37,7 @@ class _UserItem extends Component<PrivateProps, IState> {
         <figcaption className={styles.name} title={user.id} onClick={this.handleClick}>
           {user.name}
         </figcaption>
-        {user.admin && (
+        {this.props.admin && (
           <Tooltip title="Admin" placement="right">
             <Icon name="check-circle" className={styles.role} />
           </Tooltip>
@@ -72,6 +77,8 @@ class _UserItem extends Component<PrivateProps, IState> {
   }
 }
 
-export const UserItem = connect<{}, {}, IProps, IAppState>(state => {
-  return {}
+export const UserItem = connect<IConnectedProps, {}, IProps, IAppState>((state, props) => {
+  return {
+    admin: isAdmin(state, props.user.id)
+  }
 })(_UserItem)

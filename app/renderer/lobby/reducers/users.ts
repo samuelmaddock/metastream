@@ -3,6 +3,13 @@ import { isType } from 'utils/redux'
 import { IAppState } from 'renderer/reducers'
 import { addUser, removeUser, clearUsers } from '../middleware/users'
 
+/** User role in ascending power. */
+export const enum UserRole {
+  Default = 0,
+  DJ = 1 << 0,
+  Admin = 1 << 1
+}
+
 export interface IUser {
   id: string
   name: string
@@ -12,8 +19,7 @@ export interface IUser {
   /** Hash of license for verifying no dupes in session. */
   license?: string
 
-  /** User can administrate media player. */
-  admin: boolean
+  role: UserRole
 }
 
 export interface IUsersState {
@@ -35,6 +41,7 @@ export const users: Reducer<IUsersState> = (state: IUsersState = initialState, a
     const userState = state.map[id]
     const name = action.payload.name || (userState && userState.name) || id
     const hostId = action.payload.host ? id : state.host
+    const admin = id === hostId
 
     return {
       host: hostId,
@@ -45,7 +52,7 @@ export const users: Reducer<IUsersState> = (state: IUsersState = initialState, a
           name,
           color: action.payload.color,
           license: action.payload.license,
-          admin: id === hostId
+          role: admin ? UserRole.Admin : UserRole.Default
         }
       }
     }
