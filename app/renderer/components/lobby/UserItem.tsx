@@ -68,6 +68,7 @@ class _UserItem extends Component<PrivateProps, IState> {
 
   private handleKick = () => {
     this.props.dispatch!(server_kickUser(this.props.user.id))
+    this.handleClose()
   }
 }
 
