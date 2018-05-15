@@ -16,7 +16,7 @@ import {
   getCurrentMediaId
 } from 'renderer/lobby/reducers/mediaPlayer.helpers'
 import { IAppState } from 'renderer/reducers'
-import { getUserName } from 'renderer/lobby/reducers/users'
+import { getUserName } from 'renderer/lobby/reducers/users.helpers'
 import { maybeShowPurchaseModal } from '../../actions/ui'
 
 export const playPauseMedia = actionCreator<number>('PLAY_PAUSE_MEDIA')

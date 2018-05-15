@@ -67,7 +67,7 @@ class NetServer extends EventEmitter implements INetServerEvents {
     }
   }
 
-  private getClientById(clientId: string) {
+  getClientById(clientId: string) {
     return this.connections.get(clientId)
   }
 

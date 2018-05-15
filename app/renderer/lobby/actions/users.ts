@@ -38,15 +38,18 @@ const kickUser = (targetId: string): RpcThunk<void> => (dispatch, getState, cont
   // maybe `dispatch(validateAdmin(state, context))`
   const state = getState()
   const requesterId = context.client.id.toString()
-  if (!isAdmin(state, requesterId)) {
-    // TODO: close connection?
-    return
-  }
+
+  if (requesterId === targetId) return
+  if (!isAdmin(state, requesterId)) return
 
   const target = getUser(state, targetId)
   if (target) {
     dispatch(client_kick(NetworkDisconnectReason.Kicked)(targetId))
-    // TODO: disconnect user
+
+    const conn = context.server.getClientById(targetId)
+    if (conn) {
+      conn.close()
+    }
   }
 }
 export const server_kickUser = rpc(RpcRealm.Server, kickUser)
