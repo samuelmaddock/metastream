@@ -130,21 +130,17 @@ export class _WebBrowser extends Component<PrivateProps> {
   }
 
   private renderContent() {
-    // TODO: Remove `is` attribute from webview when React 16 is out
-    // https://stackoverflow.com/a/33860892/1490006
-    return (
-      <webview
-        is="is"
-        ref={this.setupWebview}
-        src={this.initialUrl}
-        class={styles.content}
-        /* Some website embeds are disabled without an HTTP referrer */
-        httpreferrer="http://mediaplayer.samuelmaddock.com/"
-        plugins="true"
-        partition={WEBVIEW_PARTITION}
-        allowtransparency
-      />
-    )
+    return React.createElement('webview', {
+      is: "is",
+      ref: this.setupWebview,
+      src: this.initialUrl,
+      class: styles.content,
+      /* Some website embeds are disabled without an HTTP referrer */
+      httpreferrer: "http://mediaplayer.samuelmaddock.com/",
+      plugins: "true",
+      partition: WEBVIEW_PARTITION,
+      allowtransparency: true
+    })
   }
 }
 

@@ -43,6 +43,6 @@ export class _ServerBrowserPage extends Component<PrivateProps> {
   };
 }
 
-export const ServerBrowserPage = connect<IConnectedProps, {}, IProps>(mapStateToProps)(
+export const ServerBrowserPage = connect<IConnectedProps, {}, IProps, IAppState>(mapStateToProps)(
   _ServerBrowserPage
 );

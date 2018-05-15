@@ -296,21 +296,17 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
   }
 
   private renderBrowser(): JSX.Element {
-    // TODO: Remove `is` attribute from webview when React 16 is out
-    // https://stackoverflow.com/a/33860892/1490006
-    return (
-      <webview
-        is="is"
-        ref={this.setupWebview}
-        src={DEFAULT_URL}
-        class={cx(styles.video, {
-          [styles.loading]: this.state.initializing,
-          [styles.interactive]: this.state.interacting
-        })}
-        plugins="true"
-        partition={WEBVIEW_PARTITION}
-      />
-    )
+    return React.createElement('webview', {
+      is: "is",
+      ref: this.setupWebview,
+      src: DEFAULT_URL,
+      class: cx(styles.video, {
+        [styles.loading]: this.state.initializing,
+        [styles.interactive]: this.state.interacting
+      }),
+      plugins: true,
+      partition: WEBVIEW_PARTITION
+    })
   }
 
   reload(): void {

@@ -191,4 +191,4 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
   }
 }
 
-export const LobbyPage = connect<IConnectedProps, {}, IProps>(mapStateToProps)(_LobbyPage as any)
+export const LobbyPage = connect<IConnectedProps, {}, IProps, IAppState>(mapStateToProps)(_LobbyPage as any)

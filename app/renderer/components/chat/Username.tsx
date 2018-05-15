@@ -28,6 +28,6 @@ const _ChatUsername: React.SFC<Props> = props => {
   )
 }
 
-export const ChatUsername = connect<IConnectedProps, IAppState, IProps>((state, props) => ({
+export const ChatUsername = connect<IConnectedProps, IAppState, IProps, IAppState>((state, props) => ({
   color: getUserColor(state, props.userId)
 }))(_ChatUsername)

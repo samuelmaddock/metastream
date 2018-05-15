@@ -63,7 +63,7 @@ export class _PopupWindow extends Component<PrivateProps> {
           )
         })
       })
-      findDOMNode(this).appendChild(webview as Node)
+      findDOMNode(this)!.appendChild(webview as Node)
     }
   }
 

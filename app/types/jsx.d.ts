@@ -1,14 +1,4 @@
-// import * as Electron from 'electron';
-
 declare namespace JSX {
-  interface IntrinsicElements {
-    // webview: React.DetailedHTMLProps<
-    //   WebviewHTMLAttributes<Electron.WebviewTag>,
-    //   Electron.WebviewTag
-    // >;
-    webview: any;
-  }
-
   // See Electron type definitions
   interface WebviewHTMLAttributes<T> extends React.HTMLAttributes<T> {
     allowpopups?: string;

@@ -55,7 +55,7 @@ class App extends Component<Props> {
   }
 }
 
-export default connect<IConnectedProps>((state: IAppState) => {
+export default connect<IConnectedProps, {}, {}, IAppState>((state: IAppState) => {
   return {
     developer: state.settings.developer,
     username: state.settings.username
