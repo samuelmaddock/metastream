@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { IAppState } from 'renderer/reducers/index';
 
 import styles from './Chat.css'
-import { getUserColor } from '../../lobby/reducers/users';
+import { getUserColor } from '../../lobby/reducers/users.helpers';
 
 interface IProps {
   userId: string

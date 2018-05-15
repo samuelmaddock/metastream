@@ -18,7 +18,7 @@ import { WEBVIEW_PARTITION, MEDIA_REFERRER } from 'constants/http'
 import { absoluteUrl } from 'utils/appUrl'
 import { IAppState } from 'renderer/reducers'
 import { getPlaybackTime2 } from 'renderer/lobby/reducers/mediaPlayer.helpers'
-import { isHost } from 'renderer/lobby/reducers/users'
+import { isHost } from 'renderer/lobby/reducers/users.helpers'
 const { remote, ipcRenderer } = chrome
 
 interface IProps {

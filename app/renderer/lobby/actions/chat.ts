@@ -1,6 +1,6 @@
 import { actionCreator } from 'utils/redux'
 import { RpcThunk } from 'renderer/lobby/types'
-import { getUserName } from 'renderer/lobby/reducers/users'
+import { getUserName } from 'renderer/lobby/reducers/users.helpers'
 import { rpc, RpcRealm } from 'renderer/network/middleware/rpc'
 import { IMessage } from 'renderer/lobby/reducers/chat'
 import { CHAT_MAX_MESSAGE_LENGTH } from 'constants/chat'

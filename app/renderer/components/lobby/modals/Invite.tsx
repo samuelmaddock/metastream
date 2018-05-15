@@ -5,7 +5,7 @@ import cx from 'classnames'
 import styles from './Invite.css'
 import { IAppState } from 'renderer/reducers'
 import { ClipboardTextInput } from 'renderer/components/common/input'
-import { getHostId, isHost, getHost } from 'renderer/lobby/reducers/users'
+import { getHostId, isHost, getHost } from 'renderer/lobby/reducers/users.helpers'
 
 // license notice
 import packageJson from 'package.json'
