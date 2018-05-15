@@ -43,10 +43,6 @@
   border-radius: 0 var(--rounded-radius) var(--rounded-radius) 0;
 }
 
-.button svg:not(:only-child) {
-  margin-right: 10px;
-}
-
 .buttonEnabled {
   color: var(--color-highlight);
 }

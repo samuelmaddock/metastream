@@ -76,3 +76,7 @@
 .large svg {
   margin-right: 14px;
 }
+
+.tooltip {
+  composes: absolute-full from 'styles/layout.css';
+}
