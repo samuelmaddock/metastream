@@ -2,7 +2,7 @@ import React from 'react'
 import * as cx from 'classnames'
 import styles from './button.css'
 import { Icon } from 'renderer/components/Icon'
-import Tooltip from 'material-ui/Tooltip';
+import Tooltip from 'material-ui/Tooltip'
 
 export interface IIconButtonProps {
   icon: string
@@ -24,11 +24,14 @@ export const IconButton: React.SFC<IIconButtonProps> = props => {
       type="button"
       disabled={props.disabled}
       className={props.className}
-      title={props.title}
       onClick={props.onClick}
-      style={props.title ? {
-        position: 'relative'
-      } : undefined}
+      style={
+        props.title
+          ? {
+              position: 'relative'
+            }
+          : undefined
+      }
     >
       {props.title ? (
         <Tooltip title={props.title}>
