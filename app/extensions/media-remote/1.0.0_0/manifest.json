@@ -20,8 +20,8 @@
       "run_at": "document_start"
     },
     {
-      "matches": ["https://*.spotify.com/*"],
-      "js": ["players/spotify.js"],
+      "matches": ["https://*.netflix.com/*", "https://*.spotify.com/*"],
+      "js": ["players/clear-storage.js"],
       "run_at": "document_start"
     }
   ],
