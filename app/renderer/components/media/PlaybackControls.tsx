@@ -30,7 +30,10 @@ import { parseCuePoints } from 'renderer/media/utils'
 import { MoreButton } from 'renderer/components/media/MoreButton'
 import { IAppState } from 'renderer/reducers'
 import { IconButton } from 'renderer/components/common/button'
-import { getPlaybackTime2 } from 'renderer/lobby/reducers/mediaPlayer.helpers'
+import {
+  getPlaybackTime2,
+  hasPlaybackPermissions
+} from 'renderer/lobby/reducers/mediaPlayer.helpers'
 import { absoluteUrl } from 'utils/appUrl'
 import { BrowserActionList } from '../browser/BrowserActionList'
 import { isDeveloper } from '../../reducers/settings'
@@ -95,6 +98,9 @@ interface IConnectedProps extends IMediaPlayerState {
   mute: boolean
   volume: number
   developer: boolean
+
+  /** Has permission to change playback state */
+  dj: boolean
 }
 
 const mapStateToProps = (state: IAppState): IConnectedProps => {
@@ -102,7 +108,8 @@ const mapStateToProps = (state: IAppState): IConnectedProps => {
     ...state.mediaPlayer,
     mute: state.settings.mute,
     volume: state.settings.volume,
-    developer: isDeveloper(state)
+    developer: isDeveloper(state),
+    dj: hasPlaybackPermissions(state)
   }
 }
 
@@ -118,7 +125,7 @@ class _PlaybackControls extends Component<PrivateProps> {
   }
 
   render(): JSX.Element | null {
-    const { current: media, playback, startTime, pauseTime } = this.props
+    const { current: media, playback, startTime, pauseTime, dj } = this.props
     const playbackIcon = playback === PlaybackState.Playing ? 'pause' : 'play'
 
     const isIdle = playback === PlaybackState.Idle
@@ -138,15 +145,23 @@ class _PlaybackControls extends Component<PrivateProps> {
       </Button>
     )
 
+    const permTitle = 'Requires DJ permissions'
+
     const playPauseBtn = (
-      <Button key="playpause" icon={playbackIcon} disabled={isIdle} onClick={this.playPause} />
+      <Button
+        key="playpause"
+        icon={playbackIcon}
+        title={dj ? undefined : permTitle}
+        disabled={isIdle}
+        onClick={this.playPause}
+      />
     )
 
     const nextBtn = (
       <Button
         key="next"
         icon="skip-forward"
-        title={t('next')}
+        title={dj ? t('next') : permTitle}
         disabled={isIdle}
         onClick={this.next}
       />
@@ -155,7 +170,7 @@ class _PlaybackControls extends Component<PrivateProps> {
     const repeatBtn = (
       <Button
         icon="repeat"
-        title={t('repeat')}
+        title={dj ? t('repeat') : permTitle}
         enabled={this.props.repeatMode === RepeatMode.On}
         disabled={isIdle}
         onClick={this.repeat}
