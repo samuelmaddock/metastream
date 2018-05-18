@@ -1,22 +1,25 @@
 import React, { Component } from 'react'
-import { IUser } from 'renderer/lobby/reducers/users'
+import { IUser, UserRole } from 'renderer/lobby/reducers/users'
 import styles from './UserItem.css'
 import { UserAvatar } from 'renderer/components/lobby/UserAvatar'
 import { Icon } from '../Icon'
 import Tooltip from 'material-ui/Tooltip'
 import Menu, { MenuItem } from 'material-ui/Menu'
-import { IconButton } from '../common/button';
-import { connect, DispatchProp } from 'react-redux';
-import { IAppState } from '../../reducers/index';
-import { server_kickUser } from '../../lobby/actions/users';
-import { isAdmin } from '../../lobby/reducers/users.helpers';
+import { IconButton } from '../common/button'
+import { connect, DispatchProp } from 'react-redux'
+import { IAppState } from '../../reducers/index'
+import { server_kickUser, server_toggleUserRole } from '../../lobby/actions/users'
+import { isAdmin, isDJ } from '../../lobby/reducers/users.helpers'
+import { localUserId } from '../../network'
 
 interface IProps {
   user: IUser
 }
 
 interface IConnectedProps {
+  isLocalAdmin: boolean
   admin: boolean
+  dj: boolean
 }
 
 interface IState {
@@ -28,8 +31,18 @@ type PrivateProps = IProps & IConnectedProps & DispatchProp<IAppState>
 class _UserItem extends Component<PrivateProps, IState> {
   state: IState = {}
 
+  private get canShowMenu() {
+    return this.props.isLocalAdmin && this.props.user.id !== localUserId()
+  }
+
   render(): JSX.Element | null {
     const { user } = this.props
+
+    const roleIcon = this.props.admin
+      ? { title: 'Admin', icon: 'check-circle' }
+      : this.props.dj
+        ? { title: 'DJ', icon: 'headphones' }
+        : null
 
     return (
       <figure className={styles.container}>
@@ -37,13 +50,15 @@ class _UserItem extends Component<PrivateProps, IState> {
         <figcaption className={styles.name} title={user.id} onClick={this.handleClick}>
           {user.name}
         </figcaption>
-        {this.props.admin && (
-          <Tooltip title="Admin" placement="right">
-            <Icon name="check-circle" className={styles.role} />
+        {roleIcon && (
+          <Tooltip title={roleIcon.title} placement="right">
+            <Icon name={roleIcon.icon} className={styles.role} />
           </Tooltip>
         )}
-        <IconButton icon="more-vertical" className={styles.menuBtn} onClick={this.handleClick} />
-        {this.renderMenu()}
+        {this.canShowMenu && (
+          <IconButton icon="more-vertical" className={styles.menuBtn} onClick={this.handleClick} />
+        )}
+        {this.canShowMenu && this.renderMenu()}
       </figure>
     )
   }
@@ -57,7 +72,9 @@ class _UserItem extends Component<PrivateProps, IState> {
         open={Boolean(anchorEl)}
         onClose={this.handleClose}
       >
-        <MenuItem onClick={this.handleClose}>Make DJ</MenuItem>
+        <MenuItem onClick={this.handleToggleRole.bind(null, UserRole.DJ)}>
+          {this.props.dj ? 'Remove DJ' : 'Make DJ'}
+        </MenuItem>
         <MenuItem onClick={this.handleKick}>Kick</MenuItem>
       </Menu>
     )
@@ -71,6 +88,11 @@ class _UserItem extends Component<PrivateProps, IState> {
     this.setState({ anchorEl: undefined })
   }
 
+  private handleToggleRole = (role: UserRole) => {
+    this.props.dispatch!(server_toggleUserRole(this.props.user.id, role))
+    this.handleClose()
+  }
+
   private handleKick = () => {
     this.props.dispatch!(server_kickUser(this.props.user.id))
     this.handleClose()
@@ -79,6 +101,8 @@ class _UserItem extends Component<PrivateProps, IState> {
 
 export const UserItem = connect<IConnectedProps, {}, IProps, IAppState>((state, props) => {
   return {
-    admin: isAdmin(state, props.user.id)
+    isLocalAdmin: isAdmin(state),
+    admin: isAdmin(state, props.user.id),
+    dj: isDJ(state, props.user.id)
   }
 })(_UserItem)

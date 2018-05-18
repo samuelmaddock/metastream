@@ -2,6 +2,7 @@ import { Reducer } from 'redux'
 import { isType } from 'utils/redux'
 import { IAppState } from 'renderer/reducers'
 import { addUser, removeUser, clearUsers } from '../middleware/users'
+import { setUserRole } from '../actions/users'
 
 /** User role in ascending power. */
 export const enum UserRole {
@@ -33,6 +34,8 @@ const initialState: IUsersState = {
   host: '',
   map: {}
 }
+
+const isValidUser = (state: IUsersState, id: string) => state.map.hasOwnProperty(id)
 
 export const users: Reducer<IUsersState> = (state: IUsersState = initialState, action: any) => {
   if (isType(action, addUser)) {
@@ -67,5 +70,31 @@ export const users: Reducer<IUsersState> = (state: IUsersState = initialState, a
     return initialState
   }
 
+  if (isType(action, setUserRole)) {
+    const { userId: id, enabled, role } = action.payload
+    if (isValidUser(state, id)) {
+      const user = state.map[id]!
+      return mergeUserState(state, {
+        id,
+        role: enabled ? user.role | role : user.role & ~role
+      })
+    }
+  }
+
   return state
+}
+
+const mergeUserState = (state: IUsersState, user: Partial<IUser> & { id: string }) => {
+  const id = user.id
+  const prevUser = state.map[id]!
+  return {
+    ...state,
+    map: {
+      ...state.map,
+      [id]: {
+        ...prevUser,
+        ...user
+      }
+    }
+  }
 }
