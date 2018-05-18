@@ -1,5 +1,7 @@
 import { IAppState } from 'renderer/reducers'
 import { PlaybackState, IMediaPlayerState } from 'renderer/lobby/reducers/mediaPlayer'
+import { localUserId, NetConnection } from '../../network/index'
+import { isAdmin, isDJ } from './users.helpers'
 
 export const getCurrentMedia = (state: IAppState) => {
   return state.mediaPlayer.current
@@ -45,4 +47,12 @@ export const getMediaQueue = (state: IAppState) => {
 
 export const getMediaById = (state: IAppState, id: string) => {
   return state.mediaPlayer.queue.find(media => media.id === id)
+}
+
+export const hasPlaybackPermissions = (
+  state: IAppState,
+  id: string | NetConnection = localUserId()
+) => {
+  const userId = typeof id === 'object' ? id.id.toString() : id
+  return isAdmin(state, userId) || isDJ(state, userId)
 }

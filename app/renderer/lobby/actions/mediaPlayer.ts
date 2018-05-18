@@ -13,7 +13,8 @@ import {
   getCurrentMedia,
   getPlaybackState,
   getPlaybackTime,
-  getCurrentMediaId
+  getCurrentMediaId,
+  hasPlaybackPermissions
 } from 'renderer/lobby/reducers/mediaPlayer.helpers'
 import { IAppState } from 'renderer/reducers'
 import { getUserName, hasRole, isAdmin, isDJ } from 'renderer/lobby/reducers/users.helpers'
@@ -31,16 +32,6 @@ export const deleteMedia = actionCreator<string>('DELETE_MEDIA')
 
 /** Media timer until playback ends. This assumes only one media player exists at a time.*/
 let mediaTimeoutId: number | null = null
-
-export const hasPlaybackPermissions = (
-  client: NetConnection
-): ThunkAction<void, IAppState, void> => {
-  return (dispatch, getState) => {
-    const state = getState()
-    const userId = client.id.toString()
-    return isAdmin(state, userId) || isDJ(state, userId)
-  }
-}
 
 export const nextMedia = (force?: boolean): ThunkAction<void, IAppState, void> => {
   return (dispatch, getState) => {
@@ -201,9 +192,9 @@ const requestMedia = (url: string): RpcThunk<void> => async (dispatch, getState,
 export const server_requestMedia = rpc(RpcRealm.Server, requestMedia)
 
 const requestPlayPause = (): RpcThunk<void> => (dispatch, getState, context) => {
-  if (!dispatch(hasPlaybackPermissions(context.client))) return
-
   const state = getState()
+  if (!hasPlaybackPermissions(state, context.client)) return
+
   const playback = getPlaybackState(state)
   const curTime = getPlaybackTime(state)
 
@@ -218,19 +209,19 @@ const requestPlayPause = (): RpcThunk<void> => (dispatch, getState, context) => 
 export const server_requestPlayPause = rpc(RpcRealm.Server, requestPlayPause)
 
 const requestNextMedia = (): RpcThunk<void> => (dispatch, getState, context) => {
-  if (!dispatch(hasPlaybackPermissions(context.client))) return
+  if (!hasPlaybackPermissions(getState(), context.client)) return
   dispatch(nextMedia())
 }
 export const server_requestNextMedia = rpc(RpcRealm.Server, requestNextMedia)
 
 const requestRepeatMedia = (): RpcThunk<void> => (dispatch, getState, context) => {
-  if (!dispatch(hasPlaybackPermissions(context.client))) return
+  if (!hasPlaybackPermissions(getState(), context.client)) return
   dispatch(repeatMedia())
 }
 export const server_requestRepeatMedia = rpc(RpcRealm.Server, requestRepeatMedia)
 
 const requestSeek = (time: number): RpcThunk<void> => (dispatch, getState, context) => {
-  if (!dispatch(hasPlaybackPermissions(context.client))) return
+  if (!hasPlaybackPermissions(getState(), context.client)) return
 
   const state = getState()
   const media = getCurrentMedia(state)
@@ -249,7 +240,7 @@ const requestSeek = (time: number): RpcThunk<void> => (dispatch, getState, conte
 export const server_requestSeek = rpc(RpcRealm.Server, requestSeek)
 
 const requestDeleteMedia = (mediaId: string): RpcThunk<void> => (dispatch, getState, context) => {
-  if (!dispatch(hasPlaybackPermissions(context.client))) return
+  if (!hasPlaybackPermissions(getState(), context.client)) return
 
   const currentId = getCurrentMediaId(getState())
   if (currentId === mediaId) {
