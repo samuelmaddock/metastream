@@ -34,9 +34,10 @@ const userLeft = (userId: string): RpcThunk<void> => (dispatch, getState, contex
 }
 export const multi_userLeft = rpc(RpcRealm.Multicast, userLeft)
 
-const kickClient = (reason: NetworkDisconnectReason): RpcThunk<void> => (dispatch, getState) => {
+const kickClient = (reason: NetworkDisconnectReason): RpcThunk<void> => (dispatch, getState, { server }) => {
   console.debug(`Received kick with reason: '${reason}'`)
   dispatch(setDisconnectReason(reason))
+  server.close()
 }
 export const client_kick = rpc(RpcRealm.Client, kickClient)
 
