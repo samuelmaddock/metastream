@@ -33,13 +33,13 @@ const calcTime = (playback: PlaybackState, startTime: number, pauseTime: number,
 export const getPlaybackTime = (state: IAppState) => {
   const playback = getPlaybackState(state)
   const startTime = state.mediaPlayer.startTime
-  const dt = state.mediaPlayer.serverTimeDelta
+  const dt = state.mediaPlayer.serverClockSkew
   return calcTime(playback, startTime!, state.mediaPlayer.pauseTime!, dt)
 }
 
 /** Derive playback time from mediaPlayer state subset */
 export const getPlaybackTime2 = (state: IMediaPlayerState) =>
-  calcTime(state.playback, state.startTime!, state.pauseTime!, state.serverTimeDelta)
+  calcTime(state.playback, state.startTime!, state.pauseTime!, state.serverClockSkew)
 
 export const getMediaQueue = (state: IAppState) => {
   return state.mediaPlayer.queue

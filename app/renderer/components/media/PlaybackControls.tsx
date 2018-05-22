@@ -183,7 +183,7 @@ class _PlaybackControls extends Component<PrivateProps> {
       ) : (
         <Timeline
           className={styles.spacer}
-          time={(isPaused ? pauseTime : startTime! + this.props.serverTimeDelta) || 0}
+          time={(isPaused ? pauseTime : startTime! + this.props.serverClockSkew) || 0}
           paused={isPaused}
           duration={media && media.duration}
           onSeek={this.seek}

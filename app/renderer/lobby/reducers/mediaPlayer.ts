@@ -71,9 +71,11 @@ export interface IMediaPlayerState {
   pauseTime?: number
   current?: IMediaItem
   queue: IMediaItem[]
-  serverTimeDelta: number
 
-  /** Local session save state */
+  /** Clock time difference between client and server. */
+  serverClockSkew: number
+
+  /** Local session save state. */
   localSnapshot?: IMediaPlayerState
 }
 
@@ -90,7 +92,7 @@ const initialState: IMediaPlayerState = {
   playback: PlaybackState.Idle,
   repeatMode: RepeatMode.Off,
   queue: [],
-  serverTimeDelta: 0
+  serverClockSkew: 0
 }
 
 export const mediaPlayer: Reducer<IMediaPlayerState> = (
@@ -170,7 +172,7 @@ export const mediaPlayer: Reducer<IMediaPlayerState> = (
       repeatMode: (state.repeatMode + 1) % RepeatMode.Count
     }
   } else if (isType(action, updateServerTimeDelta)) {
-    return { ...state, serverTimeDelta: action.payload }
+    return { ...state, serverClockSkew: action.payload }
   } else if (isType(action, updateMedia) && state.current) {
     const prevDuration = state.current.duration
     const nextDuration = action.payload.duration
@@ -222,7 +224,7 @@ export const mediaPlayer: Reducer<IMediaPlayerState> = (
     return {
       ...initialState,
       ...state.localSnapshot,
-      serverTimeDelta: initialState.serverTimeDelta
+      serverClockSkew: initialState.serverClockSkew
     }
   }
 
