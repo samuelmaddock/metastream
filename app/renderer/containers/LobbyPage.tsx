@@ -166,7 +166,7 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
       this.server = undefined
     }
 
-    this.props.dispatch(NetActions.disconnect())
+    this.props.dispatch(NetActions.disconnect({ host: this.host }))
     PlatformService.leaveLobby(this.lobbyId || '')
 
     this.mounted = false
@@ -191,4 +191,6 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
   }
 }
 
-export const LobbyPage = connect<IConnectedProps, {}, IProps, IAppState>(mapStateToProps)(_LobbyPage as any)
+export const LobbyPage = connect<IConnectedProps, {}, IProps, IAppState>(mapStateToProps)(
+  _LobbyPage as any
+)
