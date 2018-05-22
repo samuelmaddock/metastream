@@ -53,6 +53,8 @@ const replicationPrefilter = <T>(state: ReplicatedState<T>): deepDiff.IPrefilter
     const result = tree[key]!
     if (typeof result === 'boolean') {
       return !result
+    } else if (typeof result === 'object') {
+      return false
     }
   }
 

@@ -85,7 +85,8 @@ export const mediaPlayerReplicatedState: ReplicatedState<IMediaPlayerState> = {
   startTime: true,
   pauseTime: true,
   current: true,
-  queue: true
+  queue: true,
+  serverClockSkew: false
 }
 
 const initialState: IMediaPlayerState = {
