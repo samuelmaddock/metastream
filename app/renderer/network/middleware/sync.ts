@@ -99,7 +99,14 @@ export const netSyncMiddleware = (): Middleware => {
         switch (action.type) {
           case NetActionTypes.FULL_UPDATE:
             COMMIT_NUMBER = action.v
-            Object.assign(getState(), action.state)
+
+            // Merge at second depth of state
+            Object.keys(action.state).forEach(prop => {
+              const prevState = (<any>getState())[prop]
+              const nextState = Object.assign({}, prevState)
+              Object.assign(nextState, action.state[prop])
+              Object.assign(getState(), { [prop]: nextState })
+            })
 
             // trigger update noop - forces rerender of applied diff
             dispatch({ type: NetReduxActionTypes.UPDATE })
