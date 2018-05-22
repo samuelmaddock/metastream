@@ -24,7 +24,7 @@
   height: 48px;
   filter: contrast(100) saturate(0) invert(1);
   mix-blend-mode: overlay;
-  opacity: 0.6;
+  opacity: 0.33;
 }
 
 .social img:hover {
