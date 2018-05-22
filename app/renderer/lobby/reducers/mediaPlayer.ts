@@ -15,6 +15,7 @@ import {
 import { MediaType } from 'renderer/media/types'
 import { NetActions } from 'renderer/network/actions'
 import { updateServerTimeDelta } from 'renderer/lobby/actions/clock'
+import { ReplicatedState } from '../../network/types'
 
 export const enum PlaybackState {
   Idle,
@@ -71,6 +72,18 @@ export interface IMediaPlayerState {
   current?: IMediaItem
   queue: IMediaItem[]
   serverTimeDelta: number
+
+  /** Local session save state */
+  localSnapshot?: IMediaPlayerState
+}
+
+export const mediaPlayerReplicatedState: ReplicatedState<IMediaPlayerState> = {
+  playback: true,
+  repeatMode: true,
+  startTime: true,
+  pauseTime: true,
+  current: true,
+  queue: true
 }
 
 const initialState: IMediaPlayerState = {
@@ -185,8 +198,32 @@ export const mediaPlayer: Reducer<IMediaPlayerState> = (
     }
   }
 
+  // Save session snapshot on disconnect
   if (isType(action, NetActions.disconnect)) {
-    return initialState
+    if (!action.payload.host) {
+      return state.localSnapshot
+        ? { ...initialState, localSnapshot: state.localSnapshot }
+        : initialState
+    }
+
+    const isPlaying = state.playback === PlaybackState.Playing
+    return {
+      ...initialState,
+      localSnapshot: {
+        ...state,
+        playback: isPlaying ? PlaybackState.Paused : state.playback,
+        pauseTime: isPlaying ? Date.now() - state.startTime! : state.pauseTime
+      }
+    }
+  }
+
+  // Restore session snapshot on connect
+  if (isType(action, NetActions.connect) && action.payload.host && state.localSnapshot) {
+    return {
+      ...initialState,
+      ...state.localSnapshot,
+      serverTimeDelta: initialState.serverTimeDelta
+    }
   }
 
   return state

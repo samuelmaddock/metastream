@@ -11,6 +11,7 @@ import { ILobbyNetState, lobbyReducers } from '../lobby/reducers'
 import { AnyAction } from 'redux'
 import { NetReduxActionTypes } from 'renderer/network/middleware/sync'
 import { ReplicatedState } from 'renderer/network/types'
+import { mediaPlayerReplicatedState } from '../lobby/reducers/mediaPlayer'
 
 export interface IAppState extends ILobbyNetState {
   extensions: IExtensionsState
@@ -20,7 +21,7 @@ export interface IAppState extends ILobbyNetState {
 }
 
 export const AppReplicatedState: ReplicatedState<IAppState> = {
-  mediaPlayer: true,
+  mediaPlayer: mediaPlayerReplicatedState,
   session: true,
   users: true
 }
