@@ -122,6 +122,10 @@ p:not(:last-child) {
 a {
   color: unset;
   text-decoration: none;
+}
+
+a,
+img {
   -webkit-user-drag: none;
 }
 

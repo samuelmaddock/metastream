@@ -12,6 +12,7 @@ import { MenuHeader } from './menu/MenuHeader'
 import { ExternalLink } from './common/link'
 import { hasValidLicense } from '../license'
 import { t } from '../../locale/index'
+import { IconButton } from './common/button'
 
 interface IProps {}
 
@@ -21,7 +22,7 @@ export default class Home extends Component<IProps> {
     const gitv = `${process.env.GIT_BRANCH}@${process.env.GIT_COMMIT}`
     return (
       <LayoutMain className={styles.container}>
-        <section>
+        <section className={styles.nav}>
           <MenuHeader text={packageJson.productName}>
             <h3>
               Alpha {packageJson.version}
@@ -58,6 +59,15 @@ export default class Home extends Component<IProps> {
               </li>
             )}
           </ul>
+        </section>
+        <section className={styles.social}>
+          <ExternalLink href="https://twitter.com/GetMetastream">
+            <img src="./assets/icons/social/twitter-color.svg" />
+          </ExternalLink>
+
+          <ExternalLink href="https://discord.gg/nfwPRb9">
+            <img src="./assets/icons/social/discord-color.svg" />
+          </ExternalLink>
         </section>
       </LayoutMain>
     )

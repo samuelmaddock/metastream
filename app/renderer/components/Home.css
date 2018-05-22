@@ -1,8 +1,36 @@
 .container {
   background: var(--app-bg-home);
   height: 100%;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template:
+    'nav' 1fr
+    'social' auto / 100% auto;
+}
+
+.nav {
+  grid-area: nav;
+}
+
+.social {
+  grid-area: social;
+}
+
+.social a {
+  display: inline-block;
+  margin-right: 15px;
+}
+
+.social img {
+  height: 48px;
+  filter: contrast(100) saturate(0) invert(1);
+  mix-blend-mode: overlay;
+  opacity: 0.6;
+}
+
+.social img:hover {
+  filter: none;
+  mix-blend-mode: normal;
+  opacity: 1;
 }
 
 .btn {
