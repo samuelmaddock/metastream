@@ -11,7 +11,7 @@
   background: white;
 }
 
-.video.loading {
+.video.initializing {
   opacity: 0;
 }
 

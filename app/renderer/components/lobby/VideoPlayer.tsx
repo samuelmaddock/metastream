@@ -297,11 +297,11 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
 
   private renderBrowser(): JSX.Element {
     return React.createElement('webview', {
-      is: "is",
+      is: 'is',
       ref: this.setupWebview,
       src: DEFAULT_URL,
       class: cx(styles.video, {
-        [styles.loading]: this.state.initializing,
+        [styles.initializing]: this.state.initializing,
         [styles.interactive]: this.state.interacting
       }),
       plugins: true,
