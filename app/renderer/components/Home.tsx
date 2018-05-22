@@ -13,6 +13,15 @@ import { ExternalLink } from './common/link'
 import { hasValidLicense } from '../license'
 import { t } from '../../locale/index'
 import { IconButton } from './common/button'
+import Tooltip from 'material-ui/Tooltip'
+
+const SocialLink = (props: { href: string; image: string; title: string }) => (
+  <ExternalLink href={props.href}>
+    <Tooltip title={props.title}>
+      <img src={props.image} />
+    </Tooltip>
+  </ExternalLink>
+)
 
 interface IProps {}
 
@@ -61,13 +70,17 @@ export default class Home extends Component<IProps> {
           </ul>
         </section>
         <section className={styles.social}>
-          <ExternalLink href="https://twitter.com/GetMetastream">
-            <img src="./assets/icons/social/twitter-color.svg" />
-          </ExternalLink>
+          <SocialLink
+            href="https://twitter.com/GetMetastream"
+            image="./assets/icons/social/twitter-color.svg"
+            title="Twitter"
+          />
 
-          <ExternalLink href="https://discord.gg/nfwPRb9">
-            <img src="./assets/icons/social/discord-color.svg" />
-          </ExternalLink>
+          <SocialLink
+            href="https://discord.gg/nfwPRb9"
+            image="./assets/icons/social/discord-color.svg"
+            title="Join Discord group"
+          />
         </section>
       </LayoutMain>
     )
