@@ -31,3 +31,13 @@
   top: 1.4rem;
   right: 1.4rem;
 }
+
+.directIp {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.directIp svg {
+  margin-left: 0.5rem;
+}

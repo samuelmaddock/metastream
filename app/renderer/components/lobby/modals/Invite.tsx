@@ -16,7 +16,10 @@ import { MenuButton } from 'renderer/components/menu/MenuButton'
 import { ExternalLink } from 'renderer/components/common/link'
 import { HighlightButton } from 'renderer/components/common/button'
 import { IconButton } from 'renderer/components/common/button'
-import { t } from '../../../../locale/index'
+import { t } from 'locale'
+import { WEBSOCKET_PORT_DEFAULT } from 'constants/network'
+import { Icon } from '../../Icon'
+import Tooltip from 'material-ui/Tooltip'
 
 interface IProps {
   className?: string
@@ -92,7 +95,22 @@ class Invite extends Component<PrivateProps, IState> {
           defaultValue={this.props.hostId}
           disabled
         />
+        {this.props.isHost && this.renderDirectIP()}
       </div>
+    )
+  }
+
+  private renderDirectIP() {
+    const href = 'https://portforward.com/'
+    return (
+      <p className={styles.directIp}>
+        {`Open port TCP ${WEBSOCKET_PORT_DEFAULT} to allow direct connections.`}
+        <ExternalLink href={href}>
+          <Tooltip title={href}>
+            <Icon name="info" />
+          </Tooltip>
+        </ExternalLink>
+      </p>
     )
   }
 }
