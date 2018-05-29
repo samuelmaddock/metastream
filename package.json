@@ -227,6 +227,7 @@
     "typescript": "^2.8.3",
     "url-loader": "^1.0.1",
     "username": "^3.0.0",
+    "walkdir": "^0.0.12",
     "webpack": "4.8.1",
     "webpack-bundle-analyzer": "^2.9.0",
     "webpack-cli": "^2.1.3",

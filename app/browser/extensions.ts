@@ -16,6 +16,7 @@ import { CDN_URL } from 'constants/api'
 import * as AdmZip from 'adm-zip'
 import * as CrxReader from 'chrome-ext-downloader'
 import { fileUrl } from 'utils/appUrl'
+import * as walkdir from 'walkdir'
 
 const extVerRegex = /^[\d._]+$/
 const isExtVersion = (dirName: string) => !!extVerRegex.exec(dirName)
@@ -83,35 +84,38 @@ export function initExtensions() {
   initialized = true
 }
 
-function readExtensionsInDir(
+type ExtensionStat = {
+  id: string
+  dir: string
+}
+
+function findExtensionsInDir(dir: string) {
+  return new Promise<ExtensionStat[]>(resolve => {
+    const exts: ExtensionStat[] = []
+
+    const emitter = walkdir(dir, { max_depth: 3 }, function (pathname: string, stat: fs.Stats) {
+      if (path.basename(pathname) !== 'manifest.json') return
+
+      const relPath = path.relative(dir, pathname)
+      const id = relPath.split(path.sep).shift()!
+
+      exts.push({
+        id: id,
+        dir: path.dirname(pathname)
+      })
+    })
+
+    emitter.once('end', () => resolve(exts))
+  })
+}
+
+async function readExtensionsInDir(
   dir: string,
-  extIds: string[],
   cb: (err: Error | null, extId?: string, dir?: string) => void
 ) {
-  extIds.forEach(extId => {
-    let stat
-    const extPath = path.join(dir, `${extId}`)
-
-    try {
-      stat = fs.statSync(extPath)
-    } catch (e) {
-      cb(e, extId)
-      return
-    }
-
-    // TODO: find latest version folder
-    const dirs = fs.readdirSync(extPath)
-    const extVersion = dirs.find(isExtVersion)
-    const fullPath = extVersion && path.join(extPath, extVersion)
-
-    try {
-      stat = fullPath && fs.statSync(fullPath)
-    } catch (e) {
-      cb(e, extId)
-      return
-    }
-
-    cb(null, extId, fullPath)
+  const extensions = await findExtensionsInDir(dir)
+  extensions.forEach(ext => {
+    cb(null, ext.id, ext.dir)
   })
 }
 
@@ -122,7 +126,7 @@ function loadVendorExtensions(session: Electron.Session) {
     fs.mkdirSync(extDir)
   }
 
-  readExtensionsInDir(extDir, VENDOR_EXTENSIONS, (err, extId, dir) => {
+  readExtensionsInDir(extDir, (err, extId, dir) => {
     if (err) {
       log.debug(`Skipping uninstalled extension ${extId}`)
       return
@@ -137,7 +141,7 @@ function loadMediaExtensions(session: Electron.Session) {
   const extDir = process.env.NODE_ENV === 'production' ? '../extensions' : '/extensions'
   const extRoot = path.normalize(path.join(__dirname, extDir))
 
-  readExtensionsInDir(extRoot, APP_EXTENSIONS, (err, extId, dir) => {
+  readExtensionsInDir(extRoot, (err, extId, dir) => {
     if (err) {
       log.error(err)
       return
@@ -217,28 +221,24 @@ function installExtension(extId: string) {
       // Unzip CRX and sign the manifest file with the key.
       let contents = reader.getZipContents()
       let zip = new AdmZip(contents)
-      zip.extractAllToAsync(extDest, true, () => {
+      zip.extractAllToAsync(extDest, true, async () => {
         let manifestFile = path.join(extDest, 'manifest.json')
-        fs.readFile(manifestFile, 'utf8', (err, data) => {
-          if (err) log.error(err)
-          let manifest
+        const manifest = await readManifest(manifestFile)
 
-          try {
-            manifest = JSON.parse(data)
-          } catch (e) {
-            reject(`Failed to parse extension manifest`)
-            return
-          }
-
-          manifest.key = publicKey
-          fs.writeFile(manifestFile, JSON.stringify(manifest, null, 2), 'utf8', () =>
-            resolve(extDest)
-          )
-        })
+        manifest.key = publicKey
+        fs.writeFile(manifestFile, JSON.stringify(manifest, null, 2), 'utf-8', () =>
+          resolve(extDest)
+        )
       })
     })
     activeInstalls[extId] = req
   })
+}
+
+async function readManifest(filename: string) {
+  const data = await fs.readFile(filename, 'utf-8')
+  const manifest = JSON.parse(data)
+  return manifest
 }
 
 async function removeExtension(extId: string) {
@@ -257,7 +257,7 @@ async function removeExtension(extId: string) {
 ---------------------------------------- */
 
 function sendStatus(sender: Electron.WebContents) {
-  const list = VENDOR_EXTENSIONS.map(extId => {
+  const list = Array.from(activeExtensions).map(extId => {
     let status = {
       id: extId,
       enabled: activeExtensions.has(extId)
