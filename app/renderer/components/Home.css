@@ -13,24 +13,30 @@
 
 .social {
   grid-area: social;
+  display: flex;
+  align-content: center;
 }
 
-.social a {
-  display: inline-block;
-  margin-right: 15px;
-}
-
-.social img {
-  height: 48px;
-  filter: contrast(100) saturate(0) invert(1);
+.low {
+  filter: contrast(100) saturate(0);
   mix-blend-mode: overlay;
   opacity: 0.33;
 }
 
-.social img:hover {
-  filter: none;
+.low:hover {
+  filter: invert(1);
   mix-blend-mode: normal;
   opacity: 1;
+}
+
+.socialLink {
+  display: inline-block;
+  margin-right: 15px;
+}
+
+.socialIcon {
+  composes: low;
+  height: 48px;
 }
 
 .btn {

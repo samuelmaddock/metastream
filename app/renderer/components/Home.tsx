@@ -15,10 +15,14 @@ import { t } from '../../locale/index'
 import { IconButton } from './common/button'
 import Tooltip from 'material-ui/Tooltip'
 
-const SocialLink = (props: { href: string; image: string; title: string }) => (
-  <ExternalLink href={props.href}>
+const SocialLink = (props: { href: string; title: string; image?: string; icon?: string }) => (
+  <ExternalLink href={props.href} className={styles.socialLink}>
     <Tooltip title={props.title}>
-      <img src={props.image} />
+      {props.image ? (
+        <img src={props.image} className={styles.socialIcon} />
+      ) : (
+        <Icon name={props.icon!} className={styles.socialIcon} />
+      )}
     </Tooltip>
   </ExternalLink>
 )
@@ -70,6 +74,12 @@ export default class Home extends Component<IProps> {
           </ul>
         </section>
         <section className={styles.social}>
+          {/* <SocialLink
+            href="https://getmetastream.com/"
+            image="./assets/icons/globe.svg"
+            title="Website"
+          /> */}
+
           <SocialLink
             href="https://twitter.com/GetMetastream"
             image="./assets/icons/social/twitter-color.svg"
