@@ -27,7 +27,7 @@ class _BrowserActionList extends Component<PrivateProps> {
     const browserActions = Object.keys(this.props.extensions.byId).reduce(
       (acc, extId) => {
         const ext = this.props.extensions.byId[extId]!
-        if (!ext.enabled) return acc
+        if (!ext.enabled || !ext.browser_action) return acc
 
         const node = (
           <BrowserAction
