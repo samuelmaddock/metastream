@@ -7,11 +7,28 @@
   <link rel="stylesheet" href="../../styles/app.global.css">
   <link rel="stylesheet" href="../../styles/resource.global.css">
   <style>
+    .instructions {
+      margin-bottom: 2rem !important;
+    }
+
+    a[target=_external] {
+      color: var(--color-nice-blue);
+      text-decoration: underline;
+    }
+
+    .btn-folder {
+      display: block;
+      background: rgba(255,255,255,0.6);
+      border-radius: 4px;
+      padding: 4px 12px;
+      margin-top: 20px;
+    }
+
     .ext-item {
       display: flex;
       flex-direction: row;
       align-items: center;
-      margin-bottom: 15px;
+      margin-bottom: 1rem;
     }
 
     .ext-item:last-child {
@@ -39,7 +56,7 @@
   <script>
     (function () {
       const { ipcRenderer } = chrome;
-      let $
+      let $, initialSetup = true
 
       const findOrCreateExtElem = id => {
         let elem = document.querySelector(`[data-extension-id=${id}]`)
@@ -53,12 +70,23 @@
         return elem
       }
 
-      ipcRenderer.on('extensions-status', (e, list) => {
-        console.debug('Extensions status', list)
+      ipcRenderer.on('extensions-status', (e, status) => {
+        console.debug('Extensions status', status)
+        const { rootDir, list } = status
+
         list.forEach(ext => {
           setupExtension(ext)
           updateExtension(ext.id, ext.enabled)
         })
+
+        if (initialSetup) {
+          $.folderBtn.addEventListener('click', () => {
+            const { shell } = chrome.remote.require('electron')
+            shell.openItem(rootDir)
+          }, false)
+        }
+
+        initialSetup = false
       })
 
       function updateExtension(id, enabled) {
@@ -82,6 +110,11 @@
 
         const toggle = elem.querySelector('.tgl')
         const toggleBtn = elem.querySelector('.tgl-btn')
+
+        const toggleId = `tgl_${id}`
+        toggle.id = toggleId
+        toggleBtn.setAttribute('for', toggleId)
+
         toggleBtn.addEventListener('click', (e) => {
           const enabled = toggle.checked
           const eventName = enabled ? 'extensions-remove' : 'extensions-install'
@@ -97,12 +130,19 @@
 
         $ = {
           template: q('#ext-template'),
-          list: q('#ext-list')
+          list: q('#ext-list'),
+          folderBtn: q('.btn-folder')
         }
 
         ipcRenderer.send('extensions-status')
       }
       document.addEventListener('DOMContentLoaded', init)
+
+      window.openUrl = (event, { href }) => {
+        event.preventDefault()
+        const { shell } = chrome.remote.require('electron')
+        shell.openExternal(href)
+      }
     }())
   </script>
 </head>
@@ -111,19 +151,24 @@
 
   <main class="container">
     <h1 class="header">Extensions</h1>
+    <p class="instructions">
+      Metastream has partial support for Chrome Extensions.<br>
+      <a href="https://gist.github.com/samuelmaddock/6e86ff35a79bd595bbf1d4297dead829" target="_external"  onclick="openUrl(event,this)">Read extension installation instructions.</a>
+      <button class="btn-folder">Open Extensions Folder</button>
+    </p>
     <section id="ext-list">
     </section>
   </main>
 
   <template id="ext-template">
-    <div class="ext-item" data-extension-id="cjpalhdlnbpafiamejdnhcphjbkeiagm">
-      <img class="ext-icon" src="../../assets/img/extensions/ublock.svg">
+    <div class="ext-item">
+      <img class="ext-icon">
       <div class="ext-meta">
-        <div class="ext-name">uBlock Origin</div>
-        <div class="ext-desc">Finally, an efficient blocker. Easy on CPU and memory.</div>
+        <div class="ext-name"></div>
+        <div class="ext-desc"></div>
       </div>
-      <input id="toggle" class="ext-toggle tgl tgl-light" type="checkbox">
-      <label class="tgl-btn" for="toggle">
+      <input class="ext-toggle tgl tgl-light" type="checkbox">
+      <label class="tgl-btn">
     </div>
   </template>
 

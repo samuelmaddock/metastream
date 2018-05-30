@@ -41,7 +41,6 @@ const getActiveExtensions = () => Array.from(activeExtensions)
 const getSession = () => session.fromPartition('persist:mediaplayer', { cache: true })
 
 const APP_EXTENSIONS = ['enhanced-media-viewer', 'media-remote']
-const VENDOR_EXTENSIONS = ['cjpalhdlnbpafiamejdnhcphjbkeiagm']
 
 export function initExtensions() {
   const mediaSession = getSession()
@@ -278,7 +277,10 @@ function sendStatus(sender: Electron.WebContents) {
 
       return status
     })
-  sender.send('extensions-status', list)
+  sender.send('extensions-status', {
+    rootDir: getExtensionsPath(),
+    list
+  })
 }
 
 function onExtensionsChange(activator: Electron.WebContents) {
