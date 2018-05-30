@@ -6,12 +6,17 @@ import { actionCreator } from 'utils/redux'
 import { IAppState } from 'renderer/reducers'
 import { IPopupState } from '../reducers/extensions'
 
-export const updateExtensions = actionCreator<any[]>('UPDATE_EXTENSIONS')
+type StatusResults = {
+  rootDir: string
+  list: any[]
+}
+
+export const updateExtensions = actionCreator<StatusResults>('UPDATE_EXTENSIONS')
 export const showExtensionPopup = actionCreator<IPopupState | void>('SHOW_EXTENSION_POPUP')
 
 let dispatch: Function
 
-const statusListener = (event: Electron.Event, results: any[]) => {
+const statusListener = (event: Electron.Event, results: StatusResults) => {
   dispatch(updateExtensions(results))
 }
 

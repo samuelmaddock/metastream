@@ -9,6 +9,7 @@ import {
   ipcRenderer,
   BrowserWindow
 } from 'electron'
+import * as settings from 'electron-settings'
 import log from './log'
 import * as widevine from 'constants/widevine'
 import request from 'request'
@@ -16,6 +17,7 @@ import { CDN_URL } from 'constants/api'
 import * as AdmZip from 'adm-zip'
 import * as CrxReader from 'chrome-ext-downloader'
 import { fileUrl } from 'utils/appUrl'
+import * as walkdir from 'walkdir'
 
 const extVerRegex = /^[\d._]+$/
 const isExtVersion = (dirName: string) => !!extVerRegex.exec(dirName)
@@ -25,22 +27,36 @@ let initialized = false
 const activeExtensions = new Set<string>()
 const extensionInfo = new Map<string, any>()
 
+const getSettingsList = () => {
+  const list = settings.get('extensions.list')
+  return Array.isArray(list) ? list : []
+}
+const SETTINGS_EXT_LIST = 'extensions.list'
+
 const loadExtension = (session: Electron.session, extId: string, extPath: string) => {
   session.extensions.load(extPath, {}, 'unpacked')
+  enableExtension(session, extId)
+}
+
+const enableExtension = (session: Electron.session, extId: string) => {
   session.extensions.enable(extId)
   activeExtensions.add(extId)
+  settings.set(SETTINGS_EXT_LIST, Array.from(activeExtensions))
 }
 
 const disableExtension = (session: Electron.session, extId: string) => {
   session.extensions.disable(extId)
   activeExtensions.delete(extId)
+  settings.set(SETTINGS_EXT_LIST, Array.from(activeExtensions))
 }
 
 const getActiveExtensions = () => Array.from(activeExtensions)
 const getSession = () => session.fromPartition('persist:mediaplayer', { cache: true })
 
-const APP_EXTENSIONS = ['enhanced-media-viewer', 'media-remote']
-const VENDOR_EXTENSIONS = ['cjpalhdlnbpafiamejdnhcphjbkeiagm']
+const APP_EXTENSIONS = new Set([
+  'dfmpchfgfkhhkigicpheeacmlkbomihe' /*enhanced-media-viewer*/,
+  'hkidiceoepkfhoiheiohiaclkahjecdn' /*media-remote*/
+])
 
 export function initExtensions() {
   const mediaSession = getSession()
@@ -75,6 +91,12 @@ export function initExtensions() {
     }
   )
 
+  if (settings.has(SETTINGS_EXT_LIST)) {
+    getSettingsList().forEach((extId: any) => activeExtensions.add(extId))
+  } else {
+    settings.set(SETTINGS_EXT_LIST, [])
+  }
+
   loadMediaExtensions(mediaSession)
   loadVendorExtensions(mediaSession)
   loadComponents()
@@ -83,35 +105,38 @@ export function initExtensions() {
   initialized = true
 }
 
-function readExtensionsInDir(
+type ExtensionStat = {
+  id: string
+  dir: string
+}
+
+function findExtensionsInDir(dir: string) {
+  return new Promise<ExtensionStat[]>(resolve => {
+    const exts: ExtensionStat[] = []
+
+    const emitter = walkdir(dir, { max_depth: 3 }, function(pathname: string, stat: fs.Stats) {
+      if (path.basename(pathname) !== 'manifest.json') return
+
+      const relPath = path.relative(dir, pathname)
+      const id = relPath.split(path.sep).shift()!
+
+      exts.push({
+        id: id,
+        dir: path.dirname(pathname)
+      })
+    })
+
+    emitter.once('end', () => resolve(exts))
+  })
+}
+
+async function readExtensionsInDir(
   dir: string,
-  extIds: string[],
   cb: (err: Error | null, extId?: string, dir?: string) => void
 ) {
-  extIds.forEach(extId => {
-    let stat
-    const extPath = path.join(dir, `${extId}`)
-
-    try {
-      stat = fs.statSync(extPath)
-    } catch (e) {
-      cb(e, extId)
-      return
-    }
-
-    // TODO: find latest version folder
-    const dirs = fs.readdirSync(extPath)
-    const extVersion = dirs.find(isExtVersion)
-    const fullPath = extVersion && path.join(extPath, extVersion)
-
-    try {
-      stat = fullPath && fs.statSync(fullPath)
-    } catch (e) {
-      cb(e, extId)
-      return
-    }
-
-    cb(null, extId, fullPath)
+  const extensions = await findExtensionsInDir(dir)
+  extensions.forEach(ext => {
+    cb(null, ext.id, ext.dir)
   })
 }
 
@@ -122,7 +147,7 @@ function loadVendorExtensions(session: Electron.Session) {
     fs.mkdirSync(extDir)
   }
 
-  readExtensionsInDir(extDir, VENDOR_EXTENSIONS, (err, extId, dir) => {
+  readExtensionsInDir(extDir, (err, extId, dir) => {
     if (err) {
       log.debug(`Skipping uninstalled extension ${extId}`)
       return
@@ -137,7 +162,7 @@ function loadMediaExtensions(session: Electron.Session) {
   const extDir = process.env.NODE_ENV === 'production' ? '../extensions' : '/extensions'
   const extRoot = path.normalize(path.join(__dirname, extDir))
 
-  readExtensionsInDir(extRoot, APP_EXTENSIONS, (err, extId, dir) => {
+  readExtensionsInDir(extRoot, (err, extId, dir) => {
     if (err) {
       log.error(err)
       return
@@ -184,6 +209,7 @@ function loadComponents() {
   registerComponent(widevine.widevineComponentId, widevine.widevineComponentPublicKey)
 }
 
+/*
 const activeInstalls: { [key: string]: request.Request | null } = {}
 
 function installExtension(extId: string) {
@@ -217,71 +243,59 @@ function installExtension(extId: string) {
       // Unzip CRX and sign the manifest file with the key.
       let contents = reader.getZipContents()
       let zip = new AdmZip(contents)
-      zip.extractAllToAsync(extDest, true, () => {
+      zip.extractAllToAsync(extDest, true, async () => {
         let manifestFile = path.join(extDest, 'manifest.json')
-        fs.readFile(manifestFile, 'utf8', (err, data) => {
-          if (err) log.error(err)
-          let manifest
+        const manifest = await readManifest(manifestFile)
 
-          try {
-            manifest = JSON.parse(data)
-          } catch (e) {
-            reject(`Failed to parse extension manifest`)
-            return
-          }
-
-          manifest.key = publicKey
-          fs.writeFile(manifestFile, JSON.stringify(manifest, null, 2), 'utf8', () =>
-            resolve(extDest)
-          )
-        })
+        manifest.key = publicKey
+        fs.writeFile(manifestFile, JSON.stringify(manifest, null, 2), 'utf-8', () =>
+          resolve(extDest)
+        )
       })
     })
     activeInstalls[extId] = req
   })
 }
 
-async function removeExtension(extId: string) {
-  const activeReq = activeInstalls[extId]
-  if (activeReq) {
-    activeReq.abort()
-    activeInstalls[extId] = null
-  }
-
-  const extPath = path.join(getExtensionsPath(), extId)
-  await fs.remove(extPath)
+async function readManifest(filename: string) {
+  const data = await fs.readFile(filename, 'utf-8')
+  const manifest = JSON.parse(data)
+  return manifest
 }
+*/
 
 /* ----------------------------------------
   IPC
 ---------------------------------------- */
 
 function sendStatus(sender: Electron.WebContents) {
-  const list = VENDOR_EXTENSIONS.map(extId => {
-    let status = {
-      id: extId,
-      enabled: activeExtensions.has(extId)
-    }
+  const list = Array.from(extensionInfo.keys())
+    .filter(extId => !APP_EXTENSIONS.has(extId))
+    .map(extId => {
+      let status = {
+        id: extId,
+        enabled: activeExtensions.has(extId)
+      }
 
-    if (extensionInfo.has(extId)) {
       const info = extensionInfo.get(extId)
       Object.assign(status, {
         base_path: info.base_path,
         name: info.name,
         version: info.version,
-        browser_action: info.manifest && info.manifest.browser_action
+        browser_action: info.manifest && info.manifest.browser_action,
+        icons: info.manifest && info.manifest.icons
       })
-    }
 
-    return status
+      return status
+    })
+  sender.send('extensions-status', {
+    rootDir: getExtensionsPath(),
+    list
   })
-  sender.send('extensions-status', list)
 }
 
-function onExtensionsChange(activator: Electron.WebContents) {
-  const focusedContents = BrowserWindow.getFocusedWindow().webContents
-  sendStatus(focusedContents)
-  sendStatus(activator)
+function onExtensionsChange() {
+  BrowserWindow.getAllWindows().forEach(win => sendStatus(win.webContents))
 }
 
 function ipcError(sender: Electron.WebContents, err: Error) {
@@ -289,43 +303,34 @@ function ipcError(sender: Electron.WebContents, err: Error) {
   sender.send('extensions-error', err.message)
 }
 
-async function ipcInstall(event: Electron.Event, extId: string) {
-  log.debug(`[Extension] Installing ${extId}...`)
-  try {
-    await installExtension(extId)
-  } catch (e) {
-    ipcError(event.sender, e)
-    return
+async function ipcSet(event: Electron.Event, extId: string, enable: boolean) {
+  log.debug(`[Extension] Setting extension ${extId} to ${enable}`)
+  const session = getSession()
+  if (enable) {
+    enableExtension(session, extId)
+  } else {
+    disableExtension(session, extId)
   }
-  log.debug(`[Extension] Installed ${extId}`)
-  loadVendorExtensions(getSession())
-  onExtensionsChange(event.sender)
-}
-
-async function ipcRemove(event: Electron.Event, extId: string) {
-  log.debug(`[Extension] Removing ${extId}`)
-  disableExtension(getSession(), extId)
-  try {
-    await removeExtension(extId)
-  } catch (e) {
-    ipcError(event.sender, e)
-    return
-  }
-  onExtensionsChange(event.sender)
+  onExtensionsChange()
 }
 
 function ipcStatus(event: Electron.Event) {
   sendStatus(event.sender)
 }
 
+function ipcReload(event: Electron.Event) {
+  loadVendorExtensions(getSession())
+  onExtensionsChange()
+}
+
 function initIpc(session: Electron.Session) {
   if (initialized) {
-    ipcMain.removeListener('extensions-install', ipcInstall)
-    ipcMain.removeListener('extensions-remove', ipcRemove)
-    ipcMain.removeListener('extensions-list', ipcStatus)
+    ipcMain.removeListener('extensions-set', ipcSet)
+    ipcMain.removeListener('extensions-status', ipcStatus)
+    ipcMain.removeListener('extensions-reload', ipcReload)
   }
 
-  ipcMain.on('extensions-install', ipcInstall)
-  ipcMain.on('extensions-remove', ipcRemove)
+  ipcMain.on('extensions-set', ipcSet)
   ipcMain.on('extensions-status', ipcStatus)
+  ipcMain.on('extensions-reload', ipcReload)
 }

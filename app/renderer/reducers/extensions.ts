@@ -55,7 +55,7 @@ export const extensions: Reducer<IExtensionsState> = (
   action: any
 ) => {
   if (isType(action, updateExtensions)) {
-    const extMap = action.payload.reduce((acc, ext) => {
+    const extMap = action.payload.list.reduce((acc, ext) => {
       acc[ext.id] = ext
       return acc
     }, {})
@@ -92,10 +92,12 @@ export const getBrowserActionBackgroundImage = (extension: IExtension, tabId: nu
     }
     let basePath19 = icon['19']
     let basePath38 = icon['38']
-    if (basePath19 && basePath38) {
-      return `-webkit-image-set(
-                url(${basePath}/${basePath19}) 1x,
-                url(${basePath}/${basePath38}) 2x`
+    if (basePath19 || basePath38) {
+      const set = [
+        basePath19 && `url(${basePath}/${basePath19}) 1x`,
+        basePath38 && `url(${basePath}/${basePath38}) 2x`
+      ]
+      return `-webkit-image-set(${set.filter(Boolean).join(',\n')}`
     }
   }
   return ''
