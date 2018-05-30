@@ -55,8 +55,8 @@
   </style>
   <script>
     (function () {
-      const { ipcRenderer } = chrome;
-      let $
+      const { ipcRenderer } = chrome
+      let $, extDir
 
       const findOrCreateExtElem = id => {
         let elem = document.querySelector(`[data-extension-id=${id}]`)
@@ -73,6 +73,7 @@
       ipcRenderer.on('extensions-status', (e, status) => {
         console.debug('Extensions status', status)
         const { rootDir, list } = status
+        extDir = rootDir
 
         list.forEach(ext => {
           setupExtension(ext)
@@ -130,7 +131,7 @@
 
       window.openFolder = () => {
         const { shell } = chrome.remote.require('electron')
-        shell.openItem(rootDir)
+        shell.openItem(extDir)
       }
 
       window.openUrl = (event, { href }) => {

@@ -294,7 +294,7 @@ function sendStatus(sender: Electron.WebContents) {
   })
 }
 
-function onExtensionsChange(activator: Electron.WebContents) {
+function onExtensionsChange() {
   BrowserWindow.getAllWindows().forEach(win => sendStatus(win.webContents))
 }
 
@@ -311,7 +311,7 @@ async function ipcSet(event: Electron.Event, extId: string, enable: boolean) {
   } else {
     disableExtension(session, extId)
   }
-  onExtensionsChange(event.sender)
+  onExtensionsChange()
 }
 
 function ipcStatus(event: Electron.Event) {
@@ -320,6 +320,7 @@ function ipcStatus(event: Electron.Event) {
 
 function ipcReload(event: Electron.Event) {
   loadVendorExtensions(getSession())
+  onExtensionsChange()
 }
 
 function initIpc(session: Electron.Session) {
