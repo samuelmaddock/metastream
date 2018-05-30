@@ -55,7 +55,7 @@ export const extensions: Reducer<IExtensionsState> = (
   action: any
 ) => {
   if (isType(action, updateExtensions)) {
-    const extMap = action.payload.reduce((acc, ext) => {
+    const extMap = action.payload.list.reduce((acc, ext) => {
       acc[ext.id] = ext
       return acc
     }, {})

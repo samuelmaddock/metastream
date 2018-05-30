@@ -9,6 +9,7 @@ import {
   ipcRenderer,
   BrowserWindow
 } from 'electron'
+import * as settings from 'electron-settings'
 import log from './log'
 import * as widevine from 'constants/widevine'
 import request from 'request'
@@ -26,21 +27,36 @@ let initialized = false
 const activeExtensions = new Set<string>()
 const extensionInfo = new Map<string, any>()
 
+const getSettingsList = () => {
+  const list = settings.get('extensions.list')
+  return Array.isArray(list) ? list : []
+}
+const SETTINGS_EXT_LIST = 'extensions.list'
+
 const loadExtension = (session: Electron.session, extId: string, extPath: string) => {
   session.extensions.load(extPath, {}, 'unpacked')
+  enableExtension(session, extId)
+}
+
+const enableExtension = (session: Electron.session, extId: string) => {
   session.extensions.enable(extId)
   activeExtensions.add(extId)
+  settings.set(SETTINGS_EXT_LIST, Array.from(activeExtensions))
 }
 
 const disableExtension = (session: Electron.session, extId: string) => {
   session.extensions.disable(extId)
   activeExtensions.delete(extId)
+  settings.set(SETTINGS_EXT_LIST, Array.from(activeExtensions))
 }
 
 const getActiveExtensions = () => Array.from(activeExtensions)
 const getSession = () => session.fromPartition('persist:mediaplayer', { cache: true })
 
-const APP_EXTENSIONS = ['enhanced-media-viewer', 'media-remote']
+const APP_EXTENSIONS = new Set([
+  'dfmpchfgfkhhkigicpheeacmlkbomihe' /*enhanced-media-viewer*/,
+  'hkidiceoepkfhoiheiohiaclkahjecdn' /*media-remote*/
+])
 
 export function initExtensions() {
   const mediaSession = getSession()
@@ -74,6 +90,12 @@ export function initExtensions() {
       win.webContents.send('extensions-show-popup', extensionId, popup, nodeProps)
     }
   )
+
+  if (settings.has(SETTINGS_EXT_LIST)) {
+    getSettingsList().forEach((extId: any) => activeExtensions.add(extId))
+  } else {
+    settings.set(SETTINGS_EXT_LIST, [])
+  }
 
   loadMediaExtensions(mediaSession)
   loadVendorExtensions(mediaSession)
@@ -187,6 +209,7 @@ function loadComponents() {
   registerComponent(widevine.widevineComponentId, widevine.widevineComponentPublicKey)
 }
 
+/*
 const activeInstalls: { [key: string]: request.Request | null } = {}
 
 function installExtension(extId: string) {
@@ -239,41 +262,29 @@ async function readManifest(filename: string) {
   const manifest = JSON.parse(data)
   return manifest
 }
-
-async function removeExtension(extId: string) {
-  const activeReq = activeInstalls[extId]
-  if (activeReq) {
-    activeReq.abort()
-    activeInstalls[extId] = null
-  }
-
-  const extPath = path.join(getExtensionsPath(), extId)
-  await fs.remove(extPath)
-}
+*/
 
 /* ----------------------------------------
   IPC
 ---------------------------------------- */
 
 function sendStatus(sender: Electron.WebContents) {
-  const list = Array.from(activeExtensions)
-    .filter(extId => APP_EXTENSIONS.indexOf(extId) === -1)
+  const list = Array.from(extensionInfo.keys())
+    .filter(extId => !APP_EXTENSIONS.has(extId))
     .map(extId => {
       let status = {
         id: extId,
         enabled: activeExtensions.has(extId)
       }
 
-      if (extensionInfo.has(extId)) {
-        const info = extensionInfo.get(extId)
-        Object.assign(status, {
-          base_path: info.base_path,
-          name: info.name,
-          version: info.version,
-          browser_action: info.manifest && info.manifest.browser_action,
-          icons: info.manifest && info.manifest.icons
-        })
-      }
+      const info = extensionInfo.get(extId)
+      Object.assign(status, {
+        base_path: info.base_path,
+        name: info.name,
+        version: info.version,
+        browser_action: info.manifest && info.manifest.browser_action,
+        icons: info.manifest && info.manifest.icons
+      })
 
       return status
     })
@@ -284,9 +295,7 @@ function sendStatus(sender: Electron.WebContents) {
 }
 
 function onExtensionsChange(activator: Electron.WebContents) {
-  const focusedContents = BrowserWindow.getFocusedWindow().webContents
-  sendStatus(focusedContents)
-  sendStatus(activator)
+  BrowserWindow.getAllWindows().forEach(win => sendStatus(win.webContents))
 }
 
 function ipcError(sender: Electron.WebContents, err: Error) {
@@ -294,27 +303,13 @@ function ipcError(sender: Electron.WebContents, err: Error) {
   sender.send('extensions-error', err.message)
 }
 
-async function ipcInstall(event: Electron.Event, extId: string) {
-  log.debug(`[Extension] Installing ${extId}...`)
-  try {
-    await installExtension(extId)
-  } catch (e) {
-    ipcError(event.sender, e)
-    return
-  }
-  log.debug(`[Extension] Installed ${extId}`)
-  loadVendorExtensions(getSession())
-  onExtensionsChange(event.sender)
-}
-
-async function ipcRemove(event: Electron.Event, extId: string) {
-  log.debug(`[Extension] Removing ${extId}`)
-  disableExtension(getSession(), extId)
-  try {
-    await removeExtension(extId)
-  } catch (e) {
-    ipcError(event.sender, e)
-    return
+async function ipcSet(event: Electron.Event, extId: string, enable: boolean) {
+  log.debug(`[Extension] Setting extension ${extId} to ${enable}`)
+  const session = getSession()
+  if (enable) {
+    enableExtension(session, extId)
+  } else {
+    disableExtension(session, extId)
   }
   onExtensionsChange(event.sender)
 }
@@ -325,12 +320,10 @@ function ipcStatus(event: Electron.Event) {
 
 function initIpc(session: Electron.Session) {
   if (initialized) {
-    ipcMain.removeListener('extensions-install', ipcInstall)
-    ipcMain.removeListener('extensions-remove', ipcRemove)
-    ipcMain.removeListener('extensions-list', ipcStatus)
+    ipcMain.removeListener('extensions-set', ipcSet)
+    ipcMain.removeListener('extensions-status', ipcStatus)
   }
 
-  ipcMain.on('extensions-install', ipcInstall)
-  ipcMain.on('extensions-remove', ipcRemove)
+  ipcMain.on('extensions-set', ipcSet)
   ipcMain.on('extensions-status', ipcStatus)
 }

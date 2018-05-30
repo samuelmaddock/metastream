@@ -117,8 +117,7 @@
 
         toggleBtn.addEventListener('click', (e) => {
           const enabled = toggle.checked
-          const eventName = enabled ? 'extensions-remove' : 'extensions-install'
-          ipcRenderer.send(eventName, id)
+          ipcRenderer.send('extensions-set', id, !enabled)
         })
 
         elem.__init = true
