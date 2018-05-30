@@ -318,12 +318,18 @@ function ipcStatus(event: Electron.Event) {
   sendStatus(event.sender)
 }
 
+function ipcReload(event: Electron.Event) {
+  loadVendorExtensions(getSession())
+}
+
 function initIpc(session: Electron.Session) {
   if (initialized) {
     ipcMain.removeListener('extensions-set', ipcSet)
     ipcMain.removeListener('extensions-status', ipcStatus)
+    ipcMain.removeListener('extensions-reload', ipcReload)
   }
 
   ipcMain.on('extensions-set', ipcSet)
   ipcMain.on('extensions-status', ipcStatus)
+  ipcMain.on('extensions-reload', ipcReload)
 }

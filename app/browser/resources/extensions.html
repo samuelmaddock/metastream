@@ -17,7 +17,7 @@
     }
 
     .btn-folder {
-      display: block;
+      display: inline-block;
       background: rgba(255,255,255,0.6);
       border-radius: 4px;
       padding: 4px 12px;
@@ -56,7 +56,7 @@
   <script>
     (function () {
       const { ipcRenderer } = chrome;
-      let $, initialSetup = true
+      let $
 
       const findOrCreateExtElem = id => {
         let elem = document.querySelector(`[data-extension-id=${id}]`)
@@ -78,15 +78,6 @@
           setupExtension(ext)
           updateExtension(ext.id, ext.enabled)
         })
-
-        if (initialSetup) {
-          $.folderBtn.addEventListener('click', () => {
-            const { shell } = chrome.remote.require('electron')
-            shell.openItem(rootDir)
-          }, false)
-        }
-
-        initialSetup = false
       })
 
       function updateExtension(id, enabled) {
@@ -137,10 +128,19 @@
       }
       document.addEventListener('DOMContentLoaded', init)
 
+      window.openFolder = () => {
+        const { shell } = chrome.remote.require('electron')
+        shell.openItem(rootDir)
+      }
+
       window.openUrl = (event, { href }) => {
         event.preventDefault()
         const { shell } = chrome.remote.require('electron')
         shell.openExternal(href)
+      }
+
+      window.reloadExtensions = () => {
+        ipcRenderer.send('extensions-reload')
       }
     }())
   </script>
@@ -153,7 +153,9 @@
     <p class="instructions">
       Metastream has partial support for Chrome Extensions.<br>
       <a href="https://gist.github.com/samuelmaddock/6e86ff35a79bd595bbf1d4297dead829" target="_external"  onclick="openUrl(event,this)">Read extension installation instructions.</a>
-      <button class="btn-folder">Open Extensions Folder</button>
+      <br>
+      <button class="btn-folder" onclick="openFolder()">Open Extensions Folder</button>&nbsp;
+      <button class="btn-folder" onclick="reloadExtensions()">Reload Extensions</button>
     </p>
     <section id="ext-list">
     </section>
