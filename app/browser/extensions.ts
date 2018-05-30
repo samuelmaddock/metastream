@@ -93,7 +93,7 @@ function findExtensionsInDir(dir: string) {
   return new Promise<ExtensionStat[]>(resolve => {
     const exts: ExtensionStat[] = []
 
-    const emitter = walkdir(dir, { max_depth: 3 }, function (pathname: string, stat: fs.Stats) {
+    const emitter = walkdir(dir, { max_depth: 3 }, function(pathname: string, stat: fs.Stats) {
       if (path.basename(pathname) !== 'manifest.json') return
 
       const relPath = path.relative(dir, pathname)
@@ -257,24 +257,27 @@ async function removeExtension(extId: string) {
 ---------------------------------------- */
 
 function sendStatus(sender: Electron.WebContents) {
-  const list = Array.from(activeExtensions).map(extId => {
-    let status = {
-      id: extId,
-      enabled: activeExtensions.has(extId)
-    }
+  const list = Array.from(activeExtensions)
+    .filter(extId => APP_EXTENSIONS.indexOf(extId) === -1)
+    .map(extId => {
+      let status = {
+        id: extId,
+        enabled: activeExtensions.has(extId)
+      }
 
-    if (extensionInfo.has(extId)) {
-      const info = extensionInfo.get(extId)
-      Object.assign(status, {
-        base_path: info.base_path,
-        name: info.name,
-        version: info.version,
-        browser_action: info.manifest && info.manifest.browser_action
-      })
-    }
+      if (extensionInfo.has(extId)) {
+        const info = extensionInfo.get(extId)
+        Object.assign(status, {
+          base_path: info.base_path,
+          name: info.name,
+          version: info.version,
+          browser_action: info.manifest && info.manifest.browser_action,
+          icons: info.manifest && info.manifest.icons
+        })
+      }
 
-    return status
-  })
+      return status
+    })
   sender.send('extensions-status', list)
 }
 

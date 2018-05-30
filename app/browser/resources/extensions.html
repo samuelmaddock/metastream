@@ -11,6 +11,11 @@
       display: flex;
       flex-direction: row;
       align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .ext-item:last-child {
+      margin: 0;
     }
 
     .ext-icon {
@@ -32,26 +37,48 @@
     }
   </style>
   <script>
-    (function() {
+    (function () {
       const { ipcRenderer } = chrome;
-      const getExtElem = id => document.querySelector(`[data-extension-id=${id}]`)
+      let $
+
+      const findOrCreateExtElem = id => {
+        let elem = document.querySelector(`[data-extension-id=${id}]`)
+        if (elem) return elem
+
+        const node = document.importNode($.template.content, true)
+        elem = node.firstElementChild
+        elem.dataset.extensionId = id
+        $.list.appendChild(elem)
+
+        return elem
+      }
 
       ipcRenderer.on('extensions-status', (e, list) => {
         console.debug('Extensions status', list)
         list.forEach(ext => {
-          setupExtension(ext.id)
+          setupExtension(ext)
           updateExtension(ext.id, ext.enabled)
         })
       })
 
       function updateExtension(id, enabled) {
-        const toggle = getExtElem(id).querySelector('.tgl')
+        const toggle = findOrCreateExtElem(id).querySelector('.tgl')
         toggle.checked = enabled
       }
 
-      function setupExtension(id) {
-        const elem = getExtElem(id)
+      function setupExtension(ext) {
+        const { id } = ext
+        const elem = findOrCreateExtElem(id)
         if (elem.__init) return
+
+        elem.querySelector('.ext-name').innerText = ext.name || id
+        elem.querySelector('.ext-desc').innerText = ext.desc || ''
+
+        if (ext.icons) {
+          const basePath = ext.base_path.replace('file:///', 'chrome://brave/')
+          const icon = ext.icons['128'] || ext.icons['64'] || ext.icons['48']
+          elem.querySelector('.ext-icon').src = `${basePath}/${icon}`
+        }
 
         const toggle = elem.querySelector('.tgl')
         const toggleBtn = elem.querySelector('.tgl-btn')
@@ -66,6 +93,13 @@
 
       function init() {
         console.log('Initializing...')
+        const q = document.querySelector.bind(document)
+
+        $ = {
+          template: q('#ext-template'),
+          list: q('#ext-list')
+        }
+
         ipcRenderer.send('extensions-status')
       }
       document.addEventListener('DOMContentLoaded', init)
@@ -74,21 +108,25 @@
 </head>
 
 <body>
+
   <main class="container">
     <h1 class="header">Extensions</h1>
-    <section class="ext-list">
-      <!-- TODO: use template tag -->
-      <div class="ext-item" data-extension-id="cjpalhdlnbpafiamejdnhcphjbkeiagm">
-        <img class="ext-icon" src="../../assets/img/extensions/ublock.svg">
-        <div class="ext-meta">
-          <div class="ext-name">uBlock Origin</div>
-          <div class="ext-desc">Finally, an efficient blocker. Easy on CPU and memory.</div>
-        </div>
-        <input id="toggle" class="ext-toggle tgl tgl-light" type="checkbox">
-        <label class="tgl-btn" for="toggle">
-      </div>
+    <section id="ext-list">
     </section>
   </main>
+
+  <template id="ext-template">
+    <div class="ext-item" data-extension-id="cjpalhdlnbpafiamejdnhcphjbkeiagm">
+      <img class="ext-icon" src="../../assets/img/extensions/ublock.svg">
+      <div class="ext-meta">
+        <div class="ext-name">uBlock Origin</div>
+        <div class="ext-desc">Finally, an efficient blocker. Easy on CPU and memory.</div>
+      </div>
+      <input id="toggle" class="ext-toggle tgl tgl-light" type="checkbox">
+      <label class="tgl-btn" for="toggle">
+    </div>
+  </template>
+
 </body>
 
 </html>
