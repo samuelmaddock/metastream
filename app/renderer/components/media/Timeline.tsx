@@ -94,6 +94,7 @@ export class Timeline extends PureComponent<IProps, IState> {
             this.slider = el
           }}
           className={styles.progressSlider}
+          progressBarClassName={styles.progressBar}
           value={this.state.progress}
           cuePoints={this.getCuePoints()}
           onChange={progress => {

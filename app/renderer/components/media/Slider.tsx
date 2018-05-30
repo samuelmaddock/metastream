@@ -9,6 +9,7 @@ const CUE_GRAVITATE_THRESHOLD = 8
 
 interface IProps {
   className?: string
+  progressBarClassName?: string
 
   value: number
   max?: number
@@ -131,7 +132,10 @@ export class Slider extends Component<IProps> {
         onMouseDown={this.onDragStart}
       >
         <div className={styles.progressTrack}>
-          <div className={styles.progressBar} style={progressStyle} />
+          <div
+            className={cx(styles.progressBar, this.props.progressBarClassName)}
+            style={progressStyle}
+          />
           <button
             type="button"
             className={cx(styles.knob, { active: this.state.dragging })}
