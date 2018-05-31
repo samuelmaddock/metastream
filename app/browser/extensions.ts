@@ -22,6 +22,12 @@ import * as walkdir from 'walkdir'
 const extVerRegex = /^[\d._]+$/
 const isExtVersion = (dirName: string) => !!extVerRegex.exec(dirName)
 const getExtensionsPath = () => `${app.getPath('userData')}/Extensions`
+const getMediaExtensionsPath = () => {
+  const extDir = process.env.NODE_ENV === 'production' ? '../extensions' : '/extensions'
+  const extRoot = path.normalize(path.join(__dirname, extDir))
+  return extRoot
+}
+const isVendorExtension = (info: any) => !info.base_path.includes(getMediaExtensionsPath())
 
 let initialized = false
 const activeExtensions = new Set<string>()
@@ -35,7 +41,6 @@ const SETTINGS_EXT_LIST = 'extensions.list'
 
 const loadExtension = (session: Electron.session, extId: string, extPath: string) => {
   session.extensions.load(extPath, {}, 'unpacked')
-  enableExtension(session, extId)
 }
 
 const enableExtension = (session: Electron.session, extId: string) => {
@@ -59,11 +64,33 @@ const APP_EXTENSIONS = new Set([
 ])
 
 export function initExtensions() {
-  const mediaSession = getSession()
+  if (!initialized) {
+    if (settings.has(SETTINGS_EXT_LIST)) {
+      getSettingsList().forEach((extId: any) => activeExtensions.add(extId))
+    } else {
+      settings.set(SETTINGS_EXT_LIST, [])
+    }
 
+    initProcessListeners()
+    loadComponents()
+  }
+
+  const mediaSession = getSession()
+  loadMediaExtensions(mediaSession)
+  loadVendorExtensions(mediaSession)
+  initIpc(mediaSession)
+
+  initialized = true
+}
+
+function initProcessListeners() {
   process.on('extension-ready' as any, (info: any) => {
     info.base_path = fileUrl(info.base_path)
     extensionInfo.set(info.id, info)
+
+    if (isVendorExtension(info) && !activeExtensions.has(info.id)) {
+      disableExtension(getSession(), info.id)
+    }
   })
 
   process.on(
@@ -90,19 +117,6 @@ export function initExtensions() {
       win.webContents.send('extensions-show-popup', extensionId, popup, nodeProps)
     }
   )
-
-  if (settings.has(SETTINGS_EXT_LIST)) {
-    getSettingsList().forEach((extId: any) => activeExtensions.add(extId))
-  } else {
-    settings.set(SETTINGS_EXT_LIST, [])
-  }
-
-  loadMediaExtensions(mediaSession)
-  loadVendorExtensions(mediaSession)
-  loadComponents()
-  initIpc(mediaSession)
-
-  initialized = true
 }
 
 type ExtensionStat = {
@@ -155,14 +169,15 @@ function loadVendorExtensions(session: Electron.Session) {
 
     log.debug(`Loading extension ${extId}`)
     loadExtension(session, extId!, dir!)
+
+    if (activeExtensions.has(extId!)) {
+      enableExtension(session, extId!)
+    }
   })
 }
 
 function loadMediaExtensions(session: Electron.Session) {
-  const extDir = process.env.NODE_ENV === 'production' ? '../extensions' : '/extensions'
-  const extRoot = path.normalize(path.join(__dirname, extDir))
-
-  readExtensionsInDir(extRoot, (err, extId, dir) => {
+  readExtensionsInDir(getMediaExtensionsPath(), (err, extId, dir) => {
     if (err) {
       log.error(err)
       return
@@ -170,6 +185,7 @@ function loadMediaExtensions(session: Electron.Session) {
 
     log.debug(`Loading extension ${extId}`)
     loadExtension(session, extId!, dir!)
+    enableExtension(session, extId!)
   })
 }
 
@@ -270,7 +286,10 @@ async function readManifest(filename: string) {
 
 function sendStatus(sender: Electron.WebContents) {
   const list = Array.from(extensionInfo.keys())
-    .filter(extId => !APP_EXTENSIONS.has(extId))
+    .filter(extId => {
+      // only send status for vendor extensions
+      return isVendorExtension(extensionInfo.get(extId))
+    })
     .map(extId => {
       let status = {
         id: extId,
