@@ -10,11 +10,12 @@ import { LobbyPage } from './containers/LobbyPage'
 import { SessionJoinPage } from './containers/SessionJoinPage'
 import { SettingsPage } from './containers/SettingsPage'
 import { LicenseGate } from './containers/LicenseGate'
+import { WelcomePage } from './containers/WelcomePage'
 
 export default () => (
   <App>
     <Switch>
-      <LicensedRoute exact path="/" component={HomePage} />
+      <WelcomeRoute exact path="/" component={HomePage} />
       <LicensedRoute path="/lobby/:lobbyId" component={LobbyPage} />
       <LicensedRoute path="/servers" component={ServerBrowserPage} />
       <LicensedRoute path="/join" component={SessionJoinPage} />
@@ -27,6 +28,16 @@ export default () => (
 interface PrivateRouteProps extends RouteProps {
   component: any
 }
+
+// prettier-ignore
+const WelcomeRoute = ({ component: Component, ...rest }: PrivateRouteProps) => (
+  <Route
+    {...rest}
+    render={props =>
+      <WelcomePage {...props} />
+    }
+  />
+)
 
 // prettier-ignore
 const LicensedRoute = ({ component: Component, ...rest }: PrivateRouteProps) => (

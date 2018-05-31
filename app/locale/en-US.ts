@@ -8,6 +8,7 @@ export default {
   chatColor: 'Chat Color',
   chatPlaceholder: 'Message or URL',
   connecting: 'Connecting',
+  continue: 'Continue',
   copy: 'Copy',
   copyLink: 'Copy link',
   debug: 'Debug',
