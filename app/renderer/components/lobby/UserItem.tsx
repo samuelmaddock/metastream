@@ -46,7 +46,7 @@ class _UserItem extends Component<PrivateProps, IState> {
 
     return (
       <figure className={styles.container}>
-        <UserAvatar className={styles.avatar} id={this.props.user.id} avatar={user.avatar} />
+        {/* <UserAvatar className={styles.avatar} id={this.props.user.id} avatar={user.avatar} /> */}
         <figcaption className={styles.name} title={user.id} onClick={this.handleClick}>
           {user.name}
         </figcaption>
