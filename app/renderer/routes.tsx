@@ -10,7 +10,7 @@ import { LobbyPage } from './containers/LobbyPage'
 import { SessionJoinPage } from './containers/SessionJoinPage'
 import { SettingsPage } from './containers/SettingsPage'
 import { LicenseGate } from './containers/LicenseGate'
-import { WelcomePage } from './containers/WelcomePage'
+import WelcomePage from './containers/WelcomePage'
 
 export default () => (
   <App>
@@ -34,7 +34,7 @@ const WelcomeRoute = ({ component: Component, ...rest }: PrivateRouteProps) => (
   <Route
     {...rest}
     render={props =>
-      <WelcomePage {...props} />
+      localStorage.getItem('welcomed') ? <Component {...props} /> : <WelcomePage {...props} />
     }
   />
 )
