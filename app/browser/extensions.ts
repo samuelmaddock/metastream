@@ -21,13 +21,13 @@ import * as walkdir from 'walkdir'
 
 const extVerRegex = /^[\d._]+$/
 const isExtVersion = (dirName: string) => !!extVerRegex.exec(dirName)
-const getExtensionsPath = () => `${app.getPath('userData')}/Extensions`
+const getExtensionsPath = () => path.join(app.getPath('userData'), '/Extensions')
 const getMediaExtensionsPath = () => {
   const extDir = process.env.NODE_ENV === 'production' ? '../extensions' : '/extensions'
   const extRoot = path.normalize(path.join(__dirname, extDir))
   return extRoot
 }
-const isVendorExtension = (info: any) => !info.base_path.includes(getMediaExtensionsPath())
+const isVendorExtension = (info: any) => info.base_path.includes(getExtensionsPath())
 
 let initialized = false
 const activeExtensions = new Set<string>()
@@ -85,8 +85,15 @@ export function initExtensions() {
 
 function initProcessListeners() {
   process.on('extension-ready' as any, (info: any) => {
-    info.base_path = fileUrl(info.base_path)
+    info.file_path = fileUrl(info.base_path)
     extensionInfo.set(info.id, info)
+
+    log.info(
+      `Extension ready\n\tid=${info.id}\n\tbase_path=${
+        info.base_path
+      }\n\text_path=${getExtensionsPath()}\n\tisVendor=${isVendorExtension(info)}`,
+      info
+    )
 
     if (isVendorExtension(info) && !activeExtensions.has(info.id)) {
       disableExtension(getSession(), info.id)
@@ -298,7 +305,7 @@ function sendStatus(sender: Electron.WebContents) {
 
       const info = extensionInfo.get(extId)
       Object.assign(status, {
-        base_path: info.base_path,
+        base_path: info.file_path,
         name: info.name,
         version: info.version,
         browser_action: info.manifest && info.manifest.browser_action,
