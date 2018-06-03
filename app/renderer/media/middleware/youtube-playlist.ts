@@ -8,7 +8,6 @@ import {
   MediaType,
   IMediaContext
 } from '../types'
-import { MEDIA_REFERRER } from 'constants/http'
 
 const URL_PATTERN = /youtu\.?be(?:.com)?/i
 
@@ -70,7 +69,7 @@ const mware: IMediaMiddleware = {
     let { index, length, title } = ytpl
 
     ctx.res.title = title
-    ctx.res.state = { ...ctx.req.state, ytpl }
+    ctx.res.state = { ...ctx.req.state, ytpl, referrer: true }
     ctx.res.hasMore = index < length - 1
 
     return ctx.res
