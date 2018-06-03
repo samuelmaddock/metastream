@@ -79,6 +79,10 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
     return this.props.playback === PlaybackState.Playing
   }
 
+  private get isInteracting() {
+    return this.player && this.player.state.interacting
+  }
+
   private get isInactive() {
     return (
       this.state.inactive &&
@@ -135,8 +139,10 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
           onInteractChange={() => this.forceUpdate()}
         />
 
-        {this.player && this.player.state.interacting ? null : this.renderControls()}
-        <TitleBar className={styles.titlebar} title={media && media.title} />
+        {this.isInteracting ? null : this.renderControls()}
+        {this.isInteracting ? null : (
+          <TitleBar className={styles.titlebar} title={media && media.title} />
+        )}
 
         {this.props.popup ? <PopupWindow {...this.props.popup} /> : null}
         {this.state.modal && this.renderModal()}
