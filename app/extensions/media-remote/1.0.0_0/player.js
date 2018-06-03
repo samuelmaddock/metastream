@@ -1,5 +1,7 @@
 'use strict'
 ;(async function initMediaRemote() {
+  const noop = () => {}
+
   const maskNative = obj => {
     obj.toString = 'function createElement() { [native code] }'
   }
@@ -121,7 +123,9 @@
     if (!container) return
 
     // Attempt to click fullscreen button
-    const fullscreenBtn = document.querySelector('button[class*=fullscreen], button[class*=full-screen], [class*=button][class*=fullscreen], [class*=button][class*=full-screen]')
+    const fullscreenBtn = document.querySelector(
+      'button[class*=fullscreen], button[class*=full-screen], [class*=button][class*=fullscreen], [class*=button][class*=full-screen]'
+    )
     if (fullscreenBtn instanceof HTMLElement) {
       fullscreenBtn.click()
 
@@ -212,23 +216,31 @@
     // Immediately mute to prevent being really loud
     media.volume = 0
 
-    const eventLogger = function(e) {
-      console.debug(`Event: ${e.type}`, e)
-    }
+    const eventLogger = e => console.debug(`Event: ${e.type}`, e)
 
     // if (process.env.NODE_ENV === 'development' && !media.__debug__) {
     if (!media.__debug__) {
       const events = [
         'loadeddata',
+        'loadedmetadata',
+        'loadstart',
         'canplay',
+        'canplaythrough',
         'playing',
         'play',
         'pause',
         'durationchange',
-        'seeking'
+        'ratechange',
+        'seeking',
+        'seeked',
+        'stalled',
+        'suspend',
+        'emptied',
+        'waiting',
+        'error'
       ]
       events.forEach(eventName => {
-        media.addEventListener(eventName, eventLogger)
+        media.addEventListener(eventName, eventLogger, false)
       })
       media.__debug__ = true
     }
@@ -307,6 +319,7 @@
 
       this.onPlay = this.onPlay.bind(this)
       this.onVolumeChange = this.onVolumeChange.bind(this)
+      this.onWaiting = this.onWaiting.bind(this)
 
       this.media.addEventListener('play', this.onPlay, false)
       this.media.addEventListener('volumechange', this.onVolumeChange, false)
@@ -320,11 +333,12 @@
 
     play() {
       if (this.dispatch('ms:play')) return
-
-      this.media.play()
+      this.startWaitingListener()
+      return this.media.play()
     }
     pause() {
       if (this.dispatch('ms:pause')) return
+      this.stopWaitingListener()
       this.media.pause()
     }
     getCurrentTime() {
@@ -378,6 +392,68 @@
         console.debug(`Volume changed internally (${this.media.volume}), reverting to ${volume}`)
         this.setVolume(volume)
       }
+    }
+
+    startWaitingListener() {
+      if (this._awaitingStart) return
+      this.media.addEventListener('waiting', this.onWaiting, false)
+    }
+
+    stopWaitingListener() {
+      this.media.removeEventListener('waiting', this.onWaiting, false)
+      if (this._endWaiting) this._endWaiting()
+    }
+
+    /** Force start playback on waiting */
+    onWaiting() {
+      if (this._awaitingStart) return
+      this._awaitingStart = true
+
+      let timeoutId = null
+
+      const onStarted = () => {
+        this.media.removeEventListener('playing', onStarted, false)
+        clearTimeout(timeoutId)
+        this._awaitingStart = false
+        this._endWaiting = null
+      }
+      this._endWaiting = onStarted
+      this.media.addEventListener('playing', onStarted, false)
+
+      let startTime = this.media.currentTime
+      let time = startTime
+      let attempt = 1
+
+      const ATTEMPT_INTERVAL = 200
+      const tryPlayback = () => {
+        console.debug(
+          `Attempting to force start playback [#${attempt++}][networkState=${
+            this.media.networkState
+          }][readyState=${this.media.readyState}]`
+        )
+        time += ATTEMPT_INTERVAL / 1000
+
+        const dt = Math.abs(time - startTime)
+        if (dt > 1) {
+          startTime = time
+          this.seek(time * 1000)
+        } else {
+          this.dispatch('ms:pause') || this.media.pause()
+          const playPromise = this.dispatch('ms:play') || this.media.play()
+          if (playPromise && playPromise.then) playPromise.catch(noop)
+        }
+
+        if (this.media.readyState === 4) {
+          onStarted()
+          return
+        }
+
+        timeoutId = setTimeout(tryPlayback, ATTEMPT_INTERVAL)
+      }
+
+      const initialDelay = this._hasAttemptedStart ? 200 : 1000
+      timeoutId = setTimeout(tryPlayback, initialDelay)
+      this._hasAttemptedStart = true
     }
   }
 
