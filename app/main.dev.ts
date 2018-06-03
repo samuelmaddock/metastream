@@ -129,9 +129,6 @@ const setupWindow = () => {
     show: false,
     width: 1280,
     height: 720,
-    webPreferences: {
-      webSecurity: false
-    },
     frame: false,
     titleBarStyle: 'hidden'
   })
