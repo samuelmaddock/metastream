@@ -8,5 +8,6 @@ export default {
   key: 'metastream-state',
   storage,
   whitelist,
-  stateReconciler: autoMergeLevel2
+  stateReconciler: autoMergeLevel2,
+  version: 1
 }

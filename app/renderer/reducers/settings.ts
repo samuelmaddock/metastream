@@ -24,7 +24,7 @@ export interface ISettingsState {
 const initialState: ISettingsState = {
   mute: false,
   volume: 0.75,
-  allowTracking: true,
+  allowTracking: false,
   developer: process.env.NODE_ENV === 'development'
 }
 
