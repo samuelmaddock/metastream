@@ -163,11 +163,6 @@
   }
 
   const setActiveMedia = media => {
-    // Prevent audio popping
-    try {
-      media.volume = 0
-    } catch (e) {}
-
     activeMedia = media
     player = new HTMLMediaPlayer(media)
     console.debug('Set active media', media, media.src, media.duration)
