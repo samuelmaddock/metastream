@@ -337,7 +337,7 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
     })
   }
 
-  private exitInteractMode() {
+  exitInteractMode() {
     document.removeEventListener('keydown', this.onKeyDown, false)
     this.dispatchMedia('interact', false)
     this.setState({ interacting: false }, () => {

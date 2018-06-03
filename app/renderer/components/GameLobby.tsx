@@ -75,10 +75,14 @@ type PrivateProps = IProps & IConnectedProps & DispatchProp<IAppState>
 class _GameLobby extends React.Component<PrivateProps, IState> {
   private player: VideoPlayer | null = null
 
+  private get isPlaying() {
+    return this.props.playback === PlaybackState.Playing
+  }
+
   private get isInactive() {
     return (
       this.state.inactive &&
-      this.props.playback === PlaybackState.Playing &&
+      this.isPlaying &&
       !(this.player && this.player.state.interacting) &&
       !this.state.modal
     )
@@ -114,7 +118,16 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
           modalVisible: !!this.state.modal
         })}
       >
-        <ActivityMonitor onChange={active => this.setState({ inactive: !active })} />
+        <ActivityMonitor
+          onChange={active => {
+            this.setState({ inactive: !active })
+
+            const { player } = this
+            if (this.isPlaying && player && player.state.interacting) {
+              player.exitInteractMode()
+            }
+          }}
+        />
 
         <VideoPlayer
           theRef={el => (this.player = el)}
