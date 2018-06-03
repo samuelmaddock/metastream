@@ -121,13 +121,19 @@
     if (!container) return
 
     // Attempt to click fullscreen button
-    const fullscreenBtn = document.querySelector('button[class*=fullscreen]')
-    if (fullscreenBtn instanceof HTMLButtonElement) {
+    const fullscreenBtn = document.querySelector('button[class*=fullscreen], button[class*=full-screen], [class*=button][class*=fullscreen], [class*=button][class*=full-screen]')
+    if (fullscreenBtn instanceof HTMLElement) {
       fullscreenBtn.click()
-      if (document.webkitFullscreenElement) {
-        console.debug('Clicked fullscreen button')
-        return
-      }
+
+      setTimeout(() => {
+        if (document.webkitFullscreenElement) {
+          console.debug('Clicked fullscreen button')
+        } else {
+          container.webkitRequestFullScreen()
+        }
+      }, 0)
+
+      return
     }
 
     // Otherwise fullscreen the container
@@ -377,11 +383,13 @@
 
   /** Detect media content on page */
   const detectPlayer = () => {
-    const mediaElement = document.querySelector('video, audio')
+    const mediaElements = document.querySelectorAll('video, audio')
 
-    if (mediaElement) {
-      console.debug(`Found media element!`, mediaElement.tagName, mediaElement, player)
-      addMedia(mediaElement)
+    if (mediaElements.length > 0) {
+      Array.from(mediaElements).forEach(media => {
+        console.debug(`Found media element!`, media.tagName, media, player)
+        addMedia(media)
+      })
     } else {
       setTimeout(detectPlayer, DETECT_INTERVAL)
       // console.debug(`Couldn't find media element on page, trying again...`);
