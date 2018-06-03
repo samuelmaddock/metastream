@@ -138,10 +138,11 @@ export const sendMediaRequest = (
     dispatch(server_requestMedia(url))
 
     const requestCount = parseInt(localStorage.getItem('requestCount') || '0', 10) || 0
-    if (requestCount > 0) {
+    localStorage.setItem('requestCount', `${requestCount + 1}`)
+
+    if (process.env.LICENSED && requestCount > 0) {
       dispatch(maybeShowPurchaseModal())
     }
-    localStorage.setItem('requestCount', `${requestCount + 1}`)
 
     ga('event', { ec: 'session', ea: 'request_media', el: source })
   }

@@ -36,7 +36,7 @@ export const initialize = (): ThunkAction<void, IAppState, void> => {
         version,
         name: getLocalUsername(getState()),
         color: getLocalColor(getState()),
-        licenseHash: await getLicenseHash()
+        licenseHash: process.env.LICENSED ? await getLicenseHash() : undefined
       })
     )
   }

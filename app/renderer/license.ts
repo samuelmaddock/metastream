@@ -5,6 +5,8 @@ let valid: boolean | null = null
 let license: string | null = null
 
 export function hasValidLicense(): boolean {
+  if (!process.env.LICENSED) return true
+
   if (typeof valid === 'boolean') {
     return valid
   } else {

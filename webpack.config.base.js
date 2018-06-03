@@ -54,7 +54,8 @@ export default {
   plugins: [
     new webpack.DefinePlugin({
       'process.env.GIT_BRANCH': JSON.stringify(GIT_BRANCH),
-      'process.env.GIT_COMMIT': JSON.stringify(GIT_COMMIT)
+      'process.env.GIT_COMMIT': JSON.stringify(GIT_COMMIT),
+      'process.env.LICENSED': Boolean(process.env.LICENSED)
     }),
 
     new webpack.NamedModulesPlugin(),

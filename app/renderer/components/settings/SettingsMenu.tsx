@@ -28,7 +28,7 @@ export class SettingsMenu extends Component<IProps> {
         <MenuHeader text={t('settings')} />
         <ProfileSettings />
         <AdvancedSettings />
-        {hasValidLicense() ? <LicenseSettings /> : null}
+        {process.env.LICENSED && hasValidLicense() ? <LicenseSettings /> : null}
       </LayoutMain>
     )
   }

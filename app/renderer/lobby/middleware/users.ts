@@ -50,7 +50,7 @@ export const usersMiddleware = (): Middleware => {
             host: true,
             name: getLocalUsername(state),
             color: getLocalColor(state),
-            license: await getLicenseHash()
+            license: process.env.LICENSED ? await getLicenseHash() : undefined
           })
         )
 
