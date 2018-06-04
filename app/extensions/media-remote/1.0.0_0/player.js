@@ -166,7 +166,7 @@
     const rect = rects[0]
     const playButton = document.elementFromPoint(rect.x + rect.width / 2, rect.y + rect.height / 2)
 
-    if (playButton instanceof HTMLElement) {
+    if (playButton instanceof HTMLButtonElement || playButton instanceof HTMLDivElement) {
       console.debug('Attempting autoplay click', playButton)
       playButton.click()
     }
@@ -414,6 +414,19 @@
       const onStarted = () => {
         this.media.removeEventListener('playing', onStarted, false)
         clearTimeout(timeoutId)
+
+        if (this.media.paused) {
+          this.media.play().catch(noop)
+
+          // HACK: Clear buffering spinner
+          setTimeout(() => {
+            if (!this.media.paused) {
+              this.media.pause()
+              this.media.play().catch(noop)
+            }
+          }, 1000)
+        }
+
         this._awaitingStart = false
         this._endWaiting = null
       }
