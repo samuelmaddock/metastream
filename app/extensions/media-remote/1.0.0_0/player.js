@@ -202,6 +202,7 @@
       )
     })
 
+    media.addEventListener('durationchange', signalReady, false)
     signalReady()
   }
 
