@@ -10,11 +10,11 @@ import {
   queueMedia,
   repeatMedia,
   updateMedia,
-  deleteMedia
+  deleteMedia,
+  updateServerClockSkew
 } from 'renderer/lobby/actions/mediaPlayer'
 import { MediaType } from 'renderer/media/types'
 import { NetActions } from 'renderer/network/actions'
-import { updateServerTimeDelta } from 'renderer/lobby/actions/clock'
 import { ReplicatedState } from '../../network/types'
 
 export const enum PlaybackState {
@@ -172,7 +172,7 @@ export const mediaPlayer: Reducer<IMediaPlayerState> = (
       // cycle through repeat modes
       repeatMode: (state.repeatMode + 1) % RepeatMode.Count
     }
-  } else if (isType(action, updateServerTimeDelta)) {
+  } else if (isType(action, updateServerClockSkew)) {
     return { ...state, serverClockSkew: action.payload }
   } else if (isType(action, updateMedia) && state.current) {
     const prevDuration = state.current.duration

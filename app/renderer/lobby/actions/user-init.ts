@@ -7,13 +7,13 @@ import { RpcThunk } from 'renderer/lobby/types'
 import { multi_userJoined, client_kick } from 'renderer/lobby/actions/users'
 import { rpc, RpcRealm } from 'renderer/network/middleware/rpc'
 import { getUser, getNumUsers, findUser } from 'renderer/lobby/reducers/users.helpers'
-import { updateServerTimeDelta } from 'renderer/lobby/actions/clock'
 import { getLocalUsername, getLocalColor } from '../../reducers/settings'
 import { USERNAME_MAX_LEN, COLOR_LEN } from 'constants/settings'
 import { getMaxUsers } from '../reducers/session'
 import { NetworkDisconnectReason } from 'constants/network'
 import { setDisconnectReason, setAuthorized } from './session'
 import { getLicenseHash } from '../../license'
+import { updateServerClockSkew } from './mediaPlayer'
 
 const { version } = require('package.json')
 
@@ -84,7 +84,7 @@ const validateClientInfo = (info: ClientInfo, id: string, state: IAppState) => {
 const clientAuthorized = (info: AuthorizeInfo): RpcThunk<void> => (dispatch, getState) => {
   // TODO: take average of multiple samples?
   const dt = Date.now() - info.serverTime
-  dispatch(updateServerTimeDelta(dt))
+  dispatch(updateServerClockSkew(dt))
   dispatch(setAuthorized(true))
 }
 const client_authorized = rpc(RpcRealm.Client, clientAuthorized)

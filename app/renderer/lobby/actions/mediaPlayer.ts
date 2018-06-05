@@ -29,6 +29,7 @@ export const endMedia = actionCreator<void>('END_MEDIA')
 export const queueMedia = actionCreator<IMediaItem>('QUEUE_MEDIA')
 export const updateMedia = actionCreator<{ duration: number }>('UPDATE_MEDIA')
 export const deleteMedia = actionCreator<string>('DELETE_MEDIA')
+export const updateServerClockSkew = actionCreator<number>('UPDATE_SERVER_CLOCK_SKEW')
 
 /** Media timer until playback ends. This assumes only one media player exists at a time.*/
 let mediaTimeoutId: number | null = null
