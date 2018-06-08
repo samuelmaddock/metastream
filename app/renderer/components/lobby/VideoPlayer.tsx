@@ -34,9 +34,6 @@ interface IConnectedProps extends IMediaPlayerState {
 }
 
 interface IState {
-  /** Webview is initializing, try to mitigate white flash */
-  initializing: boolean
-
   interacting: boolean
 }
 
@@ -56,9 +53,8 @@ type PrivateProps = IProps & IConnectedProps & DispatchProp<IAppState>
 class _VideoPlayer extends Component<PrivateProps, IState> {
   private webview: Electron.WebviewTag | null = null
   private webContents!: Electron.WebContents
-  private initTimeoutId?: number
 
-  state: IState = { initializing: true, interacting: false }
+  state: IState = { interacting: false }
 
   get isPlaying() {
     return this.props.playback === PlaybackState.Playing
@@ -95,20 +91,11 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
     if (this.props.theRef) {
       this.props.theRef(this)
     }
-
-    this.initTimeoutId = setTimeout(() => {
-      this.initTimeoutId = undefined
-      this.setState({ initializing: false })
-    }, 500) as any
   }
 
   componentWillUnmount(): void {
     if (this.props.theRef) {
       this.props.theRef(null)
-    }
-
-    if (this.initTimeoutId) {
-      clearTimeout(this.initTimeoutId)
     }
   }
 
@@ -301,7 +288,6 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
       ref: this.setupWebview,
       src: DEFAULT_URL,
       class: cx(styles.video, {
-        [styles.initializing]: this.state.initializing,
         [styles.interactive]: this.state.interacting,
         [styles.playing]: !!this.props.current
       }),
