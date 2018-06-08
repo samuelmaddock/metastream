@@ -1,9 +1,7 @@
 @import './components/toggle.css';
 
 body {
-  /* background: transparent; */
-  background: #222;
-  background: linear-gradient(200deg, #42275a, #734b6d);
+  background: transparent;
   padding: 0 30px;
 }
 

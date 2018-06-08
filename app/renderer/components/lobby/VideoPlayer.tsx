@@ -302,10 +302,12 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
       src: DEFAULT_URL,
       class: cx(styles.video, {
         [styles.initializing]: this.state.initializing,
-        [styles.interactive]: this.state.interacting
+        [styles.interactive]: this.state.interacting,
+        [styles.playing]: !!this.props.current
       }),
       plugins: true,
-      partition: WEBVIEW_PARTITION
+      partition: WEBVIEW_PARTITION,
+      allowtransparency: true
     })
   }
 

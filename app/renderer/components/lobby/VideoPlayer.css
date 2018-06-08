@@ -8,11 +8,14 @@
 
 .video {
   flex-grow: 1;
-  background: white;
 }
 
 .video.initializing {
   opacity: 0;
+}
+
+.video.playing {
+  background: black;
 }
 
 .interactTrigger {
