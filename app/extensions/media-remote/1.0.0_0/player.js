@@ -6,6 +6,21 @@
     obj.toString = 'function createElement() { [native code] }'
   }
 
+  function debounce(func, wait, immediate) {
+    var timeout;
+    return function() {
+      var context = this, args = arguments;
+      var later = function() {
+        timeout = null;
+        if (!immediate) func.apply(context, args);
+      };
+      var callNow = immediate && !timeout;
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+      if (callNow) func.apply(context, args);
+    };
+  };
+
   /** https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/readyState */
   const MediaReadyState = {
     HAVE_NOTHING: 0,
@@ -51,8 +66,11 @@
     }
   }
 
+  let prevDuration = null
   const signalReady = () => {
     const duration = getVideoDuration()
+    if (prevDuration === duration) return
+
     const meta = {
       type: 'CMediaReady',
       duration: duration && duration * SEC2MS,
@@ -60,6 +78,8 @@
       href: location.href
     }
     window.postMessage(meta, '*')
+
+    prevDuration = duration
   }
 
   const USE_VIDEO_CONTAINER = false
@@ -202,7 +222,8 @@
       )
     })
 
-    media.addEventListener('durationchange', signalReady, false)
+    const onDurationChange = debounce(signalReady, 2000)
+    media.addEventListener('durationchange', onDurationChange, false)
     signalReady()
   }
 
