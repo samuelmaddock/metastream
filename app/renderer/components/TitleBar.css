@@ -78,6 +78,10 @@
   opacity: 0.11;
 }
 
+.actionButton svg {
+  transform: scale(0.7) translateY(5px);
+}
+
 .actionButton:hover {
   background: rgba(255, 255, 255, 0.3);
 }

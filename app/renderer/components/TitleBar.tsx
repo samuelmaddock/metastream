@@ -12,6 +12,16 @@ import { isUpdateAvailable } from 'renderer/reducers/ui'
 import styles from './TitleBar.css'
 import { IconButton } from 'renderer/components/common/button'
 import { installUpdate } from 'renderer/actions/ui'
+import { Icon } from './Icon'
+
+const WINDOW_EVENTS = [
+  'maximize',
+  'minimize',
+  'unmaximize',
+  'restore',
+  'enter-full-screen',
+  'leave-full-screen'
+]
 
 interface IProps {
   className?: string
@@ -33,6 +43,22 @@ class _TitleBar extends Component<PrivateProps> {
 
   get platform() {
     return (this._platform = this._platform || remote.require('os').platform())
+  }
+
+  private updateWindowState = () => {
+    this.forceUpdate()
+  }
+
+  componentDidMount() {
+    WINDOW_EVENTS.forEach(eventName =>
+      this.window.addListener(eventName as any, this.updateWindowState)
+    )
+  }
+
+  componentWillUnmount() {
+    WINDOW_EVENTS.forEach(eventName =>
+      this.window.removeListener(eventName as any, this.updateWindowState)
+    )
   }
 
   render(): JSX.Element | null {
@@ -64,6 +90,10 @@ class _TitleBar extends Component<PrivateProps> {
 
   private renderWin32Actions(): JSX.Element {
     const buttons = [
+      {
+        label: <Icon name={this.window.isFullScreen() ? 'minimize-2' : 'maximize-2'} />,
+        action: () => this.window.setFullScreen(!this.window.isFullScreen())
+      },
       {
         label: '0', // 🗕
         action: () => this.window.minimize()
@@ -97,6 +127,8 @@ class _TitleBar extends Component<PrivateProps> {
   }
 }
 
-export const TitleBar = connect((state: IAppState): IConnectedProps => {
-  return { updateAvailable: isUpdateAvailable(state) }
-})(_TitleBar) as React.ComponentClass<IProps>
+export const TitleBar = connect(
+  (state: IAppState): IConnectedProps => {
+    return { updateAvailable: isUpdateAvailable(state) }
+  }
+)(_TitleBar) as React.ComponentClass<IProps>
