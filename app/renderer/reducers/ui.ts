@@ -7,7 +7,8 @@ export const enum LobbyModal {
   Browser = 'browser',
   Invite = 'invite',
   MediaInfo = 'media-info',
-  Purchase = 'purchase'
+  Purchase = 'purchase',
+  SessionSettings = 'session-settings'
 }
 
 export interface IUIState {

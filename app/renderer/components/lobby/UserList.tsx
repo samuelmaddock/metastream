@@ -14,6 +14,7 @@ import { t } from '../../../locale/index'
 interface IProps {
   className?: string
   onInvite(): void
+  openSessionSettings(): void
 }
 
 interface IConnectedProps {
@@ -58,15 +59,12 @@ class _UserList extends Component<Props> {
   renderActions() {
     return (
       <>
-        {this.props.isHost && (
-          <HighlightButton
-            icon={(this.props.maxUsers || 0) > 1 ? 'users' : 'user'}
-            onClick={this.props.onInvite}
-          />
-        )}
         <HighlightButton icon="mail" highlight={this.numUsers < 2} onClick={this.props.onInvite}>
           {t('invite')}
         </HighlightButton>
+        {this.props.isHost && (
+          <HighlightButton icon="settings" onClick={this.props.openSessionSettings} />
+        )}
       </>
     )
   }

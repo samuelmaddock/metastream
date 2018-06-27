@@ -41,7 +41,7 @@ import { registerMediaShortcuts, unregisterMediaShortcuts } from 'renderer/lobby
 import { IAppState } from 'renderer/reducers'
 import { HighlightButton } from 'renderer/components/common/button'
 import { Modal } from 'renderer/components/lobby/Modal'
-import { MediaInfo, PurchaseLicense, Invite } from 'renderer/components/lobby/modals'
+import * as Modals from 'renderer/components/lobby/modals'
 import { addExtensionListeners, removeExtensionListeners } from '../actions/extensions'
 import { PopupWindow } from './browser/PopupWindow'
 import { IPopupState } from '../reducers/extensions'
@@ -157,7 +157,11 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
       <section className={styles.controls}>
         {this.renderPlaybackControls()}
 
-        <UserList className={styles.users} onInvite={() => this.openModal(LobbyModal.Invite)} />
+        <UserList
+          className={styles.users}
+          onInvite={() => this.openModal(LobbyModal.Invite)}
+          openSessionSettings={() => this.openModal(LobbyModal.SessionSettings)}
+        />
         <MediaList className={styles.queue} onAddMedia={this.openBrowser} />
 
         <Chat
@@ -184,19 +188,25 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
       case LobbyModal.Invite:
         return (
           <Modal className={styles.modal} onClose={this.closeModal}>
-            <Invite />
+            <Modals.Invite />
           </Modal>
         )
       case LobbyModal.MediaInfo:
         return (
           <Modal className={styles.modal} onClose={this.closeModal}>
-            <MediaInfo media={this.props.currentMedia} onClose={this.closeModal} />
+            <Modals.MediaInfo media={this.props.currentMedia} onClose={this.closeModal} />
           </Modal>
         )
       case LobbyModal.Purchase:
         return (
           <Modal className={styles.modal} onClose={this.closeModal}>
-            <PurchaseLicense />
+            <Modals.PurchaseLicense />
+          </Modal>
+        )
+      case LobbyModal.SessionSettings:
+        return (
+          <Modal className={styles.modal} onClose={this.closeModal}>
+            <Modals.SessionSettings />
           </Modal>
         )
     }
@@ -259,13 +269,15 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
   }
 }
 
-export const GameLobby = connect((state: IAppState): IConnectedProps => {
-  return {
-    currentMedia: getCurrentMedia(state),
-    messages: state.chat.messages,
-    playback: getPlaybackState(state),
-    popup: state.extensions.popup,
-    modal: state.ui.lobbyModal,
-    developer: isDeveloper(state)
+export const GameLobby = connect(
+  (state: IAppState): IConnectedProps => {
+    return {
+      currentMedia: getCurrentMedia(state),
+      messages: state.chat.messages,
+      playback: getPlaybackState(state),
+      popup: state.extensions.popup,
+      modal: state.ui.lobbyModal,
+      developer: isDeveloper(state)
+    }
   }
-})(_GameLobby) as React.ComponentClass<IProps>
+)(_GameLobby) as React.ComponentClass<IProps>
