@@ -35,6 +35,10 @@
   margin-left: auto;
 }
 
+.actions > *:not(:last-child) {
+  margin-right: 0.5rem;
+}
+
 .list {
   composes: scroller from 'styles/layout.css';
   height: 200px;
