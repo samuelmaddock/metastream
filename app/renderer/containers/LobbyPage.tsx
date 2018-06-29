@@ -158,9 +158,12 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
 
   componentDidMount() {
     this.mounted = true
+    window.addEventListener('beforeunload', this.beforeUnload, false)
   }
 
   componentWillUnmount(): void {
+    window.removeEventListener('beforeunload', this.beforeUnload, false)
+
     if (this.server) {
       this.server.removeListener('close', this.disconnect)
       this.server = undefined
@@ -170,6 +173,10 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
     PlatformService.leaveLobby(this.lobbyId || '')
 
     this.mounted = false
+  }
+
+  private beforeUnload = () => {
+    this.disconnectImmediate()
   }
 
   private get lobbyId(): string | undefined {
