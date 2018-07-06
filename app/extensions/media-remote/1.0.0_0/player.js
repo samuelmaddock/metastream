@@ -298,7 +298,7 @@
   const DETECT_INTERVAL = 500
 
   /** Threshold before we'll seek. */
-  const SEEK_THRESHOLD = 2000
+  const SEEK_THRESHOLD = 100
 
   const OldAudio = window.Audio
 
