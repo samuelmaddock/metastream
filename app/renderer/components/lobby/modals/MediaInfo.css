@@ -2,6 +2,7 @@
   composes: select-text from 'styles/text.css';
   composes: clearfix from 'styles/layout.css';
   white-space: pre-line;
+  word-wrap: break-word;
   width: 100%;
   max-width: 600px;
   line-height: 1.5;
