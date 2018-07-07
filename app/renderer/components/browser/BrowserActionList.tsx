@@ -46,12 +46,19 @@ class _BrowserActionList extends Component<PrivateProps> {
 
     if (browserActions.length === 0) return null
 
-    return <div className={styles.container}>{browserActions}</div>
+    return (
+      <div>
+        <div className={styles.actionsContainer}>{browserActions}</div>
+        {this.props.children}
+      </div>
+    )
   }
 }
 
-export const BrowserActionList = connect((state: IAppState): IConnectedProps => {
-  return {
-    extensions: state.extensions
+export const BrowserActionList = connect(
+  (state: IAppState): IConnectedProps => {
+    return {
+      extensions: state.extensions
+    }
   }
-})(_BrowserActionList) as React.ComponentClass<IProps>
+)(_BrowserActionList) as React.ComponentClass<IProps>

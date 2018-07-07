@@ -205,6 +205,21 @@ class _PlaybackControls extends Component<PrivateProps> {
         <Button icon="info" title={t('info')} onClick={() => this.props.showInfo()} />
       )
 
+    return (
+      <div className={cx(this.props.className, styles.container)}>
+        {isIdle ? addMediaBtn : [playPauseBtn, nextBtn]}
+        {repeatBtn}
+        {timeline}
+        {volumeSlider}
+        {infoBtn}
+        {this.renderMenu()}
+      </div>
+    )
+  }
+
+  private renderMenu() {
+    const { current: media } = this.props
+
     const reloadBtn = (
       <ButtonListItem icon="rotate-cw" onClick={this.props.reload}>
         {t('reload')}
@@ -242,22 +257,18 @@ class _PlaybackControls extends Component<PrivateProps> {
     )
 
     return (
-      <div className={cx(this.props.className, styles.container)}>
-        {isIdle ? addMediaBtn : [playPauseBtn, nextBtn]}
-        {repeatBtn}
-        {timeline}
-        {volumeSlider}
-        {infoBtn}
-        <MoreButton buttonClassName={styles.button}>
-          <BrowserActionList tabId={(window as any).__PLAYER_TAB_ID__} />
-          {externalLinkBtn}
-          {copyLinkBtn}
-          {reloadBtn}
-          {extensionsBtn}
-          {debugBtn}
-          {disconnectBtn}
-        </MoreButton>
-      </div>
+      <MoreButton buttonClassName={styles.button}>
+        <BrowserActionList tabId={(window as any).__PLAYER_TAB_ID__}>
+          <hr className={styles.menuDivider} />
+        </BrowserActionList>
+        {externalLinkBtn}
+        {copyLinkBtn}
+        {reloadBtn}
+        <hr className={styles.menuDivider} />
+        {extensionsBtn}
+        {debugBtn}
+        {disconnectBtn}
+      </MoreButton>
     )
   }
 

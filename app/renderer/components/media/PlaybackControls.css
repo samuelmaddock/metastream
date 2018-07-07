@@ -78,3 +78,8 @@
 .addMediaButton:hover {
   background-color: var(--color-highlight);
 }
+
+.menuDivider {
+  width: 100%;
+  border-color: rgba(255, 255, 255, 0.1);
+}
