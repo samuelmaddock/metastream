@@ -72,7 +72,7 @@ class _UserItem extends Component<PrivateProps, IState> {
         open={Boolean(anchorEl)}
         onClose={this.handleClose}
       >
-        <MenuItem onClick={this.handleToggleRole.bind(null, UserRole.DJ)}>
+        <MenuItem onClick={this.handleToggleRole.bind(null, UserRole.DJ)} dense>
           {this.props.dj ? 'Remove DJ' : 'Make DJ'}
         </MenuItem>
         <MenuItem onClick={this.handleKick}>Kick</MenuItem>
