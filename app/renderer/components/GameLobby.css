@@ -12,6 +12,7 @@
   position: relative;
   --overlay-spacing: 50px;
   --overlay-z-index: 10;
+  --playback-overlay-z-index: 11;
   --overlay-anim-duration: 160ms;
 }
 
@@ -24,6 +25,7 @@
 
 :global(.lobbyInactive) .overlay {
   opacity: 0;
+  backdrop-filter: none;
 }
 
 :global(.modalVisible) .overlay {
@@ -48,6 +50,7 @@
 
 .playbackControls {
   composes: overlay;
+  z-index: var(--playback-overlay-z-index);
   left: var(--overlay-spacing);
   right: var(--overlay-spacing);
   bottom: var(--overlay-spacing);
