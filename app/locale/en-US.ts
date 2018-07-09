@@ -3,7 +3,8 @@ export default {
   addMedia: 'Add Media',
   advanced: 'Advanced',
   allowTracking: 'Send app usage information',
-  allowTrackingDesc: 'Anonymous usage information is sent to the developer to better understand how the app is being used.',
+  allowTrackingDesc:
+    'Anonymous usage information is sent to the developer to better understand how the app is being used.',
   cancel: 'Cancel',
   chatColor: 'Chat Color',
   chatPlaceholder: 'Message or URL',
@@ -35,7 +36,7 @@ export default {
   networkDisconnectVersionMismatch: `Client version mismatch`,
   networkDisconnectDuplicateLicense: `Shared license found in session`,
   networkDisconnectFull: 'Session is full',
-  networkDisconnectKicked: 'Kicked',
+  networkDisconnectKicked: 'Kicked from session',
   ok: 'OK',
   openInBrowser: 'Open in browser',
   profile: 'Profile',
