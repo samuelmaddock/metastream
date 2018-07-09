@@ -134,7 +134,6 @@ export const netSyncMiddleware = (): Middleware => {
 
     const destroy = () => {
       server = null
-      host = false
       COMMIT_NUMBER = 0
     }
 
@@ -172,7 +171,7 @@ export const netSyncMiddleware = (): Middleware => {
         return next(<A>action)
       }
 
-      if (!host) {
+      if (!host || !server) {
         return next(<A>action)
       }
 

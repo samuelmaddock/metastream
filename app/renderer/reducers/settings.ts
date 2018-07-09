@@ -12,6 +12,11 @@ import {
 import { IAppState } from './index'
 import { stripEmoji } from 'utils/string'
 
+export const enum SessionMode {
+  Public,
+  Private
+}
+
 export interface ISettingsState {
   mute: boolean
   volume: number
@@ -19,13 +24,15 @@ export interface ISettingsState {
   color?: string
   allowTracking: boolean
   developer: boolean
+  sessionMode: SessionMode
 }
 
 const initialState: ISettingsState = {
   mute: false,
   volume: 0.75,
   allowTracking: false,
-  developer: process.env.NODE_ENV === 'development'
+  developer: process.env.NODE_ENV === 'development',
+  sessionMode: SessionMode.Public
 }
 
 export const settings: Reducer<ISettingsState> = (

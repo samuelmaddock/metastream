@@ -16,6 +16,7 @@ import {
 import { MediaType } from 'renderer/media/types'
 import { NetActions } from 'renderer/network/actions'
 import { ReplicatedState } from '../../network/types'
+import { resetLobby, initLobby } from '../actions/common'
 
 export const enum PlaybackState {
   Idle,
@@ -202,7 +203,7 @@ export const mediaPlayer: Reducer<IMediaPlayerState> = (
   }
 
   // Save session snapshot on disconnect
-  if (isType(action, NetActions.disconnect)) {
+  if (isType(action, resetLobby)) {
     if (!action.payload.host) {
       return state.localSnapshot
         ? { ...initialState, localSnapshot: state.localSnapshot }
@@ -220,8 +221,8 @@ export const mediaPlayer: Reducer<IMediaPlayerState> = (
     }
   }
 
-  // Restore session snapshot on connect
-  if (isType(action, NetActions.connect) && action.payload.host && state.localSnapshot) {
+  // Restore session snapshot
+  if (isType(action, initLobby) && action.payload.host && state.localSnapshot) {
     return {
       ...initialState,
       ...state.localSnapshot,

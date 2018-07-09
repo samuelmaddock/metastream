@@ -22,9 +22,11 @@ import {
 } from 'constants/network'
 import { Connect } from '../components/lobby/Connect'
 import { Disconnect } from '../components/lobby/Disconnect'
-import { getDisconnectReason } from '../lobby/reducers/session'
+import { getDisconnectReason, session } from '../lobby/reducers/session'
 import { setDisconnectReason } from '../lobby/actions/session'
 import { t } from 'locale'
+import { SessionMode } from '../reducers/settings'
+import { resetLobby, initLobby } from '../lobby/actions/common'
 
 interface IRouteParams {
   lobbyId: string
@@ -35,6 +37,7 @@ interface IProps extends RouteComponentProps<IRouteParams> {}
 interface IConnectedProps {
   disconnectReason?: NetworkDisconnectReason
   clientAuthorized?: boolean
+  sessionMode?: SessionMode
 }
 
 interface IState {
@@ -44,7 +47,8 @@ interface IState {
 function mapStateToProps(state: IAppState): IConnectedProps {
   return {
     disconnectReason: getDisconnectReason(state),
-    clientAuthorized: state.session.authorized
+    clientAuthorized: state.session.authorized,
+    sessionMode: state.settings.sessionMode
   }
 }
 
@@ -91,6 +95,18 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
     } else {
       this.onConnectionFailed()
     }
+  }
+
+  private closeLobby() {
+    this.connected = false
+
+    if (this.server) {
+      this.server.removeListener('close', this.disconnect)
+      this.server = undefined
+    }
+
+    this.props.dispatch(NetActions.disconnect({ host: this.host }))
+    PlatformService.leaveLobby(this.lobbyId || '')
   }
 
   private onJoinLobby(server: NetServer): void {
@@ -153,7 +169,11 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
   }
 
   componentWillMount(): void {
-    this.setupLobby()
+    this.props.dispatch(initLobby({ host: this.host }))
+
+    if (!this.host || this.props.sessionMode === SessionMode.Public) {
+      this.setupLobby()
+    }
   }
 
   componentDidMount() {
@@ -163,16 +183,24 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
 
   componentWillUnmount(): void {
     window.removeEventListener('beforeunload', this.beforeUnload, false)
-
-    if (this.server) {
-      this.server.removeListener('close', this.disconnect)
-      this.server = undefined
-    }
-
-    this.props.dispatch(NetActions.disconnect({ host: this.host }))
-    PlatformService.leaveLobby(this.lobbyId || '')
-
+    this.closeLobby()
     this.mounted = false
+    this.props.dispatch(resetLobby({ host: this.host }))
+  }
+
+  componentDidUpdate(prevProps: PrivateProps) {
+    if (this.props.sessionMode !== prevProps.sessionMode) {
+      this.onSessionModeChange()
+    }
+  }
+
+  private onSessionModeChange() {
+    const { sessionMode } = this.props
+    if (sessionMode === SessionMode.Public && !this.connected) {
+      this.setupLobby()
+    } else if (sessionMode === SessionMode.Private && this.connected) {
+      this.closeLobby()
+    }
   }
 
   private beforeUnload = () => {

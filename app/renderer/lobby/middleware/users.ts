@@ -11,6 +11,7 @@ import { initialize } from 'renderer/lobby/actions/user-init'
 import { getLocalUsername, getLocalColor } from '../../reducers/settings'
 import { IAppState } from '../../reducers/index'
 import { getLicenseHash } from '../../license'
+import { initLobby } from '../actions/common'
 
 interface IUserPayload {
   conn: NetConnection
@@ -36,24 +37,26 @@ export const usersMiddleware = (): Middleware => {
       dispatch(removeUser(id))
     }
 
+    const initHost = async () => {
+      const state = (getState() as any) as IAppState
+
+      // Add local user as initial user
+      dispatch(
+        addUser({
+          conn: localUser(),
+          host: true,
+          name: getLocalUsername(state),
+          color: getLocalColor(state),
+          license: process.env.LICENSED ? await getLicenseHash() : undefined
+        })
+      )
+    }
+
     const init = async (options: NetMiddlewareOptions) => {
       server = options.server
       host = options.host
 
       if (host) {
-        const state = (getState() as any) as IAppState
-
-        // Add local user as initial user
-        dispatch(
-          addUser({
-            conn: localUser(),
-            host: true,
-            name: getLocalUsername(state),
-            color: getLocalColor(state),
-            license: process.env.LICENSED ? await getLicenseHash() : undefined
-          })
-        )
-
         server.on('disconnect', onDisconnect)
       } else {
         dispatch((initialize as any)())
@@ -66,11 +69,13 @@ export const usersMiddleware = (): Middleware => {
       }
       server = null
       host = false
-      dispatch(clearUsers())
     }
 
     return (next: Dispatch<S>) => <A extends Action, B>(action: A): B | Action => {
-      if (isType(action, NetActions.connect)) {
+      if (isType(action, initLobby) && action.payload.host) {
+        initHost()
+        return next(<A>action)
+      } else if (isType(action, NetActions.connect)) {
         init(action.payload)
         return next(<A>action)
       } else if (isType(action, NetActions.disconnect)) {

@@ -4,6 +4,7 @@ import { ActionCreator } from 'redux'
 import { NetConnection, NetServer, localUser, localUserId } from 'renderer/network'
 import { NetMiddlewareOptions, NetActions } from 'renderer/network/actions'
 import { isType } from 'utils/redux'
+import { initLobby } from '../../lobby/actions/common'
 
 const RpcReduxActionTypes = {
   DISPATCH: '@@rpc/DISPATCH'
@@ -50,7 +51,6 @@ export const netRpcMiddleware = (): Middleware => {
 
     const destroy = () => {
       server = null
-      host = false
     }
 
     const receive = (client: NetConnection, data: Buffer) => {
@@ -76,6 +76,8 @@ export const netRpcMiddleware = (): Middleware => {
 
     /** Send RPC to recipients. */
     const sendRpc = (action: RpcAction) => {
+      if (!server) return
+
       const { payload, clients } = action
       const rpc = getRpc(payload.name)!
 
@@ -84,10 +86,10 @@ export const netRpcMiddleware = (): Middleware => {
 
       switch (rpc.realm) {
         case RpcRealm.Server:
-          server!.sendToHost(buf)
+          server.sendToHost(buf)
           break
         case RpcRealm.Multicast:
-          server!.send(buf)
+          server.send(buf)
           break
         case RpcRealm.Client:
           clients!.forEach(clientId => {
@@ -118,7 +120,9 @@ export const netRpcMiddleware = (): Middleware => {
     return (next: Dispatch<S>) => <A extends RpcAction>(
       action: A
     ): Action | RpcMiddlewareResult => {
-      if (isType(action, NetActions.connect)) {
+      if (isType(action, initLobby)) {
+        host = action.payload.host
+      } else if (isType(action, NetActions.connect)) {
         init(action.payload)
         return next(<A>action)
       } else if (isType(action, NetActions.disconnect)) {

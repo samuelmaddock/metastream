@@ -3,6 +3,7 @@ import { isType } from 'utils/redux'
 import { IAppState } from 'renderer/reducers'
 import { addUser, removeUser, clearUsers } from '../middleware/users'
 import { setUserRole } from '../actions/users'
+import { resetLobby } from '../actions/common'
 
 /** User role in ascending power. */
 export const enum UserRole {
@@ -66,7 +67,7 @@ export const users: Reducer<IUsersState> = (state: IUsersState = initialState, a
       ...state,
       map: rest
     }
-  } else if (isType(action, clearUsers)) {
+  } else if (isType(action, resetLobby)) {
     return initialState
   }
 
