@@ -25,7 +25,7 @@ export class SessionJoin extends Component<IProps> {
         <GoBackButton />
         <section>
           <MenuHeader text={t('joinSession')} />
-          <form>
+          <form onSubmit={e => e.preventDefault()}>
             <p>{t('enterJoinDest')}</p>
             <InputGroup>
               <TextInput
