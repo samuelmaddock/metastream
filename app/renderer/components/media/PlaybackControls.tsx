@@ -220,24 +220,6 @@ class _PlaybackControls extends Component<PrivateProps> {
   private renderMenu() {
     const { current: media } = this.props
 
-    const reloadBtn = (
-      <ButtonListItem icon="rotate-cw" onClick={this.props.reload}>
-        {t('reload')}
-      </ButtonListItem>
-    )
-
-    const externalLinkBtn = media && (
-      <ButtonListItem icon="external-link" onClick={this.openLink}>
-        {t('openInBrowser')}
-      </ButtonListItem>
-    )
-
-    const copyLinkBtn = media && (
-      <ButtonListItem icon="clipboard" onClick={this.copyLink}>
-        {t('copyLink')}
-      </ButtonListItem>
-    )
-
     const debugBtn = this.props.developer && (
       <ButtonListItem icon="settings" onClick={this.props.debug}>
         {t('debug')}
@@ -256,15 +238,30 @@ class _PlaybackControls extends Component<PrivateProps> {
       </ButtonListItem>
     )
 
+    const mediaButtons = media && (
+      <>
+        <ButtonListItem icon="external-link" onClick={this.openLink}>
+          {t('openInBrowser')}
+        </ButtonListItem>
+
+        <ButtonListItem icon="clipboard" onClick={this.copyLink}>
+          {t('copyLink')}
+        </ButtonListItem>
+
+        <ButtonListItem icon="rotate-cw" onClick={this.props.reload}>
+          {t('reload')}
+        </ButtonListItem>
+
+        <hr className={styles.menuDivider} />
+      </>
+    )
+
     return (
       <MoreButton buttonClassName={styles.button}>
         <BrowserActionList tabId={(window as any).__PLAYER_TAB_ID__}>
           <hr className={styles.menuDivider} />
         </BrowserActionList>
-        {externalLinkBtn}
-        {copyLinkBtn}
-        {reloadBtn}
-        <hr className={styles.menuDivider} />
+        {mediaButtons}
         {extensionsBtn}
         {debugBtn}
         {disconnectBtn}
