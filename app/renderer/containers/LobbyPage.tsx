@@ -105,8 +105,8 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
       this.server = undefined
     }
 
-    this.props.dispatch(NetActions.disconnect({ host: this.host }))
     PlatformService.leaveLobby(this.lobbyId || '')
+    this.props.dispatch(NetActions.disconnect({ host: this.host }))
   }
 
   private onJoinLobby(server: NetServer): void {
