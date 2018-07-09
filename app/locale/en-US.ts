@@ -17,6 +17,8 @@ export default {
   developerMode: 'Developer Mode',
   developerModeDesc: 'Show developer tools for inspecting web pages.',
   disconnect: 'Disconnect',
+  endSessionTitle: 'End public session?',
+  endSessionDescription: 'Changing to a private session will disconnect all connected users.',
   enterJoinDest: 'Enter a friend code or IP address.',
   enterLicense: 'Enter License',
   extensions: 'Extensions',
