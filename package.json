@@ -226,7 +226,7 @@
     "stylelint": "^7.10.1",
     "stylelint-config-standard": "^16.0.0",
     "swarm-peer-server": "git+ssh://git@github.com/samuelmaddock/swarm-peer-server.git#1.0.3",
-    "typescript": "^2.8.3",
+    "typescript": "2.8.4",
     "url-loader": "^1.0.1",
     "username": "^3.0.0",
     "walkdir": "^0.0.12",
