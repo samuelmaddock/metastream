@@ -2,14 +2,24 @@ import React, { Component, ReactNode } from 'react'
 import cx from 'classnames'
 import styles from './ListOverlay.css'
 
-interface IProps {
+import Menu from 'material-ui/Menu'
+
+interface IProps<T> {
   className?: string
   title?: string
   tagline?: string
   action?: ReactNode
+  renderMenuOptions: (item: T, onClose: Function) => ReactNode
 }
 
-export class ListOverlay extends Component<IProps> {
+interface IState<T> {
+  selection?: T
+  menuAnchorEl?: HTMLElement
+}
+
+export class ListOverlay<T = any> extends Component<IProps<T>, IState<T>> {
+  state: IState<T> = {}
+
   render(): JSX.Element | null {
     return (
       <div className={cx(this.props.className, styles.container)}>
@@ -19,7 +29,27 @@ export class ListOverlay extends Component<IProps> {
           <div className={styles.actions}>{this.props.action}</div>
         </header>
         <div className={styles.list}>{this.props.children}</div>
+        {this.renderMenu()}
       </div>
     )
+  }
+
+  private renderMenu() {
+    const { menuAnchorEl, selection } = this.state
+    return (
+      <Menu anchorEl={menuAnchorEl} open={Boolean(menuAnchorEl)} onClose={this.handleClose}>
+        {selection && this.props.renderMenuOptions(selection, this.handleClose)}
+      </Menu>
+    )
+  }
+
+  private handleClose = () => {
+    this.setState({ menuAnchorEl: undefined })
+  }
+
+  onSelect = (e: React.MouseEvent<HTMLElement>, selection: T) => {
+    if (e.target instanceof HTMLElement || e.target instanceof SVGElement) {
+      this.setState({ selection, menuAnchorEl: e.target as any })
+    }
   }
 }

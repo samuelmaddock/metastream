@@ -11,6 +11,7 @@
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  flex: 1 0 0%;
   align-content: center;
   justify-content: space-between;
 }
@@ -25,8 +26,7 @@
 
 .title {
   composes: single-line from 'styles/text.css';
-  /* width: 100%; */
-  /* flex: 1 1 100%; */
+  flex: 1 1 100%;
 }
 
 .duration,

@@ -9,7 +9,7 @@ import Menu, { MenuItem } from 'material-ui/Menu'
 
 interface IProps {
   media: IMediaItem
-  onClick: () => void
+  onClickMenu: React.MouseEventHandler<HTMLElement>
 }
 
 interface IState {
@@ -42,42 +42,13 @@ export class MediaItem extends Component<IProps, IState> {
           )}
         </figcaption>
         {this.canShowMenu && (
-          <IconButton icon="more-vertical" className={styles.menuBtn} onClick={this.handleClick} />
+          <IconButton
+            icon="more-vertical"
+            className={styles.menuBtn}
+            onClick={this.props.onClickMenu}
+          />
         )}
-        {this.canShowMenu && this.renderMenu()}
       </figure>
     )
-  }
-
-  private renderMenu() {
-    const { anchorEl } = this.state
-    return (
-      <Menu
-        id="simple-menu"
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={this.handleClose}
-      >
-        {/*
-      TODO:
-      - media info
-      - copy link
-      - open in browser
-      - remove (admin only)
-      - move menus up to parent component?
-      */}
-        <MenuItem onClick={this.props.onClick} dense>
-          Remove
-        </MenuItem>
-      </Menu>
-    )
-  }
-
-  private handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    this.setState({ anchorEl: event.target as HTMLElement })
-  }
-
-  private handleClose = () => {
-    this.setState({ anchorEl: undefined })
   }
 }

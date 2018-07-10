@@ -47,6 +47,7 @@ class _UserList extends Component<Props> {
         title={t('users')}
         tagline={this.userSlots}
         action={this.renderActions()}
+        renderMenuOptions={() => <div />}
       >
         {this.userIds.map((userId: string) => {
           const user = this.props.users.map[userId]!
