@@ -22,7 +22,11 @@ export class ListOverlay<T = any> extends Component<IProps<T>, IState<T>> {
 
   render(): JSX.Element | null {
     return (
-      <div className={cx(this.props.className, styles.container)}>
+      <div
+        className={cx(this.props.className, styles.container, {
+          [styles.active]: !!this.state.menuAnchorEl
+        })}
+      >
         <header className={styles.header}>
           <h2 className={styles.title}>{this.props.title}</h2>
           {this.props.tagline && <span className={styles.tagline}>{this.props.tagline}</span>}

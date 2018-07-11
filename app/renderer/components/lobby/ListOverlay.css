@@ -4,6 +4,7 @@
   -webkit-mask-image: linear-gradient(180deg, white 0%, white 20%, transparent 100%);
 }
 
+.active,
 .container:hover {
   /* Fully opaque mask to hack bgblur from breaking */
   -webkit-mask-image: linear-gradient(#000, #000);

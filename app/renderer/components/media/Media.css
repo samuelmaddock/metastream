@@ -47,3 +47,12 @@
   max-width: 140px;
   vertical-align: middle;
 }
+
+.menuBtn {
+  opacity: 0;
+}
+
+.menuBtn:focus,
+.container:hover .menuBtn {
+  opacity: 1;
+}
