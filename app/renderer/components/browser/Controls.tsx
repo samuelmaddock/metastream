@@ -21,6 +21,7 @@ interface IState {
   url?: string
   loading?: boolean
   tabId?: number
+  canRequest?: boolean
 }
 
 export class WebControls extends Component<IProps, IState> {
@@ -32,11 +33,6 @@ export class WebControls extends Component<IProps, IState> {
 
   private get addressUrl() {
     return this.addressInput && this.addressInput.value
-  }
-
-  private get canRequestUrl() {
-    const url = this.addressUrl
-    return url ? url.length !== 0 : false
   }
 
   render(): JSX.Element {
@@ -104,8 +100,8 @@ export class WebControls extends Component<IProps, IState> {
         <HighlightButton
           icon="play"
           onClick={this.onPlayClicked.bind(this)}
-          disabled={!this.canRequestUrl}
-          highlight={this.canRequestUrl}
+          disabled={!this.state.canRequest}
+          highlight={this.state.canRequest}
         >
           {t('requestUrl')}
         </HighlightButton>
@@ -158,6 +154,7 @@ export class WebControls extends Component<IProps, IState> {
             onKeyPress={this.onLocationKeyPress}
             onChange={() => {
               /* force react controlled input */
+              this.onAddressChange()
             }}
             spellCheck={false}
             autoFocus
@@ -211,6 +208,7 @@ export class WebControls extends Component<IProps, IState> {
       const prevUrl = this.addressInput.value
       if (prevUrl !== url) {
         this.addressInput.value = url
+        this.onAddressChange()
         this.forceUpdate()
       }
     }
@@ -240,6 +238,14 @@ export class WebControls extends Component<IProps, IState> {
         this.loadURL(url)
         this.webview!.focus()
       }
+    }
+  }
+
+  private onAddressChange() {
+    const url = this.addressUrl
+    const canRequest = !!(url && url.length >= 1)
+    if (canRequest !== this.state.canRequest) {
+      this.setState({ canRequest })
     }
   }
 
