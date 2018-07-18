@@ -11,7 +11,8 @@ import {
   repeatMedia,
   updateMedia,
   deleteMedia,
-  updateServerClockSkew
+  updateServerClockSkew,
+  moveToTop
 } from 'renderer/lobby/actions/mediaPlayer'
 import { MediaType } from 'renderer/media/types'
 import { NetActions } from 'renderer/network/actions'
@@ -198,6 +199,14 @@ export const mediaPlayer: Reducer<IMediaPlayerState> = (
     if (mediaIdx > -1) {
       const queue = [...state.queue]
       queue.splice(mediaIdx, 1)
+      return { ...state, queue }
+    }
+  } else if (isType(action, moveToTop)) {
+    const mediaId = action.payload
+    const mediaIdx = state.queue.findIndex(media => media.id === mediaId)
+    if (mediaIdx > -1) {
+      const queue = [...state.queue]
+      queue.unshift(queue.splice(mediaIdx, 1)[0])
       return { ...state, queue }
     }
   }

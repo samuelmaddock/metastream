@@ -31,6 +31,7 @@ export default {
   join: 'Join',
   joinSession: 'Join Session',
   license: 'License',
+  moveToTop: 'Move to top',
   next: 'Next',
   nextUp: 'Next Up',
   networkDisconnectHostDisconnect: 'Host closed connection',

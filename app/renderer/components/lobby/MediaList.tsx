@@ -4,7 +4,11 @@ import { connect, DispatchProp } from 'react-redux'
 import { IAppState } from '../../reducers/index'
 import { IMediaItem } from '../../lobby/reducers/mediaPlayer'
 import { getCurrentMedia, getMediaQueue } from '../../lobby/reducers/mediaPlayer.helpers'
-import { server_requestDeleteMedia, server_requestMedia } from '../../lobby/actions/mediaPlayer'
+import {
+  server_requestDeleteMedia,
+  server_requestMedia,
+  server_requestMoveToTop
+} from '../../lobby/actions/mediaPlayer'
 
 import { HighlightButton } from '../common/button'
 import { ListOverlay } from './ListOverlay'
@@ -81,6 +85,10 @@ class _MediaList extends Component<Props> {
 
           if (this.props.isHost) {
             items = items.concat([
+              {
+                label: t('moveToTop'),
+                onClick: () => this.props.dispatch!(server_requestMoveToTop(media.id))
+              },
               {
                 label: t('duplicate'),
                 onClick: () => this.props.dispatch!(server_requestMedia(media.requestUrl))

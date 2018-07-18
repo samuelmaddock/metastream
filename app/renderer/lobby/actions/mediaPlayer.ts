@@ -1,12 +1,9 @@
-import { parse as parseUrl } from 'url'
 import { actionCreator } from 'utils/redux'
 import shortid from 'shortid'
 import { IMediaItem, PlaybackState } from 'renderer/lobby/reducers/mediaPlayer'
-import { Thunk } from 'types/thunk'
 import { ThunkAction } from 'redux-thunk'
 import { rpc, RpcRealm } from 'renderer/network/middleware/rpc'
 import { RpcThunk } from 'renderer/lobby/types'
-import { PlatformService } from 'renderer/platform'
 import { resolveMediaUrl, resolveMediaPlaylist } from 'renderer/media'
 import { MediaThumbnailSize, MediaType } from 'renderer/media/types'
 import {
@@ -17,9 +14,8 @@ import {
   hasPlaybackPermissions
 } from 'renderer/lobby/reducers/mediaPlayer.helpers'
 import { IAppState } from 'renderer/reducers'
-import { getUserName, hasRole, isAdmin, isDJ } from 'renderer/lobby/reducers/users.helpers'
+import { getUserName } from 'renderer/lobby/reducers/users.helpers'
 import { maybeShowPurchaseModal } from '../../actions/ui'
-import { NetConnection } from '../../network'
 
 export const playPauseMedia = actionCreator<number>('PLAY_PAUSE_MEDIA')
 export const repeatMedia = actionCreator<number>('REPEAT_MEDIA')
@@ -29,6 +25,7 @@ export const endMedia = actionCreator<void>('END_MEDIA')
 export const queueMedia = actionCreator<IMediaItem>('QUEUE_MEDIA')
 export const updateMedia = actionCreator<{ duration: number }>('UPDATE_MEDIA')
 export const deleteMedia = actionCreator<string>('DELETE_MEDIA')
+export const moveToTop = actionCreator<string>('MOVE_MEDIA_TO_TOP')
 export const updateServerClockSkew = actionCreator<number>('UPDATE_SERVER_CLOCK_SKEW')
 
 /** Media timer until playback ends. This assumes only one media player exists at a time.*/
@@ -253,3 +250,9 @@ const requestDeleteMedia = (mediaId: string): RpcThunk<void> => (dispatch, getSt
   dispatch(deleteMedia(mediaId))
 }
 export const server_requestDeleteMedia = rpc(RpcRealm.Server, requestDeleteMedia)
+
+const requestMoveToTop = (mediaId: string): RpcThunk<void> => (dispatch, getState, context) => {
+  if (!hasPlaybackPermissions(getState(), context.client)) return
+  dispatch(moveToTop(mediaId))
+}
+export const server_requestMoveToTop = rpc(RpcRealm.Server, requestMoveToTop)
