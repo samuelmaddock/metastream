@@ -35,7 +35,7 @@ export class MediaItem extends Component<IProps, IState> {
               <span className={styles.duration}>{formatMs(media.duration)}</span>
             )}
           {media.ownerName && (
-            <div>
+            <div className={styles.authorContainer}>
               <span className={styles.authorLabel}>Added by</span>
               <span className={styles.author}>{media.ownerName}</span>
             </div>

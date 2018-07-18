@@ -29,6 +29,10 @@
   flex: 1 1 100%;
 }
 
+.authorContainer {
+  margin-left: auto;
+}
+
 .duration,
 .author {
   font-size: 14px;
