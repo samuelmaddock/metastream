@@ -162,7 +162,11 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
           onInvite={() => this.openModal(LobbyModal.Invite)}
           openSessionSettings={() => this.openModal(LobbyModal.SessionSettings)}
         />
-        <MediaList className={styles.queue} onAddMedia={this.openBrowser} />
+        <MediaList
+          className={styles.queue}
+          onAddMedia={this.openBrowser}
+          onShowInfo={this.showInfo}
+        />
 
         <Chat
           className={styles.chat}
@@ -192,9 +196,11 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
           </Modal>
         )
       case LobbyModal.MediaInfo:
+        const media =
+          (this.state.modalProps && this.state.modalProps.media) || this.props.currentMedia
         return (
           <Modal className={styles.modal} onClose={this.closeModal}>
-            <Modals.MediaInfo media={this.props.currentMedia} onClose={this.closeModal} />
+            <Modals.MediaInfo media={media} onClose={this.closeModal} />
           </Modal>
         )
       case LobbyModal.Purchase:
@@ -252,8 +258,8 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
     this.setState({ modal: LobbyModal.Browser, modalProps: { initialUrl: url } })
   }
 
-  private showInfo = () => {
-    this.setState({ modal: LobbyModal.MediaInfo })
+  private showInfo = (media?: IMediaItem) => {
+    this.setState({ modal: LobbyModal.MediaInfo, modalProps: { media } })
   }
 
   private openModal = (modal: LobbyModal) => {

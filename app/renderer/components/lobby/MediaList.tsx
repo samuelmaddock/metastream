@@ -12,13 +12,18 @@ import { t } from '../../../locale/index'
 
 import { MenuItem } from 'material-ui/Menu'
 import { MediaItem } from '../media/MediaItem'
+import { openInBrowser } from '../../../utils/url'
+import { copyToClipboard } from '../../../utils/clipboard'
+import { isHost } from '../../lobby/reducers/users.helpers'
 
 interface IProps {
   className?: string
   onAddMedia(): void
+  onShowInfo(media?: IMediaItem): void
 }
 
 interface IConnectedProps {
+  isHost?: boolean
   currentMedia?: IMediaItem
   mediaQueue: IMediaItem[]
 }
@@ -59,37 +64,46 @@ class _MediaList extends Component<Props> {
           </HighlightButton>
         }
         renderMenuOptions={(media: IMediaItem, close) => {
-          {
-            /*
-          TODO:
-          - media info
-          - copy link
-          - open in browser
-          - remove (admin only)
-          - move menus up to parent component?
-          */
+          const items = [
+            {
+              label: t('openInBrowser'),
+              onClick: () => openInBrowser(media.requestUrl)
+            },
+            {
+              label: t('copyLink'),
+              onClick: () => copyToClipboard(media.requestUrl)
+            },
+            {
+              label: t('info'),
+              onClick: () => this.props.onShowInfo(media)
+            },
+            {
+              label: t('duplicate'),
+              onClick: () => this.props.dispatch!(server_requestMedia(media.requestUrl))
+            }
+          ]
+
+          if (this.props.isHost) {
+            items.push({
+              label: t('remove'),
+              onClick: () => this.props.dispatch!(server_requestDeleteMedia(media.id))
+            })
           }
+
           return (
             <>
-              <MenuItem
-                onClick={() => {
-                  this.props.dispatch!(server_requestMedia(media.requestUrl))
-                  close()
-                }}
-                dense
-              >
-                Duplicate
-              </MenuItem>
-
-              <MenuItem
-                onClick={() => {
-                  this.props.dispatch!(server_requestDeleteMedia(media.id))
-                  close()
-                }}
-                dense
-              >
-                Remove
-              </MenuItem>
+              {items.map((item, idx) => (
+                <MenuItem
+                  key={idx}
+                  onClick={() => {
+                    item.onClick()
+                    close()
+                  }}
+                  dense
+                >
+                  {item.label}
+                </MenuItem>
+              ))}
             </>
           )
         }}
@@ -113,10 +127,9 @@ class _MediaList extends Component<Props> {
 }
 
 export const MediaList = connect(
-  (state: IAppState): IConnectedProps => {
-    return {
-      currentMedia: getCurrentMedia(state),
-      mediaQueue: getMediaQueue(state)
-    }
-  }
+  (state: IAppState): IConnectedProps => ({
+    isHost: isHost(state),
+    currentMedia: getCurrentMedia(state),
+    mediaQueue: getMediaQueue(state)
+  })
 )(_MediaList) as React.ComponentClass<IProps>
