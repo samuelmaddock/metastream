@@ -64,7 +64,7 @@ class _MediaList extends Component<Props> {
           </HighlightButton>
         }
         renderMenuOptions={(media: IMediaItem, close) => {
-          const items = [
+          let items = [
             {
               label: t('openInBrowser'),
               onClick: () => openInBrowser(media.requestUrl)
@@ -76,18 +76,20 @@ class _MediaList extends Component<Props> {
             {
               label: t('info'),
               onClick: () => this.props.onShowInfo(media)
-            },
-            {
-              label: t('duplicate'),
-              onClick: () => this.props.dispatch!(server_requestMedia(media.requestUrl))
             }
           ]
 
           if (this.props.isHost) {
-            items.push({
-              label: t('remove'),
-              onClick: () => this.props.dispatch!(server_requestDeleteMedia(media.id))
-            })
+            items = items.concat([
+              {
+                label: t('duplicate'),
+                onClick: () => this.props.dispatch!(server_requestMedia(media.requestUrl))
+              },
+              {
+                label: t('remove'),
+                onClick: () => this.props.dispatch!(server_requestDeleteMedia(media.id))
+              }
+            ])
           }
 
           return (
