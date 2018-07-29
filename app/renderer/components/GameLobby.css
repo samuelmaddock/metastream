@@ -12,7 +12,7 @@
   position: relative;
   --overlay-spacing: 50px;
   --overlay-z-index: 10;
-  --playback-overlay-z-index: 11;
+  --playback-overlay-z-index: 9;
   --overlay-anim-duration: 160ms;
 }
 
