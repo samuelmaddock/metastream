@@ -11,7 +11,8 @@ import {
   getPlaybackState,
   getPlaybackTime,
   getCurrentMediaId,
-  hasPlaybackPermissions
+  hasPlaybackPermissions,
+  getMediaById
 } from 'renderer/lobby/reducers/mediaPlayer.helpers'
 import { IAppState } from 'renderer/reducers'
 import { getUserName } from 'renderer/lobby/reducers/users.helpers'
@@ -133,7 +134,7 @@ export const sendMediaRequest = (
   url: string,
   source: string
 ): ThunkAction<void, IAppState, void> => {
-  return async dispatch => {
+  return async (dispatch, getState) => {
     const requestPromise = dispatch(server_requestMedia(url))
 
     const requestCount = parseInt(localStorage.getItem('requestCount') || '0', 10) || 0
@@ -145,15 +146,20 @@ export const sendMediaRequest = (
 
     ga('event', { ec: 'session', ea: 'request_media', el: source })
 
-    const success = await requestPromise
+    const mediaId = await requestPromise
 
-    if (!success) {
+    if (mediaId) {
+      const media = getMediaById(getState(), mediaId)
+      if (media) {
+        dispatch(addChat({ content: `Added "${media.title}"`, timestamp: Date.now() }))
+      }
+    } else {
       dispatch(addChat({ content: `There was an error requesting ${url}`, timestamp: Date.now() }))
     }
   }
 }
 
-const requestMedia = (url: string): RpcThunk<Promise<boolean>> => async (
+const requestMedia = (url: string): RpcThunk<Promise<string | null>> => async (
   dispatch,
   getState,
   context
@@ -170,7 +176,7 @@ const requestMedia = (url: string): RpcThunk<Promise<boolean>> => async (
 
   if (!res) {
     console.log(`Failed to fetch media for ${url}`)
-    return false
+    return null
   }
 
   console.log('Media response', res)
@@ -196,7 +202,7 @@ const requestMedia = (url: string): RpcThunk<Promise<boolean>> => async (
 
   dispatch(enqueueMedia(media))
 
-  return true
+  return media.id
 }
 const server_requestMedia = rpc(RpcRealm.Server, requestMedia)
 

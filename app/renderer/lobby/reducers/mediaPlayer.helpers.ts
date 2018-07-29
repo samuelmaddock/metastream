@@ -46,6 +46,9 @@ export const getMediaQueue = (state: IAppState) => {
 }
 
 export const getMediaById = (state: IAppState, id: string) => {
+  if (getCurrentMediaId(state) === id) {
+    return getCurrentMedia(state)
+  }
   return state.mediaPlayer.queue.find(media => media.id === id)
 }
 
