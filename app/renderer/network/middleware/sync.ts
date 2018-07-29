@@ -37,7 +37,7 @@ const replicationPrefilter = <T>(state: ReplicatedState<T>): deepDiff.IPrefilter
   while (i < path.length) {
     const k = path[i]
     if (tree.hasOwnProperty(k)) {
-      const result = (state as any)[k]! as boolean | ReplicatedState<T>
+      const result = tree[k] as boolean | ReplicatedState<T>
       if (typeof result === 'object') {
         tree = result
       } else if (typeof result === 'boolean') {
@@ -151,12 +151,25 @@ export const netSyncMiddleware = (): Middleware => {
 
     /** Relay state changes from Server to Clients */
     const relay = (delta: deepDiff.IDiff[]) => {
+      // Cleanup diffs to reduce bandwidth
+      delta = delta.map(dt => {
+        dt = { ...dt }
+        if (dt.kind === 'E') {
+          delete dt.lhs
+        }
+        return dt
+      })
+
+      console.log('[Net] netSyncMiddleware delta', delta)
+
       const action: NetPayload = {
         type: NetActionTypes.UPDATE,
         v: COMMIT_NUMBER,
         d: delta
       }
+
       console.info(`[Net] Sending update #${COMMIT_NUMBER}`, action)
+
       const jsonStr = JSON.stringify(action)
       const buf = new Buffer(SYNC_HEADER + jsonStr)
       server!.send(buf)
@@ -182,7 +195,6 @@ export const netSyncMiddleware = (): Middleware => {
       const delta = deepDiff.diff(stateA, stateB, prefilter)
 
       if (delta && delta.length > 0) {
-        console.log('[Net] netSyncMiddleware delta', delta)
         relay(delta)
         COMMIT_NUMBER++
       }
