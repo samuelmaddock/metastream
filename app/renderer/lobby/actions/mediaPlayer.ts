@@ -16,6 +16,7 @@ import {
 import { IAppState } from 'renderer/reducers'
 import { getUserName } from 'renderer/lobby/reducers/users.helpers'
 import { maybeShowPurchaseModal } from '../../actions/ui'
+import { addChat } from './chat'
 
 export const playPauseMedia = actionCreator<number>('PLAY_PAUSE_MEDIA')
 export const repeatMedia = actionCreator<number>('REPEAT_MEDIA')
@@ -133,8 +134,7 @@ export const sendMediaRequest = (
   source: string
 ): ThunkAction<void, IAppState, void> => {
   return async dispatch => {
-    const result = await dispatch(server_requestMedia(url))
-    console.log('sendMediaRequest result', result)
+    const requestPromise = dispatch(server_requestMedia(url))
 
     const requestCount = parseInt(localStorage.getItem('requestCount') || '0', 10) || 0
     localStorage.setItem('requestCount', `${requestCount + 1}`)
@@ -144,10 +144,16 @@ export const sendMediaRequest = (
     }
 
     ga('event', { ec: 'session', ea: 'request_media', el: source })
+
+    const success = await requestPromise
+
+    if (!success) {
+      dispatch(addChat({ content: `There was an error requesting ${url}`, timestamp: Date.now() }))
+    }
   }
 }
 
-const requestMedia = (url: string): RpcThunk<Promise<string>> => async (
+const requestMedia = (url: string): RpcThunk<Promise<boolean>> => async (
   dispatch,
   getState,
   context
@@ -159,15 +165,12 @@ const requestMedia = (url: string): RpcThunk<Promise<string>> => async (
   try {
     res = await resolveMediaUrl(url)
   } catch (e) {
-    // TODO: Notify client
-    console.error(`Failed to fetch media URL metadata`)
     console.error(e)
-    return 'Failed'
   }
 
   if (!res) {
     console.log(`Failed to fetch media for ${url}`)
-    return 'Failed 2'
+    return false
   }
 
   console.log('Media response', res)
@@ -193,7 +196,7 @@ const requestMedia = (url: string): RpcThunk<Promise<string>> => async (
 
   dispatch(enqueueMedia(media))
 
-  return `Success: title='${media.title}', duration=${media.duration}`
+  return true
 }
 const server_requestMedia = rpc(RpcRealm.Server, requestMedia)
 
