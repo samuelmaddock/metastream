@@ -238,22 +238,21 @@ export const netRpcMiddleware = (): Middleware => {
 
       if (asyncResult) {
         return {
-          then() {
+          then(resolve: Function, reject: Function) {
             console.log('Redux RPC then invoked', ...arguments)
-            return new Promise((resolve, reject) => {
-              let timeoutId = -1
 
-              const cb = (...args: any[]) => {
-                clearTimeout(timeoutId)
-                resolve(...args)
-              }
-              addResultListener(action.payload.id, cb)
+            let timeoutId = -1
 
-              timeoutId = (setTimeout(() => {
-                removeResultListener(action.payload.id, cb)
-                reject('Timeout')
-              }, 5000) as any) as number
-            })
+            const cb = (...args: any[]) => {
+              clearTimeout(timeoutId)
+              resolve(...args)
+            }
+            addResultListener(action.payload.id, cb)
+
+            timeoutId = (setTimeout(() => {
+              removeResultListener(action.payload.id, cb)
+              reject('Timeout')
+            }, 5000) as any) as number
           }
         } as any
       }
