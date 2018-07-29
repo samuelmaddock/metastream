@@ -95,7 +95,7 @@ export const netRpcMiddleware = (): Middleware => {
       server = null
     }
 
-    const receive = (client: NetConnection, data: Buffer) => {
+    const receive = async (client: NetConnection, data: Buffer) => {
       if (data.indexOf(RPC_HEADER) !== 0) {
         return
       }
@@ -115,9 +115,16 @@ export const netRpcMiddleware = (): Middleware => {
 
         console.info(`[RPC] Received RPC '#${action.type}' from ${client.id}`, action)
 
-        const result = dispatchRpc(action, client)
-        if (typeof result !== 'undefined') {
-          sendRpcResult(action.payload.id, result, client)
+        let returnValue
+        try {
+          returnValue = await dispatchRpc(action, client)
+        } catch (e) {
+          console.error(e)
+          return
+        }
+
+        if (typeof returnValue !== 'undefined') {
+          sendRpcResult(action.payload.id, returnValue, client)
         }
       } else if (json.type === RpcMessageType.Result) {
         dispatchResultListeners(json.id, json.result)
