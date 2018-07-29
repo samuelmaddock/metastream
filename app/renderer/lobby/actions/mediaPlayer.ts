@@ -151,7 +151,7 @@ export const sendMediaRequest = (
     if (mediaId) {
       const media = getMediaById(getState(), mediaId)
       if (media) {
-        dispatch(addChat({ content: `Added "${media.title}"`, timestamp: Date.now() }))
+        dispatch(addChat({ content: `Added “${media.title}”`, timestamp: Date.now() }))
       }
     } else {
       dispatch(addChat({ content: `There was an error requesting ${url}`, timestamp: Date.now() }))
