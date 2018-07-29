@@ -104,14 +104,17 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
     const { current: prevMedia } = prevProps
 
     if (current !== prevMedia) {
-      if (current && prevMedia && current.url === prevMedia.url) {
+      if (current && prevMedia && current.id === prevMedia.id) {
+        // Ignore -- maybe do deep equals check in the future
+      } else if (current && prevMedia && current.url === prevMedia.url) {
         // Force restart media if new media is the same URL
         this.onMediaReady()
+        return
       } else {
         // Update URL on webview otherwise
         this.reload()
+        return
       }
-      return
     }
 
     if (this.props.playback !== prevProps.playback) {
