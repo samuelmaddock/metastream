@@ -1,5 +1,5 @@
 import { load } from 'cheerio';
-import _ from 'lodash';
+import { zip } from 'lodash';
 
 const fieldsArray = [
   {
@@ -370,7 +370,7 @@ export function parse(body, options) {
     ogObject.ogImageHeight = ogObject.ogImageHeight ? ogObject.ogImageHeight : [null];
     ogObject.ogImageType = ogObject.ogImageType ? ogObject.ogImageType : [null];
   }
-  var ogImages = _.zip(
+  var ogImages = zip(
     ogObject.ogImage,
     ogObject.ogImageWidth,
     ogObject.ogImageHeight,
@@ -388,7 +388,7 @@ export function parse(body, options) {
     ogObject.ogVideoType = ogObject.ogVideoType ? ogObject.ogVideoType : [null];
     ogObject.ogVideoDuration = (ogObject.videoDuration || ogObject.ogVideoDuration) || [null];
   }
-  var ogVideos = _.zip(
+  var ogVideos = zip(
     ogObject.ogVideo,
     ogObject.ogVideoWidth,
     ogObject.ogVideoHeight,
@@ -417,7 +417,7 @@ export function parse(body, options) {
       : [null];
     ogObject.twitterImageAlt = ogObject.twitterImageAlt ? ogObject.twitterImageAlt : [null];
   }
-  var twitterImages = _.zip(
+  var twitterImages = zip(
     ogObject.twitterImage,
     ogObject.twitterImageWidth,
     ogObject.twitterImageHeight,
@@ -445,7 +445,7 @@ export function parse(body, options) {
       ? ogObject.twitterPlayerStream
       : [null];
   }
-  var twitterPlayers = _.zip(
+  var twitterPlayers = zip(
     ogObject.twitterPlayer,
     ogObject.twitterPlayerWidth,
     ogObject.twitterPlayerHeight,
