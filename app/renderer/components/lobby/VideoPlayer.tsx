@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import cx from 'classnames'
 import styles from './VideoPlayer.css'
 import { IMediaItem, PlaybackState, IMediaPlayerState } from 'renderer/lobby/reducers/mediaPlayer'
@@ -20,6 +20,7 @@ import { IAppState } from 'renderer/reducers'
 import { getPlaybackTime2 } from 'renderer/lobby/reducers/mediaPlayer.helpers'
 import { isHost } from 'renderer/lobby/reducers/users.helpers'
 const { remote, ipcRenderer } = chrome
+import { isEqual } from 'lodash'
 
 interface IProps {
   className?: string
@@ -50,7 +51,7 @@ const mapStateToProps = (state: IAppState): IConnectedProps => {
 
 type PrivateProps = IProps & IConnectedProps & DispatchProp<IAppState>
 
-class _VideoPlayer extends Component<PrivateProps, IState> {
+class _VideoPlayer extends PureComponent<PrivateProps, IState> {
   private webview: Electron.WebviewTag | null = null
   private webContents!: Electron.WebContents
 
@@ -104,8 +105,8 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
     const { current: prevMedia } = prevProps
 
     if (current !== prevMedia) {
-      if (current && prevMedia && current.id === prevMedia.id) {
-        // Ignore -- maybe do deep equals check in the future
+      if (isEqual(current, prevMedia)) {
+        // Ignore: new object, same properties
       } else if (current && prevMedia && current.url === prevMedia.url) {
         // Force restart media if new media is the same URL
         this.onMediaReady()
@@ -226,7 +227,7 @@ class _VideoPlayer extends Component<PrivateProps, IState> {
   private updatePlaybackTime = () => {
     const { current: media } = this.props
 
-    if (media && (media.duration === 0 || typeof media.duration === 'undefined')) {
+    if (media && media.duration === 0) {
       console.debug('Preventing updating playback since duration indicates livestream')
       return // live stream
     }
