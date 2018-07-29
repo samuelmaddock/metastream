@@ -6,8 +6,8 @@ import { IMediaItem } from '../../lobby/reducers/mediaPlayer'
 import { getCurrentMedia, getMediaQueue } from '../../lobby/reducers/mediaPlayer.helpers'
 import {
   server_requestDeleteMedia,
-  server_requestMedia,
-  server_requestMoveToTop
+  server_requestMoveToTop,
+  sendMediaRequest
 } from '../../lobby/actions/mediaPlayer'
 
 import { HighlightButton } from '../common/button'
@@ -91,7 +91,10 @@ class _MediaList extends Component<Props> {
               },
               {
                 label: t('duplicate'),
-                onClick: () => this.props.dispatch!(server_requestMedia(media.requestUrl))
+                onClick: () =>
+                  this.props.dispatch!(
+                    sendMediaRequest(media.requestUrl, 'media-context-menu-duplicate')
+                  )
               },
               {
                 label: t('remove'),

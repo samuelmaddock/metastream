@@ -33,7 +33,7 @@ export const usersMiddleware = (): Middleware => {
 
     const onDisconnect = (conn: NetConnection) => {
       const id = conn.id.toString()
-      dispatch(multi_userLeft(id))
+      dispatch(multi_userLeft(id) as any)
       dispatch(removeUser(id))
     }
 

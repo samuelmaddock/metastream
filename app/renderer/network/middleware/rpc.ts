@@ -6,6 +6,30 @@ import { NetMiddlewareOptions, NetActions } from 'renderer/network/actions'
 import { isType } from 'utils/redux'
 import { initLobby } from '../../lobby/actions/common'
 
+let RPC_UID = 1
+
+const remoteResultListeners: { [id: number]: Set<Function> | undefined } = {}
+
+const addResultListener = (id: number, cb: Function) => {
+  const set = remoteResultListeners[id] || (remoteResultListeners[id] = new Set())
+  set.add(cb)
+}
+
+const removeResultListener = (id: number, cb: Function) => {
+  const set = remoteResultListeners[id]
+  if (set && set.has(cb)) {
+    set.delete(cb)
+  }
+}
+
+const dispatchResultListeners = (id: number, result: any) => {
+  const set = remoteResultListeners[id]
+  if (set) {
+    Array.from(set).forEach(cb => cb(result))
+    remoteResultListeners[id] = undefined
+  }
+}
+
 const RpcReduxActionTypes = {
   DISPATCH: '@@rpc/DISPATCH'
 }
@@ -33,6 +57,24 @@ export interface NetRpcMiddlewareOptions {
 
 const RPC_HEADER = 'RPC'
 
+const enum RpcMessageType {
+  Exec,
+  Result
+}
+
+type RpcJson =
+  | {
+      type: RpcMessageType.Exec
+      id: number
+      name: string
+      args: any[]
+    }
+  | {
+      type: RpcMessageType.Result
+      id: number
+      result: any
+    }
+
 export const netRpcMiddleware = (): Middleware => {
   return <S extends Object>(store: MiddlewareAPI<S>) => {
     const { dispatch, getState } = store
@@ -59,19 +101,27 @@ export const netRpcMiddleware = (): Middleware => {
       }
 
       const jsonStr = data.toString('utf-8', RPC_HEADER.length)
-      const json = JSON.parse(jsonStr)
+      const json = JSON.parse(jsonStr) as RpcJson
 
-      const action = {
-        type: RpcReduxActionTypes.DISPATCH,
-        payload: {
-          name: json.name,
-          args: json.args
+      if (json.type === RpcMessageType.Exec) {
+        const action = {
+          type: RpcReduxActionTypes.DISPATCH,
+          payload: {
+            id: json.id,
+            name: json.name,
+            args: json.args
+          }
         }
+
+        console.info(`[RPC] Received RPC '#${action.type}' from ${client.id}`, action)
+
+        const result = dispatchRpc(action, client)
+        if (typeof result !== 'undefined') {
+          sendRpcResult(action.payload.id, result, client)
+        }
+      } else if (json.type === RpcMessageType.Result) {
+        dispatchResultListeners(json.id, json.result)
       }
-
-      console.info(`[RPC] Received RPC '#${action.type}' from ${client.id}`, action)
-
-      dispatchRpc(action, client)
     }
 
     /** Send RPC to recipients. */
@@ -81,7 +131,8 @@ export const netRpcMiddleware = (): Middleware => {
       const { payload, clients } = action
       const rpc = getRpc(payload.name)!
 
-      const json = JSON.stringify(payload)
+      const msg: RpcJson = { type: RpcMessageType.Exec, ...payload }
+      const json = JSON.stringify(msg)
       const buf = new Buffer(RPC_HEADER + json)
 
       switch (rpc.realm) {
@@ -103,13 +154,20 @@ export const netRpcMiddleware = (): Middleware => {
       }
     }
 
+    const sendRpcResult = (id: number, result: any, client: NetConnection) => {
+      const payload: RpcJson = { type: RpcMessageType.Result, id, result }
+      const json = JSON.stringify(payload)
+      const buf = new Buffer(RPC_HEADER + json)
+      client.send(buf)
+    }
+
     /** Dispatch RPC on local Redux store. */
     const dispatchRpc = (action: RpcAction, client: NetConnection) => {
       const result = execRpc(action, client)
 
       if (isRpcThunk(result)) {
         const context = { client, host, server: server! }
-        result(dispatch, getState, context)
+        return result(dispatch, getState, context)
       } else if (typeof result === 'object') {
         dispatch(result as Action)
       } else if (typeof result === 'string') {
@@ -142,15 +200,20 @@ export const netRpcMiddleware = (): Middleware => {
         throw new Error(`[RPC] Attempted to dispatch unknown RPC '${rpcName}'`)
       }
 
+      // TODO: send result back if received from peer
+      // TODO: return proxy promise when remote dispatched
+      let asyncResult = false
+
       // https://docs.unrealengine.com/latest/INT/Gameplay/Networking/Actors/RPCs/#rpcinvokedfromtheserver
       switch (rpc.realm) {
         case RpcRealm.Server:
           // SERVER: dispatch
           // CLIENT: send to server
           if (host) {
-            dispatchRpc(action, localUser())
+            return dispatchRpc(action, localUser()) as any
           } else {
             sendRpc(action)
+            asyncResult = true
           }
           break
         case RpcRealm.Client:
@@ -158,6 +221,7 @@ export const netRpcMiddleware = (): Middleware => {
           // CLIENT: throw
           if (host) {
             sendRpc(action)
+            asyncResult = true
           } else {
             throw new Error(`Client RPC '${action.type}' dispatched on client`)
           }
@@ -170,6 +234,28 @@ export const netRpcMiddleware = (): Middleware => {
           }
           dispatchRpc(action, localUser())
           break
+      }
+
+      if (asyncResult) {
+        return {
+          then() {
+            console.log('Redux RPC then invoked', ...arguments)
+            return new Promise((resolve, reject) => {
+              let timeoutId = -1
+
+              const cb = (...args: any[]) => {
+                clearTimeout(timeoutId)
+                resolve(...args)
+              }
+              addResultListener(action.payload.id, cb)
+
+              timeoutId = (setTimeout(() => {
+                removeResultListener(action.payload.id, cb)
+                reject('Timeout')
+              }, 5000) as any) as number
+            })
+          }
+        } as any
       }
 
       return true
@@ -192,6 +278,10 @@ type RecipientFilter = string[]
 interface RpcAction extends Action {
   clients?: RecipientFilter
   payload: {
+    /** Unique RPC ID. */
+    id: number
+
+    /** Remote RPC function name. */
     name: string
     args: any[]
   }
@@ -232,21 +322,21 @@ const execRpc = <T>({ payload }: RpcAction, client: NetConnection): T | string =
 }
 
 // prettier-ignore
-export function rpc<TResult>(realm: RpcRealm.Multicast | RpcRealm.Server, action: () => TResult, opts?: IRPCOptions): (() => ActionCreator<void>);
+export function rpc<TResult>(realm: RpcRealm.Multicast | RpcRealm.Server, action: () => TResult, opts?: IRPCOptions): (() => TResult);
 // prettier-ignore
-export function rpc<T1, TResult>(realm: RpcRealm.Multicast | RpcRealm.Server, action: (a: T1) => TResult, opts?: IRPCOptions): ((a: T1) => ActionCreator<void>);
+export function rpc<T1, TResult>(realm: RpcRealm.Multicast | RpcRealm.Server, action: (a: T1) => TResult, opts?: IRPCOptions): ((a: T1) => TResult);
 // prettier-ignore
-export function rpc<T1, T2, TResult>(realm: RpcRealm.Multicast | RpcRealm.Server, action: (a: T1, b: T2) => TResult, opts?: IRPCOptions): ((a: T1, b: T2) => ActionCreator<void>);
+export function rpc<T1, T2, TResult>(realm: RpcRealm.Multicast | RpcRealm.Server, action: (a: T1, b: T2) => TResult, opts?: IRPCOptions): ((a: T1, b: T2) => TResult);
 // prettier-ignore
-export function rpc<T1, T2, T3, TResult>(realm: RpcRealm.Multicast | RpcRealm.Server, action: (a: T1, b: T2, c: T3) => TResult, opts?: IRPCOptions): ((a: T1, b: T2, c: T3) => ActionCreator<void>);
+export function rpc<T1, T2, T3, TResult>(realm: RpcRealm.Multicast | RpcRealm.Server, action: (a: T1, b: T2, c: T3) => TResult, opts?: IRPCOptions): ((a: T1, b: T2, c: T3) => TResult);
 // prettier-ignore
-export function rpc<TResult>(realm: RpcRealm.Client, action: () => TResult, opts?: IRPCOptions): (() => (...clients: RecipientFilter) => ActionCreator<void>);
+export function rpc<TResult>(realm: RpcRealm.Client, action: () => TResult, opts?: IRPCOptions): (() => (...clients: RecipientFilter) => TResult);
 // prettier-ignore
-export function rpc<T1, TResult>(realm: RpcRealm.Client, action: (a: T1) => TResult, opts?: IRPCOptions): ((a: T1) => (...clients: RecipientFilter) => ActionCreator<void>);
+export function rpc<T1, TResult>(realm: RpcRealm.Client, action: (a: T1) => TResult, opts?: IRPCOptions): ((a: T1) => (...clients: RecipientFilter) => TResult);
 // prettier-ignore
-export function rpc<T1, T2, TResult>(realm: RpcRealm.Client, action: (a: T1, b: T2) => TResult, opts?: IRPCOptions): ((a: T1, b: T2) => (...clients: RecipientFilter) => ActionCreator<void>);
+export function rpc<T1, T2, TResult>(realm: RpcRealm.Client, action: (a: T1, b: T2) => TResult, opts?: IRPCOptions): ((a: T1, b: T2) => (...clients: RecipientFilter) => TResult);
 // prettier-ignore
-export function rpc<T1, T2, T3, TResult>(realm: RpcRealm.Client, action: (a: T1, b: T2, c: T3) => TResult, opts?: IRPCOptions): ((a: T1, b: T2, c: T3) => (...clients: RecipientFilter) => ActionCreator<void>);
+export function rpc<T1, T2, T3, TResult>(realm: RpcRealm.Client, action: (a: T1, b: T2, c: T3) => TResult, opts?: IRPCOptions): ((a: T1, b: T2, c: T3) => (...clients: RecipientFilter) => TResult);
 // prettier-ignore
 export function rpc(realm: RpcRealm, action: (...args: any[]) => any, opts?: IRPCOptions): Function {
   const { name } = action
@@ -272,6 +362,7 @@ export function rpc(realm: RpcRealm, action: (...args: any[]) => any, opts?: IRP
         type: RpcReduxActionTypes.DISPATCH,
         clients,
         payload: {
+          id: RPC_UID++,
           name: name,
           args: args
         },
@@ -281,6 +372,7 @@ export function rpc(realm: RpcRealm, action: (...args: any[]) => any, opts?: IRP
       ({
         type: RpcReduxActionTypes.DISPATCH,
         payload: {
+          id: RPC_UID++,
           name: name,
           args: args
         }

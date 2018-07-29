@@ -132,8 +132,9 @@ export const sendMediaRequest = (
   url: string,
   source: string
 ): ThunkAction<void, IAppState, void> => {
-  return dispatch => {
-    dispatch(server_requestMedia(url))
+  return async dispatch => {
+    const result = await dispatch(server_requestMedia(url))
+    console.log('sendMediaRequest result', result)
 
     const requestCount = parseInt(localStorage.getItem('requestCount') || '0', 10) || 0
     localStorage.setItem('requestCount', `${requestCount + 1}`)
@@ -146,7 +147,11 @@ export const sendMediaRequest = (
   }
 }
 
-const requestMedia = (url: string): RpcThunk<void> => async (dispatch, getState, context) => {
+const requestMedia = (url: string): RpcThunk<Promise<string>> => async (
+  dispatch,
+  getState,
+  context
+) => {
   console.info('Media request', url, context)
 
   let res
@@ -157,12 +162,12 @@ const requestMedia = (url: string): RpcThunk<void> => async (dispatch, getState,
     // TODO: Notify client
     console.error(`Failed to fetch media URL metadata`)
     console.error(e)
-    return
+    return 'Failed'
   }
 
   if (!res) {
     console.log(`Failed to fetch media for ${url}`)
-    return
+    return 'Failed 2'
   }
 
   console.log('Media response', res)
@@ -187,8 +192,10 @@ const requestMedia = (url: string): RpcThunk<void> => async (dispatch, getState,
   }
 
   dispatch(enqueueMedia(media))
+
+  return `Success: title='${media.title}', duration=${media.duration}`
 }
-export const server_requestMedia = rpc(RpcRealm.Server, requestMedia)
+const server_requestMedia = rpc(RpcRealm.Server, requestMedia)
 
 const requestPlayPause = (): RpcThunk<void> => (dispatch, getState, context) => {
   const state = getState()
