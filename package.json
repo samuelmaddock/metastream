@@ -31,12 +31,12 @@
     "test-watch": "npm test -- --watch",
     "test": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 node --trace-warnings ./test/runTests.js"
   },
-  "browserslist": "Chrome >= 64",
+  "browserslist": "Chrome >= 67",
   "build": {
     "productName": "Metastream",
     "appId": "com.samuelmaddock.metastream",
     "copyright": "Metastream © 2018. All rights reserved.",
-    "muonVersion": "6.0.11",
+    "muonVersion": "7.1.6",
     "nodeGypRebuild": false,
     "npmRebuild": false,
     "afterPack": "scripts/after-pack.js",
