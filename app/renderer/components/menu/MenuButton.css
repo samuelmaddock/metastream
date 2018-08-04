@@ -17,7 +17,7 @@
   background-color: rgba(255, 255, 255, 0.4);
 }
 
-.btn * {
+.btn *:not(svg) {
   mix-blend-mode: soft-light;
   color: black;
   vertical-align: middle;
