@@ -41,13 +41,17 @@
     "npmRebuild": false,
     "afterPack": "scripts/after-pack.js",
     "asarUnpack": [
-      "./node_modules/sodium-native/**"
+      "./node_modules/sodium-native/**",
+      "!./node_modules/sodium-native/build"
     ],
     "files": [
       "assets/",
       "dist/",
       "node_modules/",
+      "!node_modules/sodium-native/build",
       "!node_modules/sodium-native/libsodium",
+      "!node_modules/sodium-native/lib",
+      "!node_modules/utp-native/build",
       "!node_modules/utp-native/deps",
       "!node_modules/**/prebuilds/linux-*",
       "!node_modules/**/prebuilds/win32-ia32",
@@ -56,6 +60,7 @@
       "!node_modules/**/prebuilds/**/node-51*",
       "!node_modules/**/prebuilds/**/node-55*",
       "!node_modules/**/prebuilds/**/node-57*",
+      "!node_modules/**/prebuilds/**/node-59*",
       "browser/resources/",
       "styles/*.global.css",
       "styles/common",
