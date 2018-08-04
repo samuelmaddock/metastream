@@ -45,7 +45,9 @@ async function getScrapedMetadata(url: URL, $: CheerioStatic): Promise<Partial<I
   const isoDuration = metaDuration.attr('content')
 
   const metaBroadcast = $('meta[itemprop=isLiveBroadcast]')
-  const isLiveBroadcast = (metaBroadcast.attr('content') || '').toLowerCase() === 'true'
+  const metaBroadcastEndDate = $('meta[itemprop=endDate]')
+  const isLiveBroadcast =
+    (metaBroadcast.attr('content') || '').toLowerCase() === 'true' && !metaBroadcastEndDate
 
   let duration
 
