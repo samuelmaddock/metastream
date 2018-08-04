@@ -14,6 +14,7 @@ interface IProps {
   messages: IMessage[]
   sendMessage: (text: string) => void
   disabled?: boolean
+  showHint: boolean
 }
 
 interface IState {
@@ -77,6 +78,7 @@ export class Chat extends Component<IProps, IState> {
               send={this.onSend}
               onFocus={this.onFocus}
               onBlur={this.onBlur}
+              showHint={this.props.showHint}
             />
           </div>
         </div>

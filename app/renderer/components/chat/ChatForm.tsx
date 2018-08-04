@@ -1,11 +1,13 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { IMessage } from 'renderer/lobby/reducers/chat'
 
 import styles from './Chat.css'
 import { CHAT_MAX_MESSAGE_LENGTH } from 'constants/chat'
 import { t } from '../../../locale/index'
+import { Key } from './Key'
 
 interface IProps {
+  showHint: boolean
   send: (text: string) => void
   onFocus?: () => void
   onBlur?: () => void
@@ -13,10 +15,13 @@ interface IProps {
 
 interface IState {
   spellcheck?: boolean
+  hasOpened: boolean
 }
 
-export class ChatForm extends Component<IProps, IState> {
-  state: IState = {}
+export class ChatForm extends PureComponent<IProps, IState> {
+  state: IState = {
+    hasOpened: Boolean(localStorage.getItem('hasOpenedChat'))
+  }
 
   private input: HTMLInputElement | null = null
   private dismissed?: boolean
@@ -61,6 +66,12 @@ export class ChatForm extends Component<IProps, IState> {
           onFocus={this.props.onFocus}
           onBlur={this.onBlur}
         />
+        {this.props.showHint &&
+          !this.state.hasOpened && (
+            <div className={styles.hint}>
+              Press <Key /> to reveal chat.
+            </div>
+          )}
       </div>
     )
   }
@@ -68,6 +79,11 @@ export class ChatForm extends Component<IProps, IState> {
   focus(): void {
     if (this.input) {
       this.input.focus()
+    }
+
+    if (!this.state.hasOpened) {
+      localStorage.setItem('hasOpenedChat', '1')
+      this.setState({ hasOpened: true })
     }
   }
 

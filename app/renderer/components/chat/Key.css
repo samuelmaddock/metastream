@@ -1,0 +1,24 @@
+.key {
+  display: inline-block;
+  margin: 0 4px;
+  border-width: 2px 4px 5px;
+  border-style: solid;
+  border-radius: 4px;
+
+  background: #a8aeb8;
+  border-color: #c4c7cc #adb9cc #96a6bd;
+
+  color: #555;
+  font-size: 0.8rem;
+  text-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+  font-style: normal;
+}
+
+.keyCap {
+  background: linear-gradient(to right, #bbc3d2, #cdd3de, #bbc3d2);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  line-height: 24px;
+  padding: 0 7px;
+  display: inline-block;
+}

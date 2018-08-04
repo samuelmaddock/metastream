@@ -50,6 +50,7 @@ import { MediaList } from './lobby/MediaList'
 import { LobbyModal } from '../reducers/ui'
 import { setLobbyModal } from '../actions/ui'
 import { isDeveloper } from '../reducers/settings'
+import { getNumUsers } from '../lobby/reducers/users.helpers'
 
 interface IProps {
   host: boolean
@@ -68,6 +69,7 @@ interface IConnectedProps {
   popup?: IPopupState
   modal?: LobbyModal
   developer: boolean
+  isMultiplayer: boolean
 }
 
 type PrivateProps = IProps & IConnectedProps & DispatchProp<IAppState>
@@ -173,6 +175,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
           messages={this.props.messages}
           sendMessage={this.sendChat}
           disabled={!!this.state.modal}
+          showHint={this.props.isMultiplayer}
         />
       </section>
     )
@@ -283,7 +286,8 @@ export const GameLobby = connect(
       playback: getPlaybackState(state),
       popup: state.extensions.popup,
       modal: state.ui.lobbyModal,
-      developer: isDeveloper(state)
+      developer: isDeveloper(state),
+      isMultiplayer: getNumUsers(state) > 1
     }
   }
 )(_GameLobby) as React.ComponentClass<IProps>

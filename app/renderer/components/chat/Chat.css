@@ -7,7 +7,7 @@
 }
 
 .container:not(.focused) .background,
-.container:not(.focused) .form {
+.container:not(.focused) .messageInput {
   opacity: 0;
 }
 
@@ -107,15 +107,17 @@
 }
 
 .form {
-  composes: anim;
+  --horizontal-padding: 12px;
   width: 100%;
+  position: relative;
 }
 
 .messageInput {
+  composes: anim;
   composes: rounded-bottom from 'styles/layout.css';
   width: 100%;
   height: 40px;
-  padding: 8px 12px;
+  padding: 8px var(--horizontal-padding);
   border: none;
   outline: none;
   background: rgba(0, 0, 0, 0.11);
@@ -123,4 +125,11 @@
 
 .messageInput::-webkit-input-placeholder {
   opacity: 0.5;
+}
+
+.hint {
+  composes: absolute-full center-vertical from 'styles/layout.css';
+  padding: 0 var(--horizontal-padding);
+  font-style: italic;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.66);
 }
