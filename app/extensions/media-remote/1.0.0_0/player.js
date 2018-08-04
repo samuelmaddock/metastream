@@ -222,6 +222,8 @@
       )
     })
 
+    // TODO: Use MutationObserver to observe if video gets removed from DOM
+
     const onDurationChange = debounce(signalReady, 2000)
     media.addEventListener('durationchange', onDurationChange, false)
     signalReady()
@@ -255,7 +257,6 @@
         'ratechange',
         'seeking',
         'seeked',
-        'stalled',
         'suspend',
         'emptied',
         'waiting',
@@ -270,6 +271,11 @@
     // Checks for media when it starts playing
     function checkMediaReady() {
       if (isNaN(media.duration)) {
+        return false
+      }
+
+      // Wait for videos to appear in the DOM
+      if (media instanceof HTMLVideoElement && !media.parentElement) {
         return false
       }
 
