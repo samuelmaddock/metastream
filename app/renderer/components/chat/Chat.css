@@ -65,7 +65,7 @@
   --chat-fade-delay: 5s;
   width: 100%;
   padding: 2px 8px;
-  word-break: break-all;
+  word-break: break-word;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.66);
   animation: 1s ease-in var(--chat-fade-delay);
   animation-name: fadeout;
