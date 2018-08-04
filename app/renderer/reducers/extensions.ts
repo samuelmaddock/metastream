@@ -90,12 +90,12 @@ export const getBrowserActionBackgroundImage = (extension: IExtension, tabId: nu
       return `-webkit-image-set(
                 url(${basePath}/${icon}) 1x`
     }
-    let basePath19 = icon['19']
-    let basePath38 = icon['38']
-    if (basePath19 || basePath38) {
+    let basePathSmall = icon['19'] || icon['16']
+    let basePathMedium = icon['38'] || icon['32']
+    if (basePathSmall || basePathMedium) {
       const set = [
-        basePath19 && `url(${basePath}/${basePath19}) 1x`,
-        basePath38 && `url(${basePath}/${basePath38}) 2x`
+        basePathSmall && `url(${basePath}/${basePathSmall}) 1x`,
+        basePathMedium && `url(${basePath}/${basePathMedium}) 2x`
       ]
       return `-webkit-image-set(${set.filter(Boolean).join(',\n')}`
     }
