@@ -3,7 +3,7 @@ import { connect, DispatchProp } from 'react-redux'
 
 import { IAppState } from '../../reducers/index'
 import { IMediaItem } from '../../lobby/reducers/mediaPlayer'
-import { getCurrentMedia, getMediaQueue } from '../../lobby/reducers/mediaPlayer.helpers'
+import { getCurrentMedia, getMediaQueue, hasPlaybackPermissions } from '../../lobby/reducers/mediaPlayer.helpers'
 import {
   server_requestDeleteMedia,
   server_requestMoveToTop,
@@ -18,7 +18,7 @@ import { MenuItem } from 'material-ui/Menu'
 import { MediaItem } from '../media/MediaItem'
 import { openInBrowser } from '../../../utils/url'
 import { copyToClipboard } from '../../../utils/clipboard'
-import { isHost } from '../../lobby/reducers/users.helpers'
+import { localUser } from 'renderer/network';
 
 interface IProps {
   className?: string
@@ -27,7 +27,7 @@ interface IProps {
 }
 
 interface IConnectedProps {
-  isHost?: boolean
+  hasPlaybackPermissions: boolean
   currentMedia?: IMediaItem
   mediaQueue: IMediaItem[]
 }
@@ -83,7 +83,7 @@ class _MediaList extends Component<Props> {
             }
           ]
 
-          if (this.props.isHost) {
+          if (this.props.hasPlaybackPermissions) {
             items = items.concat([
               {
                 label: t('moveToTop'),
@@ -141,7 +141,7 @@ class _MediaList extends Component<Props> {
 
 export const MediaList = connect(
   (state: IAppState): IConnectedProps => ({
-    isHost: isHost(state),
+    hasPlaybackPermissions: hasPlaybackPermissions(state, localUser()),
     currentMedia: getCurrentMedia(state),
     mediaQueue: getMediaQueue(state)
   })
