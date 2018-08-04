@@ -1,5 +1,9 @@
 'use strict'
 ;(async function initMediaRemote() {
+  // THIS FILE IS HIGHLY EXPERIMENTAL
+  // Eventually I'll clean this up, but right now it's limited
+  // to just one script.
+
   const noop = () => {}
 
   const maskNative = obj => {
@@ -380,7 +384,8 @@
 
       // Infinity is generally used for a dynamically allocated media object
       // or live media
-      if (this.getDuration() === Infinity) {
+      const duration = this.getDuration() * SEC2MS
+      if (duration === Infinity || !isValidDuration(duration)) {
         return
       }
 
