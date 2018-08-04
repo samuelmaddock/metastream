@@ -15,7 +15,7 @@ import {
   getMediaById
 } from 'renderer/lobby/reducers/mediaPlayer.helpers'
 import { IAppState } from 'renderer/reducers'
-import { getUserName } from 'renderer/lobby/reducers/users.helpers'
+import { getUserName, getNumUsers } from 'renderer/lobby/reducers/users.helpers'
 import { maybeShowPurchaseModal } from '../../actions/ui'
 import { addChat } from './chat'
 
@@ -34,17 +34,23 @@ export const updateServerClockSkew = actionCreator<number>('UPDATE_SERVER_CLOCK_
 let mediaTimeoutId: number | null = null
 
 export const nextMedia = (force?: boolean): ThunkAction<void, IAppState, void> => {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const state = getState()
     const media = getCurrentMedia(state)
 
     if (media) {
       if (!force && media.hasMore) {
-        return dispatch(advanceMedia(media))
+        await dispatch(advanceMedia(media))
       } else {
         dispatch(endMedia())
         dispatch(updatePlaybackTimer())
       }
+    }
+
+    // Announce now playing media
+    const current = getCurrentMedia(getState())
+    if (current) {
+      dispatch(multi_announceMediaChange(current.id))
     }
   }
 }
@@ -116,6 +122,17 @@ export const updatePlaybackTimer = (): ThunkAction<void, IAppState, void> => {
   }
 }
 
+const announceMediaChange = (mediaId: string): RpcThunk<void> => (dispatch, getState) => {
+  if (getNumUsers(getState()) === 1) return
+
+  const media = getMediaById(getState(), mediaId)
+  if (!media) return
+
+  const content = `Now playing “${media.title}” requested by ${media.ownerName}`
+  dispatch(addChat({ content, timestamp: Date.now() }))
+}
+export const multi_announceMediaChange = rpc(RpcRealm.Multicast, announceMediaChange)
+
 const enqueueMedia = (media: IMediaItem): ThunkAction<void, IAppState, void> => {
   return (dispatch, getState) => {
     const state = getState()
@@ -126,6 +143,7 @@ const enqueueMedia = (media: IMediaItem): ThunkAction<void, IAppState, void> => 
     } else {
       dispatch(setMedia(media))
       dispatch(updatePlaybackTimer())
+      dispatch(multi_announceMediaChange(media.id))
     }
   }
 }
@@ -149,8 +167,9 @@ export const sendMediaRequest = (
     const mediaId = await requestPromise
 
     if (mediaId) {
-      const media = getMediaById(getState(), mediaId)
-      if (media) {
+      const state = getState()
+      const media = getMediaById(state, mediaId)
+      if (media && media !== getCurrentMedia(state)) {
         dispatch(addChat({ content: `Added “${media.title}”`, timestamp: Date.now() }))
       }
     } else {
