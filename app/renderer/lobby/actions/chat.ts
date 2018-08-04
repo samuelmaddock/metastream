@@ -28,12 +28,14 @@ const broadcastChat = (text: string, userId: string | null): RpcThunk<void> => (
 export const multi_broadcastChat = rpc(RpcRealm.Multicast, broadcastChat)
 
 const rpcAddChat = (text: string): RpcThunk<void> => (dispatch, getState, context) => {
-  const userId = context.client.id.toString()
+  text = text.trim()
+  if (text.length === 0) return
 
   if (text.length > CHAT_MAX_MESSAGE_LENGTH) {
     text = text.substr(0, CHAT_MAX_MESSAGE_LENGTH)
   }
 
+  const userId = context.client.id.toString()
   dispatch(multi_broadcastChat(text, userId))
 }
 export const server_addChat = rpc(RpcRealm.Server, rpcAddChat)
