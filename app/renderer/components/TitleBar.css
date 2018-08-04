@@ -75,7 +75,7 @@
   height: 100%;
   line-height: var(--app-titlebar-height);
   outline: none;
-  opacity: 0.11;
+  opacity: 0.33;
 }
 
 .actionButton svg {
