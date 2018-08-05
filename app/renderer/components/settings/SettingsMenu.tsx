@@ -24,7 +24,6 @@ export class SettingsMenu extends Component<IProps> {
   render(): JSX.Element | null {
     return (
       <LayoutMain className={styles.container}>
-        <GoBackButton />
         <MenuHeader text={t('settings')} />
         <ProfileSettings />
         <AdvancedSettings />

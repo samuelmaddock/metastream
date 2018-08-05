@@ -13,6 +13,7 @@ import styles from './TitleBar.css'
 import { IconButton } from 'renderer/components/common/button'
 import { installUpdate } from 'renderer/actions/ui'
 import { Icon } from './Icon'
+import { push } from 'react-router-redux'
 
 const WINDOW_EVENTS = [
   'maximize',
@@ -30,6 +31,7 @@ interface IProps {
 
 interface IConnectedProps {
   updateAvailable?: boolean
+  showBackButton: boolean
 }
 
 type PrivateProps = IProps & IConnectedProps & DispatchProp<IAppState>
@@ -82,24 +84,25 @@ class _TitleBar extends Component<PrivateProps> {
             <div className={styles.drag} />
           </header>
           {updateButton}
+          {this.props.showBackButton && this.renderBack()}
           {this.platform === 'win32' && this.renderWin32Actions()}
         </div>
       </div>
     )
   }
 
-  private renderWin32Actions(): JSX.Element {
+  private renderWin32Actions() {
     const buttons = [
       {
         label: <Icon name={this.window.isFullScreen() ? 'minimize-2' : 'maximize-2'} />,
         action: () => this.window.setFullScreen(!this.window.isFullScreen())
       },
       {
-        label: '0', // 🗕
+        label: <span className={styles.winIcon}>0</span>, // 🗕
         action: () => this.window.minimize()
       },
       {
-        label: this.window.isMaximized() ? '2' : '1', // 🗖
+        label: <span className={styles.winIcon}>{this.window.isMaximized() ? '2' : '1'}</span>, // 🗖
         action: () => {
           if (this.window.isMaximized()) {
             this.window.restore()
@@ -110,18 +113,42 @@ class _TitleBar extends Component<PrivateProps> {
         }
       },
       {
-        label: 'r', // ✕
-        action: () => this.window.close()
+        label: <span className={styles.winIcon}>r</span>, // ✕
+        action: () => this.window.close(),
+        className: styles.close
       }
     ]
 
     return (
-      <div className={styles.actions}>
+      <div className={styles.rightActions}>
         {buttons.map((btn, idx) => (
-          <button key={idx} type="button" className={styles.actionButton} onClick={btn.action}>
+          <button
+            key={idx}
+            type="button"
+            className={cx(styles.actionButton, btn.className)}
+            onClick={btn.action}
+          >
             {btn.label}
           </button>
         ))}
+      </div>
+    )
+  }
+
+  private renderBack() {
+    return (
+      <div
+        className={cx(styles.leftActions, {
+          darwin: this.platform === 'darwin'
+        })}
+      >
+        <button
+          type="button"
+          className={styles.actionButton}
+          onClick={() => this.props.dispatch!(push('/'))}
+        >
+          <Icon name="arrow-left" />
+        </button>
       </div>
     )
   }
@@ -129,6 +156,10 @@ class _TitleBar extends Component<PrivateProps> {
 
 export const TitleBar = connect(
   (state: IAppState): IConnectedProps => {
-    return { updateAvailable: isUpdateAvailable(state) }
+    const { location } = state.router
+    return {
+      updateAvailable: isUpdateAvailable(state),
+      showBackButton: location ? location.pathname !== '/' : true
+    }
   }
 )(_TitleBar) as React.ComponentClass<IProps>

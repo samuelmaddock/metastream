@@ -223,12 +223,6 @@ class _PlaybackControls extends Component<PrivateProps> {
       </ButtonListItem>
     )
 
-    const disconnectBtn = (
-      <ButtonListItem icon="log-out" onClick={this.disconnect}>
-        {t('disconnect')}
-      </ButtonListItem>
-    )
-
     const mediaButtons = media && (
       <>
         <ButtonListItem icon="external-link" onClick={this.openLink}>
@@ -255,7 +249,6 @@ class _PlaybackControls extends Component<PrivateProps> {
         {mediaButtons}
         {extensionsBtn}
         {debugBtn}
-        {disconnectBtn}
       </MoreButton>
     )
   }
@@ -297,10 +290,6 @@ class _PlaybackControls extends Component<PrivateProps> {
     if (media) {
       copyMediaLink(media)
     }
-  }
-
-  private disconnect = () => {
-    this.props.dispatch!(push('/'))
   }
 }
 

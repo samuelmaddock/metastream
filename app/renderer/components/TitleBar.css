@@ -58,15 +58,20 @@
   pointer-events: none;
 }
 
-.actions {
+.leftActions {
   composes: header-item clickable;
-  right: 0;
+  order: -1;
+}
+
+.leftActions.darwin {
+  padding-left: 80px;
+}
+
+.rightActions {
+  composes: header-item clickable;
 }
 
 .actionButton {
-  /* Windows-only font */
-  font-family: Marlett;
-  font-size: 16px;
   background: transparent;
   transition: background-color 80ms ease;
   border: none;
@@ -86,8 +91,14 @@
   background: rgba(255, 255, 255, 0.3);
 }
 
-.actionButton:last-child:hover {
+.actionButton.close:hover {
   background: rgba(255, 0, 0, 0.5);
+}
+
+.winIcon {
+  /* Windows-only font */
+  font-family: Marlett;
+  font-size: 16px;
 }
 
 .container:hover .actionButton {

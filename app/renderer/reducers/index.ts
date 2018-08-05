@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux'
-import { routerReducer as router } from 'react-router-redux'
+import { routerReducer as router, RouterState } from 'react-router-redux'
 import { Reducer } from 'redux'
 
 import { extensions, IExtensionsState } from './extensions'
@@ -18,6 +18,7 @@ export interface IAppState extends ILobbyNetState {
   lobby: ILobbyState
   settings: ISettingsState
   ui: IUIState
+  router: RouterState
 }
 
 export const AppReplicatedState: ReplicatedState<IAppState> = {
