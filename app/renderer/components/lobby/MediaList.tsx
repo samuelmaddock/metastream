@@ -79,15 +79,22 @@ class _MediaList extends Component<Props> {
             {
               label: t('copyLink'),
               onClick: () => copyMediaLink(media)
-            },
-            {
-              label: t('info'),
-              onClick: () => this.props.onShowInfo(media)
             }
           ]
 
+          if (media.description) {
+            items = [
+              ...items,
+              {
+                label: t('info'),
+                onClick: () => this.props.onShowInfo(media)
+              }
+            ]
+          }
+
           if (this.props.hasPlaybackPermissions) {
-            items = items.concat([
+            items = [
+              ...items,
               {
                 label: t('moveToTop'),
                 onClick: () => this.props.dispatch!(server_requestMoveToTop(media.id))
@@ -103,7 +110,7 @@ class _MediaList extends Component<Props> {
                 label: t('remove'),
                 onClick: () => this.props.dispatch!(server_requestDeleteMedia(media.id))
               }
-            ])
+            ]
           }
 
           return (
