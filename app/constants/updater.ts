@@ -1,6 +1,13 @@
-import { CDN_URL } from "./api";
+import { CDN_URL } from './api'
 
-export default {
-  provider: 'generic',
-  url: `${CDN_URL}a/`
-}
+export default (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true'
+  ? {
+      provider: 'generic',
+      url: `http://localhost:8080/`
+    }
+  : {
+      provider: 'github',
+      repo: 'metastream-releases',
+      owner: 'samuelmaddock',
+      private: true
+    })
