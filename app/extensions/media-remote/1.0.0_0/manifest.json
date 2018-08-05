@@ -23,6 +23,11 @@
       "matches": ["https://*.netflix.com/*", "https://*.spotify.com/*"],
       "js": ["players/clear-storage.js"],
       "run_at": "document_start"
+    },
+    {
+      "matches": ["https://new.hulu.com/*"],
+      "js": ["players/hulu.js"],
+      "run_at": "document_start"
     }
   ],
   "web_accessible_resources": [
