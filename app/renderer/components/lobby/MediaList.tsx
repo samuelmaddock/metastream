@@ -3,7 +3,11 @@ import { connect, DispatchProp } from 'react-redux'
 
 import { IAppState } from '../../reducers/index'
 import { IMediaItem } from '../../lobby/reducers/mediaPlayer'
-import { getCurrentMedia, getMediaQueue, hasPlaybackPermissions } from '../../lobby/reducers/mediaPlayer.helpers'
+import {
+  getCurrentMedia,
+  getMediaQueue,
+  hasPlaybackPermissions
+} from '../../lobby/reducers/mediaPlayer.helpers'
 import {
   server_requestDeleteMedia,
   server_requestMoveToTop,
@@ -16,9 +20,8 @@ import { t } from '../../../locale/index'
 
 import { MenuItem } from 'material-ui/Menu'
 import { MediaItem } from '../media/MediaItem'
-import { openInBrowser } from '../../../utils/url'
-import { copyToClipboard } from '../../../utils/clipboard'
-import { localUser } from 'renderer/network';
+import { localUser } from 'renderer/network'
+import { copyMediaLink, openMediaInBrowser } from '../../media/utils'
 
 interface IProps {
   className?: string
@@ -71,11 +74,11 @@ class _MediaList extends Component<Props> {
           let items = [
             {
               label: t('openInBrowser'),
-              onClick: () => openInBrowser(media.requestUrl)
+              onClick: () => openMediaInBrowser(media)
             },
             {
               label: t('copyLink'),
-              onClick: () => copyToClipboard(media.requestUrl)
+              onClick: () => copyMediaLink(media)
             },
             {
               label: t('info'),

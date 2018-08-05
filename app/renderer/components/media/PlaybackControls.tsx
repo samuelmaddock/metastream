@@ -9,7 +9,6 @@ import {
   IMediaPlayerState,
   RepeatMode
 } from 'renderer/lobby/reducers/mediaPlayer'
-import { Time } from 'renderer/components/media/Time'
 import { VolumeSlider } from 'renderer/components/media/VolumeSlider'
 import { DispatchProp, connect } from 'react-redux'
 import {
@@ -19,25 +18,17 @@ import {
   server_requestRepeatMedia
 } from 'renderer/lobby/actions/mediaPlayer'
 import { setVolume, setMute } from 'renderer/actions/settings'
-import { Icon } from 'renderer/components/Icon'
 import { Timeline } from 'renderer/components/media/Timeline'
 import { push } from 'react-router-redux'
-import { openInBrowser } from 'utils/url'
-import { copyToClipboard } from 'utils/clipboard'
-import { timestampToMilliseconds, parseTimestampPairs } from 'utils/cuepoints'
-import { CuePointItem } from 'renderer/components/media/CuePoint'
-import { parseCuePoints } from 'renderer/media/utils'
+import { parseCuePoints, copyMediaLink, openMediaInBrowser } from 'renderer/media/utils'
 import { MoreButton } from 'renderer/components/media/MoreButton'
 import { IAppState } from 'renderer/reducers'
 import { IconButton } from 'renderer/components/common/button'
-import {
-  getPlaybackTime2,
-  hasPlaybackPermissions
-} from 'renderer/lobby/reducers/mediaPlayer.helpers'
+import { hasPlaybackPermissions } from 'renderer/lobby/reducers/mediaPlayer.helpers'
 import { absoluteUrl } from 'utils/appUrl'
 import { BrowserActionList } from '../browser/BrowserActionList'
 import { isDeveloper } from '../../reducers/settings'
-import { t } from '../../../locale/index'
+import { t } from 'locale'
 
 const EXTENSIONS_URL = absoluteUrl('./browser/resources/extensions.html')
 
@@ -297,14 +288,14 @@ class _PlaybackControls extends Component<PrivateProps> {
   private openLink = () => {
     const { current: media } = this.props
     if (media) {
-      openInBrowser(media.requestUrl)
+      openMediaInBrowser(media)
     }
   }
 
   private copyLink = () => {
     const { current: media } = this.props
     if (media) {
-      copyToClipboard(media.requestUrl)
+      copyMediaLink(media)
     }
   }
 

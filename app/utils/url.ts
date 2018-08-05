@@ -1,5 +1,4 @@
 const { remote } = chrome
-import {} from 'url'
 
 type QueryParams = { [key: string]: any }
 

@@ -3,6 +3,8 @@ import { parseTimestampPairs, timestampToMilliseconds } from 'utils/cuepoints'
 
 // TODO: don't import from component
 import { CuePointItem } from 'renderer/components/media/CuePoint'
+import { copyToClipboard } from '../../utils/clipboard'
+import { openInBrowser } from '../../utils/url'
 
 const cuePointMap = new WeakMap<IMediaItem, CuePointItem[]>()
 
@@ -118,4 +120,12 @@ export const parseISO8601 = (duration: string): number => {
     time = time + parseInt(vector[0] as string, 10)
   }
   return time
+}
+
+export const openMediaInBrowser = (media: IMediaItem) => {
+  openInBrowser(media.hasMore ? media.url : media.requestUrl)
+}
+
+export const copyMediaLink = (media: IMediaItem) => {
+  copyToClipboard(media.hasMore ? media.url : media.requestUrl)
 }
