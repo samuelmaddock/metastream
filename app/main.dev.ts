@@ -108,10 +108,7 @@ const registerMediaShortcuts = () => {
     ['CmdOrCtrl+L', 'window:focus-url'],
     ['CmdOrCtrl+W', 'window:close'],
     ['Alt+Left', 'window:history-prev'],
-    ['Cmd+Left', 'window:history-prev'],
-    ['Alt+Right', 'window:history-next'],
-    ['Cmd+Right', 'window:history-next'],
-    ['Cmd+Right', 'window:history-next']
+    ['Alt+Right', 'window:history-next']
     // ['Space', 'media:playpause'],
   ]
 
