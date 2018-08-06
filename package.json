@@ -129,7 +129,8 @@
     "directories": {
       "buildResources": "resources",
       "output": "release"
-    }
+    },
+    "electronDist": "D:\\tv\\node_modules\\electron\\dist"
   },
   "repository": {
     "type": "git",
@@ -170,6 +171,7 @@
     "@types/redux": "^3.6.0",
     "@types/redux-logger": "^3.0.5",
     "@types/request": "^2.0.6",
+    "@types/semver": "^5.5.0",
     "@types/shortid": "^0.0.29",
     "@types/simple-peer": "^6.1.4",
     "adm-zip": "^0.4.7",
@@ -250,7 +252,7 @@
     "deep-diff": "^0.3.8",
     "electron-debug": "^1.4.0",
     "electron-localshortcut": "^2.0.2",
-    "electron-updater": "^2.19.1",
+    "electron-updater": "3.1.1",
     "font-awesome": "^4.7.0",
     "history": "^4.7.2",
     "iso8601-duration": "^1.1.1",
