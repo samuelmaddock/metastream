@@ -6,8 +6,9 @@
   "main": "./main.prod.js",
   "author": {
     "name": "Samuel Maddock",
-    "url": "https://getmetastream.com/"
+    "email": "sam@getmetastream.com"
   },
+  "homepage": "https://getmetastream.com/",
   "license": "UNLICENSED",
   "private": true,
   "dependencies": {
