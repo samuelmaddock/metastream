@@ -50,7 +50,7 @@ export default {
   remove: 'Remove',
   removeLicense: 'Remove License',
   repeat: 'Repeat',
-  requestUrl: 'Request URL',
+  requestUrl: 'Add URL',
   settings: 'Settings',
   startSession: 'Start Session',
   useLicense: 'Use License',
