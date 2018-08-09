@@ -2,6 +2,9 @@ import { dialog, BrowserWindow, ipcMain } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import updaterFeed from 'constants/updater'
 import log from './log'
+import { APP_WEBSITE } from '../constants/http'
+import * as packageJson from '../package.json'
+const { productName } = packageJson
 
 // how long between scheduled auto updates?
 const SCHEDULED_AUTO_UPDATE_DELAY = 24 * 60 * 60 * 1000 // once a day
@@ -16,11 +19,21 @@ const checkForUpdates = () => {
 
 const announceUpdate = () => {
   // TODO: use something more managed for IPC state updates
-  const win = BrowserWindow.getFocusedWindow()
-  if (win) {
-    win.webContents.send('update-ready')
+  BrowserWindow.getAllWindows().forEach(win => {
+    win.webContents.send('update:ready')
     win.setProgressBar(-1)
-  }
+  })
+}
+
+const announceError = () => {
+  BrowserWindow.getAllWindows().forEach(win => {
+    win.setProgressBar(-1)
+  })
+
+  dialog.showErrorBox(
+    `${productName} failed to update`,
+    `The application attempted to auto-update, but has failed. Please manually update from ${APP_WEBSITE}`
+  )
 }
 
 export const initUpdater = () => {
@@ -39,7 +52,9 @@ export const initUpdater = () => {
     announceUpdate()
   })
   // autoUpdater.on('update-not-available', () => { hasUpdateAvailable = true; })
-  // autoUpdater.on('error', function(){ console.log('autoUpdater error', arguments); })
+  autoUpdater.on('error', err => {
+    announceError()
+  })
 
   autoUpdater.on('download-progress', progress => {
     const win = BrowserWindow.getAllWindows()[0]

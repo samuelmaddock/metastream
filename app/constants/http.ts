@@ -9,6 +9,7 @@ const defaultUserAgent =
 const userAgent = typeof navigator !== 'undefined' ? navigator.userAgent : defaultUserAgent
 export const MEDIA_USER_AGENT = `${userAgent} (Googlebot)`
 
-export const MEDIA_REFERRER = 'https://getmetastream.com/'
+export const APP_WEBSITE = 'https://getmetastream.com/'
+export const MEDIA_REFERRER = APP_WEBSITE
 
 export const WEBVIEW_PARTITION = 'persist:mediaplayer'

@@ -13,7 +13,7 @@ export const setLobbyModal = actionCreator<LobbyModal | undefined>('SET_LOBBY_MO
 
 export const listenForUiEvents = (): ThunkAction<void, IAppState, void> => {
   return dispatch => {
-    ipcRenderer.on('update-ready', () => {
+    ipcRenderer.on('update:ready', () => {
       console.log('Update is available')
       dispatch(setUpdateState(true))
     })
