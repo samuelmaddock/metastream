@@ -25,15 +25,22 @@ const announceUpdate = () => {
   })
 }
 
-const announceError = () => {
+const announceError = (err: any) => {
   BrowserWindow.getAllWindows().forEach(win => {
     win.setProgressBar(-1)
   })
 
-  dialog.showErrorBox(
-    `${productName} failed to update`,
-    `The application attempted to auto-update, but has failed. Please manually update from ${APP_WEBSITE}`
-  )
+  if (err.code.indexOf('ERR_UPDATER_CHANNEL') === 0) {
+    dialog.showErrorBox(
+      `${productName} failed to update`,
+      [
+        `The application attempted to update, but has failed.`,
+        `Please manually update from ${APP_WEBSITE}`,
+        '',
+        `${err.stack}`
+      ].join('\n')
+    )
+  }
 }
 
 export const initUpdater = () => {
@@ -52,9 +59,7 @@ export const initUpdater = () => {
     announceUpdate()
   })
   // autoUpdater.on('update-not-available', () => { hasUpdateAvailable = true; })
-  autoUpdater.on('error', err => {
-    announceError()
-  })
+  autoUpdater.on('error', announceError)
 
   autoUpdater.on('download-progress', progress => {
     const win = BrowserWindow.getAllWindows()[0]
