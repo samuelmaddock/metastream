@@ -46,6 +46,11 @@ const fixUserDataPath = () => {
   if (userDataPath.endsWith(BRAVE_STR)) {
     userDataPath = userDataPath.substring(0, userDataPath.length - BRAVE_STR.length)
     userDataPath = `${userDataPath}${packageJson.productName}`
+
+    if (process.env.NODE_ENV === 'development') {
+      userDataPath += 'Dev'
+    }
+
     app.setPath('userData', userDataPath)
   }
 }
