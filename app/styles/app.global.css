@@ -38,26 +38,22 @@ Fonts
 
 @font-face {
   font-family: 'Karla';
-  src: url('../assets/fonts/karla-v5-latin-regular.woff2') format('woff2'),
-    url('../assets/fonts/karla-v5-latin-regular.ttf') format('truetype');
+  src: url('../assets/fonts/karla-v5-latin-regular.woff2') format('woff2');
 }
 @font-face {
   font-family: 'Karla';
-  src: url('../assets/fonts/karla-v5-latin-700.woff2') format('woff2'),
-    url('../assets/fonts/karla-v5-latin-700.ttf') format('truetype');
+  src: url('../assets/fonts/karla-v5-latin-700.woff2') format('woff2');
   font-weight: bold;
 }
 @font-face {
   font-family: 'Karla';
-  src: url('../assets/fonts/karla-v5-latin-700italic.woff2') format('woff2'),
-    url('../assets/fonts/karla-v5-latin-700italic.ttf') format('truetype');
+  src: url('../assets/fonts/karla-v5-latin-700italic.woff2') format('woff2');
   font-weight: bold;
   font-style: italic;
 }
 @font-face {
   font-family: 'Karla';
-  src: url('../assets/fonts/karla-v5-latin-italic.woff2') format('woff2'),
-    url('../assets/fonts/karla-v5-latin-italic.ttf') format('truetype');
+  src: url('../assets/fonts/karla-v5-latin-italic.woff2') format('woff2');
   font-style: italic;
 }
 
