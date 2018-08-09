@@ -57,6 +57,14 @@ Fonts
   font-style: italic;
 }
 
+@font-face {
+  /* font-family: 'noto_monoregular'; */
+  font-family: 'Noto Mono';
+  src: url('../assets/fonts/NotoMono-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
 /*
 Default styles
 */

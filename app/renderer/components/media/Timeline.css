@@ -11,8 +11,8 @@
   width: auto;
   flex: 0 0 auto;
   flex-shrink: 0;
-  font-size: 14px;
-  font-family: monospace;
+  font-size: 12px;
+  font-family: 'Noto Mono', monospace;
 
   text-align: right;
   margin-right: var(--time-spacing);
