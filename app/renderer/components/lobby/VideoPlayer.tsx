@@ -98,6 +98,8 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     if (this.props.theRef) {
       this.props.theRef(null)
     }
+
+    this.props.dispatch!(updatePlaybackTimer())
   }
 
   componentDidUpdate(prevProps: PrivateProps): void {
