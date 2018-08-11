@@ -66,6 +66,11 @@ export default class Home extends Component<IProps> {
                 <MenuButton icon="settings">{t('settings')}</MenuButton>
               </Link>
             </li>
+            <li>
+              <ExternalLink href="https://www.patreon.com/metastream" className={styles.btn}>
+                <MenuButton icon="heart">Donate</MenuButton>
+              </ExternalLink>
+            </li>
             {!hasValidLicense() && (
               <li>
                 <Link to="/license" className={styles.btn}>
