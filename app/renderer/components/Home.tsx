@@ -35,7 +35,7 @@ export default class Home extends Component<IProps> {
     const gitv = `${process.env.GIT_BRANCH}@${process.env.GIT_COMMIT}`
     return (
       <LayoutMain className={styles.container}>
-        <section className={styles.nav}>
+        <header className={styles.header}>
           <MenuHeader text={packageJson.productName}>
             <h3>
               Alpha {packageJson.version}
@@ -43,6 +43,8 @@ export default class Home extends Component<IProps> {
             </h3>
             {DEV && <h3>Development build</h3>}
           </MenuHeader>
+        </header>
+        <section className={styles.nav}>
           <ul>
             <li>
               <Link to="/lobby/create" className={styles.btn}>
@@ -73,7 +75,13 @@ export default class Home extends Component<IProps> {
             )}
           </ul>
         </section>
-        <section className={styles.social}>
+
+        <section className={styles.intro}>
+          <p>Hi, thanks for trying out Metastream!</p>
+          <p>While using the app, please send any feedback you have on GitHub.</p>
+        </section>
+
+        <footer className={styles.social}>
           <div>
             {/* <SocialLink
             href="https://getmetastream.com/"
@@ -96,7 +104,7 @@ export default class Home extends Component<IProps> {
             <SocialLink
               href="https://discord.gg/nfwPRb9"
               image="./assets/icons/social/discord-color.svg"
-              title="Join Discord group"
+              title="Join Discord community"
             />
           </div>
 
@@ -105,7 +113,7 @@ export default class Home extends Component<IProps> {
               Created by <ExternalLink href="http://samuelmaddock.com">Samuel Maddock</ExternalLink>
             </span>
           </div>
-        </section>
+        </footer>
       </LayoutMain>
     )
   }

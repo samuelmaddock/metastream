@@ -3,16 +3,25 @@
   height: 100%;
   display: grid;
   grid-template:
-    'nav' 1fr
-    'social' auto / 100% auto;
+    'header header' auto
+    'nav intro' 1fr
+    'footer footer' auto / auto 40%;
+}
+
+.header {
+  grid-area: header;
 }
 
 .nav {
   grid-area: nav;
 }
 
+.intro {
+  grid-area: intro;
+}
+
 .social {
-  grid-area: social;
+  grid-area: footer;
   display: flex;
   align-content: center;
   justify-content: space-between;
