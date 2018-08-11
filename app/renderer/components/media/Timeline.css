@@ -13,6 +13,7 @@
   flex-shrink: 0;
   font-size: 12px;
   font-family: 'Noto Mono', monospace;
+  letter-spacing: 0.5px;
 
   text-align: right;
   margin-right: var(--time-spacing);
