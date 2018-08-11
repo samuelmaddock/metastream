@@ -29,7 +29,9 @@ export class MediaItem extends Component<IProps, IState> {
     return (
       <figure className={styles.container}>
         <figcaption className={styles.media}>
-          <div className={styles.title}>{media.title}</div>
+          <div className={styles.title} title={media.title}>
+            {media.title}
+          </div>
           {isNumber(media.duration) &&
             media.duration !== 0 && (
               <span className={styles.duration}>{formatMs(media.duration)}</span>
