@@ -74,23 +74,37 @@ export default class Home extends Component<IProps> {
           </ul>
         </section>
         <section className={styles.social}>
-          {/* <SocialLink
+          <div>
+            {/* <SocialLink
             href="https://getmetastream.com/"
             image="./assets/icons/globe.svg"
             title="Website"
           /> */}
 
-          <SocialLink
-            href="https://twitter.com/GetMetastream"
-            image="./assets/icons/social/twitter-color.svg"
-            title="Twitter"
-          />
+            <SocialLink
+              href="https://www.patreon.com/metastream"
+              image="./assets/icons/social/patreon-wordmark.svg"
+              title="Becoma a patron"
+            />
 
-          <SocialLink
-            href="https://discord.gg/nfwPRb9"
-            image="./assets/icons/social/discord-color.svg"
-            title="Join Discord group"
-          />
+            <SocialLink
+              href="https://twitter.com/GetMetastream"
+              image="./assets/icons/social/twitter-color.svg"
+              title="Twitter"
+            />
+
+            <SocialLink
+              href="https://discord.gg/nfwPRb9"
+              image="./assets/icons/social/discord-color.svg"
+              title="Join Discord group"
+            />
+          </div>
+
+          <div className={styles.socialRight}>
+            <span className={styles.credits}>
+              Created by <ExternalLink href="http://samuelmaddock.com">Samuel Maddock</ExternalLink>
+            </span>
+          </div>
         </section>
       </LayoutMain>
     )

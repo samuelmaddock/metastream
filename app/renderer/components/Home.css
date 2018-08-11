@@ -15,6 +15,7 @@
   grid-area: social;
   display: flex;
   align-content: center;
+  justify-content: space-between;
 }
 
 .low {
@@ -31,7 +32,7 @@
 
 .socialLink {
   display: inline-block;
-  margin-right: 15px;
+  margin-right: 20px;
 }
 
 .socialIcon {
@@ -42,4 +43,18 @@
 .btn {
   display: inline-block;
   margin-bottom: 15px;
+}
+
+.socialRight {
+  display: flex;
+  align-items: center;
+}
+
+.credits {
+  mix-blend-mode: overlay;
+  color: black;
+}
+
+.credits a {
+  font-weight: bolder;
 }
