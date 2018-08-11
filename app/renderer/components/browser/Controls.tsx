@@ -156,6 +156,7 @@ export class WebControls extends Component<IProps, IState> {
               /* force react controlled input */
               this.onAddressChange()
             }}
+            placeholder={t('requestUrlPlaceholder')}
             spellCheck={false}
             autoFocus
           />

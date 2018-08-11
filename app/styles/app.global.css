@@ -95,6 +95,10 @@ textarea {
   color: var(--app-text-color);
 }
 
+input::-webkit-input-placeholder {
+  opacity: 0.6;
+}
+
 body {
   /** Make the app feel more native */
   user-select: none;

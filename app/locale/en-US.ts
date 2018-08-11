@@ -51,6 +51,7 @@ export default {
   removeLicense: 'Remove License',
   repeat: 'Repeat',
   requestUrl: 'Add URL',
+  requestUrlPlaceholder: '',
   settings: 'Settings',
   startSession: 'Start Session',
   useLicense: 'Use License',
