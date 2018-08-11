@@ -8,3 +8,8 @@
   user-select: text;
   cursor: auto;
 }
+
+.blend-text {
+  mix-blend-mode: overlay;
+  color: black;
+}

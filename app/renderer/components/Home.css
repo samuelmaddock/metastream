@@ -5,7 +5,7 @@
   grid-template:
     'header header' auto
     'nav intro' 1fr
-    'footer footer' auto / auto 40%;
+    'footer footer' auto / auto 45%;
 }
 
 .header {
@@ -17,7 +17,13 @@
 }
 
 .intro {
+  composes: blend-text from 'styles/text.css';
   grid-area: intro;
+  font-weight: bold;
+}
+
+.intro a {
+  text-decoration: underline;
 }
 
 .social {
@@ -60,8 +66,7 @@
 }
 
 .credits {
-  mix-blend-mode: overlay;
-  color: black;
+  composes: blend-text from 'styles/text.css';
 }
 
 .credits a {

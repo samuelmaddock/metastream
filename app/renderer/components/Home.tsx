@@ -83,7 +83,18 @@ export default class Home extends Component<IProps> {
 
         <section className={styles.intro}>
           <p>Hi, thanks for trying out Metastream!</p>
-          <p>While using the app, please send any feedback you have on GitHub.</p>
+          <p>
+            This release is still in beta, so expect there to be some issues. If you come across
+            any, please{' '}
+            <ExternalLink href="https://github.com/samuelmaddock/metastream/issues/new/choose">
+              submit a GitHub issue.
+            </ExternalLink>
+          </p>
+          <p>
+            If you'd like to join in on the discussion, feel free to join the Discord community
+            using the link at the bottom of the screen.
+          </p>
+          <p>💖 Sam</p>
         </section>
 
         <footer className={styles.social}>
@@ -115,7 +126,7 @@ export default class Home extends Component<IProps> {
 
           <div className={styles.socialRight}>
             <span className={styles.credits}>
-              Created by <ExternalLink href="http://samuelmaddock.com">Samuel Maddock</ExternalLink>
+              Created by <ExternalLink href="http://samuelmaddock.com">Sam Maddock</ExternalLink>
             </span>
           </div>
         </footer>
