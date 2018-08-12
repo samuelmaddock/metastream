@@ -20,7 +20,7 @@
 .buildInfo {
   composes: blend-text from 'styles/text.css';
   font-size: 0.8rem;
-  opacity: 0.5;
+  opacity: 0.4;
   margin-left: 1rem;
 }
 
