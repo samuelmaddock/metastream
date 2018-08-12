@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom'
 import * as packageJson from 'package.json'
 
 import styles from './Home.css'
-import { TitleBar } from 'renderer/components/TitleBar'
 import LayoutMain from 'renderer/components/layout/Main'
 import { Icon } from 'renderer/components/Icon'
 import { MenuButton } from 'renderer/components/menu/MenuButton'
@@ -12,8 +11,8 @@ import { MenuHeader } from './menu/MenuHeader'
 import { ExternalLink } from './common/link'
 import { hasValidLicense } from '../license'
 import { t } from '../../locale/index'
-import { IconButton } from './common/button'
 import Tooltip from 'material-ui/Tooltip'
+import { assetUrl } from 'utils/appUrl'
 
 const SocialLink = (props: { href: string; title: string; image?: string; icon?: string }) => (
   <ExternalLink href={props.href} className={styles.socialLink}>
@@ -35,15 +34,22 @@ export default class Home extends Component<IProps> {
     const gitv = `${process.env.GIT_BRANCH}@${process.env.GIT_COMMIT}`
     return (
       <LayoutMain className={styles.container}>
-        <header className={styles.header}>
-          <MenuHeader text={packageJson.productName}>
-            <h3>
-              Alpha {packageJson.version}
-              {DEV && ` (${gitv})`}
-            </h3>
-            {DEV && <h3>Development build</h3>}
-          </MenuHeader>
-        </header>
+        <MenuHeader
+          className={styles.header}
+          text={
+            <>
+              <img src={assetUrl('icons/metastream-icon.svg')} className={styles.logo} />
+              {packageJson.productName}
+              <div className={styles.buildInfo}>
+                <h3>
+                  Alpha {packageJson.version}
+                  {DEV && ` (${gitv})`}
+                </h3>
+                {DEV && <h3>Development build</h3>}
+              </div>
+            </>
+          }
+        />
         <section className={styles.nav}>
           <ul>
             <li>

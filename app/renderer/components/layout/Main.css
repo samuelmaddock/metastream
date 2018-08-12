@@ -11,7 +11,7 @@
 }
 
 .content {
-  --content-spacing: 50px;
+  --content-spacing: 3rem;
   padding: var(--content-spacing);
   padding-top: calc(var(--app-titlebar-height) + var(--content-spacing));
 }

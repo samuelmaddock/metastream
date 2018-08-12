@@ -1,8 +1,10 @@
 .header {
-  margin-bottom: 30px;
+  margin-bottom: 2.5rem;
 }
 
 .header h1 {
   font-size: 36px;
   font-weight: bold;
+  display: flex;
+  align-items: center;
 }

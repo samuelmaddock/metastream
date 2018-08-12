@@ -12,6 +12,18 @@
   grid-area: header;
 }
 
+.logo {
+  width: 48px;
+  margin-right: 0.5rem;
+}
+
+.buildInfo {
+  composes: blend-text from 'styles/text.css';
+  font-size: 0.8rem;
+  opacity: 0.5;
+  margin-left: 1rem;
+}
+
 .nav {
   grid-area: nav;
 }
