@@ -81,6 +81,7 @@
   line-height: var(--app-titlebar-height);
   outline: none;
   opacity: 0.33;
+  vertical-align: top;
 }
 
 .actionButton svg {
