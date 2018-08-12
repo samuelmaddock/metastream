@@ -42,7 +42,7 @@ export default class Home extends Component<IProps> {
               {packageJson.productName}
               <div className={styles.buildInfo}>
                 <h3>
-                  Alpha {packageJson.version}
+                  Beta {packageJson.version}
                   {DEV && ` (${gitv})`}
                 </h3>
                 {DEV && <h3>Development build</h3>}
