@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 
-import * as packageJson from 'package.json'
+import { PRODUCT_NAME, VERSION } from 'constants/app'
 
 import styles from './Home.css'
 import LayoutMain from 'renderer/components/layout/Main'
@@ -9,7 +9,7 @@ import { Icon } from 'renderer/components/Icon'
 import { MenuButton } from 'renderer/components/menu/MenuButton'
 import { MenuHeader } from './menu/MenuHeader'
 import { ExternalLink } from './common/link'
-import { t } from '../../locale/index'
+import { t } from 'locale'
 import Tooltip from 'material-ui/Tooltip'
 import { assetUrl } from 'utils/appUrl'
 
@@ -38,10 +38,10 @@ export default class Home extends Component<IProps> {
           text={
             <>
               <img src={assetUrl('icons/metastream-icon.svg')} className={styles.logo} />
-              {packageJson.productName}
+              {PRODUCT_NAME}
               <div className={styles.buildInfo}>
                 <h3>
-                  Beta {packageJson.version}
+                  Beta {VERSION}
                   {DEV && ` (${gitv})`}
                 </h3>
                 {DEV && <h3>Development build</h3>}

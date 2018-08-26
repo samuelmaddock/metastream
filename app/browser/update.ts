@@ -3,8 +3,7 @@ import { autoUpdater } from 'electron-updater'
 import updaterFeed from 'constants/updater'
 import log from './log'
 import { APP_WEBSITE } from '../constants/http'
-import * as packageJson from '../package.json'
-const { productName } = packageJson
+import { PRODUCT_NAME } from 'constants/app'
 
 // how long between scheduled auto updates?
 const SCHEDULED_AUTO_UPDATE_DELAY = 24 * 60 * 60 * 1000 // once a day
@@ -32,7 +31,7 @@ const announceError = (err: any) => {
 
   if (err.code.indexOf('ERR_UPDATER_CHANNEL') === 0) {
     dialog.showErrorBox(
-      `${productName} failed to update`,
+      `${PRODUCT_NAME} failed to update`,
       [
         `The application attempted to update, but has failed.`,
         `Please manually update from ${APP_WEBSITE}`,

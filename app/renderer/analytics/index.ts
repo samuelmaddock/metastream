@@ -6,10 +6,9 @@ import { IAppState } from '../reducers/index'
 import { localUserId } from 'renderer/network'
 
 import Analytics from './ga'
-import appJson from 'package.json'
+import { PRODUCT_NAME, VERSION } from 'constants/app'
 import { History } from 'history'
-import { getPlaybackState, isPlaying } from '../lobby/reducers/mediaPlayer.helpers'
-import { PlaybackState } from '../lobby/reducers/mediaPlayer'
+import { isPlaying } from '../lobby/reducers/mediaPlayer.helpers'
 
 type StoreState = IAppState & PersistedState
 
@@ -42,8 +41,8 @@ function setupAnalytics(store: Store<StoreState>) {
 
   // https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters
   const analytics = new Analytics('UA-115004557-2', {
-    appName: appJson.productName,
-    appVersion: appJson.version,
+    appName: PRODUCT_NAME,
+    appVersion: VERSION,
     clientId: localUserId()
   })
 

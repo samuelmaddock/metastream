@@ -7,8 +7,7 @@
  * `./app/main.prod.js` using webpack. This gives us some performance wins.
  */
 import { app, BrowserWindow, globalShortcut, protocol } from 'electron'
-import os from 'os'
-import packageJson from 'package.json'
+import { PRODUCT_NAME, VERSION } from 'constants/app'
 
 if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
   require('electron-debug')()
@@ -20,19 +19,16 @@ if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true')
 if (process.env.NODE_ENV === 'development') {
   // Update version before running any code
   // Fixes Brave overriding version
-  ;(app as any).setVersion(packageJson.version)
+  ;(app as any).setVersion(VERSION)
 }
 
 import 'browser/net'
 import { register as registerLocalShortcut } from 'electron-localshortcut'
-import { join, dirname } from 'path'
 
-import { sleep } from 'utils/async'
 import MenuBuilder from './browser/menu'
 import * as protocols from './browser/protocols'
 import { initExtensions } from 'browser/extensions'
 import { initUpdater } from 'browser/update'
-import log from 'browser/log'
 
 import './browser/fetch'
 
@@ -45,7 +41,7 @@ const fixUserDataPath = () => {
 
   if (userDataPath.endsWith(BRAVE_STR)) {
     userDataPath = userDataPath.substring(0, userDataPath.length - BRAVE_STR.length)
-    userDataPath = `${userDataPath}${packageJson.productName}`
+    userDataPath = `${userDataPath}${PRODUCT_NAME}`
 
     if (process.env.NODE_ENV === 'development') {
       userDataPath += 'Dev'

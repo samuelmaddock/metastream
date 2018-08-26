@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import { connect, DispatchProp } from 'react-redux'
 import cx from 'classnames'
 
-import * as packageJson from 'package.json'
+import { PRODUCT_NAME } from 'constants/app'
 
 import { IAppState } from 'renderer/reducers'
 import { isUpdateAvailable } from 'renderer/reducers/ui'
@@ -80,7 +80,7 @@ class _TitleBar extends Component<PrivateProps> {
       <div className={cx(this.props.className, styles.container)}>
         <div className={styles.wrapper}>
           <header className={styles.header}>
-            <h2 className={styles.title}>{this.props.title || packageJson.productName}</h2>
+            <h2 className={styles.title}>{this.props.title || PRODUCT_NAME}</h2>
             <div className={styles.drag} />
           </header>
           {updateButton}

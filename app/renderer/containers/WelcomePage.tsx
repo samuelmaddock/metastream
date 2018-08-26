@@ -1,14 +1,11 @@
 import React, { Component } from 'react'
 import { Redirect, RouteComponentProps } from 'react-router'
-import { Link } from 'react-router-dom'
 
 import styles from './WelcomePage.css'
 
 import LayoutMain from 'renderer/components/layout/Main'
-import { Icon } from 'renderer/components/Icon'
 import { MenuButton } from 'renderer/components/menu/MenuButton'
-import { t } from '../../locale/index'
-import Input from 'material-ui/Input/Input'
+import { t } from 'locale'
 import { SwitchOption } from '../components/settings/controls'
 import { connect, DispatchProp } from 'react-redux'
 import { IAppState } from '../reducers/index'
@@ -18,8 +15,7 @@ import { USERNAME_MAX_LEN } from '../../constants/settings'
 import { MenuHeader } from '../components/menu/MenuHeader'
 import { replace } from 'react-router-redux'
 import { setUsername, setSetting } from '../actions/settings'
-
-const { productName } = require('package.json')
+import { PRODUCT_NAME } from 'constants/app'
 
 interface IProps extends RouteComponentProps<any> {}
 
@@ -36,7 +32,7 @@ class WelcomePage extends Component<Props> {
     return (
       <LayoutMain className={styles.container}>
         <section className={styles.column}>
-          <MenuHeader text={`Welcome to ${productName}`} />
+          <MenuHeader text={`Welcome to ${PRODUCT_NAME}`} />
           <label htmlFor="profile_username">{t('chooseUsername')}</label>
           <TextInput
             id="profile_username"
@@ -74,8 +70,10 @@ class WelcomePage extends Component<Props> {
   }
 }
 
-export default connect((state: IAppState): IConnectedProps => {
-  return {
-    settings: state.settings
+export default connect(
+  (state: IAppState): IConnectedProps => {
+    return {
+      settings: state.settings
+    }
   }
-})(WelcomePage)
+)(WelcomePage)

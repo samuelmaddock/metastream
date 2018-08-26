@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron'
-const { productName } = require('package.json')
+import { PRODUCT_NAME } from 'constants/app'
 
 import log from 'browser/log'
 import { ILobbyOptions } from 'renderer/platform/types'
@@ -28,7 +28,7 @@ const isPrevConnectTime = (time: number) => prevLobbyConnectTime === time
 
 ipcMain.on('platform-swarm-init', async (event: Electron.Event) => {
   let id
-  let name = (await username()) || productName
+  let name = (await username()) || PRODUCT_NAME
   try {
     id = await initIdentity()
   } catch (e) {

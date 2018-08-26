@@ -8,9 +8,8 @@ import * as cfgStore from './store/configureStore'
 
 import 'styles/app.global.css'
 
-import * as packageJson from 'package.json'
+import { PRODUCT_NAME } from 'constants/app'
 import { PlatformService } from 'renderer/platform'
-import { GA_HOST } from 'constants/analytics'
 import { initAnalytics } from './analytics/index'
 
 let store: any
@@ -27,7 +26,7 @@ function init() {
   logger()
 
   // Set default title
-  document.title = packageJson.productName
+  document.title = PRODUCT_NAME
 
   history = cfgStore.history
   const storeCfg = cfgStore.configureStore()

@@ -4,15 +4,14 @@ import { addUser } from 'renderer/lobby/middleware/users'
 import { RpcThunk } from 'renderer/lobby/types'
 import { multi_userJoined, client_kick } from 'renderer/lobby/actions/users'
 import { rpc, RpcRealm } from 'renderer/network/middleware/rpc'
-import { getUser, getNumUsers, findUser } from 'renderer/lobby/reducers/users.helpers'
+import { getUser, getNumUsers } from 'renderer/lobby/reducers/users.helpers'
 import { getLocalUsername, getLocalColor } from '../../reducers/settings'
 import { USERNAME_MAX_LEN, COLOR_LEN } from 'constants/settings'
 import { getMaxUsers } from '../reducers/session'
 import { NetworkDisconnectReason } from 'constants/network'
 import { setAuthorized } from './session'
 import { updateServerClockSkew } from './mediaPlayer'
-
-const { version } = require('package.json')
+import { VERSION } from 'constants/app'
 
 type ClientInfo = {
   name: string
@@ -29,7 +28,7 @@ export const initialize = (): ThunkAction<void, IAppState, void> => {
   return async (dispatch, getState) => {
     dispatch(
       server_initClient({
-        version,
+        version: VERSION,
         name: getLocalUsername(getState()),
         color: getLocalColor(getState())
       })
@@ -38,7 +37,7 @@ export const initialize = (): ThunkAction<void, IAppState, void> => {
 }
 
 const validateClientInfo = (info: ClientInfo, id: string, state: IAppState) => {
-  if (version !== info.version) {
+  if (VERSION !== info.version) {
     console.debug(`Client '${info.version}'[${id}] kicked for version mismatch (${info.version})`)
     return NetworkDisconnectReason.VersionMismatch
   }
