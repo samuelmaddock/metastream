@@ -1,7 +1,6 @@
 const { ipcRenderer, remote } = chrome
 
 import { Platform, ILobbyOptions, ILobbySession } from 'renderer/platform/types'
-import { Deferred } from 'utils/async'
 import { NetServer, NetUniqueId } from 'renderer/network'
 import { SwarmRTCPeerCoordinator } from 'renderer/platform/swarm/rtc-coordinator'
 import { isP2PHash, isIP, isUrlDomain } from 'utils/network'

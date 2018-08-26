@@ -2,10 +2,8 @@ import React, { Component } from 'react'
 import { IMediaItem } from 'renderer/lobby/reducers/mediaPlayer'
 import styles from './Media.css'
 import { formatMs } from 'utils/time'
-import { isNumber } from 'utils/type'
 
 import { IconButton } from '../common/button'
-import Menu, { MenuItem } from 'material-ui/Menu'
 
 interface IProps {
   media: IMediaItem
@@ -32,7 +30,7 @@ export class MediaItem extends Component<IProps, IState> {
           <div className={styles.title} title={media.title}>
             {media.title}
           </div>
-          {isNumber(media.duration) &&
+          {typeof media.duration === 'number' &&
             media.duration !== 0 && (
               <span className={styles.duration}>{formatMs(media.duration)}</span>
             )}
