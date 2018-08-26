@@ -9,7 +9,6 @@ import { Icon } from 'renderer/components/Icon'
 import { MenuButton } from 'renderer/components/menu/MenuButton'
 import { MenuHeader } from './menu/MenuHeader'
 import { ExternalLink } from './common/link'
-import { hasValidLicense } from '../license'
 import { t } from '../../locale/index'
 import Tooltip from 'material-ui/Tooltip'
 import { assetUrl } from 'utils/appUrl'
@@ -77,13 +76,6 @@ export default class Home extends Component<IProps> {
                 <MenuButton icon="heart">Donate</MenuButton>
               </ExternalLink>
             </li>
-            {!hasValidLicense() && (
-              <li>
-                <Link to="/license" className={styles.btn}>
-                  <MenuButton icon="file-text">{t('enterLicense')}</MenuButton>
-                </Link>
-              </li>
-            )}
           </ul>
         </section>
 

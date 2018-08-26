@@ -17,10 +17,6 @@ export interface IUser {
   name: string
   avatar?: string
   color: string
-
-  /** Hash of license for verifying no dupes in session. */
-  license?: string
-
   role: UserRole
 }
 
@@ -55,7 +51,6 @@ export const users: Reducer<IUsersState> = (state: IUsersState = initialState, a
           id,
           name,
           color: action.payload.color,
-          license: action.payload.license,
           role: admin ? UserRole.Admin : UserRole.Default
         }
       }

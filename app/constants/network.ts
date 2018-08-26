@@ -7,7 +7,6 @@ export const enum NetworkDisconnectReason {
   Timeout,
   InvalidClientInfo,
   VersionMismatch,
-  DuplicateLicense,
   Full,
   Kicked
 }
@@ -17,7 +16,6 @@ export const NetworkDisconnectMessages = {
   [NetworkDisconnectReason.Timeout]: 'networkDisconnectTimeout',
   [NetworkDisconnectReason.InvalidClientInfo]: 'networkDisconnectInvalidClientInfo',
   [NetworkDisconnectReason.VersionMismatch]: `networkDisconnectVersionMismatch`,
-  [NetworkDisconnectReason.DuplicateLicense]: `networkDisconnectDuplicateLicense`,
   [NetworkDisconnectReason.Full]: 'networkDisconnectFull',
   [NetworkDisconnectReason.Kicked]: 'networkDisconnectKicked'
 }
@@ -27,7 +25,6 @@ export const NetworkDisconnectLabels = {
   [NetworkDisconnectReason.Timeout]: 'timeout',
   [NetworkDisconnectReason.InvalidClientInfo]: 'invalid-client-info',
   [NetworkDisconnectReason.VersionMismatch]: `version-mismatch`,
-  [NetworkDisconnectReason.DuplicateLicense]: `shared-license`,
   [NetworkDisconnectReason.Full]: 'full',
   [NetworkDisconnectReason.Kicked]: 'kicked'
 }

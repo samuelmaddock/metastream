@@ -1,6 +1,0 @@
-.container {
-  composes: clearfix from 'styles/layout.css';
-  width: 100%;
-  max-width: 600px;
-  line-height: 1.5;
-}

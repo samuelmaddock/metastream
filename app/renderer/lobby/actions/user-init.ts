@@ -1,8 +1,6 @@
 import { ThunkAction } from 'redux-thunk'
 import { IAppState } from 'renderer/reducers'
-import { PlatformService } from 'renderer/platform'
 import { addUser } from 'renderer/lobby/middleware/users'
-import { localUser } from 'renderer/network'
 import { RpcThunk } from 'renderer/lobby/types'
 import { multi_userJoined, client_kick } from 'renderer/lobby/actions/users'
 import { rpc, RpcRealm } from 'renderer/network/middleware/rpc'
@@ -11,8 +9,7 @@ import { getLocalUsername, getLocalColor } from '../../reducers/settings'
 import { USERNAME_MAX_LEN, COLOR_LEN } from 'constants/settings'
 import { getMaxUsers } from '../reducers/session'
 import { NetworkDisconnectReason } from 'constants/network'
-import { setDisconnectReason, setAuthorized } from './session'
-import { getLicenseHash } from '../../license'
+import { setAuthorized } from './session'
 import { updateServerClockSkew } from './mediaPlayer'
 
 const { version } = require('package.json')
@@ -21,7 +18,6 @@ type ClientInfo = {
   name: string
   color: string
   version: string
-  licenseHash?: string
 }
 
 type AuthorizeInfo = {
@@ -35,8 +31,7 @@ export const initialize = (): ThunkAction<void, IAppState, void> => {
       server_initClient({
         version,
         name: getLocalUsername(getState()),
-        color: getLocalColor(getState()),
-        licenseHash: process.env.LICENSED ? await getLicenseHash() : undefined
+        color: getLocalColor(getState())
       })
     )
   }
@@ -63,19 +58,6 @@ const validateClientInfo = (info: ClientInfo, id: string, state: IAppState) => {
   if (!info.color || info.color.length !== COLOR_LEN) {
     console.debug(`Client ${id} kicked for invalid color (${info.color})`)
     return NetworkDisconnectReason.InvalidClientInfo
-  }
-
-  if (info.licenseHash) {
-    if (typeof info.licenseHash !== 'string') {
-      console.debug(`Client ${id} kicked for invalid license (${info.licenseHash})`)
-      return NetworkDisconnectReason.InvalidClientInfo
-    }
-
-    const existingLicenseUser = findUser(state, user => user.license === info.licenseHash)
-    if (existingLicenseUser) {
-      console.debug(`Client with existing license active in session ${id}`)
-      return NetworkDisconnectReason.DuplicateLicense
-    }
   }
 
   return true
@@ -114,8 +96,7 @@ const initClient = (info: ClientInfo): RpcThunk<void> => (dispatch, getState, { 
     addUser({
       conn: client,
       name: info.name,
-      color: info.color,
-      license: info.licenseHash
+      color: info.color
     })
   )
 

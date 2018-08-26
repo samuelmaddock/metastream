@@ -16,7 +16,6 @@ import {
 } from 'renderer/lobby/reducers/mediaPlayer.helpers'
 import { IAppState } from 'renderer/reducers'
 import { getUserName, getNumUsers } from 'renderer/lobby/reducers/users.helpers'
-import { maybeShowPurchaseModal } from '../../actions/ui'
 import { addChat } from './chat'
 
 export const playPauseMedia = actionCreator<number>('PLAY_PAUSE_MEDIA')
@@ -157,10 +156,6 @@ export const sendMediaRequest = (
 
     const requestCount = parseInt(localStorage.getItem('requestCount') || '0', 10) || 0
     localStorage.setItem('requestCount', `${requestCount + 1}`)
-
-    if (process.env.LICENSED && requestCount > 0) {
-      dispatch(maybeShowPurchaseModal())
-    }
 
     ga('event', { ec: 'session', ea: 'request_media', el: source })
 

@@ -1,16 +1,11 @@
 import { Middleware, MiddlewareAPI, Action, Dispatch } from 'redux'
 import { actionCreator, isType } from 'utils/redux'
-import { Platform } from 'renderer/platform/types'
-import { PlatformService } from 'renderer/platform'
 import { localUser, NetConnection, NetServer } from 'renderer/network'
 import { NetMiddlewareOptions, NetActions } from 'renderer/network/actions'
-import { RpcThunk } from '../types'
-import { rpc, RpcRealm } from '../../network/middleware/rpc'
-import { multi_userJoined, multi_userLeft } from '../actions/users'
+import { multi_userLeft } from '../actions/users'
 import { initialize } from 'renderer/lobby/actions/user-init'
 import { getLocalUsername, getLocalColor } from '../../reducers/settings'
 import { IAppState } from '../../reducers/index'
-import { getLicenseHash } from '../../license'
 import { initLobby } from '../actions/common'
 
 interface IUserPayload {
@@ -18,7 +13,6 @@ interface IUserPayload {
   name?: string
   host?: boolean
   color: string
-  license?: string
 }
 
 export const addUser = actionCreator<IUserPayload>('ADD_USER')
@@ -46,8 +40,7 @@ export const usersMiddleware = (): Middleware => {
           conn: localUser(),
           host: true,
           name: getLocalUsername(state),
-          color: getLocalColor(state),
-          license: process.env.LICENSED ? await getLicenseHash() : undefined
+          color: getLocalColor(state)
         })
       )
     }

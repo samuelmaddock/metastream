@@ -3,43 +3,22 @@ import { DispatchProp, connect } from 'react-redux'
 import cx from 'classnames'
 const { ipcRenderer } = chrome
 
-import { IReactReduxProps } from 'types/redux'
-import { IUsersState } from 'renderer/lobby/reducers/users'
 import { server_addChat } from 'renderer/lobby/actions/chat'
 import { VideoPlayer } from 'renderer/components/lobby/VideoPlayer'
 import { IMediaItem, PlaybackState } from 'renderer/lobby/reducers/mediaPlayer'
 import { isUrl } from 'utils/url'
-import {
-  server_requestPlayPause,
-  server_requestNextMedia,
-  server_requestSeek,
-  server_requestDeleteMedia,
-  sendMediaRequest
-} from 'renderer/lobby/actions/mediaPlayer'
+import { sendMediaRequest } from 'renderer/lobby/actions/mediaPlayer'
 import { IMessage } from 'renderer/lobby/reducers/chat'
-import { Messages } from 'renderer/components/chat/Messages'
 import { Chat } from 'renderer/components/chat'
 
 import styles from './GameLobby.css'
-import { UserItem } from 'renderer/components/lobby/UserItem'
-import { MediaItem } from 'renderer/components/media/MediaItem'
-import { Link } from 'react-router-dom'
-import {
-  getCurrentMedia,
-  getMediaQueue,
-  getPlaybackState
-} from 'renderer/lobby/reducers/mediaPlayer.helpers'
-import { ListOverlay } from 'renderer/components/lobby/ListOverlay'
+import { getCurrentMedia, getPlaybackState } from 'renderer/lobby/reducers/mediaPlayer.helpers'
 import { TitleBar } from 'renderer/components/TitleBar'
 import { PlaybackControls } from 'renderer/components/media/PlaybackControls'
-import { setVolume } from 'renderer/actions/settings'
 import { ActivityMonitor } from 'renderer/components/lobby/ActivityMonitor'
-import { MediaType } from 'renderer/media/types'
 import { WebBrowser } from 'renderer/components/browser/WebBrowser'
-import { Icon } from 'renderer/components/Icon'
 import { registerMediaShortcuts, unregisterMediaShortcuts } from 'renderer/lobby/actions/shortcuts'
 import { IAppState } from 'renderer/reducers'
-import { HighlightButton } from 'renderer/components/common/button'
 import { Modal } from 'renderer/components/lobby/Modal'
 import * as Modals from 'renderer/components/lobby/modals'
 import { addExtensionListeners, removeExtensionListeners } from '../actions/extensions'
@@ -204,12 +183,6 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
         return (
           <Modal className={styles.modal} onClose={this.closeModal}>
             <Modals.MediaInfo media={media} onClose={this.closeModal} />
-          </Modal>
-        )
-      case LobbyModal.Purchase:
-        return (
-          <Modal className={styles.modal} onClose={this.closeModal}>
-            <Modals.PurchaseLicense />
           </Modal>
         )
       case LobbyModal.SessionSettings:
