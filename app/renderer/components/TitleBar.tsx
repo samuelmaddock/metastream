@@ -137,11 +137,7 @@ class _TitleBar extends Component<PrivateProps> {
 
   private renderBack() {
     return (
-      <div
-        className={cx(styles.leftActions, {
-          darwin: this.platform === 'darwin'
-        })}
-      >
+      <div className={this.platform === 'darwin' ? styles.rightActions : styles.leftActions}>
         <button
           type="button"
           className={styles.actionButton}

@@ -63,10 +63,6 @@
   order: -1;
 }
 
-.leftActions.darwin {
-  padding-left: 80px;
-}
-
 .rightActions {
   composes: header-item clickable;
 }
