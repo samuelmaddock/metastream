@@ -14,7 +14,8 @@ import { stripEmoji } from 'utils/string'
 
 export const enum SessionMode {
   Public,
-  Private
+  Private,
+  Request
 }
 
 export interface ISettingsState {

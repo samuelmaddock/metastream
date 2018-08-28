@@ -14,33 +14,33 @@ export interface IIconButtonProps {
 
   className?: string
   onClick?: React.MouseEventHandler<HTMLButtonElement>
+  onMouseEnter?: React.MouseEventHandler<HTMLButtonElement>
+  onMouseLeave?: React.MouseEventHandler<HTMLButtonElement>
 }
 
 const nbsp = '\u00A0'
 
-export const IconButton: React.SFC<IIconButtonProps> = props => {
+export const IconButton: React.SFC<IIconButtonProps> = ({ title, icon, children, ...props }) => {
   return (
     <button
       type="button"
-      disabled={props.disabled}
-      className={props.className}
-      onClick={props.onClick}
       style={
-        props.title
+        title
           ? {
               position: 'relative'
             }
           : undefined
       }
+      {...props}
     >
-      {props.title ? (
-        <Tooltip title={props.title}>
+      {title ? (
+        <Tooltip title={title}>
           <div className={styles.tooltip} />
         </Tooltip>
       ) : null}
-      <Icon name={props.icon} />
-      {!!props.children && nbsp}
-      {props.children ? <span>{props.children}</span> : undefined}
+      <Icon name={icon} />
+      {!!children && nbsp}
+      {children ? <span>{children}</span> : undefined}
     </button>
   )
 }

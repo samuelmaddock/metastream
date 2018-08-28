@@ -29,6 +29,7 @@ interface IState {
   dismissed?: boolean
   sessionDialogOpen?: boolean
   selectedMode?: SessionMode
+  previewMode?: SessionMode
 }
 
 interface IConnectedProps {
@@ -69,12 +70,21 @@ class SessionSettings extends Component<PrivateProps, IState> {
       {
         mode: SessionMode.Public,
         label: 'Public',
+        desc: 'Anyone is allowed to join.',
         icon: 'users',
+        onClick: (mode: SessionMode) => dispatch(setSetting('sessionMode', mode))
+      },
+      {
+        mode: SessionMode.Request,
+        label: 'Request',
+        desc: 'Permission to join must be granted explicitly.',
+        icon: 'user-check',
         onClick: (mode: SessionMode) => dispatch(setSetting('sessionMode', mode))
       },
       {
         mode: SessionMode.Private,
         label: 'Private',
+        desc: 'No one is allowed to join.',
         icon: 'user',
         onClick: (mode: SessionMode) => {
           if (this.props.numUsers > 1) {
@@ -89,6 +99,10 @@ class SessionSettings extends Component<PrivateProps, IState> {
     const dispatch = this.props.dispatch!
     const { sessionMode } = this.props.settings
 
+    const previewMode =
+      typeof this.state.previewMode === 'number' ? this.state.previewMode : sessionMode
+    const selectedMode = modes.find(mode => mode.mode === previewMode)
+
     return (
       <div className={styles.sessionMode}>
         {modes.map(mode => (
@@ -98,10 +112,13 @@ class SessionSettings extends Component<PrivateProps, IState> {
             size="large"
             highlight={sessionMode === mode.mode}
             onClick={() => mode.onClick(mode.mode)}
+            onMouseEnter={() => this.setState({ previewMode: mode.mode })}
+            onMouseLeave={() => this.setState({ previewMode: undefined })}
           >
             {mode.label}
           </HighlightButton>
         ))}
+        {selectedMode && <p>{selectedMode.desc}</p>}
       </div>
     )
   }
