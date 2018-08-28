@@ -5,13 +5,20 @@ import { RpcThunk } from 'renderer/lobby/types'
 import { multi_userJoined, client_kick } from 'renderer/lobby/actions/users'
 import { rpc, RpcRealm } from 'renderer/network/middleware/rpc'
 import { getUser, getNumUsers } from 'renderer/lobby/reducers/users.helpers'
-import { getLocalUsername, getLocalColor } from '../../reducers/settings'
+import {
+  getLocalUsername,
+  getLocalColor,
+  getLocalSessionMode,
+  SessionMode
+} from 'renderer/reducers/settings'
 import { USERNAME_MAX_LEN, COLOR_LEN } from 'constants/settings'
 import { getMaxUsers } from '../reducers/session'
 import { NetworkDisconnectReason } from 'constants/network'
 import { setAuthorized } from './session'
 import { updateServerClockSkew } from './mediaPlayer'
 import { VERSION } from 'constants/app'
+import { NetConnection } from '../../network/index'
+import { addChat } from './chat'
 
 type ClientInfo = {
   name: string
@@ -91,25 +98,39 @@ const initClient = (info: ClientInfo): RpcThunk<void> => (dispatch, getState, { 
     return
   }
 
+  const sessionMode = getLocalSessionMode(state)
+  const shouldAwaitAuthorization = sessionMode === SessionMode.Request
+
   dispatch(
     addUser({
       conn: client,
       name: info.name,
-      color: info.color
+      color: info.color,
+      pending: shouldAwaitAuthorization
     })
   )
 
-  dispatch(multi_userJoined(id))
+  if (shouldAwaitAuthorization) {
+    dispatch(
+      addChat({ content: `${info.name} is requesting permission to join.`, timestamp: Date.now() })
+    )
+    return
+  }
 
-  // Client has been fully authenticated
-  client.auth()
-
-  dispatch(
-    client_authorized({
-      serverTime: Date.now()
-    })(id)
-  )
+  dispatch(authorizeClient(client))
 }
 const server_initClient = rpc(RpcRealm.Server, initClient, {
   allowUnauthed: true
 })
+
+export const authorizeClient = (client: NetConnection): ThunkAction<void, IAppState, void> => {
+  return async (dispatch, getState) => {
+    const id = client.id.toString()
+    dispatch(multi_userJoined(id))
+
+    // Client has been fully authorized
+    client.auth()
+
+    dispatch(client_authorized({ serverTime: Date.now() })(id))
+  }
+}

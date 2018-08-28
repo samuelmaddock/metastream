@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import { IAppState } from '../../reducers/index'
-import { IUsersState } from '../../lobby/reducers/users'
+import { IUsersState, IUser } from '../../lobby/reducers/users'
 import { isHost } from '../../lobby/reducers/users.helpers'
 import { getMaxUsers } from '../../lobby/reducers/session'
 
@@ -23,9 +23,15 @@ interface IConnectedProps {
   isHost: boolean
 }
 
+interface IState {
+  sortedUsers: IUser[]
+}
+
 type Props = IProps & IConnectedProps
 
 class _UserList extends Component<Props> {
+  state: IState = { sortedUsers: [] }
+
   private get userIds() {
     return Object.keys(this.props.users.map)
   }
@@ -40,6 +46,21 @@ class _UserList extends Component<Props> {
     return `${numUsers}` + (maxUsers && isFinite(maxUsers) ? `/${maxUsers}` : '')
   }
 
+  componentWillReceiveProps(nextProps: Props) {
+    if (this.props.users !== nextProps.users) {
+      const users = Object.values(nextProps.users.map)
+      users.sort((a, b) => {
+        if (!a || !b) return 0
+
+        if (a.pending && !b.pending) return -1
+        if (!a.pending && b.pending) return 1
+
+        return 0
+      })
+      this.setState({ sortedUsers: users })
+    }
+  }
+
   render(): JSX.Element | null {
     return (
       <ListOverlay
@@ -49,10 +70,9 @@ class _UserList extends Component<Props> {
         action={this.renderActions()}
         renderMenuOptions={() => <div />}
       >
-        {this.userIds.map((userId: string) => {
-          const user = this.props.users.map[userId]!
-          return <UserItem key={userId} user={user} />
-        })}
+        {this.state.sortedUsers.map(user => (
+          <UserItem key={user.id} user={user} />
+        ))}
       </ListOverlay>
     )
   }

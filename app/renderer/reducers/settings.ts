@@ -74,4 +74,5 @@ export const settings: Reducer<ISettingsState> = (
 
 export const getLocalUsername = (state: IAppState) => state.settings.username || DEFAULT_USERNAME
 export const getLocalColor = (state: IAppState) => state.settings.color || DEFAULT_COLOR
+export const getLocalSessionMode = (state: IAppState) => state.settings.sessionMode || DEFAULT_COLOR
 export const isDeveloper = (state: IAppState) => state.settings.developer

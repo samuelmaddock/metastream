@@ -295,6 +295,8 @@ interface RpcAction extends Action {
 
 interface IRPCOptions {
   validate?: (...args: any[]) => boolean
+
+  /** Allows processing of RPC from unauthorized user. */
   allowUnauthed?: boolean
 }
 

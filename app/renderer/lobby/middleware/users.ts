@@ -11,8 +11,13 @@ import { initLobby } from '../actions/common'
 interface IUserPayload {
   conn: NetConnection
   name?: string
+
+  /** Whether this user is the host. */
   host?: boolean
   color: string
+
+  /** Whether this user is still pending joining. */
+  pending?: boolean
 }
 
 export const addUser = actionCreator<IUserPayload>('ADD_USER')

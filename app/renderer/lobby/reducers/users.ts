@@ -18,6 +18,7 @@ export interface IUser {
   avatar?: string
   color: string
   role: UserRole
+  pending?: boolean
 }
 
 export interface IUsersState {
@@ -51,7 +52,8 @@ export const users: Reducer<IUsersState> = (state: IUsersState = initialState, a
           id,
           name,
           color: action.payload.color,
-          role: admin ? UserRole.Admin : UserRole.Default
+          role: admin ? UserRole.Admin : UserRole.Default,
+          pending: action.payload.pending
         }
       }
     }
