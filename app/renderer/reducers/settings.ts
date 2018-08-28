@@ -33,7 +33,7 @@ const initialState: ISettingsState = {
   volume: 0.75,
   allowTracking: false,
   developer: process.env.NODE_ENV === 'development',
-  sessionMode: SessionMode.Public
+  sessionMode: SessionMode.Request
 }
 
 export const settings: Reducer<ISettingsState> = (
