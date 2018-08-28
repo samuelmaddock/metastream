@@ -1,12 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { RouteComponentProps } from 'react-router'
-import { createStore, Store } from 'redux'
 import { IReactReduxProps } from 'types/redux'
 
 import { IAppState, AppReplicatedState } from 'renderer/reducers'
 
-import { NetworkState } from 'types/network'
 import { GameLobby } from 'renderer/components/GameLobby'
 import { PlatformService } from 'renderer/platform'
 import { NetServer } from 'renderer/network'
@@ -22,7 +20,7 @@ import {
 } from 'constants/network'
 import { Connect } from '../components/lobby/Connect'
 import { Disconnect } from '../components/lobby/Disconnect'
-import { getDisconnectReason, session } from '../lobby/reducers/session'
+import { getDisconnectReason } from '../lobby/reducers/session'
 import { setDisconnectReason } from '../lobby/actions/session'
 import { t } from 'locale'
 import { SessionMode } from '../reducers/settings'
@@ -64,6 +62,10 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
 
   private get disconnectReason() {
     return this.props.disconnectReason || this.state.disconnectMessage
+  }
+
+  private get supportsNetworking() {
+    return this.props.sessionMode !== SessionMode.Private
   }
 
   constructor(props: PrivateProps) {
@@ -171,7 +173,7 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
   componentWillMount(): void {
     this.props.dispatch(initLobby({ host: this.host }))
 
-    if (!this.host || this.props.sessionMode === SessionMode.Public) {
+    if (!this.host || this.supportsNetworking) {
       this.setupLobby()
     }
   }
@@ -195,10 +197,9 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
   }
 
   private onSessionModeChange() {
-    const { sessionMode } = this.props
-    if (sessionMode === SessionMode.Public && !this.connected) {
+    if (this.supportsNetworking && !this.connected) {
       this.setupLobby()
-    } else if (sessionMode === SessionMode.Private && this.connected) {
+    } else if (!this.supportsNetworking && this.connected) {
       this.closeLobby()
     }
   }
