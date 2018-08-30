@@ -35,3 +35,22 @@
 .container:hover .menuBtn {
   opacity: 1;
 }
+
+.pendingBtn {
+  border-radius: 4px;
+  width: 32px;
+  height: 32px;
+}
+
+.allowBtn {
+  composes: pendingBtn;
+  background: #63b852;
+
+  margin-left: auto;
+  margin-right: 0.5rem;
+}
+
+.disallowBtn {
+  composes: pendingBtn;
+  background: #f97373;
+}

@@ -4,7 +4,7 @@ import { addUser } from 'renderer/lobby/middleware/users'
 import { RpcThunk } from 'renderer/lobby/types'
 import { multi_userJoined, client_kick } from 'renderer/lobby/actions/users'
 import { rpc, RpcRealm } from 'renderer/network/middleware/rpc'
-import { getUser, getNumUsers } from 'renderer/lobby/reducers/users.helpers'
+import { getUser, getNumUsers, isAdmin } from 'renderer/lobby/reducers/users.helpers'
 import {
   getLocalUsername,
   getLocalColor,
@@ -123,7 +123,7 @@ const server_initClient = rpc(RpcRealm.Server, initClient, {
   allowUnauthed: true
 })
 
-export const authorizeClient = (client: NetConnection): ThunkAction<void, IAppState, void> => {
+const authorizeClient = (client: NetConnection): ThunkAction<void, IAppState, void> => {
   return async (dispatch, getState) => {
     const id = client.id.toString()
     dispatch(multi_userJoined(id))
@@ -134,3 +134,25 @@ export const authorizeClient = (client: NetConnection): ThunkAction<void, IAppSt
     dispatch(client_authorized({ serverTime: Date.now() })(id))
   }
 }
+
+const answerClient = (userId: string, allow: boolean): RpcThunk<void> => (
+  dispatch,
+  getState,
+  { client, server }
+) => {
+  const state = getState()
+  if (!isAdmin(state, client.id.toString())) return
+
+  const user = getUser(state, userId)
+  if (!user || !user.pending) return
+
+  const userClient = server.getClientById(userId)
+  if (!userClient) return
+
+  if (allow) {
+    dispatch(authorizeClient(userClient))
+  } else {
+    userClient.close()
+  }
+}
+export const server_answerClient = rpc(RpcRealm.Server, answerClient)

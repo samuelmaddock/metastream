@@ -8,6 +8,7 @@ import { connect, DispatchProp } from 'react-redux'
 import { IAppState } from '../../reducers/index'
 import { isAdmin, isDJ } from '../../lobby/reducers/users.helpers'
 import { localUserId } from '../../network'
+import { server_answerClient } from '../../lobby/actions/user-init'
 
 interface IProps {
   user: IUser
@@ -42,6 +43,29 @@ class _UserItem extends Component<PrivateProps, IState> {
         ? { title: 'DJ', icon: 'headphones' }
         : null
 
+    let actionBtns: React.ReactNode
+
+    if (user.pending && this.props.isLocalAdmin) {
+      const responseCreator = (allow: boolean) => () => {
+        this.props.dispatch!(server_answerClient(user.id, allow))
+      }
+
+      actionBtns = (
+        <>
+          <IconButton icon="check" className={styles.allowBtn} onClick={responseCreator(true)} />
+          <IconButton icon="x" className={styles.disallowBtn} onClick={responseCreator(false)} />
+        </>
+      )
+    } else if (this.canShowMenu) {
+      actionBtns = (
+        <IconButton
+          icon="more-vertical"
+          className={styles.menuBtn}
+          onClick={this.props.onClickMenu}
+        />
+      )
+    }
+
     return (
       <figure className={styles.container}>
         {/* <UserAvatar className={styles.avatar} id={this.props.user.id} avatar={user.avatar} /> */}
@@ -53,13 +77,7 @@ class _UserItem extends Component<PrivateProps, IState> {
             <Icon name={roleIcon.icon} className={styles.role} />
           </Tooltip>
         )}
-        {this.canShowMenu && (
-          <IconButton
-            icon="more-vertical"
-            className={styles.menuBtn}
-            onClick={this.props.onClickMenu}
-          />
-        )}
+        {actionBtns}
       </figure>
     )
   }
