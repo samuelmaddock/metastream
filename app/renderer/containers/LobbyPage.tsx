@@ -20,7 +20,7 @@ import {
 } from 'constants/network'
 import { Connect } from '../components/lobby/Connect'
 import { Disconnect } from '../components/lobby/Disconnect'
-import { getDisconnectReason } from '../lobby/reducers/session'
+import { getDisconnectReason, ConnectionStatus } from '../lobby/reducers/session'
 import { setDisconnectReason } from '../lobby/actions/session'
 import { t } from 'locale'
 import { SessionMode } from '../reducers/settings'
@@ -36,6 +36,7 @@ interface IConnectedProps {
   disconnectReason?: NetworkDisconnectReason
   clientAuthorized?: boolean
   sessionMode?: SessionMode
+  connectionStatus?: ConnectionStatus
 }
 
 interface IState {
@@ -46,7 +47,8 @@ function mapStateToProps(state: IAppState): IConnectedProps {
   return {
     disconnectReason: getDisconnectReason(state),
     clientAuthorized: state.session.authorized,
-    sessionMode: state.settings.sessionMode
+    sessionMode: state.settings.sessionMode,
+    connectionStatus: state.session.connectionStatus
   }
 }
 
@@ -220,7 +222,11 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
     }
 
     if (!this.host && !(this.connected && this.props.clientAuthorized)) {
-      return <Connect onCancel={this.disconnectImmediate} />
+      const status =
+        this.props.connectionStatus === ConnectionStatus.Pending
+          ? 'Waiting for host to allow connection'
+          : undefined
+      return <Connect onCancel={this.disconnectImmediate} status={status} />
     }
 
     return <GameLobby host={this.host} />

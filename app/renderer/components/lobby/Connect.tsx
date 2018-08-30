@@ -11,6 +11,7 @@ import { t } from '../../../locale/index'
 
 interface IProps {
   className?: string
+  status?: string
   onCancel: () => void
 }
 
@@ -24,7 +25,7 @@ class _Connect extends Component<PrivateProps> {
 
         <p className={styles.info}>
           <Spinner />
-          {t('connecting')}&hellip;
+          {`${this.props.status || t('connecting')}…`}
         </p>
         <MenuButton icon="x" size="medium" onClick={() => this.props.onCancel()}>
           {t('cancel')}

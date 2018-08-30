@@ -1,7 +1,7 @@
 import { actionCreator } from 'utils/redux'
-import { ISessionState } from '../reducers/session'
+import { ISessionState, ConnectionStatus } from '../reducers/session'
 import { ThunkAction } from 'redux-thunk'
-import { IAppState } from '../../reducers/index'
+import { IAppState } from '../../reducers'
 import { NetworkDisconnectReason } from 'constants/network'
 
 export const setSessionData = actionCreator<Partial<ISessionState>>('SET_SESSION_DATA')
@@ -9,6 +9,9 @@ export const setDisconnectReason = actionCreator<NetworkDisconnectReason | undef
   'SET_DISCONNECT_REASON'
 )
 export const setAuthorized = actionCreator<boolean>('SET_AUTHORIZED')
+export const setConnectionStatus = actionCreator<ConnectionStatus | undefined>(
+  'SET_CONNECTION_STATUS'
+)
 
 export const initHostSession = (): ThunkAction<void, IAppState, void> => {
   return (dispatch, getState) => {

@@ -12,19 +12,24 @@ import {
   SessionMode
 } from 'renderer/reducers/settings'
 import { USERNAME_MAX_LEN, COLOR_LEN } from 'constants/settings'
-import { getMaxUsers } from '../reducers/session'
+import { getMaxUsers, ConnectionStatus } from '../reducers/session'
 import { NetworkDisconnectReason } from 'constants/network'
-import { setAuthorized } from './session'
+import { setAuthorized, setConnectionStatus } from './session'
 import { updateServerClockSkew } from './mediaPlayer'
 import { VERSION } from 'constants/app'
 import { NetConnection } from '../../network/index'
 import { addChat } from './chat'
 import { actionCreator } from 'utils/redux'
 
-type ClientInfo = {
+type ClientInitRequest = {
   name: string
   color: string
   version: string
+}
+
+const enum ClientInitResponse {
+  Ok,
+  Pending
 }
 
 type AuthorizeInfo = {
@@ -36,17 +41,21 @@ export const clearPendingUser = actionCreator<string>('CLEAR_PENDING_USER')
 /** Initialize client */
 export const initialize = (): ThunkAction<void, IAppState, void> => {
   return async (dispatch, getState) => {
-    dispatch(
+    const response = await dispatch(
       server_initClient({
         version: VERSION,
         name: getLocalUsername(getState()),
         color: getLocalColor(getState())
       })
     )
+
+    if (response === ClientInitResponse.Pending) {
+      dispatch(setConnectionStatus(ConnectionStatus.Pending))
+    }
   }
 }
 
-const validateClientInfo = (info: ClientInfo, id: string, state: IAppState) => {
+const validateClientInfo = (info: ClientInitRequest, id: string, state: IAppState) => {
   if (VERSION !== info.version) {
     console.debug(`Client '${info.version}'[${id}] kicked for version mismatch (${info.version})`)
     return NetworkDisconnectReason.VersionMismatch
@@ -80,7 +89,11 @@ const clientAuthorized = (info: AuthorizeInfo): RpcThunk<void> => (dispatch, get
 }
 const client_authorized = rpc(RpcRealm.Client, clientAuthorized)
 
-const initClient = (info: ClientInfo): RpcThunk<void> => (dispatch, getState, { client }) => {
+const initClient = (info: ClientInitRequest): RpcThunk<ClientInitResponse | void> => (
+  dispatch,
+  getState,
+  { client }
+) => {
   const state = getState()
   const id = client.id.toString()
 
@@ -117,10 +130,11 @@ const initClient = (info: ClientInfo): RpcThunk<void> => (dispatch, getState, { 
     dispatch(
       addChat({ content: `${info.name} is requesting permission to join.`, timestamp: Date.now() })
     )
-    return
+    return ClientInitResponse.Pending
   }
 
   dispatch(authorizeClient(client))
+  return ClientInitResponse.Ok
 }
 const server_initClient = rpc(RpcRealm.Server, initClient, {
   allowUnauthed: true

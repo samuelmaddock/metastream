@@ -2,9 +2,18 @@ import { Reducer } from 'redux'
 import { isType } from 'utils/redux'
 import { IAppState } from 'renderer/reducers'
 import { NetworkDisconnectReason } from 'constants/network'
-import { DEFAULT_USERS_MAX } from 'constants/settings'
-import { setSessionData, setDisconnectReason, setAuthorized } from '../actions/session'
+import {
+  setSessionData,
+  setDisconnectReason,
+  setAuthorized,
+  setConnectionStatus
+} from '../actions/session'
 import { NetActions } from '../../network/actions'
+
+export const enum ConnectionStatus {
+  Connected = 'Connected',
+  Pending = 'Pending'
+}
 
 export interface ISessionState {
   maxUsers?: number
@@ -14,6 +23,9 @@ export interface ISessionState {
 
   /** CLIENT: Whether they're authorized */
   authorized?: boolean
+
+  /** CLIENT: Connection status. */
+  connectionStatus?: ConnectionStatus
 }
 
 const initialState: ISessionState = {}
@@ -24,14 +36,12 @@ export const session: Reducer<ISessionState> = (
 ) => {
   if (isType(action, setSessionData)) {
     return { ...state, ...action.payload }
-  }
-
-  if (isType(action, setDisconnectReason)) {
+  } else if (isType(action, setDisconnectReason)) {
     return { ...state, disconnectReason: action.payload }
-  }
-
-  if (isType(action, setAuthorized)) {
-    return { ...state, authorized: action.payload }
+  } else if (isType(action, setAuthorized)) {
+    return { ...state, authorized: action.payload, connectionStatus: ConnectionStatus.Connected }
+  } else if (isType(action, setConnectionStatus)) {
+    return { ...state, connectionStatus: action.payload }
   }
 
   if (isType(action, NetActions.disconnect)) {
