@@ -52,8 +52,8 @@ class _UserItem extends Component<PrivateProps, IState> {
 
       actionBtns = (
         <>
-          <IconButton icon="check" className={styles.allowBtn} onClick={responseCreator(true)} />
-          <IconButton icon="x" className={styles.disallowBtn} onClick={responseCreator(false)} />
+          <IconButton icon="check" className={styles.allowBtn} title="Allow" onClick={responseCreator(true)} />
+          <IconButton icon="x" className={styles.disallowBtn} title="Disallow" onClick={responseCreator(false)} />
         </>
       )
     } else if (this.canShowMenu) {
