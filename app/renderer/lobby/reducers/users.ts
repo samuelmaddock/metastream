@@ -1,8 +1,8 @@
 import { Reducer } from 'redux'
 import { isType } from 'utils/redux'
-import { IAppState } from 'renderer/reducers'
 import { addUser, removeUser, clearUsers } from '../middleware/users'
 import { setUserRole } from '../actions/users'
+import { clearPendingUser } from '../actions/user-init'
 import { resetLobby } from '../actions/common'
 
 /** User role in ascending power. */
@@ -66,6 +66,18 @@ export const users: Reducer<IUsersState> = (state: IUsersState = initialState, a
     }
   } else if (isType(action, resetLobby)) {
     return initialState
+  } else if (isType(action, clearPendingUser)) {
+    const id = action.payload
+    return {
+      ...state,
+      map: {
+        ...state.map,
+        [id]: {
+          ...state.map[id]!,
+          pending: false
+        }
+      }
+    }
   }
 
   if (isType(action, setUserRole)) {

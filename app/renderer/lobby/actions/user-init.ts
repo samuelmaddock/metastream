@@ -19,6 +19,7 @@ import { updateServerClockSkew } from './mediaPlayer'
 import { VERSION } from 'constants/app'
 import { NetConnection } from '../../network/index'
 import { addChat } from './chat'
+import { actionCreator } from 'utils/redux'
 
 type ClientInfo = {
   name: string
@@ -29,6 +30,8 @@ type ClientInfo = {
 type AuthorizeInfo = {
   serverTime: number
 }
+
+export const clearPendingUser = actionCreator<string>('CLEAR_PENDING_USER')
 
 /** Initialize client */
 export const initialize = (): ThunkAction<void, IAppState, void> => {
@@ -150,6 +153,7 @@ const answerClient = (userId: string, allow: boolean): RpcThunk<void> => (
   if (!userClient) return
 
   if (allow) {
+    dispatch(clearPendingUser(userId))
     dispatch(authorizeClient(userClient))
   } else {
     userClient.close()
