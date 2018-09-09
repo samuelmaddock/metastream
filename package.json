@@ -1,6 +1,6 @@
 {
-  "name": "tv",
-  "productName": "TV",
+  "name": "metastream",
+  "productName": "Metastream",
   "private": true,
   "version": "0.12.0",
   "description": "",
@@ -27,7 +27,7 @@
   "build": {
     "productName": "Metastream",
     "appId": "com.samuelmaddock.metastream",
-    "copyright": "Metastream © 2018. All rights reserved.",
+    "copyright": "Samuel Maddock © 2018. All rights reserved.",
     "muonVersion": "7.1.6",
     "nodeGypRebuild": false,
     "npmRebuild": false,
@@ -116,7 +116,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/samuelmaddock/tv.git"
+    "url": "git+https://github.com/samuelmaddock/metastream.git"
   },
   "devDependencies": {
     "@types/cheerio": "^0.22.3",
