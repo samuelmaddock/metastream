@@ -1,21 +1,9 @@
 import fs from 'fs-extra'
 import path from 'path'
-import {
-  app,
-  session,
-  dialog,
-  componentUpdater,
-  ipcMain,
-  ipcRenderer,
-  BrowserWindow
-} from 'electron'
+import { app, session, componentUpdater, ipcMain, BrowserWindow } from 'electron'
 import * as settings from 'electron-settings'
 import log from './log'
 import * as widevine from 'constants/widevine'
-// import { CDN_URL } from 'constants/api'
-// import request from 'request'
-// import * as AdmZip from 'adm-zip'
-// import * as CrxReader from 'chrome-ext-downloader'
 import { fileUrl } from 'utils/appUrl'
 import * as walkdir from 'walkdir'
 
@@ -231,61 +219,6 @@ function loadComponents() {
   log.debug(`Registering widevine component ${widevine.widevineComponentId}`)
   registerComponent(widevine.widevineComponentId, widevine.widevineComponentPublicKey)
 }
-
-/*
-const activeInstalls: { [key: string]: request.Request | null } = {}
-
-function installExtension(extId: string) {
-  return new Promise((resolve, reject) => {
-    if (activeInstalls[extId]) {
-      reject('Pending installation')
-      return
-    }
-
-    // TODO: read and write to crx cache
-    // TODO: fetch version from remote?
-    const version = '1.15.2'
-    const extDest = path.join(getExtensionsPath(), extId, version)
-    const extUrl = `${CDN_URL}a/extensions/${extId}.crx`
-
-    const req = request({ uri: extUrl, encoding: null }, (err, res, body) => {
-      activeInstalls[extId] = null
-
-      if (err || res.statusCode !== 200) {
-        reject(`Failed to download extension ${extId}\n${err}`)
-        return
-      }
-
-      // We need to extract the public key from the CRX header.
-      // See: https://developer.chrome.com/apps/crx
-      let reader = new CrxReader(body)
-      let preamble = 16
-      let keyLength = reader.data.readUInt32LE(8)
-      let publicKey = reader.data.slice(preamble, preamble + keyLength).toString('base64')
-
-      // Unzip CRX and sign the manifest file with the key.
-      let contents = reader.getZipContents()
-      let zip = new AdmZip(contents)
-      zip.extractAllToAsync(extDest, true, async () => {
-        let manifestFile = path.join(extDest, 'manifest.json')
-        const manifest = await readManifest(manifestFile)
-
-        manifest.key = publicKey
-        fs.writeFile(manifestFile, JSON.stringify(manifest, null, 2), 'utf-8', () =>
-          resolve(extDest)
-        )
-      })
-    })
-    activeInstalls[extId] = req
-  })
-}
-
-async function readManifest(filename: string) {
-  const data = await fs.readFile(filename, 'utf-8')
-  const manifest = JSON.parse(data)
-  return manifest
-}
-*/
 
 /* ----------------------------------------
   IPC

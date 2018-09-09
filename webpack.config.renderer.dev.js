@@ -79,45 +79,6 @@ export default merge.smart(baseConfig, {
           },
         ]
       },
-      // Add SASS support  - compile all .global.scss files and pipe it to style.css
-      {
-        test: /\.global\.scss$/,
-        use: [
-          {
-            loader: 'style-loader'
-          },
-          {
-            loader: 'css-loader',
-            options: {
-              sourceMap: true,
-            },
-          },
-          {
-            loader: 'sass-loader'
-          }
-        ]
-      },
-      // Add SASS support  - compile all other .scss files and pipe it to style.css
-      {
-        test: /^((?!\.global).)*\.scss$/,
-        use: [
-          {
-            loader: 'style-loader'
-          },
-          {
-            loader: 'css-loader',
-            options: {
-              modules: true,
-              sourceMap: true,
-              importLoaders: 1,
-              localIdentName: '[name]__[local]__[hash:base64:5]',
-            }
-          },
-          {
-            loader: 'sass-loader'
-          }
-        ]
-      },
       // WOFF Font
       {
         test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
