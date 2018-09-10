@@ -1,7 +1,7 @@
 <h1 align="center">
   <br>
   <a href="https://getmetastream.com">
-    <img src="./resources/logo.png" alt="Metastream" width="200">
+    <img src="./resources/icon.png" alt="Metastream" width="200">
   </a>
   <br>
   Metastream
@@ -24,6 +24,10 @@ Download the latest version of Metastream from
   ["How to Contribute"](#how-to-contribute) instructions.
 
 ## Screenshots
+
+![Screenshot1](./resources/screenshots/screenshot1.png)
+
+![Screenshot2](./resources/screenshots/screenshot2.png)
 
 ## How to Contribute
 
