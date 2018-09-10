@@ -120,6 +120,12 @@ export default class Home extends Component<IProps> {
               image="./assets/icons/social/discord-color.svg"
               title="Join Discord community"
             />
+
+            <SocialLink
+              href="https://github.com/samuelmaddock/metastream"
+              image="./assets/icons/social/github-mark.svg"
+              title="GitHub"
+            />
           </div>
 
           <div className={styles.socialRight}>
