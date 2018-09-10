@@ -1,9 +1,9 @@
 {
   "name": "metastream",
   "productName": "Metastream",
-  "private": true,
   "version": "0.12.0",
   "description": "",
+  "license": "MIT",
   "main": "main.js",
   "scripts": {
     "build-dll": "cross-env NODE_ENV=development node --trace-warnings -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.renderer.dev.dll.js --progress --profile --colors",
