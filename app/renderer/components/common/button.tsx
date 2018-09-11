@@ -7,7 +7,6 @@ import Tooltip from 'material-ui/Tooltip'
 export interface IIconButtonProps {
   icon: string
   title?: string
-  size?: 'medium' | 'large'
 
   /** Disable button interaction */
   disabled?: boolean
@@ -49,14 +48,21 @@ interface IHighlightButtonProps extends IIconButtonProps {
   highlight?: boolean
   glass?: boolean
   blend?: boolean
+  size?: 'medium' | 'large'
 }
 
-export const HighlightButton: React.SFC<IHighlightButtonProps> = props => {
-  const className = cx(props.className, styles.highlightBtn, styles[props.size || 'small'], {
-    [styles.highlight]: props.highlight,
-    [styles.outline]: !props.highlight,
-    [styles.glass]: props.glass,
-    [styles.blend]: props.blend
+export const HighlightButton: React.SFC<IHighlightButtonProps> = ({
+  highlight,
+  glass,
+  blend,
+  size,
+  ...props
+}) => {
+  const className = cx(props.className, styles.highlightBtn, styles[size || 'small'], {
+    [styles.highlight]: highlight,
+    [styles.outline]: !highlight,
+    [styles.glass]: glass,
+    [styles.blend]: blend
   })
   return <IconButton {...props} className={className} />
 }
