@@ -5,8 +5,8 @@
   border-style: solid;
   border-radius: 4px;
 
-  background: #a8aeb8;
-  border-color: #c4c7cc #adb9cc #96a6bd;
+  background: #afafaf;
+  border-color: #c6c6c6 #bcbcbc #a8a8a8;
 
   color: #555;
   font-size: 0.8rem;
@@ -15,7 +15,7 @@
 }
 
 .keyCap {
-  background: linear-gradient(to right, #bbc3d2, #cdd3de, #bbc3d2);
+  background: linear-gradient(to right, #c6c6c6, #d6d6d6, #c6c6c6);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   border-radius: 4px;
   line-height: 24px;
