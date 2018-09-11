@@ -39,7 +39,7 @@
       "assets/",
       "dist/",
       "node_modules/",
-      "!node_modules/*/{build,src,lib,deps,tmp,LICENSE*,*.md,.git*}",
+      "!node_modules/*/{build,src,deps,tmp,LICENSE*,*.md,.git*}",
       "!node_modules/*/prebuilds/{linux*,win32-ia32}",
       "!node_modules/*/prebuilds/*/{electron*,node-4*,node-5*}",
       "!node_modules/sodium-native/libsodium",
