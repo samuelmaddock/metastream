@@ -61,7 +61,9 @@ class _UserList extends Component<Props> {
   }
 
   updateUsers(userState: IUsersState) {
-    const users = Object.values(userState.map)
+    const users = Object.values(userState.map).filter(
+      user => (user ? !user.pending || this.props.isHost : false)
+    )
     users.sort((a, b) => {
       if (!a || !b) return 0
 
