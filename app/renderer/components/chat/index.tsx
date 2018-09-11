@@ -86,17 +86,24 @@ export class Chat extends Component<IProps, IState> {
     )
   }
 
+  private scrollToBottom() {
+    if (this.messages) {
+      this.messages.scrollToBottom()
+    }
+  }
+
   private onFocus = (): void => {
     this.setState({ focused: true })
   }
 
   private onBlur = (): void => {
     this.setState({ focused: false })
+    this.scrollToBottom()
   }
 
   private onSend = (message: string) => {
     this.props.sendMessage(message)
-    this.messages!.scrollToBottom()
+    this.scrollToBottom()
   }
 
   private onKeyPress = (event: KeyboardEvent): void => {
@@ -116,7 +123,6 @@ export class Chat extends Component<IProps, IState> {
         if (this.state.focused && this.form) {
           event.preventDefault()
           this.form.dismiss()
-          this.messages!.scrollToBottom()
         }
     }
   }
