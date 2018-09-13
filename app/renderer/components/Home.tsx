@@ -84,7 +84,7 @@ export default class Home extends Component<IProps> {
           <p>
             This release is still in beta, so expect there to be some issues. If you come across
             any, please{' '}
-            <ExternalLink href="https://github.com/samuelmaddock/metastream/issues/new/choose">
+            <ExternalLink href="https://github.com/samuelmaddock/metastream/issues">
               submit a GitHub issue.
             </ExternalLink>
           </p>
