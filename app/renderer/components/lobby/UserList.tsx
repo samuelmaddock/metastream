@@ -36,12 +36,8 @@ class _UserList extends Component<Props> {
 
   private listOverlay: ListOverlay<IUser> | null = null
 
-  private get userIds() {
-    return Object.keys(this.props.users.map)
-  }
-
   private get numUsers() {
-    return this.userIds.length
+    return this.state.sortedUsers.length
   }
 
   private get userSlots() {
