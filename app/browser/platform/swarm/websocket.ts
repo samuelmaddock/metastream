@@ -96,26 +96,18 @@ class WebSocketProxy extends EventEmitter {
   constructor(private socket: any, private stream: any) {
     super()
     this.socket.once('close', this.close)
-    this.socket.on('data', this.receive)
-    this.stream.on('data', this.write)
-  }
-
-  private receive = (data: Buffer) => {
-    this.stream.write(data)
-  }
-
-  private write = (data: Buffer) => {
-    this.socket.write(data)
+    this.socket.pipe(this.stream)
+    this.stream.pipe(this.socket)
   }
 
   close = () => {
     if (this.socket) {
-      this.socket.removeListener('data', this.receive)
+      this.socket.unpipe()
       this.socket.destroy()
       this.socket = null
     }
     if (this.stream) {
-      this.stream.removeListener('data', this.write)
+      this.stream.unpipe()
       this.stream.end()
       this.stream = null
     }
