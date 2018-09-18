@@ -4,7 +4,12 @@ import { addUser } from 'renderer/lobby/middleware/users'
 import { RpcThunk } from 'renderer/lobby/types'
 import { multi_userJoined, client_kick } from 'renderer/lobby/actions/users'
 import { rpc, RpcRealm } from 'renderer/network/middleware/rpc'
-import { getUser, getNumUsers, isAdmin } from 'renderer/lobby/reducers/users.helpers'
+import {
+  getUser,
+  getNumUsers,
+  isAdmin,
+  findUserByName
+} from 'renderer/lobby/reducers/users.helpers'
 import {
   getLocalUsername,
   getLocalColor,
@@ -89,6 +94,17 @@ const clientAuthorized = (info: AuthorizeInfo): RpcThunk<void> => (dispatch, get
 }
 const client_authorized = rpc(RpcRealm.Client, clientAuthorized)
 
+/** Create new unique name with counter appended. */
+const appendNameCount = (state: IAppState, name: string) => {
+  let newName
+  let i = 0
+  do {
+    i++
+    newName = `${name} (${i})`
+  } while (!!findUserByName(state, newName))
+  return newName
+}
+
 const initClient = (info: ClientInitRequest): RpcThunk<ClientInitResponse | void> => (
   dispatch,
   getState,
@@ -117,10 +133,16 @@ const initClient = (info: ClientInitRequest): RpcThunk<ClientInitResponse | void
   const sessionMode = getLocalSessionMode(state)
   const shouldAwaitAuthorization = sessionMode === SessionMode.Request
 
+  let name = info.name
+  const isNameTaken = !!findUserByName(state, name)
+  if (isNameTaken) {
+    name = appendNameCount(state, name)
+  }
+
   dispatch(
     addUser({
       conn: client,
-      name: info.name,
+      name,
       color: info.color,
       pending: shouldAwaitAuthorization
     })
@@ -128,7 +150,7 @@ const initClient = (info: ClientInitRequest): RpcThunk<ClientInitResponse | void
 
   if (shouldAwaitAuthorization) {
     dispatch(
-      addChat({ content: `${info.name} is requesting permission to join.`, timestamp: Date.now() })
+      addChat({ content: `${name} is requesting permission to join.`, timestamp: Date.now() })
     )
     return ClientInitResponse.Pending
   }

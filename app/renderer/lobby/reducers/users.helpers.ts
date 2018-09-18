@@ -41,3 +41,6 @@ export const findUser = (state: IAppState, filter: (user: IUser, index: number) 
     }
   }
 }
+
+export const findUserByName = (state: IAppState, name: string) =>
+  findUser(state, user => user.name === name)
