@@ -6,6 +6,7 @@ export default (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD
       url: `http://localhost:8080/`
     }
   : {
-      provider: 'generic',
-      url: `${CDN_URL}a/`
+      provider: 'github',
+      repo: 'metastream',
+      owner: 'samuelmaddock'
     })

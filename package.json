@@ -116,7 +116,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/samuelmaddock/metastream.git"
+    "url": "https://github.com/samuelmaddock/metastream"
   },
   "devDependencies": {
     "@types/cheerio": "^0.22.3",
