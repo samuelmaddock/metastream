@@ -1,15 +1,15 @@
-import React, { ReactNode } from 'React';
-import cx from 'classnames';
+import React, { ReactNode } from 'react'
+import cx from 'classnames'
 
-import { Icon } from 'renderer/components/Icon';
-import styles from './MenuButton.css';
+import { Icon } from 'renderer/components/Icon'
+import styles from './MenuButton.css'
 
 interface IProps {
-  children?: ReactNode;
-  className?: string;
-  icon?: string;
-  onClick?: () => void;
-  size?: 'medium' | 'large';
+  children?: ReactNode
+  className?: string
+  icon?: string
+  onClick?: () => void
+  size?: 'medium' | 'large'
 }
 
 export const MenuButton: React.SFC<IProps> = (props: IProps) => {
@@ -22,5 +22,5 @@ export const MenuButton: React.SFC<IProps> = (props: IProps) => {
       {props.icon && <Icon name={props.icon} />}
       <span>{props.children}</span>
     </button>
-  );
-};
+  )
+}
