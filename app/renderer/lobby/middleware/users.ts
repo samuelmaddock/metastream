@@ -59,7 +59,7 @@ export const usersMiddleware = (): Middleware => {
       if (host) {
         server.on('disconnect', onDisconnect)
       } else {
-        dispatch((initialize as any)())
+        dispatch((initialize as any)(server))
       }
     }
 

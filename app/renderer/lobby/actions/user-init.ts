@@ -19,10 +19,10 @@ import {
 import { USERNAME_MAX_LEN, COLOR_LEN } from 'constants/settings'
 import { getMaxUsers, ConnectionStatus } from '../reducers/session'
 import { NetworkDisconnectReason } from 'constants/network'
-import { setAuthorized, setConnectionStatus } from './session'
+import { setAuthorized, setConnectionStatus, setDisconnectReason } from './session'
 import { updateServerClockSkew } from './mediaPlayer'
 import { VERSION } from 'constants/app'
-import { NetConnection } from '../../network/index'
+import { NetConnection, NetServer } from '../../network/index'
 import { addChat } from './chat'
 import { actionCreator } from 'utils/redux'
 
@@ -44,15 +44,24 @@ type AuthorizeInfo = {
 export const clearPendingUser = actionCreator<string>('CLEAR_PENDING_USER')
 
 /** Initialize client */
-export const initialize = (): ThunkAction<void, IAppState, void> => {
+export const initialize = (server: NetServer): ThunkAction<void, IAppState, void> => {
   return async (dispatch, getState) => {
-    const response = await dispatch(
-      server_initClient({
-        version: VERSION,
-        name: getLocalUsername(getState()),
-        color: getLocalColor(getState())
-      })
-    )
+    let response
+
+    try {
+      response = await dispatch(
+        server_initClient({
+          version: VERSION,
+          name: getLocalUsername(getState()),
+          color: getLocalColor(getState())
+        })
+      )
+    } catch (e) {
+      console.error('Failed to receive client initialization response.')
+      dispatch(setDisconnectReason(NetworkDisconnectReason.Timeout))
+      server.close()
+      return
+    }
 
     if (response === ClientInitResponse.Pending) {
       dispatch(setConnectionStatus(ConnectionStatus.Pending))
