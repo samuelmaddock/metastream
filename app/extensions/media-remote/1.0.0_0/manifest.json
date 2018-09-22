@@ -25,7 +25,7 @@
       "run_at": "document_start"
     },
     {
-      "matches": ["https://new.hulu.com/*"],
+      "matches": ["https://*.hulu.com/*"],
       "js": ["players/hulu.js"],
       "run_at": "document_start"
     }
