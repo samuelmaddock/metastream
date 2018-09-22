@@ -29,6 +29,7 @@ export class Chat extends Component<IProps, IState> {
 
   componentDidMount(): void {
     this.setupListeners(!this.props.disabled)
+    this.scrollToBottom()
   }
 
   componentWillUnmount(): void {
