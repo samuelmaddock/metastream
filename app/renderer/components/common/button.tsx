@@ -6,6 +6,7 @@ import Tooltip from 'material-ui/Tooltip'
 
 export interface IIconButtonProps {
   icon: string
+  iconSize?: 'small'
   title?: string
 
   /** Disable button interaction */
@@ -19,7 +20,13 @@ export interface IIconButtonProps {
 
 const nbsp = '\u00A0'
 
-export const IconButton: React.SFC<IIconButtonProps> = ({ title, icon, children, ...props }) => {
+export const IconButton: React.SFC<IIconButtonProps> = ({
+  title,
+  icon,
+  iconSize,
+  children,
+  ...props
+}) => {
   return (
     <button
       type="button"
@@ -37,7 +44,7 @@ export const IconButton: React.SFC<IIconButtonProps> = ({ title, icon, children,
           <div className={styles.tooltip} />
         </Tooltip>
       ) : null}
-      <Icon name={icon} />
+      <Icon name={icon} size={iconSize} pointerEvents="none" />
       {!!children && nbsp}
       {children ? <span>{children}</span> : undefined}
     </button>

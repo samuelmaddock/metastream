@@ -29,6 +29,7 @@ export default {
   invite: 'Invite',
   join: 'Join',
   joinSession: 'Join Session',
+  lockQueue: 'Lock queue',
   moveToTop: 'Move to top',
   next: 'Next',
   nextUp: 'Next Up',
@@ -48,6 +49,7 @@ export default {
   requestUrlPlaceholder: '',
   settings: 'Settings',
   startSession: 'Start Session',
+  unlockQueue: 'Unlock queue',
   username: 'Username',
   users: 'Users'
 }

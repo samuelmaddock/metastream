@@ -14,7 +14,7 @@ import {
   sendMediaRequest
 } from '../../lobby/actions/mediaPlayer'
 
-import { HighlightButton } from '../common/button'
+import { HighlightButton, IconButton } from '../common/button'
 import { ListOverlay } from './ListOverlay'
 import { t } from '../../../locale/index'
 
@@ -58,17 +58,20 @@ class _MediaList extends Component<Props> {
         title={t('nextUp')}
         tagline={this.props.mediaQueue.length ? `${this.props.mediaQueue.length}` : undefined}
         action={
-          <HighlightButton
-            icon="plus"
-            highlight={(!currentMedia && isEmpty) || !this.hasRequested}
-            onClick={() => {
-              if (this.props.onAddMedia) {
-                this.props.onAddMedia()
-              }
-            }}
-          >
-            {t('add')}
-          </HighlightButton>
+          <>
+            <IconButton icon="unlock" iconSize="small" title={t('lockQueue')} />
+            <HighlightButton
+              icon="plus"
+              highlight={(!currentMedia && isEmpty) || !this.hasRequested}
+              onClick={() => {
+                if (this.props.onAddMedia) {
+                  this.props.onAddMedia()
+                }
+              }}
+            >
+              {t('add')}
+            </HighlightButton>
+          </>
         }
         renderMenuOptions={(media: IMediaItem, close) => {
           let items = [
