@@ -155,6 +155,7 @@ class _MediaList extends Component<Props> {
         icon={locked ? 'lock' : 'unlock'}
         iconSize="small"
         title={title}
+        disabled={!hasPlaybackPermissions}
         onClick={() => {
           this.props.dispatch!(server_requestToggleQueueLock())
         }}
