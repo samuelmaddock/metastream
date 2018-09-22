@@ -1792,6 +1792,10 @@ browserslist@^2.1.2:
     caniuse-lite "^1.0.30000704"
     electron-to-chromium "^1.3.16"
 
+buffer-alloc-unsafe@^1.0.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/buffer-alloc-unsafe/-/buffer-alloc-unsafe-1.1.0.tgz#bd7dc26ae2972d0eda253be061dba992349c19f0"
+
 buffer-equals@^1.0.3, buffer-equals@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/buffer-equals/-/buffer-equals-1.0.4.tgz#0353b54fd07fd9564170671ae6f66b9cf10d27f5"
@@ -5378,6 +5382,14 @@ length-prefixed-stream@^1.5.1:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/length-prefixed-stream/-/length-prefixed-stream-1.5.1.tgz#99eaf51672dddefbfdd8881ee7b7b7df35d1ed73"
   dependencies:
+    readable-stream "^2.0.0"
+    varint "^5.0.0"
+
+length-prefixed-stream@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/length-prefixed-stream/-/length-prefixed-stream-1.6.0.tgz#6aeeecf38a337172ea0472250e90f5e15b8b2334"
+  dependencies:
+    buffer-alloc-unsafe "^1.0.0"
     readable-stream "^2.0.0"
     varint "^5.0.0"
 
