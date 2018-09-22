@@ -27,6 +27,7 @@ export const queueMedia = actionCreator<IMediaItem>('QUEUE_MEDIA')
 export const updateMedia = actionCreator<{ duration: number }>('UPDATE_MEDIA')
 export const deleteMedia = actionCreator<string>('DELETE_MEDIA')
 export const moveToTop = actionCreator<string>('MOVE_MEDIA_TO_TOP')
+export const lockQueue = actionCreator<void>('LOCK_QUEUE')
 export const updateServerClockSkew = actionCreator<number>('UPDATE_SERVER_CLOCK_SKEW')
 
 /** Media timer until playback ends. This assumes only one media player exists at a time.*/
@@ -152,6 +153,11 @@ export const sendMediaRequest = (
   source: string
 ): ThunkAction<void, IAppState, void> => {
   return async (dispatch, getState) => {
+    let state = getState()
+    if (state.mediaPlayer.queueLocked && !hasPlaybackPermissions(state)) {
+      return null
+    }
+
     const requestPromise = dispatch(server_requestMedia(url))
 
     const requestCount = parseInt(localStorage.getItem('requestCount') || '0', 10) || 0
@@ -162,7 +168,7 @@ export const sendMediaRequest = (
     const mediaId = await requestPromise
 
     if (mediaId) {
-      const state = getState()
+      state = getState()
       const media = getMediaById(state, mediaId)
       if (media && media !== getCurrentMedia(state)) {
         dispatch(addChat({ content: `Added “${media.title}”`, timestamp: Date.now() }))
@@ -178,6 +184,11 @@ const requestMedia = (url: string): RpcThunk<Promise<string | null>> => async (
   getState,
   context
 ) => {
+  const state = getState()
+  if (state.mediaPlayer.queueLocked && !hasPlaybackPermissions(state, context.client)) {
+    return null
+  }
+
   console.info('Media request', url, context)
 
   let res
@@ -286,3 +297,9 @@ const requestMoveToTop = (mediaId: string): RpcThunk<void> => (dispatch, getStat
   dispatch(moveToTop(mediaId))
 }
 export const server_requestMoveToTop = rpc(RpcRealm.Server, requestMoveToTop)
+
+const requestToggleQueueLock = (): RpcThunk<void> => (dispatch, getState, context) => {
+  if (!hasPlaybackPermissions(getState(), context.client)) return
+  dispatch(lockQueue())
+}
+export const server_requestToggleQueueLock = rpc(RpcRealm.Server, requestToggleQueueLock)

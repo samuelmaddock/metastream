@@ -11,7 +11,8 @@ import {
 import {
   server_requestDeleteMedia,
   server_requestMoveToTop,
-  sendMediaRequest
+  sendMediaRequest,
+  server_requestToggleQueueLock
 } from '../../lobby/actions/mediaPlayer'
 
 import { HighlightButton, IconButton } from '../common/button'
@@ -33,6 +34,7 @@ interface IConnectedProps {
   hasPlaybackPermissions: boolean
   currentMedia?: IMediaItem
   mediaQueue: IMediaItem[]
+  mediaQueueLocked: boolean
 }
 
 type Props = IProps & IConnectedProps & DispatchProp<IAppState>
@@ -44,13 +46,16 @@ class _MediaList extends Component<Props> {
     return (parseInt(localStorage.getItem('requestCount') || '0', 10) || 0) > 0
   }
 
+  private get mediaList() {
+    const { currentMedia, mediaQueue } = this.props
+    return currentMedia && currentMedia.hasMore ? [currentMedia, ...mediaQueue] : mediaQueue
+  }
+
+  private get isQueueEmpty() {
+    return this.mediaList.length === 0
+  }
+
   render(): JSX.Element | null {
-    const { mediaQueue, currentMedia } = this.props
-
-    const mediaList =
-      currentMedia && currentMedia.hasMore ? [currentMedia, ...mediaQueue] : mediaQueue
-    const isEmpty = mediaList.length === 0
-
     return (
       <ListOverlay
         ref={e => (this.listOverlay = e)}
@@ -59,18 +64,8 @@ class _MediaList extends Component<Props> {
         tagline={this.props.mediaQueue.length ? `${this.props.mediaQueue.length}` : undefined}
         action={
           <>
-            <IconButton icon="unlock" iconSize="small" title={t('lockQueue')} />
-            <HighlightButton
-              icon="plus"
-              highlight={(!currentMedia && isEmpty) || !this.hasRequested}
-              onClick={() => {
-                if (this.props.onAddMedia) {
-                  this.props.onAddMedia()
-                }
-              }}
-            >
-              {t('add')}
-            </HighlightButton>
+            {this.renderQueueLock()}
+            {this.renderAddMedia()}
           </>
         }
         renderMenuOptions={(media: IMediaItem, close) => {
@@ -134,7 +129,7 @@ class _MediaList extends Component<Props> {
           )
         }}
       >
-        {mediaList.map(media => {
+        {this.mediaList.map(media => {
           return (
             <MediaItem
               key={media.id}
@@ -149,13 +144,51 @@ class _MediaList extends Component<Props> {
     )
   }
 
-  private renderMenu() {}
+  private renderQueueLock() {
+    const { hasPlaybackPermissions, mediaQueueLocked: locked } = this.props
+    if (!hasPlaybackPermissions && !locked) return
+
+    const title = hasPlaybackPermissions ? t(locked ? 'unlockQueue' : 'lockQueue') : undefined
+
+    return (
+      <IconButton
+        icon={locked ? 'lock' : 'unlock'}
+        iconSize="small"
+        title={title}
+        onClick={() => {
+          this.props.dispatch!(server_requestToggleQueueLock())
+        }}
+      />
+    )
+  }
+
+  private renderAddMedia() {
+    const { isQueueEmpty } = this
+    const { currentMedia, mediaQueueLocked, hasPlaybackPermissions } = this.props
+
+    if (!hasPlaybackPermissions && mediaQueueLocked) return
+
+    return (
+      <HighlightButton
+        icon="plus"
+        highlight={(!currentMedia && isQueueEmpty) || !this.hasRequested}
+        onClick={() => {
+          if (this.props.onAddMedia) {
+            this.props.onAddMedia()
+          }
+        }}
+      >
+        {t('add')}
+      </HighlightButton>
+    )
+  }
 }
 
 export const MediaList = connect(
   (state: IAppState): IConnectedProps => ({
     hasPlaybackPermissions: hasPlaybackPermissions(state, localUser()),
     currentMedia: getCurrentMedia(state),
-    mediaQueue: getMediaQueue(state)
+    mediaQueue: getMediaQueue(state),
+    mediaQueueLocked: state.mediaPlayer.queueLocked
   })
 )(_MediaList) as React.ComponentClass<IProps>

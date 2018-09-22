@@ -12,7 +12,8 @@ import {
   updateMedia,
   deleteMedia,
   updateServerClockSkew,
-  moveToTop
+  moveToTop,
+  lockQueue
 } from 'renderer/lobby/actions/mediaPlayer'
 import { MediaType } from 'renderer/media/types'
 import { NetActions } from 'renderer/network/actions'
@@ -73,6 +74,7 @@ export interface IMediaPlayerState {
   pauseTime?: number
   current?: IMediaItem
   queue: IMediaItem[]
+  queueLocked: boolean
 
   /** Clock time difference between client and server. */
   serverClockSkew: number
@@ -88,6 +90,7 @@ export const mediaPlayerReplicatedState: ReplicatedState<IMediaPlayerState> = {
   pauseTime: true,
   current: true,
   queue: true,
+  queueLocked: true,
   serverClockSkew: false
 }
 
@@ -95,6 +98,7 @@ const initialState: IMediaPlayerState = {
   playback: PlaybackState.Idle,
   repeatMode: RepeatMode.Off,
   queue: [],
+  queueLocked: false,
   serverClockSkew: 0
 }
 
@@ -208,6 +212,11 @@ export const mediaPlayer: Reducer<IMediaPlayerState> = (
       const queue = [...state.queue]
       queue.unshift(queue.splice(mediaIdx, 1)[0])
       return { ...state, queue }
+    }
+  } else if (isType(action, lockQueue)) {
+    return {
+      ...state,
+      queueLocked: !state.queueLocked
     }
   }
 
