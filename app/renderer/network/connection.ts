@@ -63,6 +63,19 @@ abstract class NetConnection extends EventEmitter {
   }
 
   protected onClose(): void {
+    if (this.internalStream) {
+      if (this.encode) {
+        this.encode.unpipe(this.internalStream)
+      }
+      if (this.decode) {
+        this.internalStream.unpipe(this.decode)
+        this.decode.removeListener('data', this.receive)
+      }
+      this.internalStream = undefined
+      this.encode = undefined
+      this.decode = undefined
+    }
+
     this.emit('close')
     this.removeAllListeners()
   }
