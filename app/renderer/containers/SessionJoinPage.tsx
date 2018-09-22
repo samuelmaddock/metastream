@@ -3,12 +3,6 @@ import { connect } from 'react-redux'
 import { RouteComponentProps } from 'react-router'
 import { IReactReduxProps } from 'types/redux'
 
-import { IAppState } from 'renderer/reducers'
-
-import { ServerBrowser } from 'renderer/components/ServerBrowser'
-import { requestLobbies } from 'renderer/actions/lobby'
-import { NetworkState } from 'types/network'
-import { ILobbySession } from 'renderer/platform/types'
 import { SessionJoin } from '../components/SessionJoin'
 import { push } from 'react-router-redux'
 

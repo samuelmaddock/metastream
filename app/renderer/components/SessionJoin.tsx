@@ -34,9 +34,9 @@ export class SessionJoin extends Component<IProps> {
                 icon="globe"
                 size="medium"
                 onClick={() => {
-                  const valid = this.sessionInput!.checkValidity()
+                  const valid = Boolean(this.sessionInput && this.sessionInput.checkValidity())
                   if (valid) {
-                    const value = this.sessionInput!.value
+                    const value = this.sessionInput!.value.trim()
                     localStorage.setItem('prevFriendCode', value)
                     this.props.connect(value)
                   } else {
