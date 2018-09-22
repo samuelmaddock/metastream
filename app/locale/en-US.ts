@@ -45,7 +45,7 @@ export default {
   reload: 'Reload',
   remove: 'Remove',
   repeat: 'Repeat',
-  requestUrl: 'Add URL',
+  requestUrl: 'Add to session',
   requestUrlPlaceholder: '',
   settings: 'Settings',
   startSession: 'Start Session',
