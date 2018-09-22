@@ -130,21 +130,15 @@ export class WebSocketClientConnection extends NetConnection {
   private ip?: string
 
   constructor(id: NetUniqueId, socket: SimpleWebSocket) {
-    super(id)
+    super(id, socket)
     this.socket = socket
-
     this.socket.once('close', this.close)
     this.socket.on('error', this.onError)
-    this.socket.on('data', this.receive)
   }
 
   protected onClose(): void {
     this.socket.destroy()
     super.onClose()
-  }
-
-  send(data: Buffer): void {
-    this.socket.write(data)
   }
 
   getIP(): string {

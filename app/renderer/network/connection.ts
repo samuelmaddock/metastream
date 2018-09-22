@@ -1,4 +1,6 @@
 import { EventEmitter } from 'events'
+import * as lpstream from 'length-prefixed-stream'
+import { Duplex } from 'stream'
 
 export class NetUniqueId<T = any> {
   id: T
@@ -20,14 +22,36 @@ abstract class NetConnection extends EventEmitter {
   id: NetUniqueId
   connected?: boolean
 
+  private encode?: Duplex
+  private decode?: Duplex
+  private internalStream?: Duplex
+
   protected authed: boolean = false
 
-  constructor(id: NetUniqueId) {
+  constructor(id: NetUniqueId, stream?: Duplex) {
     super()
+
     this.id = id
+
+    if (stream) {
+      this.internalStream = stream
+      this.encode = lpstream.encode()
+      this.decode = lpstream.decode()
+
+      this.encode!.pipe(this.internalStream)
+      this.internalStream.pipe(this.decode!)
+
+      this.decode!.on('data', this.receive)
+    }
   }
 
-  abstract send(data: Buffer): void
+  send(data: Buffer) {
+    if (this.encode) {
+      this.encode.write(data)
+    } else {
+      throw new Error('No implementation for NetConnection.send available')
+    }
+  }
 
   receive = (data: Buffer): void => {
     this.emit('data', data)

@@ -10,7 +10,7 @@ export class RTCPeerConn extends NetConnection {
   private signalDeferred: Deferred<SignalData> = new Deferred()
 
   constructor(id: NetUniqueId, peer: SimplePeer.Instance) {
-    super(id)
+    super(id, peer)
     this.peer = peer
     ;(this.peer as any).reconnectTimer = RECONNECT_TIMEOUT
 
@@ -59,10 +59,6 @@ export class RTCPeerConn extends NetConnection {
     if (this.peer) {
       this.peer.signal(signal)
     }
-  }
-
-  send(data: Buffer): void {
-    this.peer.send(data)
   }
 
   getIP(): string {

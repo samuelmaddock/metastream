@@ -29,9 +29,8 @@ export class WebSocketProxyConnection extends NetConnection {
   private stream: typeof IPCStream
 
   constructor(id: NetUniqueId, stream: typeof IPCStream, private ip: string) {
-    super(id)
+    super(id, stream)
     this.stream = stream
-    this.stream.on('data', this.receive)
     ipcRenderer.on(`websocket-peer-close-${id}`, this.close)
   }
 
@@ -39,10 +38,6 @@ export class WebSocketProxyConnection extends NetConnection {
     ipcRenderer.removeListener(`websocket-peer-close-${this.id}`, this.close)
     this.stream.end()
     super.onClose()
-  }
-
-  send(data: Buffer): void {
-    this.stream.write(data)
   }
   getIP(): string {
     return this.ip
