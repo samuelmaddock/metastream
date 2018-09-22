@@ -16,7 +16,6 @@ export class RTCPeerConn extends NetConnection {
 
     this.peer.on('close', this.close)
     this.peer.on('error', this.onError)
-    this.peer.on('data', this.onData)
     this.peer.on('iceStateChange', this.onStateChange)
     this.peer.on('signal', this.onSignal)
     this.peer.once('connect', this.onConnect)
@@ -25,17 +24,6 @@ export class RTCPeerConn extends NetConnection {
   private onSignal = (signal: SignalData) => {
     this.signalDeferred.resolve(signal)
     this.emit('signal', signal)
-  }
-
-  private onData = (data: Buffer): void => {
-    // HACK: Workaround simple-peer bug where data is received before
-    // 'connect' event
-    if (!this.connected) {
-      this.once('connect', () => this.receive(data))
-      return
-    }
-
-    this.receive(data)
   }
 
   private onStateChange = (state: RTCIceConnectionState) => {
