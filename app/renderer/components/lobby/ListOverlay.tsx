@@ -9,6 +9,7 @@ interface IProps<T> {
   title?: string
   tagline?: string
   action?: ReactNode
+  placeholder?: ReactNode
   renderMenuOptions: (item: T, onClose: Function) => ReactNode
 }
 
@@ -32,7 +33,13 @@ export class ListOverlay<T = any> extends Component<IProps<T>, IState<T>> {
           {this.props.tagline && <span className={styles.tagline}>{this.props.tagline}</span>}
           <div className={styles.actions}>{this.props.action}</div>
         </header>
-        <div className={styles.list}>{this.props.children}</div>
+        <div className={styles.list}>
+          {React.Children.count(this.props.children) > 0 ? (
+            this.props.children
+          ) : (
+            <div className={styles.placeholder}>{this.props.placeholder}</div>
+          )}
+        </div>
         {this.renderMenu()}
       </div>
     )
