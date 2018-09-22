@@ -3,12 +3,7 @@ import cx from 'classnames'
 
 import styles from './PlaybackControls.css'
 
-import {
-  PlaybackState,
-  IMediaItem,
-  IMediaPlayerState,
-  RepeatMode
-} from 'renderer/lobby/reducers/mediaPlayer'
+import { PlaybackState, IMediaPlayerState, RepeatMode } from 'renderer/lobby/reducers/mediaPlayer'
 import { VolumeSlider } from 'renderer/components/media/VolumeSlider'
 import { DispatchProp, connect } from 'react-redux'
 import {
@@ -19,7 +14,6 @@ import {
 } from 'renderer/lobby/actions/mediaPlayer'
 import { setVolume, setMute } from 'renderer/actions/settings'
 import { Timeline } from 'renderer/components/media/Timeline'
-import { push } from 'react-router-redux'
 import { parseCuePoints, copyMediaLink, openMediaInBrowser } from 'renderer/media/utils'
 import { MoreButton } from 'renderer/components/media/MoreButton'
 import { IAppState } from 'renderer/reducers'
@@ -92,6 +86,7 @@ interface IConnectedProps extends IMediaPlayerState {
 
   /** Has permission to change playback state */
   dj: boolean
+  queueLocked: boolean
 }
 
 const mapStateToProps = (state: IAppState): IConnectedProps => {
@@ -100,7 +95,8 @@ const mapStateToProps = (state: IAppState): IConnectedProps => {
     mute: state.settings.mute,
     volume: state.settings.volume,
     developer: isDeveloper(state),
-    dj: hasPlaybackPermissions(state)
+    dj: hasPlaybackPermissions(state),
+    queueLocked: state.mediaPlayer.queueLocked
   }
 }
 
@@ -116,13 +112,14 @@ class _PlaybackControls extends Component<PrivateProps> {
   }
 
   render(): JSX.Element | null {
-    const { current: media, playback, startTime, pauseTime, dj } = this.props
+    const { current: media, playback, startTime, pauseTime, dj, queueLocked } = this.props
     const playbackIcon = playback === PlaybackState.Playing ? 'pause' : 'play'
 
     const isIdle = playback === PlaybackState.Idle
     const isPaused = playback === PlaybackState.Paused
     const duration = (media && media.duration) || 0
     const isTimed = duration > 0
+    const isAddAllowed = dj || !queueLocked
 
     const addMediaBtn = (
       <Button
@@ -198,7 +195,7 @@ class _PlaybackControls extends Component<PrivateProps> {
 
     return (
       <div className={cx(this.props.className, styles.container)}>
-        {isIdle ? addMediaBtn : [playPauseBtn, nextBtn]}
+        {isIdle && isAddAllowed ? addMediaBtn : [playPauseBtn, nextBtn]}
         {repeatBtn}
         {timeline}
         {volumeSlider}
