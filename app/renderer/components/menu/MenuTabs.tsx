@@ -4,6 +4,7 @@ import { ExternalLink } from '../common/link'
 import { Changelog } from './Changelog'
 
 import styles from './MenuTabs.css'
+import { t } from 'locale'
 
 interface IProps {
   className?: string
@@ -18,9 +19,12 @@ export class MenuTabs extends Component<IProps, IState> {
 
   render() {
     const tabs = [
-      { label: 'Welcome', render: () => <WelcomeMessage /> },
-      { label: 'Changelog', render: () => <Changelog /> },
-      { label: 'Donators', render: () => 'Foobar' }
+      { label: t('welcome'), render: () => <WelcomeMessage /> },
+      { label: t('changelog'), render: () => <Changelog /> },
+      {
+        label: t('donators'),
+        render: () => <p style={{ whiteSpace: 'pre-wrap' }}>{'Foobar'}</p>
+      }
     ]
     const selected = tabs[this.state.value]
 

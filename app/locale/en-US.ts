@@ -6,6 +6,7 @@ export default {
   allowTrackingDesc:
     'Anonymous usage information is sent to the developer to better understand how the app is being used.',
   cancel: 'Cancel',
+  changelog: 'Changelog',
   chatColor: 'Chat Color',
   chatPlaceholder: 'Message or URL',
   chooseUsername: 'Choose your username',
@@ -17,6 +18,7 @@ export default {
   developerMode: 'Developer Mode',
   developerModeDesc: 'Show developer tools for inspecting web pages.',
   disconnect: 'Disconnect',
+  donators: 'Donators',
   duplicate: 'Duplicate',
   endSessionTitle: 'End public session?',
   endSessionDescription: 'Changing to a private session will disconnect all connected users.',
@@ -51,5 +53,6 @@ export default {
   startSession: 'Start Session',
   unlockQueue: 'Unlock queue',
   username: 'Username',
-  users: 'Users'
+  users: 'Users',
+  welcome: 'Welcome'
 }
