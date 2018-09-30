@@ -1,0 +1,43 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+}
+
+.tabList {
+  display: flex;
+  flex: 0 0 auto;
+}
+
+.tabItem {
+  width: auto;
+}
+
+.tabButton {
+  padding: 0 0 2rem;
+}
+
+.tabItem:not(:last-child) .tabButton {
+  padding-right: 2rem;
+}
+
+.tabLabel {
+  font-size: 1.2rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  opacity: 0.4;
+  transition: opacity 140ms ease-out;
+}
+
+.tabButton:hover .tabLabel,
+.selected .tabLabel {
+  font-weight: bold;
+  opacity: 1;
+}
+
+.content {
+  composes: scroller from 'styles/layout.css';
+  height: 100%;
+  flex: 1 0 auto;
+  overflow-y: auto;
+}

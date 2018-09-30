@@ -12,6 +12,7 @@ import { ExternalLink } from './common/link'
 import { t } from 'locale'
 import Tooltip from 'material-ui/Tooltip'
 import { assetUrl } from 'utils/appUrl'
+import { MenuTabs } from './menu/MenuTabs'
 
 const SocialLink = (props: { href: string; title: string; image?: string; icon?: string }) => (
   <ExternalLink href={props.href} className={styles.socialLink}>
@@ -31,6 +32,7 @@ export default class Home extends Component<IProps> {
   render() {
     const DEV = process.env.NODE_ENV === 'development'
     const gitv = `${process.env.GIT_BRANCH}@${process.env.GIT_COMMIT}`
+
     return (
       <LayoutMain className={styles.container}>
         <MenuHeader
@@ -80,19 +82,7 @@ export default class Home extends Component<IProps> {
         </section>
 
         <section className={styles.intro}>
-          <p>Hi, thanks for trying out Metastream!</p>
-          <p>
-            This release is still in beta, so expect there to be some issues. If you come across
-            any, please{' '}
-            <ExternalLink href="https://github.com/samuelmaddock/metastream/issues">
-              submit a GitHub issue.
-            </ExternalLink>
-          </p>
-          <p>
-            If you'd like to join in on the discussion, feel free to join the Discord community
-            using the link at the bottom of the screen.
-          </p>
-          <p>💖 Sam</p>
+          <MenuTabs />
         </section>
 
         <footer className={styles.social}>
