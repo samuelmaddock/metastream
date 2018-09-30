@@ -2,9 +2,11 @@ import React, { ReactNode, Component } from 'react'
 import * as cx from 'classnames'
 import { ExternalLink } from '../common/link'
 import { Changelog } from './Changelog'
+import { APP_WEBSITE } from 'constants/http'
 
 import styles from './MenuTabs.css'
 import { t } from 'locale'
+import { Fetch } from '../common/Fetch'
 
 interface IProps {
   className?: string
@@ -21,10 +23,7 @@ export class MenuTabs extends Component<IProps, IState> {
     const tabs = [
       { label: t('welcome'), render: () => <WelcomeMessage /> },
       { label: t('changelog'), render: () => <Changelog /> },
-      {
-        label: t('donators'),
-        render: () => <p style={{ whiteSpace: 'pre-wrap' }}>{'Foobar'}</p>
-      }
+      { label: t('donators'), render: () => <Donators /> }
     ]
     const selected = tabs[this.state.value]
 
@@ -50,7 +49,7 @@ export class MenuTabs extends Component<IProps, IState> {
   }
 }
 
-const WelcomeMessage: React.SFC<{}> = () => (
+const WelcomeMessage: React.SFC = () => (
   <>
     <p>Hi, thanks for trying out Metastream!</p>
     <p>
@@ -66,4 +65,10 @@ const WelcomeMessage: React.SFC<{}> = () => (
     </p>
     <p>💖 Sam</p>
   </>
+)
+
+const Donators: React.SFC = () => (
+  <Fetch cacheKey="donators" href={`${APP_WEBSITE}app/donators.txt`}>
+    {data => <p style={{ whiteSpace: 'pre-wrap' }}>{typeof data === 'string' ? data : ''}</p>}
+  </Fetch>
 )
