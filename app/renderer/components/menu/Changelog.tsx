@@ -1,6 +1,10 @@
 import React, { Component } from 'react'
 import { VERSION } from 'constants/app'
 import { Spinner } from '../common/spinner'
+import * as marked from 'marked'
+
+import styles from './Changelog.css'
+import { ExternalLink } from '../common/link'
 
 interface IProps {}
 
@@ -54,7 +58,22 @@ export class Changelog extends Component<IProps, IState> {
       return data
     }
 
-    // return JSON.stringify(data, null, '  ')
-    return data.body
+    return (
+      <div>
+        {data.published_at && <div>{data.published_at}</div>}
+        {data.html_url && (
+          <p>
+            <ExternalLink href={data.html_url}>View on GitHub</ExternalLink>
+          </p>
+        )}
+        {data.body && this.renderMarkdown(data.body)}
+      </div>
+    )
+  }
+
+  private renderMarkdown(str: string) {
+    const html = marked(str, { gfm: true })
+
+    return <div className={styles['markdown-body']} dangerouslySetInnerHTML={{ __html: html }} />
   }
 }

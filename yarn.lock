@@ -77,6 +77,10 @@
   version "4.14.115"
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.115.tgz#54d171b2ce12c058742443b5f6754760f701b8f9"
 
+"@types/marked@^0.4.1":
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/@types/marked/-/marked-0.4.1.tgz#6595701c4d0dfde9d04894d3be04b8a97a49e0d7"
+
 "@types/node@*":
   version "6.0.110"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-6.0.110.tgz#6bbfc1c14d671348e3db4f89f3b487785e684684"
@@ -5713,6 +5717,10 @@ map-visit@^1.0.0:
   resolved "https://registry.yarnpkg.com/map-visit/-/map-visit-1.0.0.tgz#ecdca8f13144e660f1b5bd41f12f3479d98dfb8f"
   dependencies:
     object-visit "^1.0.0"
+
+marked@^0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/marked/-/marked-0.5.1.tgz#062f43b88b02ee80901e8e8d8e6a620ddb3aa752"
 
 material-ui@^1.0.0-beta.47:
   version "1.0.0-beta.47"
