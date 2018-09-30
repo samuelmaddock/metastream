@@ -1,6 +1,7 @@
 .container {
   display: flex;
   flex-direction: column;
+  overflow: hidden;
   max-height: 100%;
 }
 
@@ -38,6 +39,7 @@
 .content {
   composes: scroller from 'styles/layout.css';
   height: 100%;
-  flex: 1 0 auto;
+  flex: 0 1 auto;
+  overflow-x: hidden;
   overflow-y: auto;
 }

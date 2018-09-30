@@ -1,6 +1,7 @@
 import React, { ReactNode, Component } from 'react'
 import * as cx from 'classnames'
 import { ExternalLink } from '../common/link'
+import { Changelog } from './Changelog'
 
 import styles from './MenuTabs.css'
 
@@ -18,7 +19,7 @@ export class MenuTabs extends Component<IProps, IState> {
   render() {
     const tabs = [
       { label: 'Welcome', render: () => <WelcomeMessage /> },
-      { label: 'Changelog', render: () => 'Todo' },
+      { label: 'Changelog', render: () => <Changelog /> },
       { label: 'Donators', render: () => 'Foobar' }
     ]
     const selected = tabs[this.state.value]

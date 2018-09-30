@@ -32,6 +32,7 @@
   composes: blend-text from 'styles/text.css';
   grid-area: intro;
   font-weight: bold;
+  overflow: hidden;
 }
 
 .intro a {
