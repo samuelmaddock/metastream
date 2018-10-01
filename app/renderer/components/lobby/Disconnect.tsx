@@ -1,20 +1,23 @@
 import React, { Component } from 'react'
-import { DispatchProp, connect } from 'react-redux'
-import cx from 'classnames'
 import styles from './Disconnect.css'
 import { TitleBar } from '../TitleBar'
-import { IAppState } from '../../reducers/index'
 import { MenuButton } from '../menu/MenuButton'
 import { Link } from 'react-router-dom'
 import { Icon } from '../Icon'
-import { t } from '../../../locale/index'
+import { t } from 'locale/index'
+import { NetworkDisconnectReason, NetworkDisconnectMessages } from 'constants/network'
+import { ExternalLink } from '../common/link'
 
 interface IProps {
-  message: string
+  reason: NetworkDisconnectReason
 }
 
 export class Disconnect extends Component<IProps> {
   render(): JSX.Element {
+    const { reason } = this.props
+    const reasonKey: any = NetworkDisconnectMessages[reason]
+    const msg = t(reasonKey) || reasonKey
+
     return (
       <div className={styles.container}>
         <TitleBar className={styles.titlebar} />
@@ -22,7 +25,7 @@ export class Disconnect extends Component<IProps> {
         <h1 className={styles.header}>Disconnected</h1>
         <p className={styles.info}>
           <Icon name="info" />
-          {this.props.message}
+          {msg}
         </p>
         <Link to="/">
           <MenuButton size="medium">{t('ok')}</MenuButton>

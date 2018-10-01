@@ -40,7 +40,7 @@ interface IConnectedProps {
 }
 
 interface IState {
-  disconnectMessage?: string
+  disconnectReason?: NetworkDisconnectReason
 }
 
 function mapStateToProps(state: IAppState): IConnectedProps {
@@ -62,12 +62,14 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
   private server?: NetServer
   private host: boolean
 
-  private get disconnectReason() {
-    return this.props.disconnectReason || this.state.disconnectMessage
-  }
-
   private get supportsNetworking() {
     return this.props.sessionMode !== SessionMode.Private
+  }
+
+  private get lobbyId(): string | undefined {
+    const { match } = this.props
+    const lobbyId = match.params.lobbyId
+    return lobbyId === 'create' ? undefined : lobbyId
   }
 
   constructor(props: PrivateProps) {
@@ -154,13 +156,17 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
     }
 
     reason = this.props.disconnectReason || reason
-    const reasonKey: any = NetworkDisconnectMessages[reason]
-    let msg = t(reasonKey) || reasonKey
-    console.debug(`Disconnected [${reason}]: ${msg}`)
-    this.setState({ disconnectMessage: msg })
+    this.setState({ disconnectReason: reason })
+
+    {
+      const reasonKey: any = NetworkDisconnectMessages[reason]
+      let msg = t(reasonKey) || reasonKey
+      console.debug(`Disconnected [${reason}]: ${msg}`)
+    }
 
     ga('event', { ec: 'session', ea: 'disconnect', el: NetworkDisconnectLabels[reason] })
 
+    // Clear disconnect reason in Redux
     if (this.props.disconnectReason) {
       this.props.dispatch!(setDisconnectReason())
     }
@@ -210,15 +216,9 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
     this.disconnectImmediate()
   }
 
-  private get lobbyId(): string | undefined {
-    const { match } = this.props
-    const lobbyId = match.params.lobbyId
-    return lobbyId === 'create' ? undefined : lobbyId
-  }
-
   render(): JSX.Element {
-    if (this.state.disconnectMessage) {
-      return <Disconnect message={this.state.disconnectMessage} />
+    if (this.state.disconnectReason) {
+      return <Disconnect reason={this.state.disconnectReason} />
     }
 
     if (!this.host && !(this.connected && this.props.clientAuthorized)) {
