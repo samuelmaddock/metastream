@@ -17,6 +17,10 @@
   margin-right: 0.5rem;
 }
 
+.info a {
+  text-decoration: underline;
+}
+
 .titlebar {
   composes: titlebar from '../GameLobby.css';
 }

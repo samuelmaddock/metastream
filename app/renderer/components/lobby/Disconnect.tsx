@@ -18,6 +18,7 @@ export class Disconnect extends Component<IProps> {
     const reasonKey: any = NetworkDisconnectMessages[reason]
     const msg = t(reasonKey) || reasonKey
 
+    // prettier-ignore
     return (
       <div className={styles.container}>
         <TitleBar className={styles.titlebar} />
@@ -25,7 +26,16 @@ export class Disconnect extends Component<IProps> {
         <h1 className={styles.header}>{t('disconnected')}</h1>
         <p className={styles.info}>
           <Icon name="info" />
-          {msg}
+          <span>
+            {msg}
+
+            {/* Temporary message for linking to guide until l10n supports links. */}
+            {reason === NetworkDisconnectReason.Timeout && (
+              <>
+                . See <ExternalLink href="https://github.com/samuelmaddock/metastream/wiki/Network-Troubleshooting">Network Troubleshooting guide</ExternalLink> for help.
+              </>
+            )}
+          </span>
         </p>
         <Link to="/">
           <MenuButton size="medium">{t('ok')}</MenuButton>
