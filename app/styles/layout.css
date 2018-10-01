@@ -85,6 +85,18 @@
   border-radius: 7px;
 }
 
+.dark-scroller {
+  composes: scroller;
+}
+
+.dark-scroller:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.33);
+}
+
+.dark-scroller::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.44);
+}
+
 .clearfix:before,
 .clearfix:after {
   content: ' ';
