@@ -31,6 +31,9 @@ abstract class NetConnection extends EventEmitter {
   constructor(id: NetUniqueId, stream?: Duplex) {
     super()
 
+    // Must use bind to allow overwrite in subclasses
+    this.receive = this.receive.bind(this)
+
     this.id = id
 
     if (stream) {
@@ -53,7 +56,7 @@ abstract class NetConnection extends EventEmitter {
     }
   }
 
-  receive = (data: Buffer): void => {
+  receive(data: Buffer): void {
     this.emit('data', data)
   }
 

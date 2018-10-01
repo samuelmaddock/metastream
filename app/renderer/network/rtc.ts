@@ -49,10 +49,11 @@ export class RTCPeerConn extends NetConnection {
     }
   }
 
-  receive = (data: Buffer): void => {
+  receive(data: Buffer): void {
     // HACK: Workaround simple-peer bug where data is received before
     // 'connect' event
     if (!this.connected) {
+      console.warn('Received RTCDataChannel data prior to connect event.')
       this.once('connect', () => this.receive(data))
       return
     }
