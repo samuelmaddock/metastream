@@ -49,6 +49,17 @@ export class RTCPeerConn extends NetConnection {
     }
   }
 
+  receive = (data: Buffer): void => {
+    // HACK: Workaround simple-peer bug where data is received before
+    // 'connect' event
+    if (!this.connected) {
+      this.once('connect', () => this.receive(data))
+      return
+    }
+
+    super.receive(data)
+  }
+
   getIP(): string {
     return this.peer.address().address
   }
