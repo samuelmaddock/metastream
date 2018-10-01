@@ -22,7 +22,7 @@ export class Disconnect extends Component<IProps> {
       <div className={styles.container}>
         <TitleBar className={styles.titlebar} />
 
-        <h1 className={styles.header}>Disconnected</h1>
+        <h1 className={styles.header}>{t('disconnected')}</h1>
         <p className={styles.info}>
           <Icon name="info" />
           {msg}

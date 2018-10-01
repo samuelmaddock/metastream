@@ -223,9 +223,7 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
 
     if (!this.host && !(this.connected && this.props.clientAuthorized)) {
       const status =
-        this.props.connectionStatus === ConnectionStatus.Pending
-          ? 'Waiting for host to allow connection'
-          : undefined
+        this.props.connectionStatus === ConnectionStatus.Pending ? t('waitingForHost') : undefined
       return <Connect onCancel={this.disconnectImmediate} status={status} />
     }
 

@@ -18,6 +18,7 @@ export default {
   developerMode: 'Developer Mode',
   developerModeDesc: 'Show developer tools for inspecting web pages.',
   disconnect: 'Disconnect',
+  disconnected: 'Disconnected',
   donators: 'Donators',
   duplicate: 'Duplicate',
   endSessionTitle: 'End public session?',
@@ -54,5 +55,6 @@ export default {
   unlockQueue: 'Unlock queue',
   username: 'Username',
   users: 'Users',
+  waitingForHost: 'Waiting for host to allow connection',
   welcome: 'Welcome'
 }
