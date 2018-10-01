@@ -1,12 +1,7 @@
-/**
- * This module executes inside of electron's main process. You can start
- * electron renderer process from here and communicate with the other processes
- * through IPC.
- *
- * When running `npm run build` or `npm run build-main`, this file is compiled to
- * `./app/main.prod.js` using webpack. This gives us some performance wins.
- */
-import { app, BrowserWindow, globalShortcut, protocol } from 'electron'
+// Error handling
+import 'browser/error'
+
+import { app, BrowserWindow, globalShortcut } from 'electron'
 import { PRODUCT_NAME, VERSION } from 'constants/app'
 
 if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
