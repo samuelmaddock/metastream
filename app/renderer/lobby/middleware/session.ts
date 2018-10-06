@@ -4,25 +4,30 @@ import { NetActions, NetMiddlewareOptions } from '../../network/actions'
 import { initHostSession, setSessionData } from '../actions/session'
 import { IAppState } from '../../reducers/index'
 import { getCurrentMedia } from '../reducers/mediaPlayer.helpers'
+import { ISessionState } from '../reducers/session'
 
-export const sessionMiddleware = (): Middleware<{}, IAppState> => {
-  return store => {
-    const { dispatch, getState } = store
+interface SessionObserver {
+  onChange(state: ISessionState): void
+}
+
+export const sessionMiddleware = (observers: SessionObserver[] = []): Middleware<{}, IAppState> => {
+  return ({ dispatch, getState }) => {
+    let watchChanges = false
 
     const init = (options: NetMiddlewareOptions) => {
       if (options.host) {
         dispatch(initHostSession() as any)
+        watchChanges = true
       }
     }
 
-    return next => action => {
-      if (isType(action, NetActions.connect)) {
-        init(action.payload)
-      }
-      const prevState = getState()
-      const result = next(action)
-      const state = getState()
+    const notifyObservers = () => {
+      const { session } = getState()
+      console.debug('Session state changed', session)
+      observers.forEach(observer => observer.onChange(session))
+    }
 
+    const compareState = (state: IAppState, prevState: IAppState) => {
       const prevMedia = getCurrentMedia(prevState)
       const media = getCurrentMedia(state)
 
@@ -37,6 +42,26 @@ export const sessionMiddleware = (): Middleware<{}, IAppState> => {
             }
           })
         )
+      }
+
+      if (state.session !== prevState.session) {
+        notifyObservers()
+      }
+    }
+
+    return next => action => {
+      if (isType(action, NetActions.connect)) {
+        init(action.payload)
+      } else if (isType(action, NetActions.disconnect)) {
+        watchChanges = false
+      }
+
+      const prevState = getState()
+      const result = next(action)
+      const state = getState()
+
+      if (watchChanges) {
+        compareState(state, prevState)
       }
 
       return result
