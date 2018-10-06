@@ -1,8 +1,9 @@
 import { Middleware } from 'redux'
 import { isType } from 'utils/redux'
 import { NetActions, NetMiddlewareOptions } from '../../network/actions'
-import { initHostSession } from '../actions/session'
+import { initHostSession, setSessionData } from '../actions/session'
 import { IAppState } from '../../reducers/index'
+import { getCurrentMedia } from '../reducers/mediaPlayer.helpers'
 
 export const sessionMiddleware = (): Middleware<{}, IAppState> => {
   return store => {
@@ -22,8 +23,20 @@ export const sessionMiddleware = (): Middleware<{}, IAppState> => {
       const result = next(action)
       const state = getState()
 
-      if (state.mediaPlayer) {
-        // TODO
+      const prevMedia = getCurrentMedia(prevState)
+      const media = getCurrentMedia(state)
+
+      // Update session media state
+      if (media !== prevMedia) {
+        dispatch(
+          setSessionData({
+            media: media && {
+              url: media.requestUrl,
+              title: media.title,
+              thumbnail: media.imageUrl
+            }
+          })
+        )
       }
 
       return result

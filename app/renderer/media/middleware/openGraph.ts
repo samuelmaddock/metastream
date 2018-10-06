@@ -1,7 +1,4 @@
-import { load } from 'cheerio'
 import { MediaThumbnailSize, IMediaMiddleware, IMediaResponse } from '../types'
-import { Url } from 'url'
-import { MEDIA_USER_AGENT } from 'constants/http'
 
 import { parse } from './og'
 import { mergeMetadata } from '../utils'
@@ -16,7 +13,7 @@ function buildHTMLMetadata(url: URL, body: string): Partial<IMediaResponse> {
 
   const thumbnails = image
     ? {
-        [MediaThumbnailSize.Default]: image
+        [MediaThumbnailSize.Default]: image.url
       }
     : undefined
 
