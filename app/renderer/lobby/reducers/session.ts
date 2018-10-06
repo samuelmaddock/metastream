@@ -16,6 +16,12 @@ export const enum ConnectionStatus {
 }
 
 export interface ISessionState {
+  id: string
+  media?: {
+    url: string
+    title: string
+    thumbnail?: string
+  }
   maxUsers?: number
 
   /** CLIENT: Reason for disconnect */
@@ -28,7 +34,9 @@ export interface ISessionState {
   connectionStatus?: ConnectionStatus
 }
 
-const initialState: ISessionState = {}
+const initialState: ISessionState = {
+  id: ''
+}
 
 export const session: Reducer<ISessionState> = (
   state: ISessionState = initialState,

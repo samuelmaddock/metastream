@@ -1,11 +1,10 @@
 import { actionCreator } from 'utils/redux'
 import shortid from 'shortid'
 import { IMediaItem, PlaybackState } from 'renderer/lobby/reducers/mediaPlayer'
-import { ThunkAction } from 'redux-thunk'
 import { rpc, RpcRealm } from 'renderer/network/middleware/rpc'
 import { RpcThunk } from 'renderer/lobby/types'
 import { resolveMediaUrl, resolveMediaPlaylist } from 'renderer/media'
-import { MediaThumbnailSize, MediaType } from 'renderer/media/types'
+import { MediaThumbnailSize } from 'renderer/media/types'
 import {
   getCurrentMedia,
   getPlaybackState,
@@ -14,9 +13,9 @@ import {
   hasPlaybackPermissions,
   getMediaById
 } from 'renderer/lobby/reducers/mediaPlayer.helpers'
-import { IAppState } from 'renderer/reducers'
 import { getUserName, getNumUsers } from 'renderer/lobby/reducers/users.helpers'
 import { addChat } from './chat'
+import { AppThunkAction } from 'types/redux-thunk'
 
 export const playPauseMedia = actionCreator<number>('PLAY_PAUSE_MEDIA')
 export const repeatMedia = actionCreator<number>('REPEAT_MEDIA')
@@ -33,7 +32,7 @@ export const updateServerClockSkew = actionCreator<number>('UPDATE_SERVER_CLOCK_
 /** Media timer until playback ends. This assumes only one media player exists at a time.*/
 let mediaTimeoutId: number | null = null
 
-export const nextMedia = (force?: boolean): ThunkAction<void, IAppState, void> => {
+export const nextMedia = (force?: boolean): AppThunkAction => {
   return async (dispatch, getState) => {
     const state = getState()
     const media = getCurrentMedia(state)
@@ -55,8 +54,8 @@ export const nextMedia = (force?: boolean): ThunkAction<void, IAppState, void> =
   }
 }
 
-const advanceMedia = (playlist: IMediaItem): ThunkAction<void, IAppState, void> => {
-  return async (dispatch, getState) => {
+const advanceMedia = (playlist: IMediaItem): AppThunkAction => {
+  return async dispatch => {
     console.info('Advancing media', playlist)
 
     let res
@@ -79,7 +78,7 @@ const advanceMedia = (playlist: IMediaItem): ThunkAction<void, IAppState, void> 
       ...playlist,
       type: res.type,
       url: res.url,
-      title: res.title,
+      title: res.title || res.url,
       duration: res.duration,
       description: res.description,
       imageUrl: res.thumbnails && res.thumbnails[MediaThumbnailSize.Default],
@@ -95,7 +94,7 @@ const advanceMedia = (playlist: IMediaItem): ThunkAction<void, IAppState, void> 
   }
 }
 
-export const updatePlaybackTimer = (): ThunkAction<void, IAppState, void> => {
+export const updatePlaybackTimer = (): AppThunkAction => {
   return (dispatch, getState) => {
     const state = getState()
     const media = getCurrentMedia(state)
@@ -133,7 +132,7 @@ const announceMediaChange = (mediaId: string): RpcThunk<void> => (dispatch, getS
 }
 export const multi_announceMediaChange = rpc(RpcRealm.Multicast, announceMediaChange)
 
-const enqueueMedia = (media: IMediaItem): ThunkAction<void, IAppState, void> => {
+const enqueueMedia = (media: IMediaItem): AppThunkAction => {
   return (dispatch, getState) => {
     const state = getState()
     const current = getCurrentMedia(state)
@@ -148,10 +147,7 @@ const enqueueMedia = (media: IMediaItem): ThunkAction<void, IAppState, void> => 
   }
 }
 
-export const sendMediaRequest = (
-  url: string,
-  source: string
-): ThunkAction<void, IAppState, void> => {
+export const sendMediaRequest = (url: string, source: string): AppThunkAction => {
   return async (dispatch, getState) => {
     let state = getState()
     if (state.mediaPlayer.queueLocked && !hasPlaybackPermissions(state)) {
@@ -211,7 +207,7 @@ const requestMedia = (url: string): RpcThunk<Promise<string | null>> => async (
     id: shortid(),
     type: res.type,
     url: res.url,
-    title: res.title,
+    title: res.title || res.url,
     duration: res.duration,
     description: res.description,
     imageUrl: res.thumbnails && res.thumbnails[MediaThumbnailSize.Default],

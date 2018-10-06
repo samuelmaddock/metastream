@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { connect, DispatchProp } from 'react-redux'
+import { connect } from 'react-redux'
 
 import { IAppState } from '../../reducers/index'
 import { IMediaItem } from '../../lobby/reducers/mediaPlayer'
@@ -23,6 +23,7 @@ import { MenuItem } from 'material-ui/Menu'
 import { MediaItem } from '../media/MediaItem'
 import { localUser } from 'renderer/network'
 import { copyMediaLink, openMediaInBrowser } from '../../media/utils'
+import { IReactReduxProps } from 'types/redux-thunk'
 
 interface IProps {
   className?: string
@@ -37,7 +38,7 @@ interface IConnectedProps {
   mediaQueueLocked: boolean
 }
 
-type Props = IProps & IConnectedProps & DispatchProp<IAppState>
+type Props = IProps & IConnectedProps & IReactReduxProps
 
 class _MediaList extends Component<Props> {
   private listOverlay: ListOverlay<IMediaItem> | null = null

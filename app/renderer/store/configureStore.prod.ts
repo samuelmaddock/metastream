@@ -10,7 +10,7 @@ import appMiddleware from 'renderer/store/appMiddleware'
 
 const history = createHashHistory()
 
-function configureStore(extra: IExtra, initialState?: {}) {
+function configureStore(extra: IExtra, initialState: {} = {}) {
   const thunkMiddleware = thunk.withExtraArgument(extra)
 
   // Persist Middleware

@@ -4,11 +4,12 @@ import styles from './UserItem.css'
 import { Icon } from '../Icon'
 import Tooltip from 'material-ui/Tooltip'
 import { IconButton } from '../common/button'
-import { connect, DispatchProp } from 'react-redux'
+import { connect } from 'react-redux'
 import { IAppState } from '../../reducers/index'
 import { isAdmin, isDJ } from '../../lobby/reducers/users.helpers'
 import { localUserId } from '../../network'
 import { server_answerClient } from '../../lobby/actions/user-init'
+import { IReactReduxProps } from 'types/redux-thunk'
 
 interface IProps {
   user: IUser
@@ -25,7 +26,7 @@ interface IState {
   anchorEl?: HTMLElement
 }
 
-type PrivateProps = IProps & IConnectedProps & DispatchProp<IAppState>
+type PrivateProps = IProps & IConnectedProps & IReactReduxProps
 
 class _UserItem extends Component<PrivateProps, IState> {
   state: IState = {}
@@ -52,8 +53,18 @@ class _UserItem extends Component<PrivateProps, IState> {
 
       actionBtns = (
         <>
-          <IconButton icon="check" className={styles.allowBtn} title="Allow" onClick={responseCreator(true)} />
-          <IconButton icon="x" className={styles.disallowBtn} title="Disallow" onClick={responseCreator(false)} />
+          <IconButton
+            icon="check"
+            className={styles.allowBtn}
+            title="Allow"
+            onClick={responseCreator(true)}
+          />
+          <IconButton
+            icon="x"
+            className={styles.disallowBtn}
+            title="Disallow"
+            onClick={responseCreator(false)}
+          />
         </>
       )
     } else if (this.canShowMenu) {

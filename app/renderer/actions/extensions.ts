@@ -1,10 +1,8 @@
 const { ipcRenderer } = chrome
-import { Dispatch } from 'react-redux'
-import { ThunkAction } from 'redux-thunk'
 
 import { actionCreator } from 'utils/redux'
-import { IAppState } from 'renderer/reducers'
 import { IPopupState } from '../reducers/extensions'
+import { AppThunkAction } from 'types/redux-thunk'
 
 type StatusResults = {
   rootDir: string
@@ -24,7 +22,7 @@ const popupListener = (event: Electron.Event, extensionId: string, popup: string
   dispatch(showExtensionPopup({ ...props, src: popup }))
 }
 
-export const addExtensionListeners = (): ThunkAction<void, IAppState, void> => {
+export const addExtensionListeners = (): AppThunkAction => {
   return _dispatch => {
     dispatch = _dispatch
     ipcRenderer.on('extensions-status', statusListener)
@@ -32,7 +30,7 @@ export const addExtensionListeners = (): ThunkAction<void, IAppState, void> => {
   }
 }
 
-export const removeExtensionListeners = (): ThunkAction<void, IAppState, void> => {
+export const removeExtensionListeners = (): AppThunkAction => {
   return () => {
     ipcRenderer.removeListener('extensions-status', statusListener)
     ipcRenderer.removeListener('extensions-show-popup', popupListener)

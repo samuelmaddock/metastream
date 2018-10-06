@@ -1,10 +1,11 @@
-import { Middleware, MiddlewareAPI, Action, Dispatch } from 'redux'
+import { Middleware, MiddlewareAPI, Action, Dispatch, AnyAction } from 'redux'
 import { ActionCreator } from 'redux'
 
 import { NetConnection, NetServer, localUser, localUserId } from 'renderer/network'
 import { NetMiddlewareOptions, NetActions } from 'renderer/network/actions'
 import { isType } from 'utils/redux'
 import { initLobby } from '../../lobby/actions/common'
+import { ThunkDispatch } from 'redux-thunk'
 
 let RPC_UID = 1
 
@@ -43,7 +44,7 @@ interface IRpcThunkContext {
 }
 
 export type RpcThunkAction<R, S> = (
-  dispatch: Dispatch<S>,
+  dispatch: ThunkDispatch<S, IRpcThunkContext, AnyAction>,
   getState: () => S,
   context: IRpcThunkContext
 ) => R
@@ -76,7 +77,7 @@ type RpcJson =
     }
 
 export const netRpcMiddleware = (): Middleware => {
-  return <S extends Object>(store: MiddlewareAPI<S>) => {
+  return store => {
     const { dispatch, getState } = store
 
     let server: NetServer | null, host: boolean
@@ -182,9 +183,7 @@ export const netRpcMiddleware = (): Middleware => {
       }
     }
 
-    return (next: Dispatch<S>) => <A extends RpcAction>(
-      action: A
-    ): Action | RpcMiddlewareResult => {
+    return next => <A extends RpcAction>(action: A): Action | RpcMiddlewareResult => {
       if (isType(action, initLobby)) {
         host = action.payload.host
       } else if (isType(action, NetActions.connect)) {

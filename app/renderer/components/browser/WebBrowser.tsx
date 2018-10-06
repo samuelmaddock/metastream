@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { DispatchProp, connect } from 'react-redux'
+import { connect } from 'react-redux'
 import cx from 'classnames'
 
 import styles from './WebBrowser.css'
@@ -7,7 +7,7 @@ import { WEBVIEW_PARTITION } from 'constants/http'
 import { WebControls } from 'renderer/components/browser/Controls'
 import { sendMediaRequest } from 'renderer/lobby/actions/mediaPlayer'
 import { absoluteUrl } from 'utils/appUrl'
-import { IAppState } from 'renderer/reducers'
+import { IReactReduxProps } from 'types/redux-thunk'
 const { ipcRenderer, remote } = chrome
 
 const DEFAULT_URL = absoluteUrl('./browser/resources/homescreen.html')
@@ -21,7 +21,7 @@ interface IProps {
   devTools?: boolean
 }
 
-type PrivateProps = IProps & DispatchProp<IAppState>
+type PrivateProps = IProps & IReactReduxProps
 
 export class _WebBrowser extends Component<PrivateProps> {
   private webview?: Electron.WebviewTag | null
@@ -116,7 +116,7 @@ export class _WebBrowser extends Component<PrivateProps> {
           initialUrl={this.initialUrl}
           onClose={this.props.onClose}
           onRequestUrl={url => {
-            this.props.dispatch!(sendMediaRequest(url, 'browser'))
+            this.props.dispatch(sendMediaRequest(url, 'browser'))
 
             if (this.props.onClose) {
               this.props.onClose()
@@ -131,13 +131,13 @@ export class _WebBrowser extends Component<PrivateProps> {
 
   private renderContent() {
     return React.createElement('webview', {
-      is: "is",
+      is: 'is',
       ref: this.setupWebview,
       src: this.initialUrl,
       class: styles.content,
       /* Some website embeds are disabled without an HTTP referrer */
-      httpreferrer: "http://mediaplayer.samuelmaddock.com/",
-      plugins: "true",
+      httpreferrer: 'http://mediaplayer.samuelmaddock.com/',
+      plugins: 'true',
       partition: WEBVIEW_PARTITION,
       allowtransparency: true
     })

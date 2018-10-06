@@ -1,4 +1,3 @@
-import { ThunkAction } from 'redux-thunk'
 import { IAppState } from 'renderer/reducers'
 import { addUser } from 'renderer/lobby/middleware/users'
 import { RpcThunk } from 'renderer/lobby/types'
@@ -25,6 +24,7 @@ import { VERSION } from 'constants/app'
 import { NetConnection, NetServer } from '../../network/index'
 import { addChat } from './chat'
 import { actionCreator } from 'utils/redux'
+import { AppThunkAction } from 'types/redux-thunk'
 
 type ClientInitRequest = {
   name: string
@@ -44,7 +44,7 @@ type AuthorizeInfo = {
 export const clearPendingUser = actionCreator<string>('CLEAR_PENDING_USER')
 
 /** Initialize client */
-export const initialize = (server: NetServer): ThunkAction<void, IAppState, void> => {
+export const initialize = (server: NetServer): AppThunkAction => {
   return async (dispatch, getState) => {
     let response
 
@@ -171,7 +171,7 @@ const server_initClient = rpc(RpcRealm.Server, initClient, {
   allowUnauthed: true
 })
 
-const authorizeClient = (client: NetConnection): ThunkAction<void, IAppState, void> => {
+const authorizeClient = (client: NetConnection): AppThunkAction => {
   return async (dispatch, getState) => {
     const id = client.id.toString()
     dispatch(multi_userJoined(id))

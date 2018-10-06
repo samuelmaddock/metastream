@@ -21,6 +21,7 @@ import { getPlaybackTime2 } from 'renderer/lobby/reducers/mediaPlayer.helpers'
 import { isHost } from 'renderer/lobby/reducers/users.helpers'
 const { remote, ipcRenderer } = chrome
 import { isEqual } from 'lodash'
+import { IReactReduxProps } from 'types/redux-thunk'
 
 interface IProps {
   className?: string
@@ -49,7 +50,7 @@ const mapStateToProps = (state: IAppState): IConnectedProps => {
   }
 }
 
-type PrivateProps = IProps & IConnectedProps & DispatchProp<IAppState>
+type PrivateProps = IProps & IConnectedProps & IReactReduxProps
 
 class _VideoPlayer extends PureComponent<PrivateProps, IState> {
   private webview: Electron.WebviewTag | null = null
@@ -99,7 +100,7 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
       this.props.theRef(null)
     }
 
-    this.props.dispatch!(updatePlaybackTimer())
+    this.props.dispatch(updatePlaybackTimer())
   }
 
   componentDidUpdate(prevProps: PrivateProps): void {

@@ -1,12 +1,11 @@
 import React, { Component } from 'react'
-import cx from 'classnames'
-
 import styles from './BrowserActionList.css'
-import { connect, DispatchProp } from 'react-redux'
+import { connect } from 'react-redux'
 import { IAppState } from '../../reducers/index'
 import { IExtensionsState } from '../../reducers/extensions'
 import { BrowserAction } from './BrowserAction'
 import { showExtensionPopup } from '../../actions/extensions'
+import { IReactReduxProps } from 'types/redux-thunk'
 
 interface IProps {
   tabId: number
@@ -16,7 +15,7 @@ interface IConnectedProps {
   extensions: IExtensionsState
 }
 
-type PrivateProps = IProps & IConnectedProps & DispatchProp<IAppState>
+type PrivateProps = IProps & IConnectedProps & IReactReduxProps
 
 class _BrowserActionList extends Component<PrivateProps> {
   render(): JSX.Element | null {

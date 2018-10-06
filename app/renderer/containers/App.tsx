@@ -1,19 +1,19 @@
 const { ipcRenderer } = chrome
-import React, { Component, Children } from 'react'
-import { connect, DispatchProp, Store } from 'react-redux'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { IAppState } from 'renderer/reducers'
 import { listenForUiEvents } from 'renderer/actions/ui'
-import { getLocalUsername } from '../reducers/settings'
 import { PlatformService } from '../platform/index'
-import { localUserId, localUser } from '../network/index'
+import { localUser } from '../network/index'
 import { setUsername } from '../actions/settings'
+import { IReactReduxProps } from 'types/redux-thunk'
 
 interface IConnectedProps {
   developer: boolean
   username?: string
 }
 
-type Props = IConnectedProps & DispatchProp<IAppState>
+type Props = IConnectedProps & IReactReduxProps
 
 class App extends Component<Props> {
   private heartbeatIntervalId?: number

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { DispatchProp, connect } from 'react-redux'
+import { connect } from 'react-redux'
 import cx from 'classnames'
 
 import styles from './SessionSettings.css'
@@ -7,7 +7,6 @@ import { IAppState } from 'renderer/reducers'
 import { getHostId, isHost, getHost, getNumUsers } from 'renderer/lobby/reducers/users.helpers'
 import { USERS_MAX } from 'constants/settings'
 import { t } from 'locale'
-import { SwitchOption } from '../../settings/controls'
 import { HighlightButton } from '../../common/button'
 import { ISettingsState, SessionMode } from '../../../reducers/settings'
 import { setSetting } from '../../../actions/settings'
@@ -19,6 +18,7 @@ import Dialog, {
   DialogContentText,
   DialogTitle
 } from 'material-ui/Dialog'
+import { IReactReduxProps } from 'types/redux-thunk'
 
 interface IProps {
   className?: string
@@ -40,7 +40,7 @@ interface IConnectedProps {
   settings: ISettingsState
 }
 
-type PrivateProps = IProps & IConnectedProps & DispatchProp<IAppState>
+type PrivateProps = IProps & IConnectedProps & IReactReduxProps
 
 class SessionSettings extends Component<PrivateProps, IState> {
   state: IState = {}

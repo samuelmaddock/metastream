@@ -1,15 +1,11 @@
-const { ipcRenderer } = chrome
-
 import React, { Component } from 'react'
-import { connect, DispatchProp } from 'react-redux'
+import { connect } from 'react-redux'
 import { findDOMNode } from 'react-dom'
-import cx from 'classnames'
 
 import styles from './PopupWindow.css'
-import { IExtension, getBrowserActionBackgroundImage } from '../../reducers/extensions'
-import { IAppState } from '../../reducers/index'
 import { showExtensionPopup } from '../../actions/extensions'
 import { WEBVIEW_PARTITION } from '../../../constants/http'
+import { IReactReduxProps } from 'types/redux-thunk'
 
 interface IProps {
   src: string
@@ -19,7 +15,7 @@ interface IProps {
   height?: number
 }
 
-type PrivateProps = IProps & DispatchProp<IAppState>
+type PrivateProps = IProps & IReactReduxProps
 
 export class _PopupWindow extends Component<PrivateProps> {
   private get src() {

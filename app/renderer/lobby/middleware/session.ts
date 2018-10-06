@@ -1,13 +1,11 @@
-import { Middleware, MiddlewareAPI, Action, Dispatch } from 'redux'
-import { NetServer, NetConnection, localUser } from 'renderer/network'
-import { actionCreator, isType } from 'utils/redux'
-import { Platform } from 'renderer/platform/types'
-import { PlatformService } from 'renderer/platform'
+import { Middleware } from 'redux'
+import { isType } from 'utils/redux'
 import { NetActions, NetMiddlewareOptions } from '../../network/actions'
-import { initHostSession } from '../actions/session';
+import { initHostSession } from '../actions/session'
+import { IAppState } from '../../reducers/index'
 
-export const sessionMiddleware = (): Middleware => {
-  return <S extends Object>(store: MiddlewareAPI<S>) => {
+export const sessionMiddleware = (): Middleware<{}, IAppState> => {
+  return store => {
     const { dispatch, getState } = store
 
     const init = (options: NetMiddlewareOptions) => {
@@ -16,11 +14,19 @@ export const sessionMiddleware = (): Middleware => {
       }
     }
 
-    return (next: Dispatch<S>) => <A extends Action, B>(action: A): B | Action => {
+    return next => action => {
       if (isType(action, NetActions.connect)) {
         init(action.payload)
       }
-      return next(<A>action)
+      const prevState = getState()
+      const result = next(action)
+      const state = getState()
+
+      if (state.mediaPlayer) {
+        // TODO
+      }
+
+      return result
     }
   }
 }

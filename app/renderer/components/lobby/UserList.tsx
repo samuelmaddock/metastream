@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { connect, DispatchProp } from 'react-redux'
+import { connect } from 'react-redux'
 
 import { IAppState } from '../../reducers/index'
 import { IUsersState, IUser, UserRole } from '../../lobby/reducers/users'
@@ -12,6 +12,7 @@ import { HighlightButton } from '../common/button'
 import { ListOverlay } from './ListOverlay'
 import { UserItem } from './UserItem'
 import { t } from 'locale'
+import { IReactReduxProps } from 'types/redux-thunk'
 
 interface IProps {
   className?: string
@@ -29,7 +30,7 @@ interface IState {
   sortedUsers: IUser[]
 }
 
-type Props = IProps & IConnectedProps & DispatchProp<any>
+type Props = IProps & IConnectedProps & IReactReduxProps
 
 class _UserList extends Component<Props> {
   state: IState = { sortedUsers: [] }

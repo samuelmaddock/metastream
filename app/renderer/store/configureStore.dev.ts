@@ -1,4 +1,4 @@
-import { createStore, applyMiddleware, compose } from 'redux'
+import { createStore, applyMiddleware, compose, DeepPartial } from 'redux'
 import thunk from 'redux-thunk'
 import { createHashHistory } from 'history'
 import { routerMiddleware, routerActions } from 'react-router-redux'
@@ -11,7 +11,7 @@ import appMiddleware from 'renderer/store/appMiddleware'
 
 const history = createHashHistory()
 
-const configureStore = (extra: IExtra, initialState?: {}) => {
+const configureStore = (extra: IExtra, initialState: {} = {}) => {
   // Redux Configuration
   const middleware = []
   const enhancers = []

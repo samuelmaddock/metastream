@@ -35,7 +35,7 @@ export interface IMediaItem {
   url: string
 
   // TODO: Make the following non-optional
-  title?: string
+  title: string
 
   /** Duration in ms */
   duration?: number

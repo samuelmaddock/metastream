@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { RouteComponentProps } from 'react-router'
-import { IReactReduxProps } from 'types/redux'
 
 import { SessionJoin } from '../components/SessionJoin'
 import { push } from 'react-router-redux'
+import { IReactReduxProps } from 'types/redux-thunk'
 
 interface IProps extends RouteComponentProps<void> {}
 

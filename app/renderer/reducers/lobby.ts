@@ -1,33 +1,33 @@
-import { Reducer } from 'redux';
-import { NetworkState } from 'types/network';
-import { isType } from 'utils/redux';
+import { Reducer } from 'redux'
+import { NetworkState } from 'types/network'
+import { isType } from 'utils/redux'
 
-import { loadLobbies, setLobbies } from 'renderer/actions/lobby';
-import { ILobbySession } from 'renderer/platform/types';
+import { loadLobbies, setLobbies } from 'renderer/actions/lobby'
+import { ILobbySession } from 'renderer/platform/types'
 
 export interface ILobbyState {
-  network: NetworkState;
-  list?: ILobbySession[];
+  network: NetworkState
+  list?: ILobbySession[]
 }
 
-const initial: ILobbyState = {
+const initialState: ILobbyState = {
   network: NetworkState.Uninitialized
-};
+}
 
-export const lobby: Reducer<ILobbyState> = (state: ILobbyState, action: any) => {
+export const lobby: Reducer<ILobbyState> = (state: ILobbyState = initialState, action: any) => {
   if (isType(action, loadLobbies)) {
     return {
       ...state,
       network: NetworkState.Loading,
       list: undefined
-    };
+    }
   } else if (isType(action, setLobbies)) {
     return {
       ...state,
       network: NetworkState.Ready,
       list: action.payload
-    };
+    }
   }
 
-  return initial;
-};
+  return state
+}

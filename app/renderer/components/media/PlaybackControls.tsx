@@ -5,7 +5,7 @@ import styles from './PlaybackControls.css'
 
 import { PlaybackState, IMediaPlayerState, RepeatMode } from 'renderer/lobby/reducers/mediaPlayer'
 import { VolumeSlider } from 'renderer/components/media/VolumeSlider'
-import { DispatchProp, connect } from 'react-redux'
+import { connect } from 'react-redux'
 import {
   server_requestPlayPause,
   server_requestNextMedia,
@@ -23,6 +23,7 @@ import { absoluteUrl } from 'utils/appUrl'
 import { BrowserActionList } from '../browser/BrowserActionList'
 import { isDeveloper } from '../../reducers/settings'
 import { t } from 'locale'
+import { IReactReduxProps } from 'types/redux-thunk'
 
 const EXTENSIONS_URL = absoluteUrl('./browser/resources/extensions.html')
 
@@ -100,7 +101,7 @@ const mapStateToProps = (state: IAppState): IConnectedProps => {
   }
 }
 
-type PrivateProps = IProps & IConnectedProps & DispatchProp<IAppState>
+type PrivateProps = IProps & IConnectedProps & IReactReduxProps
 
 class _PlaybackControls extends Component<PrivateProps> {
   private getCuePoints() {

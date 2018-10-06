@@ -1,13 +1,11 @@
 import React, { Component } from 'react'
-import { DispatchProp, connect } from 'react-redux'
-import cx from 'classnames'
+import { connect } from 'react-redux'
 import styles from './Connect.css'
 import { TitleBar } from '../TitleBar'
-import { IAppState } from '../../reducers/index'
 import { MenuButton } from '../menu/MenuButton'
-import { Icon } from '../Icon'
 import { Spinner } from '../common/spinner'
 import { t } from '../../../locale/index'
+import { IReactReduxProps } from 'types/redux-thunk'
 
 interface IProps {
   className?: string
@@ -15,7 +13,7 @@ interface IProps {
   onCancel: () => void
 }
 
-type PrivateProps = IProps & DispatchProp<IAppState>
+type PrivateProps = IProps & IReactReduxProps
 
 class _Connect extends Component<PrivateProps> {
   render(): JSX.Element {

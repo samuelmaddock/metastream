@@ -1,7 +1,7 @@
 const { remote } = chrome
 
 import React, { Component } from 'react'
-import { connect, DispatchProp } from 'react-redux'
+import { connect } from 'react-redux'
 import cx from 'classnames'
 
 import { PRODUCT_NAME } from 'constants/app'
@@ -14,6 +14,7 @@ import { IconButton } from 'renderer/components/common/button'
 import { installUpdate } from 'renderer/actions/ui'
 import { Icon } from './Icon'
 import { push } from 'react-router-redux'
+import { IReactReduxProps } from 'types/redux-thunk'
 
 const WINDOW_EVENTS = [
   'maximize',
@@ -34,7 +35,7 @@ interface IConnectedProps {
   showBackButton: boolean
 }
 
-type PrivateProps = IProps & IConnectedProps & DispatchProp<IAppState>
+type PrivateProps = IProps & IConnectedProps & IReactReduxProps
 
 class _TitleBar extends Component<PrivateProps> {
   private _platform?: string

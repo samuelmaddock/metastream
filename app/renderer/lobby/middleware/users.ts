@@ -25,7 +25,7 @@ export const removeUser = actionCreator<string>('REMOVE_USER')
 export const clearUsers = actionCreator<string>('CLEAR_USERS')
 
 export const usersMiddleware = (): Middleware => {
-  return <S extends Object>(store: MiddlewareAPI<S>) => {
+  return store => {
     const { dispatch, getState } = store
 
     let server: NetServer | null, host: boolean
@@ -71,19 +71,19 @@ export const usersMiddleware = (): Middleware => {
       host = false
     }
 
-    return (next: Dispatch<S>) => <A extends Action, B>(action: A): B | Action => {
+    return next => action => {
       if (isType(action, initLobby) && action.payload.host) {
         initHost()
-        return next(<A>action)
+        return next(action)
       } else if (isType(action, NetActions.connect)) {
         init(action.payload)
-        return next(<A>action)
+        return next(action)
       } else if (isType(action, NetActions.disconnect)) {
         destroy()
-        return next(<A>action)
+        return next(action)
       }
 
-      return next(<A>action)
+      return next(action)
     }
   }
 }

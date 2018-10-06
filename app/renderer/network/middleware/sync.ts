@@ -64,7 +64,7 @@ const replicationPrefilter = <T>(state: ReplicatedState<T>): deepDiff.IPrefilter
 export const netSyncMiddleware = (): Middleware => {
   let COMMIT_NUMBER = 0
 
-  return <S extends Object>(store: MiddlewareAPI<S>) => {
+  return store => {
     const { dispatch, getState } = store
 
     let server: NetServer | null, host: boolean, prefilter: deepDiff.IPrefilter
@@ -175,21 +175,21 @@ export const netSyncMiddleware = (): Middleware => {
       server!.send(buf)
     }
 
-    return (next: Dispatch<S>) => <A extends Action, B>(action: A): B | Action => {
+    return next => action => {
       if (isType(action, NetActions.connect)) {
         init(action.payload)
-        return next(<A>action)
+        return next(action)
       } else if (isType(action, NetActions.disconnect)) {
         destroy()
-        return next(<A>action)
+        return next(action)
       }
 
       if (!host || !server) {
-        return next(<A>action)
+        return next(action)
       }
 
       const stateA = getState()
-      const result = next(<A>action)
+      const result = next(action)
       const stateB = getState()
 
       const delta = deepDiff.diff(stateA, stateB, prefilter)

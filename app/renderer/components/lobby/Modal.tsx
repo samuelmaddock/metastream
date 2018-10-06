@@ -1,9 +1,7 @@
 import React, { Component } from 'react'
-import { DispatchProp, connect } from 'react-redux'
 import cx from 'classnames'
 
 import styles from './Modal.css'
-import { IAppState } from 'renderer/reducers'
 import { IconButton } from 'renderer/components/common/button'
 
 interface IProps {
@@ -11,9 +9,7 @@ interface IProps {
   onClose?: () => void
 }
 
-type PrivateProps = IProps & DispatchProp<IAppState>
-
-export class Modal extends Component<PrivateProps> {
+export class Modal extends Component<IProps> {
   componentDidMount() {
     if (this.props.onClose) {
       document.addEventListener('keydown', this.onKeyPress, false)

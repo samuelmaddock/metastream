@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { DispatchProp, connect } from 'react-redux'
+import { connect } from 'react-redux'
 import cx from 'classnames'
 
 import styles from './Invite.css'
@@ -11,6 +11,7 @@ import { ExternalLink } from 'renderer/components/common/link'
 import { WEBSOCKET_PORT_DEFAULT } from 'constants/network'
 import { Icon } from '../../Icon'
 import Tooltip from 'material-ui/Tooltip'
+import { IReactReduxProps } from 'types/redux-thunk'
 
 interface IProps {
   className?: string
@@ -31,7 +32,7 @@ const mapStateToProps = (state: IAppState): IConnectedProps => {
   }
 }
 
-type PrivateProps = IProps & IConnectedProps & DispatchProp<IAppState>
+type PrivateProps = IProps & IConnectedProps & IReactReduxProps
 
 class Invite extends Component<PrivateProps> {
   render(): JSX.Element {

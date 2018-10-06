@@ -1,5 +1,5 @@
 import React from 'react'
-import { DispatchProp, connect } from 'react-redux'
+import { connect } from 'react-redux'
 import cx from 'classnames'
 const { ipcRenderer } = chrome
 
@@ -30,6 +30,7 @@ import { LobbyModal } from '../reducers/ui'
 import { setLobbyModal } from '../actions/ui'
 import { isDeveloper } from '../reducers/settings'
 import { getNumUsers } from '../lobby/reducers/users.helpers'
+import { IReactReduxProps } from 'types/redux-thunk'
 
 interface IProps {
   host: boolean
@@ -51,7 +52,7 @@ interface IConnectedProps {
   isMultiplayer: boolean
 }
 
-type PrivateProps = IProps & IConnectedProps & DispatchProp<IAppState>
+type PrivateProps = IProps & IConnectedProps & IReactReduxProps
 
 class _GameLobby extends React.Component<PrivateProps, IState> {
   private player: VideoPlayer | null = null

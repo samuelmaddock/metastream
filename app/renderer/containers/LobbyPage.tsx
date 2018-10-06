@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { RouteComponentProps } from 'react-router'
-import { IReactReduxProps } from 'types/redux'
 
 import { IAppState, AppReplicatedState } from 'renderer/reducers'
 
@@ -25,6 +24,7 @@ import { setDisconnectReason } from '../lobby/actions/session'
 import { t } from 'locale'
 import { SessionMode } from '../reducers/settings'
 import { resetLobby, initLobby } from '../lobby/actions/common'
+import { IReactReduxProps } from 'types/redux-thunk'
 
 interface IRouteParams {
   lobbyId: string
