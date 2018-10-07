@@ -7,10 +7,10 @@ export const cleanObject = (obj: any): any => {
   const newObj: any = {}
   const propNames = Object.getOwnPropertyNames(obj)
   for (let i = 0; i < propNames.length; i++) {
-    var propName = propNames[i]
-    if (obj[propName] !== undefined) {
-      newObj[propName] = obj[propName]
-    }
+    const propName = propNames[i]
+    const value = obj[propName]
+    if (typeof value === 'undefined') continue
+    newObj[propName] = typeof value === 'object' ? cleanObject(value) : value
   }
   return newObj
 }

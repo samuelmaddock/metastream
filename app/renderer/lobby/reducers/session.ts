@@ -22,6 +22,7 @@ export interface ISessionState {
     title: string
     thumbnail?: string
   }
+  users: number
   maxUsers?: number
 
   /** CLIENT: Reason for disconnect */
@@ -35,7 +36,8 @@ export interface ISessionState {
 }
 
 const initialState: ISessionState = {
-  id: ''
+  id: '',
+  users: 0
 }
 
 export const session: Reducer<ISessionState> = (
@@ -44,7 +46,10 @@ export const session: Reducer<ISessionState> = (
 ) => {
   if (isType(action, setSessionData)) {
     return { ...state, ...action.payload }
-  } else if (isType(action, setDisconnectReason)) {
+  }
+
+  // Client data
+  if (isType(action, setDisconnectReason)) {
     return { ...state, disconnectReason: action.payload }
   } else if (isType(action, setAuthorized)) {
     return { ...state, authorized: action.payload, connectionStatus: ConnectionStatus.Connected }

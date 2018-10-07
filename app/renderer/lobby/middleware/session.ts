@@ -1,12 +1,15 @@
 import { Middleware } from 'redux'
 import { isType } from 'utils/redux'
+import { isEqual } from 'lodash'
+
 import { NetActions, NetMiddlewareOptions } from '../../network/actions'
 import { initHostSession, setSessionData } from '../actions/session'
 import { IAppState } from '../../reducers/index'
 import { getCurrentMedia } from '../reducers/mediaPlayer.helpers'
 import { ISessionState } from '../reducers/session'
+import { getNumUsers } from '../reducers/users.helpers'
 
-interface SessionObserver {
+export interface SessionObserver {
   onChange(state: ISessionState): void
 }
 
@@ -17,6 +20,7 @@ export const sessionMiddleware = (observers: SessionObserver[] = []): Middleware
     const init = (options: NetMiddlewareOptions) => {
       if (options.host) {
         dispatch(initHostSession() as any)
+        notifyObservers()
         watchChanges = true
       }
     }
@@ -28,23 +32,37 @@ export const sessionMiddleware = (observers: SessionObserver[] = []): Middleware
     }
 
     const compareState = (state: IAppState, prevState: IAppState) => {
+      let sessionData
+
       const prevMedia = getCurrentMedia(prevState)
       const media = getCurrentMedia(state)
 
       // Update session media state
       if (media !== prevMedia) {
-        dispatch(
-          setSessionData({
-            media: media && {
-              url: media.requestUrl,
-              title: media.title,
-              thumbnail: media.imageUrl
-            }
-          })
-        )
+        sessionData = {
+          ...(sessionData || {}),
+          media: media && {
+            url: media.requestUrl,
+            title: media.title,
+            thumbnail: media.imageUrl
+          }
+        }
       }
 
-      if (state.session !== prevState.session) {
+      // Update user info
+      if (state.users !== prevState.users) {
+        sessionData = {
+          ...(sessionData || {}),
+          users: getNumUsers(state)
+        }
+      }
+
+      if (sessionData) {
+        dispatch(setSessionData(sessionData))
+        return
+      }
+
+      if (!isEqual(state.session, prevState.session)) {
         notifyObservers()
       }
     }

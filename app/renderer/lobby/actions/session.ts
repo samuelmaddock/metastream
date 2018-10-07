@@ -2,6 +2,7 @@ import { actionCreator } from 'utils/redux'
 import { ISessionState, ConnectionStatus } from '../reducers/session'
 import { NetworkDisconnectReason } from 'constants/network'
 import { AppThunkAction } from 'types/redux-thunk'
+import { localUserId } from '../../network/index'
 
 export const setSessionData = actionCreator<Partial<ISessionState>>('SET_SESSION_DATA')
 export const setDisconnectReason = actionCreator<NetworkDisconnectReason | undefined>(
@@ -14,9 +15,6 @@ export const setConnectionStatus = actionCreator<ConnectionStatus | undefined>(
 
 export const initHostSession = (): AppThunkAction => {
   return (dispatch, getState) => {
-    // TODO(sam): Add option to set max users
-    const maxUsers = undefined
-
-    dispatch(setSessionData({ maxUsers }))
+    dispatch(setSessionData({ id: localUserId() }))
   }
 }
