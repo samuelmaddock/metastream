@@ -4,6 +4,7 @@
 
 import path from 'path';
 import webpack from 'webpack';
+import Dotenv from 'dotenv-webpack'
 import childProcess from 'child_process';
 import { dependencies as externals } from './app/package.json';
 
@@ -57,7 +58,7 @@ export default {
       'process.env.GIT_COMMIT': JSON.stringify(GIT_COMMIT),
       'process.env.LICENSED': Boolean(process.env.LICENSED)
     }),
-
+    new Dotenv(),
     new webpack.NamedModulesPlugin(),
   ],
 };
