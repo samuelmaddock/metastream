@@ -22,6 +22,10 @@ export async function init() {
 
   db = firebase.firestore()
 
+  if (process.env.NODE_ENV === 'development') {
+    Object.assign((window as any).app, { firestore: db })
+  }
+
   // Disable deprecated features
   db.settings({
     timestampsInSnapshots: true
