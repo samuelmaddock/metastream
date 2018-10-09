@@ -119,7 +119,8 @@ export default merge.smart(baseConfig, prodConfig, {
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production'),
       DEV: JSON.stringify(false),
       PRODUCTION: JSON.stringify(true),
-      FEATURE_SESSION_BROWSER: JSON.stringify(false)
+      FEATURE_SESSION_BROWSER: JSON.stringify(false),
+      FEATURE_DISCORD_RP: JSON.stringify(false),
     }),
 
     new ExtractTextPlugin({

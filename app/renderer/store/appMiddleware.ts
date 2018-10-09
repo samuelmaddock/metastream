@@ -6,10 +6,11 @@ import { usersMiddleware } from 'renderer/lobby/middleware/users'
 import { sessionMiddleware, SessionObserver } from 'renderer/lobby/middleware/session'
 
 import { FirebaseSessionObserver } from 'renderer/vendor/firebase/sessionObserver'
+import { DiscordSessionObserver } from 'renderer/vendor/discord'
 
-// prettier-ignore
 const sessionObservers = [
-  FEATURE_SESSION_BROWSER && new FirebaseSessionObserver()
+  FEATURE_SESSION_BROWSER && new FirebaseSessionObserver(),
+  FEATURE_DISCORD_RP && new DiscordSessionObserver()
 ].filter(Boolean) as SessionObserver[]
 
 const middleware: Middleware[] = [

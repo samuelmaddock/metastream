@@ -3474,6 +3474,14 @@ dir-glob@^2.0.0:
     arrify "^1.0.1"
     path-type "^3.0.0"
 
+discord-rpc@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/discord-rpc/-/discord-rpc-3.0.1.tgz#bb376d4d84531375f1b33ddc0f4fa81afb60aba0"
+  integrity sha512-PvkVpIlbFowih2mPIOAwUlX+w+9AGtpVUpQrGP6Mu7TPHDjfclsYoRuquIYiSHsS/n5EfhFgMZfsSTRPkvj22w==
+  dependencies:
+    node-fetch "^2.1.2"
+    ws "^5.2.1"
+
 discovery-channel@^5.3.0:
   version "5.4.7"
   resolved "https://registry.yarnpkg.com/discovery-channel/-/discovery-channel-5.4.7.tgz#8139652dcd5935423f7aaa68d8dc6030ae354d91"
@@ -7221,6 +7229,11 @@ node-fetch@^1.0.1:
   dependencies:
     encoding "^0.1.11"
     is-stream "^1.0.1"
+
+node-fetch@^2.1.2:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.2.0.tgz#4ee79bde909262f9775f731e3656d0db55ced5b5"
+  integrity sha512-OayFWziIxiHY8bCUyLX6sTpDH8Jsbp4FfYd1j1f7vZyfgkcOnAyM4oQR16f8a0s7Gl/viMGRey8eScYk4V4EZA==
 
 node-forge@0.7.5:
   version "0.7.5"
@@ -11067,6 +11080,13 @@ ws@^4.0.0:
   dependencies:
     async-limiter "~1.0.0"
     safe-buffer "~5.1.0"
+
+ws@^5.2.1:
+  version "5.2.2"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-5.2.2.tgz#dffef14866b8e8dc9133582514d1befaf96e980f"
+  integrity sha512-jaHFD6PFv6UgoIVda6qZllptQsMlDEJkTQcybzzXDYM1XO9Y8em691FGMPmM46WGyLU4z9KMgQN+qrux/nhlHA==
+  dependencies:
+    async-limiter "~1.0.0"
 
 xdg-basedir@^3.0.0:
   version "3.0.0"
