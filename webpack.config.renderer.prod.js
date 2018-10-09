@@ -118,7 +118,8 @@ export default merge.smart(baseConfig, prodConfig, {
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production'),
       DEV: JSON.stringify(false),
-      PRODUCTION: JSON.stringify(true)
+      PRODUCTION: JSON.stringify(true),
+      FEATURE_SESSION_BROWSER: JSON.stringify(false)
     }),
 
     new ExtractTextPlugin({

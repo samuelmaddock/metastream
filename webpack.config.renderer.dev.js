@@ -157,7 +157,8 @@ export default merge.smart(baseConfig, {
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
       'DEV': JSON.stringify(true),
-      'PRODUCTION': JSON.stringify(false)
+      'PRODUCTION': JSON.stringify(false),
+      FEATURE_SESSION_BROWSER: JSON.stringify(true)
     }),
 
     new webpack.LoaderOptionsPlugin({
