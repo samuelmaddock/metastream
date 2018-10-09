@@ -1,7 +1,7 @@
 // Error handling
 import 'browser/error'
 
-import { app, BrowserWindow, globalShortcut } from 'electron'
+import { app } from 'electron'
 import { PRODUCT_NAME, VERSION } from 'constants/app'
 
 if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
@@ -18,14 +18,10 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 import 'browser/net'
-import { register as registerLocalShortcut } from 'electron-localshortcut'
-
-import MenuBuilder from './browser/menu'
 import * as protocols from './browser/protocols'
-import { initExtensions } from 'browser/extensions'
 import { initUpdater } from 'browser/update'
-
-import './browser/fetch'
+import 'browser/fetch'
+import { setupWindow, getMainWindow } from 'browser/window'
 
 app.commandLine.appendSwitch('enable-blink-features', 'CSSBackdropFilter')
 app.commandLine.appendSwitch('no-user-gesture-required')
@@ -51,18 +47,6 @@ if (process.env.NODE_ENV === 'production') {
   sourceMapSupport.install()
 }
 
-/* Commented out as unused and LGPL licensed code
-const installExtensions = async () => {
-  const installer = require('electron-devtools-installer')
-  const forceDownload = !!process.env.UPGRADE_EXTENSIONS
-  const extensions = ['REACT_DEVELOPER_TOOLS', 'REDUX_DEVTOOLS']
-
-  return Promise.all(
-    extensions.map(name => installer.default(installer[name], forceDownload))
-  ).catch(log)
-}
-*/
-
 fixUserDataPath()
 protocols.init()
 
@@ -70,112 +54,40 @@ protocols.init()
 import 'browser/platform/swarm'
 import 'browser/media-router'
 
-/**
- * Add event listeners...
- */
-
-app.on('window-all-closed', () => {
-  // Respect the OSX convention of having the application in memory even
-  // after all windows have been closed
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
-})
-
-/** Relays global shortcuts to renderer windows via IPC */
-const registerMediaShortcuts = () => {
-  // TODO: why the fuck do these block commands elsewhere?
-  const globalCommands = [['medianexttrack', 'media:next'], ['mediaplaypause', 'media:playpause']]
-
-  const ipcShortcut = (shortcut: string) => {
-    BrowserWindow.getAllWindows().forEach(win => {
-      win.webContents.send('command', shortcut)
-    })
-  }
-
-  globalCommands.forEach(cmd => {
-    globalShortcut.register(cmd[0], ipcShortcut.bind(null, cmd[1]))
-  })
-
-  const localCommands = [
-    ['CmdOrCtrl+T', 'window:new-tab'],
-    ['CmdOrCtrl+N', 'window:new-tab'],
-    ['CmdOrCtrl+L', 'window:focus-url'],
-    ['CmdOrCtrl+W', 'window:close'],
-    ['Alt+Left', 'window:history-prev'],
-    ['Alt+Right', 'window:history-next']
-    // ['Space', 'media:playpause'],
-  ]
-
-  localCommands.forEach(cmd => {
-    BrowserWindow.getAllWindows().forEach(win => {
-      registerLocalShortcut(win, cmd[0], () => {
-        win.webContents.send('command', cmd[1])
-      })
-    })
-  })
-}
-
-const setupWindow = () => {
-  let win: BrowserWindow | null = new BrowserWindow({
-    show: false,
-    width: 1280,
-    height: 720,
-    frame: false,
-    titleBarStyle: 'hidden'
-  })
-
-  win.loadURL(`chrome://brave/${__dirname}/app.html`)
-
-  // @TODO: Use 'ready-to-show' event
-  //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event
-  win.webContents.on('did-finish-load', () => {
-    if (!win) {
-      throw new Error('"win" is not defined')
-    }
-    initExtensions()
-    win.show()
-    win.focus()
-  })
-
-  win.on('closed', () => {
+function main() {
+  const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
+    const win = getMainWindow()
+    // Someone tried to run a second instance, we should focus our window.
     if (win) {
-      win.removeAllListeners()
-      win = null
+      if (win.isMinimized()) win.restore()
+      win.focus()
     }
   })
 
-  const menuBuilder = new MenuBuilder(win)
-  menuBuilder.buildMenu()
+  if (shouldQuit) {
+    app.quit()
+    return
+  }
 
-  return win
+  app.on('window-all-closed', () => {
+    // Respect the OSX convention of having the application in memory even
+    // after all windows have been closed
+    if (process.platform !== 'darwin') {
+      app.quit()
+    }
+  })
+
+  app.on('web-contents-created', (event, webContents) => {
+    // Prevent HTML5 fullscreen api from fullscreening the window
+    webContents.on('will-enter-html-full-screen' as any, event => {
+      event.preventDefault()
+    })
+  })
+
+  app.on('ready', () => {
+    initUpdater()
+    setupWindow()
+  })
 }
 
-app.on('web-contents-created', (event, webContents) => {
-  // Prevent HTML5 fullscreen api from fullscreening the window
-  webContents.on('will-enter-html-full-screen' as any, event => {
-    event.preventDefault()
-  })
-})
-
-app.on('ready', async () => {
-  if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
-    // await installExtensions();
-  }
-
-  initUpdater()
-
-  let numWindows = 1
-
-  // Allow multiple windows for local testing
-  if (process.env.NODE_ENV === 'development') {
-    numWindows = parseInt(process.env.NUM_WINDOWS || '1', 10) || 1
-    numWindows = Math.min(Math.max(numWindows, 1), 4)
-  }
-
-  for (let i = 0; i < numWindows; i++) {
-    setupWindow()
-  }
-
-  registerMediaShortcuts()
-})
+main()
