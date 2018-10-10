@@ -54,6 +54,9 @@ protocols.init()
 import 'browser/platform/swarm'
 import 'browser/media-router'
 
+// Vendor integrations
+import 'browser/vendor/discord'
+
 function main() {
   const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
     const win = getMainWindow()

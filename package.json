@@ -222,6 +222,9 @@
     "simple-websocket": "^7.0.2",
     "source-map-support": "^0.4.14"
   },
+  "resolutions": {
+    "node-fetch": "2.1.2"
+  },
   "devEngines": {
     "node": ">=7.x",
     "npm": ">=4.x",

@@ -11,6 +11,7 @@ import { dependencies } from './package.json';
 const dist = path.resolve(process.cwd(), 'dll');
 
 const depExclude = new Set([
+  'discord-rpc',
   'request',
   'electron',
   'electron-debug',
