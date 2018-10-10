@@ -37,15 +37,25 @@ export const sessionMiddleware = (observers: SessionObserver[] = []): Middleware
       const prevMedia = getCurrentMedia(prevState)
       const media = getCurrentMedia(state)
 
+      // Update screen
+      if (state.router.location !== prevState.router.location) {
+        const { location } = state.router
+        sessionData = {
+          ...(sessionData || {}),
+          screenPath: location ? location.pathname : undefined
+        }
+      }
+
       // Update session media state
-      if (media !== prevMedia) {
+      if (media !== prevMedia || state.mediaPlayer.startTime !== prevState.mediaPlayer.startTime) {
         sessionData = {
           ...(sessionData || {}),
           media: media && {
             url: media.requestUrl,
             title: media.title,
             thumbnail: media.imageUrl
-          }
+          },
+          startTime: state.mediaPlayer.startTime
         }
       }
 

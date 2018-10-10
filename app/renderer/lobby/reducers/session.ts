@@ -22,8 +22,10 @@ export interface ISessionState {
     title: string
     thumbnail?: string
   }
+  startTime?: number
   users: number
   maxUsers?: number
+  screenPath?: string
 
   /** CLIENT: Reason for disconnect */
   disconnectReason?: NetworkDisconnectReason
@@ -37,7 +39,8 @@ export interface ISessionState {
 
 const initialState: ISessionState = {
   id: '',
-  users: 0
+  users: 0,
+  startTime: new Date().getTime()
 }
 
 export const session: Reducer<ISessionState> = (

@@ -4,6 +4,6 @@ const { ipcRenderer } = chrome
 
 export class DiscordSessionObserver implements SessionObserver {
   onChange(state: ISessionState): void {
-    ipcRenderer.send('set-discord-activity')
+    ipcRenderer.send('set-discord-activity', state)
   }
 }
