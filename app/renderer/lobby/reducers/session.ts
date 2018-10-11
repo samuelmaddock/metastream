@@ -26,6 +26,12 @@ export interface ISessionState {
   users: number
   maxUsers?: number
 
+  /**
+   * Unique secret generated per session.
+   * Used by Discord game invites.
+   */
+  secret?: string
+
   /** CLIENT: Reason for disconnect */
   disconnectReason?: NetworkDisconnectReason
 

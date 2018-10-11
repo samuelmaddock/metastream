@@ -32,6 +32,8 @@ export class DiscordSessionObserver implements SessionObserver {
         largeImageKey: 'default',
         partySize,
         partyMax,
+        partyId: state.id,
+        joinSecret: state.secret,
         instance: false
       }
     } else {
