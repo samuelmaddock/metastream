@@ -18,20 +18,29 @@ export interface SessionObserver {
   applySetting?: (value: any) => void
 
   /** Called when session has updated. */
-  onChange(state: ISessionState): void
+  onChange(state: ISessionState | null): void
 }
 
 export const sessionMiddleware = (observers: SessionObserver[] = []): Middleware<{}, IAppState> => {
   return ({ dispatch, getState }) => {
+    let inSession = false
+
     const init = (options: NetMiddlewareOptions) => {
+      inSession = true
+
       if (options.host) {
         dispatch(initHostSession() as any)
         notifyObservers()
       }
     }
 
+    const close = () => {
+      inSession = false
+      notifyObservers()
+    }
+
     const notifyObservers = () => {
-      const { session } = getState()
+      const session = inSession ? getState().session : null
       observers.forEach(observer => observer.onChange(session))
     }
 
@@ -97,11 +106,18 @@ export const sessionMiddleware = (observers: SessionObserver[] = []): Middleware
           applySetting(value)
         }
       })
+
+      // Notify with initial empty state
+      if (didRehydrate) {
+        notifyObservers()
+      }
     }
 
     return next => action => {
       if (isType(action, NetActions.connect)) {
         init(action.payload)
+      } else if (isType(action, NetActions.disconnect)) {
+        close()
       }
 
       const prevState = getState()

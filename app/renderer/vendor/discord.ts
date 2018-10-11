@@ -15,15 +15,25 @@ export class DiscordSessionObserver implements SessionObserver {
     ipcRenderer.send('set-discord-enabled', value)
   }
 
-  onChange(state: ISessionState): void {
-    const { media } = state
+  onChange(state: ISessionState | null): void {
+    let activity
 
-    const activity = {
-      details: media ? media.title : 'Nothing playing',
-      state: media ? 'Watching' : 'In session',
-      startTimestamp: Math.floor((state.startTime || new Date().getTime()) / 1000),
-      largeImageKey: 'default',
-      instance: false
+    if (state) {
+      const { media } = state
+
+      activity = {
+        details: media ? media.title : 'Nothing playing',
+        state: media ? 'Watching' : 'In session',
+        startTimestamp: Math.floor((state.startTime || new Date().getTime()) / 1000),
+        largeImageKey: 'default',
+        instance: false
+      }
+    } else {
+      activity = {
+        state: 'Main Menu',
+        largeImageKey: 'default',
+        instance: false
+      }
     }
 
     ipcRenderer.send('set-discord-activity', activity)
