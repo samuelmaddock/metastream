@@ -19,13 +19,19 @@ export class DiscordSessionObserver implements SessionObserver {
     let activity
 
     if (state) {
-      const { media } = state
+      const { media, users: partySize } = state
+
+      // Temporary max party until Metastream implements a max
+      const nextPowerOfTwo = Math.pow(2, Math.ceil(Math.log(partySize) / Math.log(2)))
+      const partyMax = Math.max(4, nextPowerOfTwo)
 
       activity = {
         details: media ? media.title : 'Nothing playing',
-        state: media ? 'Watching' : 'In session',
+        state: 'In Session',
         startTimestamp: Math.floor((state.startTime || new Date().getTime()) / 1000),
         largeImageKey: 'default',
+        partySize,
+        partyMax,
         instance: false
       }
     } else {
