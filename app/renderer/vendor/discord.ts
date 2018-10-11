@@ -1,5 +1,6 @@
 import { SessionObserver } from 'renderer/lobby/middleware/session'
 import { ISessionState } from 'renderer/lobby/reducers/session'
+import { ISettingsState } from '../reducers/settings'
 const { ipcRenderer } = chrome
 
 const SCREEN_NAME: { [key: string]: string } = {
@@ -8,12 +9,18 @@ const SCREEN_NAME: { [key: string]: string } = {
 }
 
 export class DiscordSessionObserver implements SessionObserver {
+  setting: any = 'discordPresence'
+
+  applySetting(value: ISettingsState['discordPresence']) {
+    ipcRenderer.send('set-discord-enabled', value)
+  }
+
   onChange(state: ISessionState): void {
-    const { media, screenPath } = state
+    const { media } = state
 
     const activity = {
       details: media ? media.title : 'Nothing playing',
-      state: media ? 'Watching' : SCREEN_NAME[screenPath as any] || 'In session',
+      state: media ? 'Watching' : 'In session',
       startTimestamp: Math.floor((state.startTime || new Date().getTime()) / 1000),
       largeImageKey: 'default',
       instance: false

@@ -25,7 +25,6 @@ export interface ISessionState {
   startTime?: number
   users: number
   maxUsers?: number
-  screenPath?: string
 
   /** CLIENT: Reason for disconnect */
   disconnectReason?: NetworkDisconnectReason

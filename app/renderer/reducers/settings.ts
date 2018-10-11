@@ -26,6 +26,7 @@ export interface ISettingsState {
   allowTracking: boolean
   developer: boolean
   sessionMode: SessionMode
+  discordPresence: boolean
 }
 
 const initialState: ISettingsState = {
@@ -33,7 +34,8 @@ const initialState: ISettingsState = {
   volume: 0.75,
   allowTracking: false,
   developer: process.env.NODE_ENV === 'development',
-  sessionMode: SessionMode.Request
+  sessionMode: SessionMode.Request,
+  discordPresence: true
 }
 
 export const settings: Reducer<ISettingsState> = (

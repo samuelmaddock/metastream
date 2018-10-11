@@ -3,7 +3,7 @@ import { throttle } from 'lodash'
 import * as DiscordRPC from 'discord-rpc'
 import log from '../log'
 
-let discordRpc: any
+let discordRpc: any | null = null
 let initialized = false
 
 const init = () => {
@@ -14,7 +14,9 @@ const init = () => {
     }
 
     DiscordRPC.register(clientId)
+
     const rpc = new DiscordRPC.Client({ transport: 'ipc' })
+    discordRpc = rpc
 
     rpc.once('ready', () => {
       initialized = true
@@ -27,12 +29,11 @@ const init = () => {
       log.error(e)
       return
     }
-
-    discordRpc = rpc
   })
 }
 
 const updateActivity = throttle(async (activity: DiscordActivity) => {
+  if (!discordRpc) return
   try {
     await discordRpc.setActivity(activity)
   } catch (e) {
@@ -40,10 +41,15 @@ const updateActivity = throttle(async (activity: DiscordActivity) => {
   }
 }, 15e3)
 
-// TODO: change to 'on' and apply session state
-ipcMain.on('set-discord-activity', async (event: Electron.Event, activity: DiscordActivity) => {
-  if (!initialized) {
-    await init()
+ipcMain.on('set-discord-enabled', (event: Electron.Event, enabled: boolean) => {
+  if (enabled && !discordRpc) {
+    init()
+  } else if (!enabled && discordRpc) {
+    discordRpc.destroy()
+    discordRpc = null
   }
+})
+
+ipcMain.on('set-discord-activity', (event: Electron.Event, activity: DiscordActivity) => {
   updateActivity(activity)
 })
