@@ -86,7 +86,7 @@ export const sessionMiddleware = (observers: SessionObserver[] = []): Middleware
 
       const updated = shouldUpdateSession(state, prevState)
 
-      if (updated && !isEqual(state.session, prevState.session)) {
+      if (!updated && !isEqual(state.session, prevState.session)) {
         notifyObservers()
       }
     }
