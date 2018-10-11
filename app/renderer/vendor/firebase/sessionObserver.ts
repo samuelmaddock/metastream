@@ -4,6 +4,7 @@ import { VERSION } from 'constants/app'
 
 import * as firebase from './'
 import { cleanObject } from 'utils/object'
+import { localUserId } from '../../network/index'
 
 type Timestamp = number
 
@@ -61,6 +62,9 @@ export class FirebaseSessionObserver implements SessionObserver {
 
   onChange(state: ISessionState): void {
     if (this.disabled) return
+
+    // Only announce session from host
+    if (state.id !== localUserId()) return
 
     if (!firebase.isReady()) {
       if (firebase.isInitializing()) return
