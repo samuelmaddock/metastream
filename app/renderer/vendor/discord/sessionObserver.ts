@@ -1,14 +1,9 @@
 import { SessionObserver } from 'renderer/lobby/middleware/session'
 import { ISessionState } from 'renderer/lobby/reducers/session'
-import { ISettingsState } from '../reducers/settings'
+import { ISettingsState } from '../../reducers/settings'
 const { ipcRenderer } = chrome
 
-const SCREEN_NAME: { [key: string]: string } = {
-  '/': 'Main Menu',
-  '/settings': 'Settings'
-}
-
-export class DiscordSessionObserver implements SessionObserver {
+class DiscordSessionObserver implements SessionObserver {
   setting: any = 'discordPresence'
 
   applySetting(value: ISettingsState['discordPresence']) {
@@ -47,3 +42,5 @@ export class DiscordSessionObserver implements SessionObserver {
     ipcRenderer.send('set-discord-activity', activity)
   }
 }
+
+export default DiscordSessionObserver
