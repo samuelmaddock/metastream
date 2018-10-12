@@ -82,6 +82,12 @@ class _UserList extends Component<Props> {
         action={this.renderActions()}
         renderMenuOptions={this.renderMenuOptions}
       >
+        {this.props.users.invites.map(invite => (
+          <div key={invite.id}>
+            {/* TODO */}
+            {invite.name}
+          </div>
+        ))}
         {this.state.sortedUsers.map(user => (
           <UserItem
             key={user.id}

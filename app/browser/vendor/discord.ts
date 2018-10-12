@@ -19,6 +19,8 @@ const init = async () => {
   discordRpc = rpc
 
   rpc.once('ready', () => {
+    log.info('Discord RPC ready', discordRpc.user)
+
     const send = (eventName: string, ...args: any[]) => {
       const win = getMainWindow()
       if (win) {

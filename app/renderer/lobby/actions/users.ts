@@ -2,15 +2,16 @@ import { actionCreator } from 'utils/redux'
 import { RpcThunk } from 'renderer/lobby/types'
 import { getUserName, isAdmin, getUser, hasRole } from 'renderer/lobby/reducers/users.helpers'
 import { rpc, RpcRealm } from 'renderer/network/middleware/rpc'
-import { IMessage } from 'renderer/lobby/reducers/chat'
-import { CHAT_MAX_MESSAGE_LENGTH } from 'constants/chat'
 import { localUserId } from '../../network'
 import { addChat } from './chat'
 import { NetworkDisconnectReason } from '../../../constants/network'
 import { setDisconnectReason } from './session'
-import { UserRole } from '../reducers/users'
-import { ThunkAction } from 'redux-thunk'
-import { IAppState } from '../../reducers/index'
+import { UserRole, IUserInvite } from '../reducers/users'
+
+export const addUserInvite = actionCreator<IUserInvite>('ADD_USER_INVITE')
+export const answerUserInvite = actionCreator<IUserInvite & { response: string }>(
+  'ANSWER_USER_INVITE'
+)
 
 export const setUserRole = actionCreator<{ userId: string; role: UserRole; enabled: boolean }>(
   'SET_USER_ROLE'
@@ -34,7 +35,11 @@ const userLeft = (userId: string): RpcThunk<void> => (dispatch, getState, contex
 }
 export const multi_userLeft = rpc(RpcRealm.Multicast, userLeft)
 
-const kickClient = (reason: NetworkDisconnectReason): RpcThunk<void> => (dispatch, getState, { server }) => {
+const kickClient = (reason: NetworkDisconnectReason): RpcThunk<void> => (
+  dispatch,
+  getState,
+  { server }
+) => {
   console.debug(`Received kick with reason: '${reason}'`)
   dispatch(setDisconnectReason(reason))
   server.close()
