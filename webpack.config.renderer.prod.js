@@ -120,7 +120,7 @@ export default merge.smart(baseConfig, prodConfig, {
       DEV: JSON.stringify(false),
       PRODUCTION: JSON.stringify(true),
       FEATURE_SESSION_BROWSER: JSON.stringify(false),
-      FEATURE_DISCORD_RP: JSON.stringify(false),
+      FEATURE_DISCORD_RP: JSON.stringify(true),
     }),
 
     new ExtractTextPlugin({
