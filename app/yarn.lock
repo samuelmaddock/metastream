@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+bindings@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/bindings/-/bindings-1.3.0.tgz#b346f6ecf6a95f5a815c5839fc7cdb22502f1ed7"
+  integrity sha512-DpLh5EzMR2kzvX1KIlVC0VkC3iZtHKTgdtZ0a3pglBZdaQFjt5S9g9xd1lE+YvXyfd6mtCeRnrUfOLYiTMlNSw==
+
 core-util-is@~1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
@@ -27,10 +32,22 @@ nan@^2.4.0, nan@^2.5.1:
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.8.0.tgz#ed715f3fe9de02b57a5e6252d90a96675e1f085a"
   integrity sha1-7XFfP+neArV6XmJS2QqWZ14fCFo=
 
+nan@^2.8.0:
+  version "2.11.1"
+  resolved "https://registry.yarnpkg.com/nan/-/nan-2.11.1.tgz#90e22bccb8ca57ea4cd37cc83d3819b52eea6766"
+  integrity sha512-iji6k87OSXa0CcrLl9z+ZiYSuR2o+c0bGuNmXdrhTQTakxytAFsC56SArGYoiHlJlFoHSnvmhpceZJaXkVuOtA==
+
 node-gyp-build@^3.0.0:
   version "3.2.2"
   resolved "https://registry.yarnpkg.com/node-gyp-build/-/node-gyp-build-3.2.2.tgz#f78a9f84834b1dbd293b0719fee48635d2789c27"
   integrity sha512-t8W/0UqFGl1c+5ORA3NoT3npU+PxWBL9iPhY7ZySSTszodj3RWexmu8niayWBE0v+0DLARvOXsjaAvfmSEQOyQ==
+
+"node-register-scheme@https://github.com/samuelmaddock/node-register-scheme#muon":
+  version "0.0.2"
+  resolved "https://github.com/samuelmaddock/node-register-scheme#48a1c0a83bbdf602845ac0d7c474daae6daf1db6"
+  dependencies:
+    bindings "^1.3.0"
+    nan "^2.8.0"
 
 process-nextick-args@~2.0.0:
   version "2.0.0"

@@ -12,6 +12,7 @@
   "license": "UNLICENSED",
   "private": true,
   "dependencies": {
+    "node-register-scheme": "https://github.com/samuelmaddock/node-register-scheme#muon",
     "sodium-native": "^2.1.4",
     "utp-native": "^1.2.2"
   }
