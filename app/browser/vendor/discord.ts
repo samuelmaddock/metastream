@@ -1,9 +1,11 @@
-import { ipcMain } from 'electron'
+import { ipcMain, app } from 'electron'
 import { throttle } from 'lodash'
 import * as DiscordRPC from 'discord-rpc'
 import log from '../log'
 import { getMainWindow } from '../window'
+import * as discordRegister from 'node-register-scheme'
 
+let connected = false
 let discordRpc: any | null = null
 let activityCache: DiscordActivity | null = null
 
@@ -15,10 +17,14 @@ const init = async () => {
 
   DiscordRPC.register(clientId)
 
+  const registered = discordRegister(clientId, `"${app.getPath('exe')}" -- "%1"`)
+  log.info(registered ? 'Registered Discord appId' : 'Failed to register Discord appId')
+
   const rpc = new DiscordRPC.Client({ transport: 'ipc' })
   discordRpc = rpc
 
   rpc.once('ready', () => {
+    connected = true
     log.info('Discord RPC ready', discordRpc.user)
 
     const send = (eventName: string, ...args: any[]) => {
@@ -40,6 +46,7 @@ const init = async () => {
   try {
     await rpc.login({ clientId })
   } catch (e) {
+    log.error('Discord error on login', e.message)
     log.error(e)
     return
   }
@@ -50,6 +57,7 @@ const updateActivity = throttle(async (activity: DiscordActivity) => {
   try {
     await discordRpc.setActivity(activity)
   } catch (e) {
+    log.error(`Error setting Discord activity`, activity)
     log.error(e)
   }
 }, 15e3)
@@ -60,11 +68,12 @@ ipcMain.on('set-discord-enabled', (event: Electron.Event, enabled: boolean) => {
   } else if (!enabled && discordRpc) {
     discordRpc.destroy()
     discordRpc = null
+    connected = false
   }
 })
 
 ipcMain.on('set-discord-activity', (event: Electron.Event, activity: DiscordActivity) => {
-  if (discordRpc) {
+  if (connected) {
     updateActivity(activity)
   } else {
     activityCache = activity
@@ -93,6 +102,7 @@ ipcMain.on('send-discord-reply', async (event: Electron.Event, user: any, respon
     try {
       await responsePromise
     } catch (e) {
+      log.error(`Error sending discord join response`, user, response)
       log.error(e)
     }
   }
