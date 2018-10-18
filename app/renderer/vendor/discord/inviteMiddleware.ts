@@ -26,9 +26,9 @@ const discordInviteMiddleware = (): Middleware<{}, IAppState> => {
       dispatch(
         addUserInvite({
           type: 'discord',
-          id: user.userId,
+          id: user.id,
           name: user.username,
-          avatar: `https://cdn.discordapp.com/avatars/${user.userId}/${user.avatar}.png`,
+          avatar: `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`,
           meta: user
         })
       )

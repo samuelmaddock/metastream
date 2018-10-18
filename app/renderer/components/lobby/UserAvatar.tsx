@@ -1,13 +1,12 @@
 import React, { Component } from 'react'
-import { IUser } from 'renderer/lobby/reducers/users'
-import styles from './UserItem.css'
-import { PlatformService } from 'renderer/platform'
-import { NetUniqueId } from 'renderer/network'
+import cx from 'classnames'
 import { assetUrl } from 'utils/appUrl'
+import styles from './UserAvatar.css'
 
 interface IProps {
   className?: string
   avatar?: string
+  badge?: string
 }
 
 interface IState {
@@ -39,7 +38,10 @@ export class UserAvatar extends Component<IProps> {
 
   render(): JSX.Element | null {
     return (
-      <img src={this.state.src || assetUrl('icons/avatar.svg')} className={this.props.className} />
+      <div className={cx(this.props.className, styles.container)}>
+        <img className={styles.image} src={this.state.src || assetUrl('icons/avatar.svg')} />
+        {this.props.badge && <img className={styles.badge} src={this.props.badge} />}
+      </div>
     )
   }
 }

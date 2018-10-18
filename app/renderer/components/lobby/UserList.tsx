@@ -15,6 +15,7 @@ import { t } from 'locale'
 import { IReactReduxProps } from 'types/redux-thunk'
 import { server_answerClient } from '../../lobby/actions/user-init'
 import { localUserId } from '../../network/index'
+import { assetUrl } from 'utils/appUrl'
 
 interface IProps {
   className?: string
@@ -96,6 +97,8 @@ class _UserList extends Component<Props> {
       <UserItem
         key={invite.id}
         name={invite.name}
+        avatar={invite.avatar}
+        avatarBadge={assetUrl(`icons/badge/${invite.type}.svg`)}
         requestApproval
         onApprovalResponse={(approved: boolean) => {
           this.props.dispatch!(
