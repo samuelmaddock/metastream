@@ -2,7 +2,7 @@ import { Middleware } from 'redux'
 import { IAppState } from '../../reducers/index'
 import { addUserInvite, answerUserInvite } from '../../lobby/actions/users'
 import { isType } from 'utils/redux'
-import { ipcMain } from 'electron'
+import { addChat } from '../../lobby/actions/chat'
 const { ipcRenderer } = chrome
 
 const discordInviteMiddleware = (): Middleware<{}, IAppState> => {
@@ -12,8 +12,17 @@ const discordInviteMiddleware = (): Middleware<{}, IAppState> => {
       // TODO
     })
 
-    ipcRenderer.on('discord-join-request', (event: Electron.Event, user: any) => {
+    ipcRenderer.on('discord-join-request', (event: Electron.Event, request: any) => {
+      const { user } = request
       console.debug('Discord join request', user)
+
+      dispatch(
+        addChat({
+          content: `${user.username} is requesting permission to join.`,
+          timestamp: Date.now()
+        })
+      )
+
       dispatch(
         addUserInvite({
           type: 'discord',

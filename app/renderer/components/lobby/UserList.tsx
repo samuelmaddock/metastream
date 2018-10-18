@@ -2,17 +2,19 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import { IAppState } from '../../reducers/index'
-import { IUsersState, IUser, UserRole } from '../../lobby/reducers/users'
-import { isHost } from '../../lobby/reducers/users.helpers'
+import { IUsersState, IUser, UserRole, IUserInvite } from '../../lobby/reducers/users'
+import { isHost, isAdmin } from '../../lobby/reducers/users.helpers'
 import { getMaxUsers } from '../../lobby/reducers/session'
-import { server_kickUser, server_toggleUserRole } from '../../lobby/actions/users'
+import { server_kickUser, server_toggleUserRole, answerUserInvite } from '../../lobby/actions/users'
 
 import { MenuItem } from 'material-ui/Menu'
 import { HighlightButton } from '../common/button'
 import { ListOverlay } from './ListOverlay'
-import { UserItem } from './UserItem'
+import { UserItem, ConnectedUserItem } from './UserItem'
 import { t } from 'locale'
 import { IReactReduxProps } from 'types/redux-thunk'
+import { server_answerClient } from '../../lobby/actions/user-init'
+import { localUserId } from '../../network/index'
 
 interface IProps {
   className?: string
@@ -24,6 +26,7 @@ interface IConnectedProps {
   maxUsers?: number
   users: IUsersState
   isHost: boolean
+  isAdmin: boolean
 }
 
 interface IState {
@@ -82,20 +85,49 @@ class _UserList extends Component<Props> {
         action={this.renderActions()}
         renderMenuOptions={this.renderMenuOptions}
       >
-        {this.props.users.invites.map(invite => (
-          <div key={invite.id}>
-            {/* TODO */}
-            {invite.name}
-          </div>
-        ))}
-        {this.state.sortedUsers.map(user => (
-          <UserItem
-            key={user.id}
-            user={user}
-            onClickMenu={e => this.listOverlay!.onSelect(e, user)}
-          />
-        ))}
+        {this.props.users.invites.map(this.renderInvite)}
+        {this.state.sortedUsers.map(this.renderUser)}
       </ListOverlay>
+    )
+  }
+
+  private renderInvite = (invite: IUserInvite) => {
+    return (
+      <UserItem
+        key={invite.id}
+        name={invite.name}
+        requestApproval
+        onApprovalResponse={(approved: boolean) => {
+          this.props.dispatch!(
+            answerUserInvite({
+              ...invite,
+              response: approved ? 'YES' : 'NO'
+            })
+          )
+        }}
+      />
+    )
+  }
+
+  private renderUser = (user: IUser) => {
+    const requestApproval = user.pending && this.props.isAdmin
+
+    return (
+      <ConnectedUserItem
+        key={user.id}
+        user={user}
+        name={user.name}
+        showMenu={this.props.isAdmin && user.id !== localUserId()}
+        onClickMenu={e => this.listOverlay!.onSelect(e, user)}
+        requestApproval={requestApproval}
+        onApprovalResponse={
+          requestApproval
+            ? (approved: boolean) => {
+                this.props.dispatch!(server_answerClient(user.id, approved))
+              }
+            : undefined
+        }
+      />
     )
   }
 
@@ -154,6 +186,7 @@ export const UserList = connect(
     return {
       maxUsers: getMaxUsers(state),
       users: state.users,
+      isAdmin: isAdmin(state),
       isHost: isHost(state)
     }
   }

@@ -7,10 +7,6 @@ import { assetUrl } from 'utils/appUrl'
 
 interface IProps {
   className?: string
-
-  /** User ID */
-  id: string
-
   avatar?: string
 }
 
