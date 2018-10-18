@@ -71,13 +71,11 @@ export class UserItem extends Component<IProps, IState> {
 
     return (
       <figure className={styles.container}>
-        {this.props.avatar && (
-          <UserAvatar
-            className={styles.avatar}
-            avatar={this.props.avatar}
-            badge={this.props.avatarBadge}
-          />
-        )}
+        <UserAvatar
+          className={styles.avatar}
+          avatar={this.props.avatar}
+          badge={this.props.avatarBadge}
+        />
         <figcaption className={styles.name}>{this.props.name}</figcaption>
         {roleIcon && (
           <Tooltip title={roleIcon.title} placement="right">
