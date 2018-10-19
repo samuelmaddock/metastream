@@ -30,7 +30,7 @@ export interface ISessionState {
    * Unique secret generated per session.
    * Used by Discord game invites.
    */
-  secret?: string
+  secret: string
 
   /** CLIENT: Reason for disconnect */
   disconnectReason?: NetworkDisconnectReason
@@ -45,7 +45,8 @@ export interface ISessionState {
 const initialState: ISessionState = {
   id: '',
   users: 0,
-  startTime: new Date().getTime()
+  startTime: new Date().getTime(),
+  secret: ''
 }
 
 export const session: Reducer<ISessionState> = (

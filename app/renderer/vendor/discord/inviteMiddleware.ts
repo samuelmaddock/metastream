@@ -3,13 +3,23 @@ import { IAppState } from '../../reducers/index'
 import { addUserInvite, answerUserInvite } from '../../lobby/actions/users'
 import { isType } from 'utils/redux'
 import { addChat } from '../../lobby/actions/chat'
+import { decodeDiscordSecret } from './secret'
+import { push } from 'react-router-redux'
 const { ipcRenderer } = chrome
 
 const discordInviteMiddleware = (): Middleware<{}, IAppState> => {
   return ({ dispatch, getState }) => {
     ipcRenderer.on('discord-join', (event: Electron.Event, secret: string) => {
       console.debug('Discord join secret', secret)
-      // TODO
+
+      let data
+      try {
+        data = decodeDiscordSecret(secret)
+      } catch {}
+
+      if (data) {
+        dispatch(push(`/join/${data.id}?secret=${data.secret}`))
+      }
     })
 
     ipcRenderer.on('discord-join-request', (event: Electron.Event, request: any) => {
