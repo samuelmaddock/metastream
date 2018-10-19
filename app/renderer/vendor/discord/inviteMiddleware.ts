@@ -7,8 +7,12 @@ import { decodeDiscordSecret } from './secret'
 import { push } from 'react-router-redux'
 const { ipcRenderer } = chrome
 
+const DISCORD_INVITE_TIMEOUT = 30e3
+
 const discordInviteMiddleware = (): Middleware<{}, IAppState> => {
   return ({ dispatch, getState }) => {
+    let pendingInviteTimers = new Map<string, number>()
+
     ipcRenderer.on('discord-join', (event: Electron.Event, secret: string) => {
       console.debug('Discord join secret', secret)
 
@@ -42,11 +46,24 @@ const discordInviteMiddleware = (): Middleware<{}, IAppState> => {
           meta: user
         })
       )
+
+      const timeoutId = setTimeout(() => {
+        dispatch(answerUserInvite({ ...user, response: 'IGNORE' }))
+      }, DISCORD_INVITE_TIMEOUT)
+
+      pendingInviteTimers.set(user.id, (timeoutId as any) as number)
     })
 
     return next => action => {
       if (isType(action, answerUserInvite) && action.payload.type === 'discord') {
-        ipcRenderer.send('send-discord-reply', action.payload.meta, action.payload.response)
+        const invite = action.payload
+        ipcRenderer.send('send-discord-reply', invite.meta, invite.response)
+
+        if (pendingInviteTimers.has(invite.id)) {
+          const timerId = pendingInviteTimers.get(invite.id)
+          clearTimeout(timerId)
+          pendingInviteTimers.delete(invite.id)
+        }
       }
       return next(action)
     }
