@@ -30,9 +30,11 @@ const discordInviteMiddleware = (): Middleware<{}, IAppState> => {
       const { user } = request
       console.debug('Discord join request', user)
 
+      const username = `${user.username}#${user.discriminator}`
+
       dispatch(
         addChat({
-          content: `${user.username} is requesting permission to join.`,
+          content: `${username} is requesting permission to join.`,
           timestamp: Date.now()
         })
       )
@@ -41,7 +43,7 @@ const discordInviteMiddleware = (): Middleware<{}, IAppState> => {
         addUserInvite({
           type: 'discord',
           id: user.id,
-          name: user.username,
+          name: username,
           avatar: `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`,
           meta: user
         })
