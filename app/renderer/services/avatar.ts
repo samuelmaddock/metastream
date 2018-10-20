@@ -68,6 +68,7 @@ export const avatarRegistry = new AvatarRegistry()
 
 function initAppAvatars() {
   avatarRegistry.registerType('asset', (fileName: string) => {
+    if (fileName && fileName.indexOf('..') > -1) return
     return assetUrl(`avatars/${fileName}`)
   })
 
