@@ -31,11 +31,9 @@ export class UserAvatar extends Component<IProps> {
     }
   }
 
-  private async requestAvatar(src: string) {
+  private requestAvatar(src: string) {
     let img = new Image()
-    img.onload = () => {
-      this.setState({ src })
-    }
+    img.onload = () => this.setState({ src })
     img.src = src
   }
 

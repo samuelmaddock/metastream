@@ -120,6 +120,7 @@ class _UserList extends Component<Props> {
         key={user.id}
         user={user}
         name={user.name}
+        avatar={user.avatar}
         showMenu={this.props.isAdmin && user.id !== localUserId()}
         onClickMenu={e => this.listOverlay!.onSelect(e, user)}
         requestApproval={requestApproval}

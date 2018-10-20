@@ -11,6 +11,7 @@ import {
 } from 'constants/settings'
 import { IAppState } from './index'
 import { stripEmoji } from 'utils/string'
+import { avatarRegistry } from '../services/avatar'
 
 export const enum SessionMode {
   Public,
@@ -79,3 +80,12 @@ export const getLocalUsername = (state: IAppState) => state.settings.username ||
 export const getLocalColor = (state: IAppState) => state.settings.color || DEFAULT_COLOR
 export const getLocalSessionMode = (state: IAppState) => state.settings.sessionMode || DEFAULT_COLOR
 export const isDeveloper = (state: IAppState) => state.settings.developer
+export const getLocalAvatar = (state: IAppState) => {
+  let src
+  if (state.settings.avatar) {
+    try {
+      src = avatarRegistry.resolve(state.settings.avatar)
+    } catch {}
+  }
+  return src
+}

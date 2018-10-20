@@ -48,7 +48,8 @@ class AvatarRegistry {
 
   /** Resolve avatar URI. */
   resolve(uri: string): string | undefined {
-    const [typeName, ...params] = uri.split(',')
+    const [typeName, _params] = uri.split(':')
+    const params = _params.split(',')
 
     const resolver = this.types.get(typeName)
     if (!resolver) {

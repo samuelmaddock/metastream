@@ -68,6 +68,7 @@ export const users: Reducer<IUsersState> = (state: IUsersState = initialState, a
         [id]: {
           id,
           name,
+          avatar: action.payload.avatar,
           color: action.payload.color,
           role: admin ? UserRole.Admin : UserRole.Default,
           pending: action.payload.pending
