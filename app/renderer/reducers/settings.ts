@@ -80,11 +80,26 @@ export const getLocalUsername = (state: IAppState) => state.settings.username ||
 export const getLocalColor = (state: IAppState) => state.settings.color || DEFAULT_COLOR
 export const getLocalSessionMode = (state: IAppState) => state.settings.sessionMode || DEFAULT_COLOR
 export const isDeveloper = (state: IAppState) => state.settings.developer
+
 export const getLocalAvatar = (state: IAppState) => {
+  const { avatar } = state.settings
+  if (avatar) {
+    return avatar
+  } else {
+    // Default to Discord avatar if setting has never been set
+    const defaultAvatar = avatarRegistry.getAll().find(avatar => avatar.type === 'discord')
+    if (defaultAvatar) {
+      return defaultAvatar.uri
+    }
+  }
+}
+
+export const resolveLocalAvatar = (state: IAppState) => {
+  const avatar = getLocalAvatar(state)
   let src
-  if (state.settings.avatar) {
+  if (avatar) {
     try {
-      src = avatarRegistry.resolve(state.settings.avatar)
+      src = avatarRegistry.resolve(avatar)
     } catch {}
   }
   return src

@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
 import { connect, DispatchProp } from 'react-redux'
 import styles from '../SettingsMenu.css'
-import { Icon } from 'renderer/components/Icon'
-import { TextInput, InputGroup } from 'renderer/components/common/input'
+import { TextInput } from 'renderer/components/common/input'
 import { IAppState } from 'renderer/reducers/index'
-import { getLocalUsername, getLocalColor, ISettingsState } from 'renderer/reducers/settings'
-import { USERNAME_MIN_LEN, USERNAME_MAX_LEN } from 'constants/settings'
+import { getLocalUsername, getLocalColor, getLocalAvatar } from 'renderer/reducers/settings'
+import { USERNAME_MAX_LEN } from 'constants/settings'
 import { setUsername, setColor, setSetting } from 'renderer/actions/settings'
 import { t } from '../../../../locale/index'
 import { avatarRegistry } from '../../../services/avatar'
@@ -87,7 +86,7 @@ class ProfileSettings extends Component<Props> {
 export default connect(
   (state: IAppState): IConnectedProps => {
     return {
-      avatar: state.settings.avatar,
+      avatar: getLocalAvatar(state),
       username: getLocalUsername(state),
       color: getLocalColor(state)
     }
