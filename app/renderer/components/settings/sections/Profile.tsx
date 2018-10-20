@@ -8,10 +8,13 @@ import { getLocalUsername, getLocalColor, ISettingsState } from 'renderer/reduce
 import { USERNAME_MIN_LEN, USERNAME_MAX_LEN } from 'constants/settings'
 import { setUsername, setColor, setSetting } from 'renderer/actions/settings'
 import { t } from '../../../../locale/index'
+import { avatarRegistry } from '../../../services/avatar'
+import { UserAvatar } from '../../lobby/UserAvatar'
 
 interface IProps {}
 
 interface IConnectedProps {
+  avatar?: string
   username: string
   color: string
 }
@@ -29,6 +32,20 @@ class ProfileSettings extends Component<Props> {
     return (
       <section className={styles.section}>
         <h2>{t('profile')}</h2>
+
+        <label>{t('avatar')}</label>
+        <div className={styles.avatarList}>
+          {avatarRegistry.getAll().map((avatar, idx) => (
+            <UserAvatar
+              key={idx}
+              avatar={avatar.src}
+              selected={avatar.uri === this.props.avatar}
+              onClick={() => {
+                this.props.dispatch!(setSetting('avatar', avatar.uri))
+              }}
+            />
+          ))}
+        </div>
 
         <label htmlFor="profile_username">{t('username')}</label>
         <TextInput
@@ -67,9 +84,12 @@ class ProfileSettings extends Component<Props> {
   }
 }
 
-export default connect((state: IAppState): IConnectedProps => {
-  return {
-    username: getLocalUsername(state),
-    color: getLocalColor(state)
+export default connect(
+  (state: IAppState): IConnectedProps => {
+    return {
+      avatar: state.settings.avatar,
+      username: getLocalUsername(state),
+      color: getLocalColor(state)
+    }
   }
-})(ProfileSettings) as React.ComponentClass<IProps>
+)(ProfileSettings) as React.ComponentClass<IProps>

@@ -7,6 +7,9 @@ interface IProps {
   className?: string
   avatar?: string
   badge?: string
+
+  selected?: boolean
+  onClick?: React.MouseEventHandler<HTMLButtonElement>
 }
 
 interface IState {
@@ -37,11 +40,24 @@ export class UserAvatar extends Component<IProps> {
   }
 
   render(): JSX.Element | null {
-    return (
-      <div className={cx(this.props.className, styles.container)}>
+    const { onClick } = this.props
+
+    const children = (
+      <>
         <img className={styles.image} src={this.state.src || assetUrl('avatars/default.svg')} />
         {this.props.badge && <img className={styles.badge} src={this.props.badge} />}
-      </div>
+      </>
+    )
+
+    return React.createElement(
+      onClick ? 'button' : 'div',
+      {
+        className: cx(this.props.className, styles.container, {
+          [styles.selected]: this.props.selected
+        }),
+        onClick
+      },
+      children
     )
   }
 }

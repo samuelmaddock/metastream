@@ -5,6 +5,7 @@ export default {
   allowTracking: 'Send app usage information',
   allowTrackingDesc:
     'Anonymous usage information is sent to the developer to better understand how the app is being used.',
+  avatar: 'Avatar',
   cancel: 'Cancel',
   changelog: 'Changelog',
   chatColor: 'Chat Color',

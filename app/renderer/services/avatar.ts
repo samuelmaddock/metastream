@@ -12,8 +12,11 @@ interface RawAvatarEntry {
 }
 
 interface AvatarEntry extends RawAvatarEntry {
+  /** Unresolved avatar URI. */
+  uri: string
+
   /** Resolved URL for avatar. */
-  url: string
+  src: string
 }
 
 /** Avatar registry with support for multiple sources and URL resolution. */
@@ -34,12 +37,13 @@ class AvatarRegistry {
       throw new Error(`Attempt to register avatar with unknown type '${avatar.type}'`)
     }
 
-    const url = resolver(...avatar.params)
-    if (!url) {
+    const src = resolver(...avatar.params)
+    if (!src) {
       throw new Error(`Attempt to register avatar with invalid params '${avatar.params.join(',')}'`)
     }
 
-    this.avatars.push({ ...avatar, url })
+    const uri = `${avatar.type}:${avatar.params.join(',')}`
+    this.avatars.push({ ...avatar, uri, src })
   }
 
   /** Resolve avatar URI. */
