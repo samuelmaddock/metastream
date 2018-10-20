@@ -39,7 +39,7 @@ export class UserAvatar extends Component<IProps> {
   render(): JSX.Element | null {
     return (
       <div className={cx(this.props.className, styles.container)}>
-        <img className={styles.image} src={this.state.src || assetUrl('icons/avatar.svg')} />
+        <img className={styles.image} src={this.state.src || assetUrl('avatars/default.svg')} />
         {this.props.badge && <img className={styles.badge} src={this.props.badge} />}
       </div>
     )

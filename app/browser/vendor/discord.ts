@@ -41,6 +41,8 @@ const init = async () => {
       updateActivity(activityCache)
       activityCache = null
     }
+
+    send('discord-user', discordRpc.user)
   })
 
   try {
