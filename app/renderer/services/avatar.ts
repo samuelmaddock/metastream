@@ -11,7 +11,7 @@ interface RawAvatarEntry {
   params: string[]
 }
 
-interface AvatarEntry extends RawAvatarEntry {
+export interface AvatarEntry extends RawAvatarEntry {
   /** Unresolved avatar URI. */
   uri: string
 
@@ -20,9 +20,14 @@ interface AvatarEntry extends RawAvatarEntry {
 }
 
 /** Avatar registry with support for multiple sources and URL resolution. */
-class AvatarRegistry {
+class AvatarRegistry implements ArrayLike<AvatarEntry> {
   private types: Map<AvatarType['name'], AvatarType['resolver']> = new Map()
   private avatars: AvatarEntry[] = []
+
+  readonly [n: number]: AvatarEntry
+  get length() {
+    return this.avatars.length
+  }
 
   /** Register avatar type. */
   registerType(name: AvatarType['name'], resolver: AvatarType['resolver']): void {
@@ -30,7 +35,7 @@ class AvatarRegistry {
   }
 
   /** Register avatar. */
-  register(avatar: RawAvatarEntry): void {
+  register(avatar: RawAvatarEntry): AvatarEntry {
     const resolver = this.types.get(avatar.type)
 
     if (!resolver) {
@@ -43,7 +48,9 @@ class AvatarRegistry {
     }
 
     const uri = `${avatar.type}:${avatar.params.join(',')}`
-    this.avatars.push({ ...avatar, uri, src })
+    const entry = { ...avatar, uri, src }
+    this.avatars.push(entry)
+    return entry
   }
 
   /** Resolve avatar URI. */
@@ -61,6 +68,10 @@ class AvatarRegistry {
 
   getAll(): AvatarEntry[] {
     return this.avatars
+  }
+
+  deleteByURI(uri: string) {
+    this.avatars = this.avatars.filter(avatar => avatar.uri !== uri)
   }
 }
 
