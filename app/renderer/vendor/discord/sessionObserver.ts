@@ -15,7 +15,9 @@ class DiscordSessionObserver implements SessionObserver {
     let activity
 
     if (state) {
-      const { media, users: partySize } = state
+      const { media, users } = state
+
+      const partySize = Math.max(1, users)
 
       // Temporary max party until Metastream implements a max
       const nextPowerOfTwo = Math.pow(2, Math.ceil(Math.log(partySize) / Math.log(2)))
