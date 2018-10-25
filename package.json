@@ -165,6 +165,7 @@
     "electron": "brave/electron-prebuilt",
     "electron-builder": "20.20.4",
     "electron-devtools-installer": "^2.2.1",
+    "electron-discord-register": "^1.0.0",
     "electron-ipc-stream": "git+ssh://git@github.com/samuelmaddock/electron-ipc-stream.git#0.3.0",
     "electron-settings": "^3.2.0",
     "express": "^4.15.2",

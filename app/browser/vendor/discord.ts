@@ -3,7 +3,7 @@ import { throttle } from 'lodash'
 import * as DiscordRPC from 'discord-rpc'
 import log from '../log'
 import { getMainWindow } from '../window'
-import * as discordRegister from 'node-register-scheme'
+import discordRegister from 'electron-discord-register'
 
 let connected = false
 let discordRpc: any | null = null
@@ -17,8 +17,8 @@ const init = async () => {
 
   DiscordRPC.register(clientId)
 
-  const registered = discordRegister(clientId, `"${app.getPath('exe')}" -- "%1"`)
-  log.info(registered ? 'Registered Discord appId' : 'Failed to register Discord appId')
+  // Register application protocol for invite launcher
+  discordRegister(clientId).catch(err => log.error(err))
 
   const rpc = new DiscordRPC.Client({ transport: 'ipc' })
   discordRpc = rpc
