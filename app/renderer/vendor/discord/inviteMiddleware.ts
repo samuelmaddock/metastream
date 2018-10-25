@@ -22,7 +22,7 @@ const discordInviteMiddleware = (): Middleware<{}, IAppState> => {
       } catch {}
 
       if (data) {
-        dispatch(push(`/join/${data.id}?secret=${data.secret}`))
+        dispatch(push(`/lobby/${data.id}?secret=${data.secret}`))
       }
     })
 
