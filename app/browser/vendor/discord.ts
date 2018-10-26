@@ -34,8 +34,19 @@ const init = async () => {
       }
     }
 
-    rpc.subscribe('ACTIVITY_JOIN', ({ secret }: any) => send('discord-join', secret))
-    rpc.subscribe('ACTIVITY_JOIN_REQUEST', (user: any) => send('discord-join-request', user))
+    rpc.subscribe('ACTIVITY_JOIN', ({ secret }: any) => {
+      send('discord-join', secret)
+      const win = getMainWindow()
+      if (win && !win.isFocused()) win.focus()
+    })
+    rpc.subscribe('ACTIVITY_JOIN_REQUEST', (user: any) => {
+      send('discord-join-request', user)
+      const win = getMainWindow()
+      if (win && !win.isFocused()) {
+        win.once('focus', () => win.flashFrame(false))
+        win.flashFrame(true)
+      }
+    })
 
     if (activityCache) {
       updateActivity(activityCache)
