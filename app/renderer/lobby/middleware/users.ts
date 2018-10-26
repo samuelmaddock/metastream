@@ -4,17 +4,23 @@ import { localUser, NetConnection, NetServer } from 'renderer/network'
 import { NetMiddlewareOptions, NetActions } from 'renderer/network/actions'
 import { multi_userLeft } from '../actions/users'
 import { initialize } from 'renderer/lobby/actions/user-init'
-import { getLocalUsername, getLocalColor } from '../../reducers/settings'
+import {
+  getLocalUsername,
+  getLocalColor,
+  getLocalAvatar,
+  resolveLocalAvatar
+} from '../../reducers/settings'
 import { IAppState } from '../../reducers/index'
 import { initLobby } from '../actions/common'
 
 interface IUserPayload {
   conn: NetConnection
   name?: string
+  avatar?: string
+  color: string
 
   /** Whether this user is the host. */
   host?: boolean
-  color: string
 
   /** Whether this user is still pending joining. */
   pending?: boolean
@@ -47,6 +53,7 @@ export const usersMiddleware = (): Middleware => {
           conn: localUser(),
           host: true,
           name: getLocalUsername(state),
+          avatar: resolveLocalAvatar(state),
           color: getLocalColor(state)
         })
       )

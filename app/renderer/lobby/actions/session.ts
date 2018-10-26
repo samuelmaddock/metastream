@@ -1,3 +1,4 @@
+import shortid from 'shortid'
 import { actionCreator } from 'utils/redux'
 import { ISessionState, ConnectionStatus } from '../reducers/session'
 import { NetworkDisconnectReason } from 'constants/network'
@@ -14,7 +15,12 @@ export const setConnectionStatus = actionCreator<ConnectionStatus | undefined>(
 )
 
 export const initHostSession = (): AppThunkAction => {
-  return (dispatch, getState) => {
-    dispatch(setSessionData({ id: localUserId() }))
+  return dispatch => {
+    dispatch(
+      setSessionData({
+        id: localUserId(),
+        secret: btoa(shortid())
+      })
+    )
   }
 }

@@ -5,6 +5,7 @@ import { MenuHeader } from '../menu/MenuHeader'
 
 import ProfileSettings from './sections/Profile'
 import AdvancedSettings from './sections/Advanced'
+import ThirdPartySettings from './sections/ThirdParty'
 import { t } from 'locale'
 
 interface IProps {}
@@ -14,8 +15,11 @@ export class SettingsMenu extends Component<IProps> {
     return (
       <LayoutMain className={styles.container}>
         <MenuHeader text={t('settings')} />
-        <ProfileSettings />
-        <AdvancedSettings />
+        <div className={styles.content}>
+          <ProfileSettings />
+          <AdvancedSettings />
+          <ThirdPartySettings />
+        </div>
       </LayoutMain>
     )
   }

@@ -4,6 +4,7 @@ import { VERSION } from 'constants/app'
 
 import * as firebase from './'
 import { cleanObject } from 'utils/object'
+import { localUserId } from '../../network/index'
 
 type Timestamp = number
 
@@ -47,20 +48,27 @@ export class FirebaseSessionObserver implements SessionObserver {
     return cleanObject(doc) as SessionDocument
   }
 
-  private updateDocument(state: ISessionState) {
+  private updateDocument(state: ISessionState | null) {
     const db = firebase.getDatabase()
     const userId = firebase.getUserId()
     if (!db || !userId) return
 
-    this.document = this.buildDocument(state)
+    if (state) {
+      this.document = this.buildDocument(state)
 
-    db.collection('sessions')
-      .doc(userId)
-      .set(this.document)
+      db.collection('sessions')
+        .doc(userId)
+        .set(this.document)
+    } else {
+      // TODO: delete document
+    }
   }
 
-  onChange(state: ISessionState): void {
+  onChange(state: ISessionState | null): void {
     if (this.disabled) return
+
+    // Only announce session from host
+    if ((!state && !document) || (state && state.id !== localUserId())) return
 
     if (!firebase.isReady()) {
       if (firebase.isInitializing()) return

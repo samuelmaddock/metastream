@@ -1,9 +1,10 @@
 import { Reducer } from 'redux'
 import { isType } from 'utils/redux'
 import { addUser, removeUser, clearUsers } from '../middleware/users'
-import { setUserRole } from '../actions/users'
+import { setUserRole, addUserInvite, answerUserInvite } from '../actions/users'
 import { clearPendingUser } from '../actions/user-init'
 import { resetLobby } from '../actions/common'
+import { ReplicatedState } from '../../network/types'
 
 /** User role in ascending power. */
 export const enum UserRole {
@@ -21,16 +22,31 @@ export interface IUser {
   pending?: boolean
 }
 
+export interface IUserInvite<T = any> {
+  type: 'discord'
+  id: string
+  name: string
+  avatar?: string
+  meta?: T
+}
+
 export interface IUsersState {
   host: string
   map: {
     [key: string]: IUser | undefined
   }
+  invites: IUserInvite[]
 }
 
 const initialState: IUsersState = {
   host: '',
-  map: {}
+  map: {},
+  invites: []
+}
+
+export const usersReplicatedState: ReplicatedState<IUsersState> = {
+  host: true,
+  map: true
 }
 
 const isValidUser = (state: IUsersState, id: string) => state.map.hasOwnProperty(id)
@@ -45,12 +61,14 @@ export const users: Reducer<IUsersState> = (state: IUsersState = initialState, a
     const admin = id === hostId
 
     return {
+      ...state,
       host: hostId,
       map: {
         ...state.map,
         [id]: {
           id,
           name,
+          avatar: action.payload.avatar,
           color: action.payload.color,
           role: admin ? UserRole.Admin : UserRole.Default,
           pending: action.payload.pending
@@ -77,6 +95,13 @@ export const users: Reducer<IUsersState> = (state: IUsersState = initialState, a
           pending: false
         }
       }
+    }
+  } else if (isType(action, addUserInvite)) {
+    return { ...state, invites: [...state.invites, action.payload] }
+  } else if (isType(action, answerUserInvite)) {
+    return {
+      ...state,
+      invites: state.invites.filter(invite => invite.id !== action.payload.id)
     }
   }
 

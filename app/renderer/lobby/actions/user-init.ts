@@ -25,11 +25,13 @@ import { NetConnection, NetServer } from '../../network/index'
 import { addChat } from './chat'
 import { actionCreator } from 'utils/redux'
 import { AppThunkAction } from 'types/redux-thunk'
+import { avatarRegistry } from '../../services/avatar'
 
 type ClientInitRequest = {
   name: string
   color: string
   version: string
+  avatar?: string
 }
 
 const enum ClientInitResponse {
@@ -46,14 +48,16 @@ export const clearPendingUser = actionCreator<string>('CLEAR_PENDING_USER')
 /** Initialize client */
 export const initialize = (server: NetServer): AppThunkAction => {
   return async (dispatch, getState) => {
+    const state = getState()
     let response
 
     try {
       response = await dispatch(
         server_initClient({
           version: VERSION,
-          name: getLocalUsername(getState()),
-          color: getLocalColor(getState())
+          name: getLocalUsername(state),
+          color: getLocalColor(state),
+          avatar: state.settings.avatar
         })
       )
     } catch (e) {
@@ -89,6 +93,11 @@ const validateClientInfo = (info: ClientInitRequest, id: string, state: IAppStat
 
   if (!info.color || info.color.length !== COLOR_LEN) {
     console.debug(`Client ${id} kicked for invalid color (${info.color})`)
+    return NetworkDisconnectReason.InvalidClientInfo
+  }
+
+  if (info.avatar && typeof info.avatar !== 'string') {
+    console.debug(`Client ${id} kicked for invalid avatar (${info.avatar})`)
     return NetworkDisconnectReason.InvalidClientInfo
   }
 
@@ -148,10 +157,19 @@ const initClient = (info: ClientInitRequest): RpcThunk<ClientInitResponse | void
     name = appendNameCount(state, name)
   }
 
+  let avatar
+
+  if (info.avatar) {
+    try {
+      avatar = avatarRegistry.resolve(info.avatar)
+    } catch {}
+  }
+
   dispatch(
     addUser({
       conn: client,
       name,
+      avatar,
       color: info.color,
       pending: shouldAwaitAuthorization
     })

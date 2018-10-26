@@ -1,17 +1,19 @@
 import React, { Component } from 'react'
 import { connect, DispatchProp } from 'react-redux'
 import styles from '../SettingsMenu.css'
-import { Icon } from 'renderer/components/Icon'
-import { TextInput, InputGroup } from 'renderer/components/common/input'
+import { TextInput } from 'renderer/components/common/input'
 import { IAppState } from 'renderer/reducers/index'
-import { getLocalUsername, getLocalColor, ISettingsState } from 'renderer/reducers/settings'
-import { USERNAME_MIN_LEN, USERNAME_MAX_LEN } from 'constants/settings'
+import { getLocalUsername, getLocalColor, getLocalAvatar } from 'renderer/reducers/settings'
+import { USERNAME_MAX_LEN } from 'constants/settings'
 import { setUsername, setColor, setSetting } from 'renderer/actions/settings'
 import { t } from '../../../../locale/index'
+import { avatarRegistry } from '../../../services/avatar'
+import { UserAvatar } from '../../lobby/UserAvatar'
 
 interface IProps {}
 
 interface IConnectedProps {
+  avatar?: string
   username: string
   color: string
 }
@@ -29,6 +31,20 @@ class ProfileSettings extends Component<Props> {
     return (
       <section className={styles.section}>
         <h2>{t('profile')}</h2>
+
+        <label>{t('avatar')}</label>
+        <div className={styles.avatarList}>
+          {avatarRegistry.getAll().map((avatar, idx) => (
+            <UserAvatar
+              key={idx}
+              avatar={avatar.src}
+              selected={avatar.uri === this.props.avatar}
+              onClick={() => {
+                this.props.dispatch!(setSetting('avatar', avatar.uri))
+              }}
+            />
+          ))}
+        </div>
 
         <label htmlFor="profile_username">{t('username')}</label>
         <TextInput
@@ -67,9 +83,12 @@ class ProfileSettings extends Component<Props> {
   }
 }
 
-export default connect((state: IAppState): IConnectedProps => {
-  return {
-    username: getLocalUsername(state),
-    color: getLocalColor(state)
+export default connect(
+  (state: IAppState): IConnectedProps => {
+    return {
+      avatar: getLocalAvatar(state),
+      username: getLocalUsername(state),
+      color: getLocalColor(state)
+    }
   }
-})(ProfileSettings) as React.ComponentClass<IProps>
+)(ProfileSettings) as React.ComponentClass<IProps>

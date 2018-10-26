@@ -5,6 +5,7 @@ export default {
   allowTracking: 'Send app usage information',
   allowTrackingDesc:
     'Anonymous usage information is sent to the developer to better understand how the app is being used.',
+  avatar: 'Avatar',
   cancel: 'Cancel',
   changelog: 'Changelog',
   chatColor: 'Chat Color',
@@ -19,6 +20,8 @@ export default {
   developerModeDesc: 'Show developer tools for inspecting web pages.',
   disconnect: 'Disconnect',
   disconnected: 'Disconnected',
+  discordPresenceDescription:
+    'Share your session details in your Discord profile and allow users to request invites.',
   donators: 'Donators',
   duplicate: 'Duplicate',
   endSessionTitle: 'End public session?',
@@ -52,6 +55,7 @@ export default {
   requestUrlPlaceholder: '',
   settings: 'Settings',
   startSession: 'Start Session',
+  thirdPartyIntegrations: 'Third-party Integrations',
   unlockQueue: 'Unlock queue',
   username: 'Username',
   users: 'Users',

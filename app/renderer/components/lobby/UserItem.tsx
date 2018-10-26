@@ -7,36 +7,32 @@ import { IconButton } from '../common/button'
 import { connect } from 'react-redux'
 import { IAppState } from '../../reducers/index'
 import { isAdmin, isDJ } from '../../lobby/reducers/users.helpers'
-import { localUserId } from '../../network'
-import { server_answerClient } from '../../lobby/actions/user-init'
-import { IReactReduxProps } from 'types/redux-thunk'
+import { UserAvatar } from './UserAvatar'
 
 interface IProps {
-  user: IUser
-  onClickMenu: React.MouseEventHandler<HTMLElement>
-}
+  name: string
+  avatar?: string
+  avatarBadge?: string
 
-interface IConnectedProps {
-  isLocalAdmin: boolean
-  admin: boolean
-  dj: boolean
+  showMenu?: boolean
+  onClickMenu?: React.MouseEventHandler<HTMLElement>
+
+  requestApproval?: boolean
+  onApprovalResponse?(approved: boolean): void
+
+  admin?: boolean
+  dj?: boolean
 }
 
 interface IState {
   anchorEl?: HTMLElement
 }
 
-type PrivateProps = IProps & IConnectedProps & IReactReduxProps
-
-class _UserItem extends Component<PrivateProps, IState> {
+export class UserItem extends Component<IProps, IState> {
   state: IState = {}
 
-  private get canShowMenu() {
-    return this.props.isLocalAdmin && this.props.user.id !== localUserId()
-  }
-
   render(): JSX.Element | null {
-    const { user } = this.props
+    const { onApprovalResponse } = this.props
 
     const roleIcon = this.props.admin
       ? { title: 'Admin', icon: 'check-circle' }
@@ -46,28 +42,24 @@ class _UserItem extends Component<PrivateProps, IState> {
 
     let actionBtns: React.ReactNode
 
-    if (user.pending && this.props.isLocalAdmin) {
-      const responseCreator = (allow: boolean) => () => {
-        this.props.dispatch!(server_answerClient(user.id, allow))
-      }
-
+    if (this.props.requestApproval && onApprovalResponse) {
       actionBtns = (
         <>
           <IconButton
             icon="check"
             className={styles.allowBtn}
             title="Allow"
-            onClick={responseCreator(true)}
+            onClick={() => onApprovalResponse(true)}
           />
           <IconButton
             icon="x"
             className={styles.disallowBtn}
             title="Disallow"
-            onClick={responseCreator(false)}
+            onClick={() => onApprovalResponse(false)}
           />
         </>
       )
-    } else if (this.canShowMenu) {
+    } else if (this.props.showMenu) {
       actionBtns = (
         <IconButton
           icon="more-vertical"
@@ -79,10 +71,12 @@ class _UserItem extends Component<PrivateProps, IState> {
 
     return (
       <figure className={styles.container}>
-        {/* <UserAvatar className={styles.avatar} id={this.props.user.id} avatar={user.avatar} /> */}
-        <figcaption className={styles.name} title={user.id}>
-          {user.name}
-        </figcaption>
+        <UserAvatar
+          className={styles.avatar}
+          avatar={this.props.avatar}
+          badge={this.props.avatarBadge}
+        />
+        <figcaption className={styles.name}>{this.props.name}</figcaption>
         {roleIcon && (
           <Tooltip title={roleIcon.title} placement="right">
             <Icon name={roleIcon.icon} className={styles.role} />
@@ -94,10 +88,15 @@ class _UserItem extends Component<PrivateProps, IState> {
   }
 }
 
-export const UserItem = connect<IConnectedProps, {}, IProps, IAppState>((state, props) => {
-  return {
-    isLocalAdmin: isAdmin(state),
-    admin: isAdmin(state, props.user.id),
-    dj: isDJ(state, props.user.id)
+interface IConnectedProps {
+  user?: IUser
+}
+
+export const ConnectedUserItem = connect<{}, {}, IProps & IConnectedProps, IAppState>(
+  (state, props) => {
+    return {
+      admin: isAdmin(state, props.user!.id),
+      dj: isDJ(state, props.user!.id)
+    }
   }
-})(_UserItem)
+)(UserItem)
