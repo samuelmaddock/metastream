@@ -55,18 +55,6 @@ app/node_modules/utp-native/prebuilds/win32-x64/*
 !app/node_modules/utp-native/prebuilds/win32-x64/node-55.node
 !app/node_modules/utp-native/prebuilds/win32-x64/node-67.node
 
-# Checkin node-register-scheme custom builds
-!app/node_modules/node-register-scheme
-app/node_modules/node-register-scheme/*
-!app/node_modules/node-register-scheme/prebuilds
-app/node_modules/node-register-scheme/prebuilds/*
-!app/node_modules/node-register-scheme/prebuilds/darwin-x64
-app/node_modules/node-register-scheme/prebuilds/darwin-x64/*
-!app/node_modules/node-register-scheme/prebuilds/darwin-x64/node-67.node
-!app/node_modules/node-register-scheme/prebuilds/win32-x64
-app/node_modules/node-register-scheme/prebuilds/win32-x64/*
-!app/node_modules/node-register-scheme/prebuilds/win32-x64/node-67.node
-
 # OSX
 .DS_Store
 
