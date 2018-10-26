@@ -2,7 +2,13 @@
   background: var(--app-bg-other);
   height: 100%;
   display: flex;
-  flex-direction: column;
+  flex-flow: column;
+}
+
+.content {
+  height: 100%;
+  display: flex;
+  flex-flow: column wrap;
 }
 
 .section {
