@@ -160,6 +160,7 @@ export default merge.smart(baseConfig, {
       'PRODUCTION': JSON.stringify(false),
       FEATURE_SESSION_BROWSER: JSON.stringify(true),
       FEATURE_DISCORD_RP: JSON.stringify(true),
+      FEATURE_DISCORD_INVITE: JSON.stringify(true),
     }),
 
     new webpack.LoaderOptionsPlugin({

@@ -20,7 +20,7 @@ const middleware: Middleware[] = [
   sessionMiddleware(sessionObservers)
 ]
 
-if (FEATURE_DISCORD_RP) {
+if (FEATURE_DISCORD_INVITE) {
   middleware.push(discordInviteMiddleware())
 }
 
