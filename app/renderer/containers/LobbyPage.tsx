@@ -54,6 +54,9 @@ function mapStateToProps(state: IAppState): IConnectedProps {
 
 type PrivateProps = IProps & IConnectedProps & IReactReduxProps
 
+/**
+ * Component managing lobby connection state.
+ */
 export class _LobbyPage extends Component<PrivateProps, IState> {
   state: IState = {}
 
@@ -130,7 +133,7 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
   private onConnection(): void {
     this.props.dispatch(
       NetActions.connect({
-        server: this.server!,
+        server: this.server,
         host: this.host,
         replicated: AppReplicatedState as ReplicatedState<any>
       })

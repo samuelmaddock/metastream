@@ -2,13 +2,13 @@ import { Middleware } from 'redux'
 import { isType } from 'utils/redux'
 import { isEqual } from 'lodash'
 
-import { NetActions, NetMiddlewareOptions } from '../../network/actions'
 import { initHostSession, setSessionData } from '../actions/session'
 import { IAppState } from '../../reducers/index'
 import { getCurrentMedia } from '../reducers/mediaPlayer.helpers'
 import { ISessionState } from '../reducers/session'
 import { getNumUsers } from '../reducers/users.helpers'
 import { ISettingsState } from '../../reducers/settings'
+import { initLobby, resetLobby } from '../actions/common'
 
 export interface SessionObserver {
   /** Optional setting to watch for changes. */
@@ -24,17 +24,18 @@ export interface SessionObserver {
 export const sessionMiddleware = (observers: SessionObserver[] = []): Middleware<{}, IAppState> => {
   return ({ dispatch, getState }) => {
     let inSession = false
+    let isSessionHost = false
 
-    const init = (options: NetMiddlewareOptions) => {
+    const init = (host: boolean) => {
       inSession = true
-
-      if (options.host) {
+      isSessionHost = host
+      if (host) {
         dispatch(initHostSession() as any)
         notifyObservers()
       }
     }
 
-    const close = () => {
+    const destroy = () => {
       inSession = false
       notifyObservers()
     }
@@ -45,6 +46,8 @@ export const sessionMiddleware = (observers: SessionObserver[] = []): Middleware
     }
 
     const shouldUpdateSession = (state: IAppState, prevState: IAppState) => {
+      if (!isSessionHost) return false
+
       let sessionData
 
       const prevMedia = getCurrentMedia(prevState)
@@ -114,10 +117,10 @@ export const sessionMiddleware = (observers: SessionObserver[] = []): Middleware
     }
 
     return next => action => {
-      if (isType(action, NetActions.connect)) {
-        init(action.payload)
-      } else if (isType(action, NetActions.disconnect)) {
-        close()
+      if (isType(action, initLobby)) {
+        init(action.payload.host)
+      } else if (isType(action, resetLobby)) {
+        destroy()
       }
 
       const prevState = getState()

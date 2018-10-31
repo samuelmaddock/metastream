@@ -70,11 +70,13 @@ export const netSyncMiddleware = (): Middleware => {
     let server: NetServer | null, host: boolean, prefilter: deepDiff.IPrefilter
 
     const init = (options: NetMiddlewareOptions) => {
-      server = options.server
+      server = options.server || null
       host = options.host
 
       prefilter = replicationPrefilter(options.replicated)
       console.log('[Net] Init netSync', options)
+
+      if (!server) return
 
       if (host) {
         server.on('connect', (conn: NetConnection) => {
@@ -83,7 +85,7 @@ export const netSyncMiddleware = (): Middleware => {
             const action = { type: NetActionTypes.FULL_UPDATE, v: COMMIT_NUMBER, state }
             const jsonStr = JSON.stringify(action)
             const buf = new Buffer(SYNC_HEADER + jsonStr)
-            server!.sendTo(conn.id.toString(), buf)
+            if (server) server.sendTo(conn.id.toString(), buf)
           })
         })
       }

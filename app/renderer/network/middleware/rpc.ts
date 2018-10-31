@@ -85,11 +85,13 @@ export const netRpcMiddleware = (): Middleware => {
     const init = (options: NetMiddlewareOptions) => {
       console.log('[RPC] Init middleware', options)
 
-      server = options.server
+      server = options.server || null
       host = options.host
 
-      // Listen for RPCs and dispatch them
-      server.on('data', receive)
+      if (server) {
+        // Listen for RPCs and dispatch them
+        server.on('data', receive)
+      }
     }
 
     const destroy = () => {
@@ -174,8 +176,10 @@ export const netRpcMiddleware = (): Middleware => {
       const result = execRpc(action, client)
 
       if (isRpcThunk(result)) {
-        const context = { client, host, server: server! }
-        return result(dispatch, getState, context)
+        if (server) {
+          const context = { client, host, server }
+          return result(dispatch, getState, context)
+        }
       } else if (typeof result === 'object') {
         dispatch(result as Action)
       } else if (typeof result === 'string') {

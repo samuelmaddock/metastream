@@ -60,11 +60,13 @@ export const usersMiddleware = (): Middleware => {
     }
 
     const init = async (options: NetMiddlewareOptions) => {
-      server = options.server
+      server = options.server || null
       host = options.host
 
       if (host) {
-        server.on('disconnect', onDisconnect)
+        if (server) {
+          server.on('disconnect', onDisconnect)
+        }
       } else {
         dispatch((initialize as any)(server))
       }

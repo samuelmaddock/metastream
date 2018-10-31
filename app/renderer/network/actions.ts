@@ -4,7 +4,7 @@ import { NetServer, NetConnection } from 'renderer/network'
 import { ReplicatedState } from 'renderer/network/types'
 
 export interface NetMiddlewareOptions<T = any> {
-  server: NetServer
+  server?: NetServer
   host: boolean
   replicated: ReplicatedState<T>
 }
