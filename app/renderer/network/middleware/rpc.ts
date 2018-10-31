@@ -176,10 +176,10 @@ export const netRpcMiddleware = (): Middleware => {
       const result = execRpc(action, client)
 
       if (isRpcThunk(result)) {
-        if (server) {
-          const context = { client, host, server }
-          return result(dispatch, getState, context)
-        }
+        // TODO: update IRpcThunkContext to reflect possibly undefined server
+        // when user is in offline session
+        const context = { client, host, server: server! }
+        return result(dispatch, getState, context)
       } else if (typeof result === 'object') {
         dispatch(result as Action)
       } else if (typeof result === 'string') {

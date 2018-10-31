@@ -16,7 +16,6 @@ import {
   lockQueue
 } from 'renderer/lobby/actions/mediaPlayer'
 import { MediaType } from 'renderer/media/types'
-import { NetActions } from 'renderer/network/actions'
 import { ReplicatedState } from '../../network/types'
 import { resetLobby, initLobby } from '../actions/common'
 

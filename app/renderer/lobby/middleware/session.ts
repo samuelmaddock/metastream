@@ -31,7 +31,6 @@ export const sessionMiddleware = (observers: SessionObserver[] = []): Middleware
       isSessionHost = host
       if (host) {
         dispatch(initHostSession() as any)
-        notifyObservers()
       }
     }
 
@@ -121,6 +120,7 @@ export const sessionMiddleware = (observers: SessionObserver[] = []): Middleware
         init(action.payload.host)
       } else if (isType(action, resetLobby)) {
         destroy()
+        return next(action)
       }
 
       const prevState = getState()

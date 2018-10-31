@@ -8,7 +8,7 @@ import {
   setAuthorized,
   setConnectionStatus
 } from '../actions/session'
-import { NetActions } from '../../network/actions'
+import { resetLobby } from '../actions/common'
 
 export const enum ConnectionStatus {
   Connected = 'Connected',
@@ -66,7 +66,7 @@ export const session: Reducer<ISessionState> = (
     return { ...state, connectionStatus: action.payload }
   }
 
-  if (isType(action, NetActions.disconnect)) {
+  if (isType(action, resetLobby)) {
     return initialState
   }
 
