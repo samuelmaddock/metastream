@@ -174,7 +174,7 @@ export const netSyncMiddleware = (): Middleware => {
 
       const jsonStr = JSON.stringify(action)
       const buf = new Buffer(SYNC_HEADER + jsonStr)
-      server!.send(buf)
+      if (server) server.send(buf)
     }
 
     return next => action => {
@@ -186,15 +186,15 @@ export const netSyncMiddleware = (): Middleware => {
         return next(action)
       }
 
+      const prevState = getState()
+      const result = next(action)
+
       if (!host || !server) {
-        return next(action)
+        return result
       }
 
-      const stateA = getState()
-      const result = next(action)
-      const stateB = getState()
-
-      const delta = deepDiff.diff(stateA, stateB, prefilter)
+      const state = getState()
+      const delta = deepDiff.diff(prevState, state, prefilter)
 
       if (delta && delta.length > 0) {
         relay(delta)
