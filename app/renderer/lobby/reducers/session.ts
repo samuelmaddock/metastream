@@ -9,6 +9,7 @@ import {
   setConnectionStatus
 } from '../actions/session'
 import { resetLobby } from '../actions/common'
+import { ReplicatedState } from 'renderer/network/types'
 
 export const enum ConnectionStatus {
   Connected = 'Connected',
@@ -40,6 +41,14 @@ export interface ISessionState {
 
   /** CLIENT: Connection status. */
   connectionStatus?: ConnectionStatus
+}
+
+export const sessionReplicatedState: ReplicatedState<ISessionState> = {
+  id: true,
+  media: true,
+  startTime: true,
+  users: true,
+  secret: true
 }
 
 const initialState: ISessionState = {

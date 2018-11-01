@@ -5,11 +5,12 @@ import { clone } from 'utils/object'
 import { NetServer, NetConnection } from 'renderer/network'
 import { ReplicatedState } from 'renderer/network/types'
 import { NetMiddlewareOptions, NetActions } from 'renderer/network/actions'
-import { isType } from 'utils/redux'
+import { isType, actionCreator } from 'utils/redux'
+import { Diff } from 'renderer/reducers/deepDiff'
+import { IAppState } from 'renderer/reducers'
 
-export const NetReduxActionTypes = {
-  UPDATE: '@@net/UPDATE'
-}
+export const netApplyFullUpdate = actionCreator<Partial<IAppState>>('@@net/APPLY_FULL_UPDATE')
+export const netApplyUpdate = actionCreator<Diff[]>('@@net/APPLY_UPDATE')
 
 const NetActionTypes = {
   FULL_UPDATE: 'FULL_UPDATE',
@@ -103,32 +104,12 @@ export const netSyncMiddleware = (): Middleware => {
         switch (action.type) {
           case NetActionTypes.FULL_UPDATE:
             COMMIT_NUMBER = action.v
-
-            // Merge at second depth of state
-            Object.keys(action.state).forEach(prop => {
-              const prevState = (<any>getState())[prop]
-              const nextState = Object.assign({}, prevState)
-              Object.assign(nextState, action.state[prop])
-              Object.assign(getState(), { [prop]: nextState })
-            })
-
-            // trigger update noop - forces rerender of applied diff
-            dispatch({ type: NetReduxActionTypes.UPDATE })
+            const partialState = action.state as Partial<IAppState>
+            dispatch(netApplyFullUpdate(partialState))
             break
           case NetActionTypes.UPDATE:
-            const diffs = action.d as deepDiff.IDiff[]
-            // apply diff to local state
-            let state = clone(getState())
-            diffs.forEach(diff => {
-              deepDiff.applyChange(state, state, diff)
-            })
-            Object.assign(getState(), state)
-
-            // TODO: Write a redux middleware to apply minimal changes of state tree.
-            // Calling `clone` for each networked state update will be bad prob.
-
-            // trigger update noop - forces rerender of applied diff
-            dispatch({ type: NetReduxActionTypes.UPDATE })
+            const diffs = action.d as Diff[]
+            dispatch(netApplyUpdate(diffs))
             break
         }
       })
