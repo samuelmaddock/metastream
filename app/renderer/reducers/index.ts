@@ -48,7 +48,7 @@ const reducer = (state: IAppState, action: AnyAction): IAppState => {
     const diffs = action.payload
     let newState = state
     for (let i = 0; i < diffs.length; i++) {
-      newState = reduceChange(state, diffs[i])
+      newState = reduceChange(newState, diffs[i])
     }
     return newState
   }
