@@ -62,7 +62,7 @@
 }
 
 .message {
-  --chat-fade-delay: 5s;
+  --chat-fade-delay: 10s;
   width: 100%;
   padding: 2px 8px;
   word-break: break-word;
