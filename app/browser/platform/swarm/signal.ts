@@ -6,13 +6,15 @@ import { SimplePeerData, SignalData } from 'simple-peer'
 import { EncryptedSocket } from 'swarm-peer-server'
 
 /** Relay signal data to renderer process */
-export async function signalRenderer(socket: EncryptedSocket, peerKey: Key): Promise<void> {
+export async function signalRenderer(
+  webContents: Electron.WebContents,
+  socket: EncryptedSocket,
+  peerKey: Key
+): Promise<void> {
   return new Promise<void>((resolve, reject) => {
     const keyStr = peerKey.toString('hex')
 
     // TODO: better way to get the window we want
-    const win = BrowserWindow.getAllWindows()[0]
-    const { webContents } = win
 
     const relayReadSignal = (data: Buffer) => {
       log.debug(`SIGNAL read [${data.length}] ${keyStr}`)
