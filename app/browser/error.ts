@@ -5,7 +5,7 @@ import { PRODUCT_NAME } from 'constants/app'
 
 const isNativeDllError = (err: Error) =>
   os.platform() === 'win32' &&
-  err.message.indexOf('The specified module could not be found') > -1 &&
+  err.message.indexOf('.node') > -1 &&
   err.message.indexOf('dlopen') > -1
 
 process.on('uncaughtException', err => {
