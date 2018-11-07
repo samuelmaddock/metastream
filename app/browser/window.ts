@@ -15,17 +15,16 @@ export const getMainWindow = () => {
 }
 
 export const setupWindow = () => {
-  if (mainWindow) {
-    throw new Error('setupWindow called twice')
-  }
-
-  let win = (mainWindow = new BrowserWindow({
+  let win = new BrowserWindow({
     show: false,
     width: 1280,
     height: 720,
     frame: false,
     titleBarStyle: 'hidden'
-  }))
+  })
+
+  const isMainWindow = !mainWindow
+  if (isMainWindow) mainWindow = win
 
   win.loadURL(`chrome://brave/${__dirname}/app.html`)
 
@@ -43,14 +42,18 @@ export const setupWindow = () => {
   win.on('closed', () => {
     if (win) {
       win.removeAllListeners()
-      mainWindow = null
+      if (isMainWindow) {
+        mainWindow = null
+      }
     }
   })
 
   const menuBuilder = new MenuBuilder(win)
   menuBuilder.buildMenu()
 
-  registerMediaShortcuts()
+  if (isMainWindow) {
+    registerMediaShortcuts()
+  }
 }
 
 /** Relays global shortcuts to renderer windows via IPC */

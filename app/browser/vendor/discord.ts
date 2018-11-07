@@ -1,4 +1,4 @@
-import { ipcMain, app } from 'electron'
+import { ipcMain, app, BrowserWindow } from 'electron'
 import { throttle } from 'lodash'
 import * as DiscordRPC from 'discord-rpc'
 import log from '../log'
@@ -28,10 +28,9 @@ const init = async () => {
     log.info('Discord RPC ready', discordRpc.user)
 
     const send = (eventName: string, ...args: any[]) => {
-      const win = getMainWindow()
-      if (win) {
+      BrowserWindow.getAllWindows().forEach(win => {
         win.webContents.send(eventName, ...args)
-      }
+      })
     }
 
     rpc.subscribe('ACTIVITY_JOIN', ({ secret }: any) => {

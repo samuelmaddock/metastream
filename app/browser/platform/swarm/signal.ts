@@ -14,8 +14,6 @@ export async function signalRenderer(
   return new Promise<void>((resolve, reject) => {
     const keyStr = peerKey.toString('hex')
 
-    // TODO: better way to get the window we want
-
     const relayReadSignal = (data: Buffer) => {
       log.debug(`SIGNAL read [${data.length}] ${keyStr}`)
       const signal = readJSON(data)

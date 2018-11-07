@@ -89,7 +89,12 @@ function main() {
 
   app.on('ready', () => {
     initUpdater()
-    setupWindow()
+
+    const numWindows =
+      process.env.NODE_ENV === 'production' ? 1 : parseInt(process.env.NUM_WINDOWS || '1', 10) || 1
+    for (let i = 0; i < numWindows; i++) {
+      setupWindow()
+    }
   })
 }
 
