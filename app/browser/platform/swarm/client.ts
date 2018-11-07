@@ -32,6 +32,7 @@ export class SwarmClient {
       this.keyPair = await initIdentity(!primaryIdentity)
     } catch (e) {
       log.error('Failed to initialize Swarm identity')
+      log.error(e)
     }
 
     const id = this.keyPair ? this.keyPair.publicKey.toString('hex') : ''
@@ -55,6 +56,11 @@ export class SwarmClient {
   }
 
   createLobby(opts: ILobbyOptions) {
+    if (!this.keyPair) {
+      log(`Attempt to create lobby with no keypair`, opts)
+      return
+    }
+
     this.updateConnectTime()
 
     if (opts.p2p) {

@@ -20,7 +20,7 @@ ipcMain.on('platform-swarm-init', async (event: Electron.Event) => {
   swarmClients.set(event.sender.id, client)
 
   const isMainWindow = event.sender.id === 1
-  const identity = client.initIdentity(isMainWindow)
+  const identity = await client.initIdentity(isMainWindow)
   event.returnValue = identity
 })
 
