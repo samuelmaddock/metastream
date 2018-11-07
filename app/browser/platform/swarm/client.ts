@@ -13,7 +13,7 @@ import { ILobbyOptions } from 'renderer/platform/types'
 import { KeyPair } from './crypto'
 
 export class SwarmClient {
-  private keyPair?: KeyPair
+  keyPair?: KeyPair
 
   private swarmServer: any
   private wsServer: WebSocketServer | null = null
@@ -102,6 +102,7 @@ export class SwarmClient {
       }
 
       this.wsServer = new WebSocketServer({
+        webContents: this.webContents,
         port: WEBSOCKET_PORT_DEFAULT,
         ...this.keyPair!
       })

@@ -1,5 +1,4 @@
 import { EventEmitter } from 'events'
-import { ipcMain, BrowserWindow } from 'electron'
 import * as IPCStream from 'electron-ipc-stream'
 import * as SimpleWebSocketServer from 'simple-websocket/server'
 import * as swarm from 'swarm-peer-server'
@@ -8,18 +7,21 @@ import log from 'browser/log'
 let connId = 0
 
 interface IServerOptions {
+  webContents: Electron.WebContents
   port: number
   publicKey: Buffer
   secretKey: Buffer
 }
 
 export class WebSocketServer {
+  private webContents: Electron.WebContents
   private hostPublicKey: Buffer
   private hostSecretKey: Buffer
   private server: typeof SimpleWebSocketServer | null = null
   private connections: Map<string, WebSocketProxy> = new Map()
 
   constructor(opts: IServerOptions) {
+    this.webContents = opts.webContents
     this.hostPublicKey = opts.publicKey
     this.hostSecretKey = opts.secretKey
 
@@ -48,10 +50,9 @@ export class WebSocketServer {
       log.debug(`Authenticated connection (${addr})`)
       const peerKey = (esocket as any).peerKey as Buffer
       const peerKeyStr = peerKey.toString('hex')
-      const win = BrowserWindow.getAllWindows()[0]
       const id = ++connId
       const streamChannel = `websocket/${peerKeyStr}/${id}`
-      const stream = new IPCStream(streamChannel, win)
+      const stream = new IPCStream(streamChannel, this.webContents)
       ;(esocket as any).destroy(false)
 
       const conn = new WebSocketProxy(socket, stream)
@@ -60,11 +61,11 @@ export class WebSocketServer {
       conn.once('close', () => {
         log.debug(`Conn closed for ${peerKeyStr}`)
         this.connections.delete(peerKeyStr)
-        win.webContents.send(`websocket-peer-close-${peerKeyStr}`)
+        this.webContents.send(`websocket-peer-close-${peerKeyStr}`)
       })
 
       // TODO: send unique connection ID in case same peer connects twice
-      win.webContents.send('websocket-peer-init', {
+      this.webContents.send('websocket-peer-init', {
         streamId: id,
         peerId: peerKeyStr,
         address: addr
@@ -111,35 +112,3 @@ class WebSocketProxy extends EventEmitter {
     this.emit('close')
   }
 }
-
-ipcMain.on(
-  'create-auth-stream',
-  (event: Electron.Event, ipcId: number, hostPublicKeyStr: string) => {
-    log.debug(`create-auth-stream`)
-
-    const streamWin = BrowserWindow.getAllWindows()[0]
-    const streamChannel = `auth/${hostPublicKeyStr}`
-    const stream = new IPCStream(streamChannel, streamWin)
-    stream.destroy = stream.end // HACK for esocket
-
-    const hostPublicKey = Buffer.from(hostPublicKeyStr, 'hex')
-
-    log.debug(`create-auth-stream: connecting to host`)
-
-    // create EncryptedSocket and perform auth
-    const esocket = new swarm.EncryptedSocket(stream, this.hostPublicKey, this.hostSecretKey)
-    esocket.connect(hostPublicKey)
-
-    esocket.once('connection', () => {
-      log.debug('Connected to auth')
-      esocket.destroy()
-      event.sender.send('create-auth-stream-result', ipcId, true)
-    })
-
-    esocket.once('error', err => {
-      log.error(err)
-      esocket.destroy()
-      event.sender.send('create-auth-stream-result', ipcId, false)
-    })
-  }
-)
