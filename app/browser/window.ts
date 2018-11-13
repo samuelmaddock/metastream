@@ -52,7 +52,11 @@ export const setupWindow = () => {
   menuBuilder.buildMenu()
 
   if (isMainWindow) {
-    registerMediaShortcuts()
+    if (win.isFocused()) {
+      registerMediaShortcuts()
+    } else {
+      win.once('focus', () => registerMediaShortcuts())
+    }
   }
 }
 
