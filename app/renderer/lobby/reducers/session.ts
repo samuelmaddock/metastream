@@ -10,6 +10,7 @@ import {
 } from '../actions/session'
 import { resetLobby } from '../actions/common'
 import { ReplicatedState } from 'renderer/network/types'
+import { updateServerClockSkew } from '../actions/mediaPlayer'
 
 export const enum ConnectionStatus {
   Connected = 'Connected',
@@ -41,6 +42,9 @@ export interface ISessionState {
 
   /** CLIENT: Connection status. */
   connectionStatus?: ConnectionStatus
+
+  /** CLIENT: Clock time difference between client and server. */
+  serverClockSkew: number
 }
 
 export const sessionReplicatedState: ReplicatedState<ISessionState> = {
@@ -55,7 +59,8 @@ const initialState: ISessionState = {
   id: '',
   users: 0,
   startTime: new Date().getTime(),
-  secret: ''
+  secret: '',
+  serverClockSkew: 0
 }
 
 export const session: Reducer<ISessionState> = (
@@ -73,6 +78,8 @@ export const session: Reducer<ISessionState> = (
     return { ...state, authorized: action.payload, connectionStatus: ConnectionStatus.Connected }
   } else if (isType(action, setConnectionStatus)) {
     return { ...state, connectionStatus: action.payload }
+  } else if (isType(action, updateServerClockSkew)) {
+    return { ...state, serverClockSkew: action.payload }
   }
 
   if (isType(action, resetLobby)) {
