@@ -101,6 +101,9 @@ $ yarn
 
 ```
 $ yarn dev
+
+# Open multiple instances for local network testing
+$ NUM_WINDOWS=2 yarn dev
 ```
 
 ### Package the app
