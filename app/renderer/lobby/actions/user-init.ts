@@ -26,12 +26,14 @@ import { addChat } from './chat'
 import { actionCreator } from 'utils/redux'
 import { AppThunkAction } from 'types/redux-thunk'
 import { avatarRegistry } from '../../services/avatar'
+import { parseQuery } from 'utils/url'
 
 type ClientInitRequest = {
   name: string
   color: string
   version: string
   avatar?: string
+  secret?: string
 }
 
 const enum ClientInitResponse {
@@ -51,13 +53,17 @@ export const initialize = (server: NetServer): AppThunkAction => {
     const state = getState()
     let response
 
+    const { location } = state.router
+    const secret = location ? parseQuery(location.search).secret : undefined
+
     try {
       response = await dispatch(
         server_initClient({
           version: VERSION,
           name: getLocalUsername(state),
           color: getLocalColor(state),
-          avatar: state.settings.avatar
+          avatar: state.settings.avatar,
+          secret
         })
       )
     } catch (e) {
@@ -98,6 +104,11 @@ const validateClientInfo = (info: ClientInitRequest, id: string, state: IAppStat
 
   if (info.avatar && typeof info.avatar !== 'string') {
     console.debug(`Client ${id} kicked for invalid avatar (${info.avatar})`)
+    return NetworkDisconnectReason.InvalidClientInfo
+  }
+
+  if (info.secret && typeof info.secret !== 'string') {
+    console.debug(`Client ${id} kicked for invalid secret (${info.secret})`)
     return NetworkDisconnectReason.InvalidClientInfo
   }
 
@@ -149,7 +160,12 @@ const initClient = (info: ClientInitRequest): RpcThunk<ClientInitResponse | void
   }
 
   const sessionMode = getLocalSessionMode(state)
-  const shouldAwaitAuthorization = sessionMode === SessionMode.Request
+
+  // Discord invites should match session secret
+  const secretMatch = info.secret === state.session.secret
+
+  // Determine whether user needs explicit authorization from host to join
+  const shouldAwaitAuthorization = sessionMode === SessionMode.Request ? secretMatch : false
 
   let name = info.name
   const isNameTaken = !!findUserByName(state, name)
