@@ -137,13 +137,13 @@ img {
   -webkit-user-drag: none;
 }
 
-b {
+b,
+strong {
   font-weight: bold;
 }
 
 em {
-  font-weight: bold;
-  color: var(--color-highlight);
+  font-style: italic;
 }
 
 .link,

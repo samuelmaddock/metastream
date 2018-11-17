@@ -12,6 +12,7 @@ import { WEBSOCKET_PORT_DEFAULT } from 'constants/network'
 import { Icon } from '../../Icon'
 import Tooltip from 'material-ui/Tooltip'
 import { IReactReduxProps } from 'types/redux-thunk'
+import { assetUrl } from 'utils/appUrl'
 
 interface IProps {
   className?: string
@@ -36,37 +37,86 @@ type PrivateProps = IProps & IConnectedProps & IReactReduxProps
 
 class Invite extends Component<PrivateProps> {
   render(): JSX.Element {
-    const msg = this.props.isHost
-      ? 'Invite friends using your friend code below.'
+    return (
+      <div className={cx(styles.container, this.props.className)}>
+        {FEATURE_DISCORD_INVITE && this.renderDiscord()}
+        {this.renderFriendCode()}
+        {this.props.isHost && this.renderDirectIP()}
+      </div>
+    )
+  }
+
+  private renderFriendCode() {
+    const message = this.props.isHost
+      ? 'Share your friend code below to invite friends.'
       : `Send ${this.props.hostName}’s friend code to invite friends.`
 
     return (
-      <div className={cx(styles.container, this.props.className)}>
-        <p>{msg}</p>
+      <section className={styles.method}>
+        <h2 className={styles.header}>Friend Code</h2>
+        <p>{message}</p>
         <ClipboardTextInput
           className={styles.idContainer}
           inputClassName={styles.idText}
           defaultValue={this.props.hostId}
           disabled
         />
-        {this.props.isHost && this.renderDirectIP()}
-      </div>
+      </section>
+    )
+  }
+
+  private renderDiscord() {
+    const href =
+      'https://support.discordapp.com/hc/en-us/articles/115001557452-Game-Invites-and-Detailed-Status-Rich-Presence-'
+
+    const message = 1 ? (
+      <>
+        <ExternalLink href={href} className="link">
+          Send Discord invites
+        </ExternalLink>
+        &nbsp;to share your friend code automatically.
+      </>
+    ) : (
+      `Launch Discord and restart Metastream to use Discord invites.`
+    )
+
+    return (
+      <section className={styles.method}>
+        <h2 className={styles.header}>
+          <ExternalLink href="https://discordapp.com/">
+            <img src={assetUrl('icons/social/discord-color.svg')} className={styles.discordLogo} />
+          </ExternalLink>
+        </h2>
+        <p>{message}</p>
+      </section>
     )
   }
 
   private renderDirectIP() {
-    const href = 'https://portforward.com/'
     return (
-      <p className={styles.directIp}>
-        {`Open port TCP ${WEBSOCKET_PORT_DEFAULT} to allow direct connections.`}
-        <ExternalLink href={href}>
-          <Tooltip title={href}>
-            <Icon name="info" />
-          </Tooltip>
-        </ExternalLink>
-      </p>
+      <section className={styles.method}>
+        <h2 className={styles.header}>Direct IP</h2>
+        <p>
+          Share&nbsp;
+          <ExternalLink href="https://www.google.com/search?q=ip" className="link">
+            your public IP address
+          </ExternalLink>
+          &nbsp;to allow friends to connect directly.
+          <br />
+          <em>
+            Requires&nbsp;
+            <ExternalLink
+              href="https://www.wikihow.com/Set-Up-Port-Forwarding-on-a-Router"
+              className="link"
+            >
+              setting up port forwarding
+            </ExternalLink>
+            &nbsp;of <strong>TCP {WEBSOCKET_PORT_DEFAULT}</strong> to accept direct connections.
+          </em>
+        </p>
+      </section>
     )
   }
 }
 
-export default connect(mapStateToProps)(Invite) as React.ComponentClass<IProps>
+export default connect(mapStateToProps)(Invite)
