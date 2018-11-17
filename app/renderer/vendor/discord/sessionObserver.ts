@@ -23,7 +23,7 @@ class DiscordSessionObserver implements SessionObserver {
       const nextPowerOfTwo = Math.pow(2, Math.ceil(Math.log(partySize) / Math.log(2)))
       const partyMax = Math.max(4, nextPowerOfTwo)
 
-      const startTimestamp = Math.floor((state.startTime || Date.now()) / 1000)
+      const startTimestamp = media ? Math.floor((state.startTime || Date.now()) / 1000) : undefined
 
       activity = {
         details: media ? media.title : 'Nothing playing',
