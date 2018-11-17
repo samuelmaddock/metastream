@@ -2,6 +2,7 @@ import { SessionObserver } from 'renderer/lobby/middleware/session'
 import { ISessionState } from 'renderer/lobby/reducers/session'
 import { ISettingsState } from '../../reducers/settings'
 import { encodeDiscordSecret } from './secret'
+import { PlaybackState } from 'renderer/lobby/reducers/mediaPlayer'
 const { ipcRenderer } = chrome
 
 class DiscordSessionObserver implements SessionObserver {
@@ -15,7 +16,7 @@ class DiscordSessionObserver implements SessionObserver {
     let activity
 
     if (state) {
-      const { media, users } = state
+      const { media, users, playback } = state
 
       const partySize = Math.max(1, users)
 
@@ -23,11 +24,19 @@ class DiscordSessionObserver implements SessionObserver {
       const nextPowerOfTwo = Math.pow(2, Math.ceil(Math.log(partySize) / Math.log(2)))
       const partyMax = Math.max(4, nextPowerOfTwo)
 
-      const startTimestamp = media ? Math.floor((state.startTime || Date.now()) / 1000) : undefined
+      let rpState = 'In Session'
+      if (playback === PlaybackState.Paused) {
+        rpState += ' - Paused'
+      }
+
+      const startTimestamp =
+        media && playback === PlaybackState.Playing
+          ? Math.floor((state.startTime || Date.now()) / 1000)
+          : undefined
 
       activity = {
         details: media ? media.title : 'Nothing playing',
-        state: 'In Session',
+        state: rpState,
         startTimestamp,
         largeImageKey: 'default',
         partySize,

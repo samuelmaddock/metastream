@@ -9,6 +9,7 @@ import { ISessionState } from '../reducers/session'
 import { getNumUsers } from '../reducers/users.helpers'
 import { ISettingsState } from '../../reducers/settings'
 import { initLobby, resetLobby } from '../actions/common'
+import { PlaybackState } from '../reducers/mediaPlayer'
 
 export interface SessionObserver {
   /** Optional setting to watch for changes. */
@@ -51,9 +52,14 @@ export const sessionMiddleware = (observers: SessionObserver[] = []): Middleware
 
       const prevMedia = getCurrentMedia(prevState)
       const media = getCurrentMedia(state)
+      const { playback, startTime } = state.mediaPlayer
 
       // Update session media state
-      if (media !== prevMedia || state.mediaPlayer.startTime !== prevState.mediaPlayer.startTime) {
+      if (
+        media !== prevMedia ||
+        startTime !== prevState.mediaPlayer.startTime ||
+        playback !== prevState.mediaPlayer.playback
+      ) {
         sessionData = {
           ...(sessionData || {}),
           media: media && {
@@ -61,7 +67,8 @@ export const sessionMiddleware = (observers: SessionObserver[] = []): Middleware
             title: media.title,
             thumbnail: media.imageUrl
           },
-          startTime: state.mediaPlayer.startTime
+          playback,
+          startTime
         }
       }
 

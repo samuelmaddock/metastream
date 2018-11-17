@@ -11,6 +11,7 @@ import {
 import { resetLobby } from '../actions/common'
 import { ReplicatedState } from 'renderer/network/types'
 import { updateServerClockSkew } from '../actions/mediaPlayer'
+import { PlaybackState } from './mediaPlayer'
 
 export const enum ConnectionStatus {
   Connected = 'Connected',
@@ -24,6 +25,7 @@ export interface ISessionState {
     title: string
     thumbnail?: string
   }
+  playback: PlaybackState
   startTime?: number
   users: number
   maxUsers?: number
@@ -58,6 +60,7 @@ export const sessionReplicatedState: ReplicatedState<ISessionState> = {
 const initialState: ISessionState = {
   id: '',
   users: 0,
+  playback: PlaybackState.Idle,
   startTime: new Date().getTime(),
   secret: '',
   serverClockSkew: 0
