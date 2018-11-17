@@ -161,11 +161,11 @@ const initClient = (info: ClientInitRequest): RpcThunk<ClientInitResponse | void
 
   const sessionMode = getLocalSessionMode(state)
 
-  // Discord invites should match session secret
-  const secretMatch = info.secret === state.session.secret
+  // Discord invites send session secret
+  const secretMismatch = info.secret !== state.session.secret
 
   // Determine whether user needs explicit authorization from host to join
-  const shouldAwaitAuthorization = sessionMode === SessionMode.Request ? secretMatch : false
+  const shouldAwaitAuthorization = sessionMode === SessionMode.Request ? secretMismatch : false
 
   let name = info.name
   const isNameTaken = !!findUserByName(state, name)
