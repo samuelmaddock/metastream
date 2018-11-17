@@ -9,10 +9,10 @@ import { getHostId, isHost, getHost } from 'renderer/lobby/reducers/users.helper
 
 import { ExternalLink } from 'renderer/components/common/link'
 import { WEBSOCKET_PORT_DEFAULT } from 'constants/network'
-import { Icon } from '../../Icon'
-import Tooltip from 'material-ui/Tooltip'
 import { IReactReduxProps } from 'types/redux-thunk'
 import { assetUrl } from 'utils/appUrl'
+import { isDiscordAvailable } from 'renderer/vendor/discord'
+import { PRODUCT_NAME } from 'constants/app'
 
 interface IProps {
   className?: string
@@ -23,13 +23,15 @@ interface IConnectedProps {
   isHost: boolean
   hostId: string
   hostName: string
+  discordPresenceEnabled: boolean
 }
 
 const mapStateToProps = (state: IAppState): IConnectedProps => {
   return {
     isHost: isHost(state),
     hostId: getHostId(state),
-    hostName: getHost(state).name
+    hostName: getHost(state).name,
+    discordPresenceEnabled: state.settings.discordPresence
   }
 }
 
@@ -66,19 +68,29 @@ class Invite extends Component<PrivateProps> {
   }
 
   private renderDiscord() {
-    const href =
-      'https://support.discordapp.com/hc/en-us/articles/115001557452-Game-Invites-and-Detailed-Status-Rich-Presence-'
+    let message
 
-    const message = 1 ? (
-      <>
-        <ExternalLink href={href} className="link">
-          Send Discord invites
-        </ExternalLink>
-        &nbsp;to share your friend code automatically.
-      </>
-    ) : (
-      `Launch Discord and restart Metastream to use Discord invites.`
-    )
+    if (this.props.discordPresenceEnabled) {
+      const href =
+        'https://support.discordapp.com/hc/en-us/articles/115001557452-Game-Invites-and-Detailed-Status-Rich-Presence-'
+
+      message = isDiscordAvailable() ? (
+        <>
+          <ExternalLink href={href} className="link">
+            Send Discord invites
+          </ExternalLink>
+          &nbsp;to share your friend code automatically.
+        </>
+      ) : (
+        `Launch Discord and restart ${PRODUCT_NAME} to use Discord invites.`
+      )
+    } else {
+      message = (
+        <>
+          Enable <em>Discord Rich Presence</em> from the settings menu to allow Discord invites.
+        </>
+      )
+    }
 
     return (
       <section className={styles.method}>
