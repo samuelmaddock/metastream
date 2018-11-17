@@ -38,6 +38,10 @@ const mapStateToProps = (state: IAppState): IConnectedProps => {
 type PrivateProps = IProps & IConnectedProps & IReactReduxProps
 
 class Invite extends Component<PrivateProps> {
+  private get friendCodeLabel() {
+    return this.props.isHost ? 'your friend code' : `${this.props.hostName}’s friend code`
+  }
+
   render(): JSX.Element {
     return (
       <div className={cx(styles.container, this.props.className)}>
@@ -49,9 +53,7 @@ class Invite extends Component<PrivateProps> {
   }
 
   private renderFriendCode() {
-    const message = this.props.isHost
-      ? 'Share your friend code below to invite friends.'
-      : `Send ${this.props.hostName}’s friend code to invite friends.`
+    const message = `Share ${this.friendCodeLabel} below to invite friends.`
 
     return (
       <section className={styles.method}>
@@ -79,7 +81,7 @@ class Invite extends Component<PrivateProps> {
           <ExternalLink href={href} className="link">
             Send Discord invites
           </ExternalLink>
-          &nbsp;to share your friend code automatically.
+          &nbsp;to share {this.friendCodeLabel} automatically.
         </>
       ) : (
         `Launch Discord and restart ${PRODUCT_NAME} to use Discord invites.`
