@@ -18,10 +18,10 @@ class DiscordSessionObserver implements SessionObserver {
     if (state) {
       const { media, users, playback } = state
 
-      const partySize = Math.max(1, users)
+      const partySize = Math.max(1, users) || 1
 
       // Temporary max party until Metastream implements a max
-      const nextPowerOfTwo = Math.pow(2, Math.ceil(Math.log(partySize) / Math.log(2)))
+      const nextPowerOfTwo = Math.pow(2, Math.ceil(Math.log(partySize + 1) / Math.log(2)))
       const partyMax = Math.max(4, nextPowerOfTwo)
 
       let rpState = 'In Session'
