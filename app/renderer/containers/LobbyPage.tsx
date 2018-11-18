@@ -40,6 +40,7 @@ interface IConnectedProps {
 }
 
 interface IState {
+  connected: boolean
   disconnectReason?: NetworkDisconnectReason
 }
 
@@ -58,10 +59,9 @@ type PrivateProps = IProps & IConnectedProps & IReactReduxProps
  * Component managing lobby connection state.
  */
 export class _LobbyPage extends Component<PrivateProps, IState> {
-  state: IState = {}
+  state: IState = { connected: false }
 
   private mounted: boolean = false
-  private connected: boolean = false
   private server?: NetServer
   private host: boolean
 
@@ -77,9 +77,7 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
 
   constructor(props: PrivateProps) {
     super(props)
-
-    const lobbyId = props.match.params.lobbyId
-    this.host = lobbyId === 'create'
+    this.host = props.match.params.lobbyId === 'create'
   }
 
   private async setupLobby(): Promise<void> {
@@ -107,7 +105,7 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
   }
 
   private closeLobby() {
-    this.connected = false
+    this.setState({ connected: false })
 
     if (this.server) {
       this.server.removeListener('close', this.disconnect)
@@ -139,8 +137,7 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
       })
     )
 
-    this.connected = true
-    this.forceUpdate()
+    this.setState({ connected: true })
   }
 
   private onConnectionFailed(): void {
@@ -151,7 +148,7 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
     reason: NetworkDisconnectReason = NetworkDisconnectReason.HostDisconnect,
     immediate?: boolean
   ) => {
-    this.connected = false
+    this.setState({ connected: false })
 
     if (immediate || this.host) {
       this.props.dispatch(push('/'))
@@ -181,12 +178,22 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
     this.disconnect(reason, true)
   }
 
-  componentWillMount(): void {
+  private onLoadScreen() {
+    this.host = this.props.match.params.lobbyId === 'create'
     this.props.dispatch(initLobby({ host: this.host }))
 
     if (!this.host || this.supportsNetworking) {
       this.setupLobby()
     }
+  }
+
+  private onLeaveScreen() {
+    this.closeLobby()
+    this.props.dispatch(resetLobby({ host: this.host }))
+  }
+
+  componentWillMount(): void {
+    this.onLoadScreen()
   }
 
   componentDidMount() {
@@ -196,21 +203,25 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
 
   componentWillUnmount(): void {
     window.removeEventListener('beforeunload', this.beforeUnload, false)
-    this.closeLobby()
     this.mounted = false
-    this.props.dispatch(resetLobby({ host: this.host }))
+    this.onLeaveScreen()
   }
 
   componentDidUpdate(prevProps: PrivateProps) {
-    if (this.props.sessionMode !== prevProps.sessionMode) {
+    const lobbyId = this.props.match.params.lobbyId
+    if (lobbyId !== prevProps.match.params.lobbyId) {
+      // Accepted Discord invites can join a session while currently hosting a session
+      this.onLeaveScreen()
+      this.onLoadScreen()
+    } else if (this.props.sessionMode !== prevProps.sessionMode) {
       this.onSessionModeChange()
     }
   }
 
   private onSessionModeChange() {
-    if (this.supportsNetworking && !this.connected) {
+    if (this.supportsNetworking && !this.state.connected) {
       this.setupLobby()
-    } else if (!this.supportsNetworking && this.connected) {
+    } else if (!this.supportsNetworking && this.state.connected) {
       this.closeLobby()
     }
   }
@@ -224,7 +235,7 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
       return <Disconnect reason={this.state.disconnectReason} />
     }
 
-    if (!this.host && !(this.connected && this.props.clientAuthorized)) {
+    if (!this.host && !(this.state.connected && this.props.clientAuthorized)) {
       const status =
         this.props.connectionStatus === ConnectionStatus.Pending ? t('waitingForHost') : undefined
       return <Connect onCancel={this.disconnectImmediate} status={status} />
