@@ -5,6 +5,10 @@ import { MenuButton } from 'renderer/components/menu/MenuButton'
 import { TextInput, InputGroup } from './common/input'
 import { MenuHeader } from './menu/MenuHeader'
 import { t } from '../../locale/index'
+import { PRODUCT_NAME } from 'constants/app'
+import { assetUrl } from 'utils/appUrl'
+import { ExternalLink } from './common/link'
+import { DISCORD_INVITE_URL } from 'constants/social'
 
 interface IProps {
   connect: (sessionId: string) => void
@@ -16,8 +20,8 @@ export class SessionJoin extends Component<IProps> {
   render(): JSX.Element | null {
     return (
       <LayoutMain className={styles.container}>
+        <MenuHeader text={t('joinSession')} />
         <section>
-          <MenuHeader text={t('joinSession')} />
           <form onSubmit={e => e.preventDefault()}>
             <p>{t('enterJoinDest')}</p>
             <InputGroup>
@@ -48,6 +52,19 @@ export class SessionJoin extends Component<IProps> {
               </MenuButton>
             </InputGroup>
           </form>
+        </section>
+        <section className={styles.discovery}>
+          <h2 className={styles.header}>Find Sessions</h2>
+          <p>
+            Join the <strong>#sessions</strong> channel on the {PRODUCT_NAME} Discord community to
+            find other users’ sessions. Click the Discord logo below to join.
+            <ExternalLink href={DISCORD_INVITE_URL}>
+              <img
+                src={assetUrl('icons/social/discord-color.svg')}
+                className={styles.discordLogo}
+              />
+            </ExternalLink>
+          </p>
         </section>
       </LayoutMain>
     )

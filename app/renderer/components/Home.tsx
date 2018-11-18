@@ -13,6 +13,7 @@ import { t } from 'locale'
 import Tooltip from 'material-ui/Tooltip'
 import { assetUrl } from 'utils/appUrl'
 import { MenuTabs } from './menu/MenuTabs'
+import { DISCORD_INVITE_URL } from 'constants/social'
 
 const SocialLink = (props: { href: string; title: string; image?: string; icon?: string }) => (
   <ExternalLink href={props.href} className={styles.socialLink}>
@@ -106,7 +107,7 @@ export default class Home extends Component<IProps> {
             />
 
             <SocialLink
-              href="https://discord.gg/nfwPRb9"
+              href={DISCORD_INVITE_URL}
               image="./assets/icons/social/discord-color.svg"
               title="Join Discord community"
             />

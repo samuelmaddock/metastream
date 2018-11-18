@@ -31,3 +31,20 @@
   max-width: 300px;
   border-color: rgba(255, 255, 255, 0.3);
 }
+
+.discovery {
+  margin-top: 2rem;
+  max-width: 600px;
+}
+
+.header {
+  composes: h2 from 'styles/typography.css';
+  margin-bottom: 1rem;
+}
+
+.discovery img {
+  display: block;
+  margin-top: 1rem;
+  filter: invert(1);
+  height: 2rem;
+}
