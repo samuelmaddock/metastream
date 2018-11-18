@@ -52,6 +52,7 @@ export interface ISessionState {
 export const sessionReplicatedState: ReplicatedState<ISessionState> = {
   id: true,
   media: true,
+  playback: true,
   startTime: true,
   users: true,
   secret: true
