@@ -16,6 +16,7 @@ import { IReactReduxProps } from 'types/redux-thunk'
 import { server_answerClient } from '../../lobby/actions/user-init'
 import { localUserId } from '../../network/index'
 import { assetUrl } from 'utils/appUrl'
+import { SessionMode } from 'renderer/reducers/settings'
 
 interface IProps {
   className?: string
@@ -28,6 +29,7 @@ interface IConnectedProps {
   users: IUsersState
   isHost: boolean
   isAdmin: boolean
+  sessionMode: SessionMode
 }
 
 interface IState {
@@ -62,8 +64,8 @@ class _UserList extends Component<Props> {
   }
 
   updateUsers(userState: IUsersState) {
-    const users = Object.values(userState.map).filter(
-      user => (user ? !user.pending || this.props.isHost : false)
+    const users = Object.values(userState.map).filter(user =>
+      user ? !user.pending || this.props.isHost : false
     )
     users.sort((a, b) => {
       if (!a || !b) return 0
@@ -138,9 +140,11 @@ class _UserList extends Component<Props> {
   private renderActions() {
     return (
       <>
-        <HighlightButton icon="mail" highlight={this.numUsers < 2} onClick={this.props.onInvite}>
-          {t('invite')}
-        </HighlightButton>
+        {this.props.sessionMode !== SessionMode.Offline && (
+          <HighlightButton icon="mail" highlight={this.numUsers < 2} onClick={this.props.onInvite}>
+            {t('invite')}
+          </HighlightButton>
+        )}
         {this.props.isHost && (
           <HighlightButton icon="settings" onClick={this.props.openSessionSettings} />
         )}
@@ -191,7 +195,8 @@ export const UserList = connect(
       maxUsers: getMaxUsers(state),
       users: state.users,
       isAdmin: isAdmin(state),
-      isHost: isHost(state)
+      isHost: isHost(state),
+      sessionMode: state.settings.sessionMode
     }
   }
 )(_UserList) as React.ComponentClass<IProps>
