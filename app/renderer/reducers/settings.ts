@@ -14,9 +14,14 @@ import { stripEmoji } from 'utils/string'
 import { avatarRegistry } from '../services/avatar'
 
 export const enum SessionMode {
-  Public,
-  Private,
-  Request
+  /** Open to connections. */
+  Public = 0,
+
+  /** Not listening for connections. */
+  Offline = 1,
+
+  /** Permission to join is requested upon connection. */
+  Private = 2
 }
 
 export interface ISettingsState {
@@ -36,7 +41,7 @@ const initialState: ISettingsState = {
   volume: 0.75,
   allowTracking: false,
   developer: process.env.NODE_ENV === 'development',
-  sessionMode: SessionMode.Request,
+  sessionMode: SessionMode.Private,
   discordPresence: true
 }
 

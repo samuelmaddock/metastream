@@ -75,14 +75,14 @@ class SessionSettings extends Component<PrivateProps, IState> {
         onClick: (mode: SessionMode) => dispatch(setSetting('sessionMode', mode))
       },
       {
-        mode: SessionMode.Request,
+        mode: SessionMode.Private,
         label: 'Private',
         desc: 'Permission to join must be granted explicitly.',
         icon: 'user-check',
         onClick: (mode: SessionMode) => dispatch(setSetting('sessionMode', mode))
       },
       {
-        mode: SessionMode.Private,
+        mode: SessionMode.Offline,
         label: 'Offline',
         desc: 'No one is allowed to join.',
         icon: 'user',

@@ -66,7 +66,7 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
   private host: boolean
 
   private get supportsNetworking() {
-    return this.props.sessionMode !== SessionMode.Private
+    return this.props.sessionMode !== SessionMode.Offline
   }
 
   private get lobbyId(): string | undefined {

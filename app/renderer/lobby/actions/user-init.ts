@@ -165,7 +165,7 @@ const initClient = (info: ClientInitRequest): RpcThunk<ClientInitResponse | void
   const secretMismatch = info.secret !== state.session.secret
 
   // Determine whether user needs explicit authorization from host to join
-  const shouldAwaitAuthorization = sessionMode === SessionMode.Request ? secretMismatch : false
+  const shouldAwaitAuthorization = sessionMode === SessionMode.Private ? secretMismatch : false
 
   let name = info.name
   const isNameTaken = !!findUserByName(state, name)
