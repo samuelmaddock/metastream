@@ -29,7 +29,7 @@ export class Disconnect extends Component<IProps> {
           <span>
             {msg}
 
-            {/* Temporary message for linking to guide until l10n supports links. */}
+            {/* TODO: l10n with link */}
             {reason === NetworkDisconnectReason.Timeout && (
               <>
                 . See <ExternalLink href="https://github.com/samuelmaddock/metastream/wiki/Network-Troubleshooting">Network Troubleshooting guide</ExternalLink> for help.

@@ -39,6 +39,7 @@ type PrivateProps = IProps & IConnectedProps & IReactReduxProps
 
 class Invite extends Component<PrivateProps> {
   private get friendCodeLabel() {
+    // TODO: l10n
     return this.props.isHost ? 'your friend code' : `${this.props.hostName}’s friend code`
   }
 
@@ -53,6 +54,7 @@ class Invite extends Component<PrivateProps> {
   }
 
   private renderFriendCode() {
+    // TODO: l10n
     const message = `Share ${this.friendCodeLabel} below to invite friends.`
 
     return (
@@ -69,6 +71,7 @@ class Invite extends Component<PrivateProps> {
     )
   }
 
+  // TODO: l10n
   private renderDiscord() {
     let message
 
@@ -106,6 +109,7 @@ class Invite extends Component<PrivateProps> {
     )
   }
 
+  // TODO: l10n
   private renderDirectIP() {
     return (
       <section className={styles.method}>

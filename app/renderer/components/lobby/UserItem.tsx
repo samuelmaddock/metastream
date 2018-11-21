@@ -8,6 +8,7 @@ import { connect } from 'react-redux'
 import { IAppState } from '../../reducers/index'
 import { isAdmin, isDJ } from '../../lobby/reducers/users.helpers'
 import { UserAvatar } from './UserAvatar'
+import { t } from 'locale'
 
 interface IProps {
   name: string
@@ -35,10 +36,10 @@ export class UserItem extends Component<IProps, IState> {
     const { onApprovalResponse } = this.props
 
     const roleIcon = this.props.admin
-      ? { title: 'Admin', icon: 'check-circle' }
+      ? { title: t('admin'), icon: 'check-circle' }
       : this.props.dj
-        ? { title: 'DJ', icon: 'headphones' }
-        : null
+      ? { title: t('dj'), icon: 'headphones' }
+      : null
 
     let actionBtns: React.ReactNode
 
@@ -48,13 +49,13 @@ export class UserItem extends Component<IProps, IState> {
           <IconButton
             icon="check"
             className={styles.allowBtn}
-            title="Allow"
+            title={t('allow')}
             onClick={() => onApprovalResponse(true)}
           />
           <IconButton
             icon="x"
             className={styles.disallowBtn}
-            title="Disallow"
+            title={t('disallow')}
             onClick={() => onApprovalResponse(false)}
           />
         </>

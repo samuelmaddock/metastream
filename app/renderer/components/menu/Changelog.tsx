@@ -5,6 +5,7 @@ import * as marked from 'marked'
 import styles from './Changelog.css'
 import { ExternalLink } from '../common/link'
 import { Fetch } from '../common/Fetch'
+import { t } from 'locale'
 
 export class Changelog extends Component {
   render() {
@@ -20,7 +21,7 @@ export class Changelog extends Component {
               <ExternalLink
                 href={`https://github.com/samuelmaddock/metastream/releases/tag/v${VERSION}`}
               >
-                View on GitHub
+                {t('viewOnGitHub')}
               </ExternalLink>
             </p>
             {data !== null &&

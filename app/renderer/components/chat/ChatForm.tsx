@@ -50,6 +50,7 @@ export class ChatForm extends PureComponent<IProps, IState> {
   }
 
   render(): JSX.Element | null {
+    // TODO: l10n
     return (
       <div className={styles.form}>
         <input
@@ -66,12 +67,11 @@ export class ChatForm extends PureComponent<IProps, IState> {
           onFocus={this.props.onFocus}
           onBlur={this.onBlur}
         />
-        {this.props.showHint &&
-          !this.state.hasOpened && (
-            <div className={styles.hint}>
-              Press <Key /> to reveal chat.
-            </div>
-          )}
+        {this.props.showHint && !this.state.hasOpened && (
+          <div className={styles.hint}>
+            Press <Key /> to reveal chat.
+          </div>
+        )}
       </div>
     )
   }

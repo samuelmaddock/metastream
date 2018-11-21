@@ -134,7 +134,7 @@ class _PlaybackControls extends Component<PrivateProps> {
       </Button>
     )
 
-    const permTitle = 'Requires DJ permissions'
+    const permTitle = t('requiresDJPermissions')
 
     const playPauseBtn = (
       <Button
@@ -189,10 +189,9 @@ class _PlaybackControls extends Component<PrivateProps> {
       />
     )
 
-    const infoBtn = media &&
-      media.description && (
-        <Button icon="info" title={t('info')} onClick={() => this.props.showInfo()} />
-      )
+    const infoBtn = media && media.description && (
+      <Button icon="info" title={t('info')} onClick={() => this.props.showInfo()} />
+    )
 
     return (
       <div className={cx(this.props.className, styles.container)}>

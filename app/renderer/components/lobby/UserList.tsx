@@ -81,7 +81,7 @@ class _UserList extends Component<Props> {
   render(): JSX.Element | null {
     return (
       <ListOverlay
-        ref={e => (this.listOverlay = e)}
+        ref={(e: any) => (this.listOverlay = e)}
         className={this.props.className}
         title={t('users')}
         tagline={this.userSlots}
@@ -157,13 +157,13 @@ class _UserList extends Component<Props> {
 
     let items = [
       {
-        label: 'Toggle DJ',
+        label: t('toggleDJ'),
         onClick() {
           dispatch(server_toggleUserRole(user.id, UserRole.DJ))
         }
       },
       {
-        label: 'Kick',
+        label: t('kick'),
         onClick() {
           dispatch(server_kickUser(user.id))
         }

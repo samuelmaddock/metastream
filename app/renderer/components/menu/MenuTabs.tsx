@@ -50,6 +50,7 @@ export class MenuTabs extends Component<IProps, IState> {
 }
 
 const WelcomeMessage: React.SFC = () => (
+  // TODO: l10n?
   <>
     <p>Hi, thanks for trying out Metastream!</p>
     <p>
