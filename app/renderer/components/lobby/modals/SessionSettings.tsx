@@ -69,22 +69,22 @@ class SessionSettings extends Component<PrivateProps, IState> {
     const modes = [
       {
         mode: SessionMode.Public,
-        label: 'Public',
-        desc: 'Anyone is allowed to join.',
+        label: t('public'),
+        desc: t('sessionModePublicDescription'),
         icon: 'users',
         onClick: (mode: SessionMode) => dispatch(setSetting('sessionMode', mode))
       },
       {
         mode: SessionMode.Private,
-        label: 'Private',
-        desc: 'Permission to join must be granted explicitly.',
+        label: t('private'),
+        desc: t('sessionModePrivateDescription'),
         icon: 'user-check',
         onClick: (mode: SessionMode) => dispatch(setSetting('sessionMode', mode))
       },
       {
         mode: SessionMode.Offline,
-        label: 'Offline',
-        desc: 'No one is allowed to join.',
+        label: t('offline'),
+        desc: t('sessionModeOfflineDescription'),
         icon: 'user',
         onClick: (mode: SessionMode) => {
           if (this.props.numUsers > 1) {
