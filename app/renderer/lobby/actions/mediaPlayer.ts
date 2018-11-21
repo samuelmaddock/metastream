@@ -127,6 +127,7 @@ const announceMediaChange = (mediaId: string): RpcThunk<void> => (dispatch, getS
   const media = getMediaById(getState(), mediaId)
   if (!media) return
 
+  // TODO: l10n
   const content = `Now playing “${media.title}” requested by ${media.ownerName}`
   dispatch(addChat({ content, timestamp: Date.now() }))
 }
@@ -163,6 +164,7 @@ export const sendMediaRequest = (url: string, source: string): AppThunkAction =>
 
     const mediaId = await requestPromise
 
+    // TODO: l10n
     if (mediaId) {
       state = getState()
       const media = getMediaById(state, mediaId)

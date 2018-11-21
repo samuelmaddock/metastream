@@ -23,14 +23,14 @@ const userJoined = (userId: string): RpcThunk<void> => (dispatch, getState, cont
   }
 
   const username = getUserName(getState(), userId)
-  const content = `${username} has joined`
+  const content = `${username} has joined` // TODO: l10n
   dispatch(addChat({ content, timestamp: Date.now() }))
 }
 export const multi_userJoined = rpc(RpcRealm.Multicast, userJoined)
 
 const userLeft = (userId: string): RpcThunk<void> => (dispatch, getState, context) => {
   const username = getUserName(getState(), userId)
-  const content = `${username} has left`
+  const content = `${username} has left` // TODO: l10n
   dispatch(addChat({ content, timestamp: Date.now() }))
 }
 export const multi_userLeft = rpc(RpcRealm.Multicast, userLeft)

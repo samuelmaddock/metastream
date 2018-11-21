@@ -32,6 +32,7 @@ const discordInviteMiddleware = (): Middleware<{}, IAppState> => {
 
       const username = `${user.username}#${user.discriminator}`
 
+      // TODO: l10n
       dispatch(
         addChat({
           content: `${username} is requesting permission to join.`,

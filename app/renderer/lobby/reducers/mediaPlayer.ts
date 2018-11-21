@@ -1,7 +1,5 @@
 import { Reducer } from 'redux'
-import { NetworkState } from 'types/network'
 import { isType } from 'utils/redux'
-import { addChat } from 'renderer/lobby/actions/chat'
 import {
   setMedia,
   endMedia,

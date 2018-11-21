@@ -192,6 +192,7 @@ const initClient = (info: ClientInitRequest): RpcThunk<ClientInitResponse | void
   )
 
   if (shouldAwaitAuthorization) {
+    // TODO: l10n
     dispatch(
       addChat({ content: `${name} is requesting permission to join.`, timestamp: Date.now() })
     )
