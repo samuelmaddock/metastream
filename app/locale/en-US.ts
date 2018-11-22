@@ -34,7 +34,6 @@ export default {
   extensions: 'Extensions',
   friendCode: 'Friend code',
   getStarted: 'Get Started',
-  goBack: 'Go back',
   info: 'Info',
   invite: 'Invite',
   join: 'Join',
