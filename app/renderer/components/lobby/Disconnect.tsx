@@ -4,17 +4,17 @@ import { TitleBar } from '../TitleBar'
 import { MenuButton } from '../menu/MenuButton'
 import { Link } from 'react-router-dom'
 import { Icon } from '../Icon'
-import { t } from 'locale/index'
 import { NetworkDisconnectReason, NetworkDisconnectMessages } from 'constants/network'
 import { ExternalLink } from '../common/link'
+import { Trans, withNamespaces, WithNamespaces } from 'react-i18next'
 
-interface IProps {
+interface IProps extends WithNamespaces {
   reason: NetworkDisconnectReason
 }
 
-export class Disconnect extends Component<IProps> {
+class _Disconnect extends Component<IProps> {
   render(): JSX.Element {
-    const { reason } = this.props
+    const { t, reason } = this.props
     const reasonKey: any = NetworkDisconnectMessages[reason]
     const msg = t(reasonKey) || reasonKey
 
@@ -28,12 +28,11 @@ export class Disconnect extends Component<IProps> {
           <Icon name="info" />
           <span>
             {msg}
-
-            {/* TODO: l10n with link */}
+            {reason === NetworkDisconnectReason.Timeout && <>&nbsp;</>}
             {reason === NetworkDisconnectReason.Timeout && (
-              <>
-                . See <ExternalLink href="https://github.com/samuelmaddock/metastream/wiki/Network-Troubleshooting">Network Troubleshooting guide</ExternalLink> for help.
-              </>
+              <Trans i18nKey="networkTroubleshootingHelp">
+                See <ExternalLink href="https://github.com/samuelmaddock/metastream/wiki/Network-Troubleshooting">Network Troubleshooting guide</ExternalLink> for help.
+              </Trans>
             )}
           </span>
         </p>
@@ -44,3 +43,5 @@ export class Disconnect extends Component<IProps> {
     )
   }
 }
+
+export const Disconnect = withNamespaces()(_Disconnect)

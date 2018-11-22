@@ -1,9 +1,8 @@
 import React, { PureComponent } from 'react'
-import { IMessage } from 'renderer/lobby/reducers/chat'
+import { Trans, NamespacesConsumer } from 'react-i18next'
 
 import styles from './Chat.css'
 import { CHAT_MAX_MESSAGE_LENGTH } from 'constants/chat'
-import { t } from '../../../locale/index'
 import { Key } from './Key'
 
 interface IProps {
@@ -50,26 +49,31 @@ export class ChatForm extends PureComponent<IProps, IState> {
   }
 
   render(): JSX.Element | null {
-    // TODO: l10n
     return (
       <div className={styles.form}>
-        <input
-          ref={e => {
-            this.input = e
-          }}
-          type="text"
-          className={styles.messageInput}
-          placeholder={t('chatPlaceholder')}
-          spellCheck={this.state.spellcheck}
-          onKeyPress={this.submitText}
-          maxLength={CHAT_MAX_MESSAGE_LENGTH}
-          onChange={this.onInputChange}
-          onFocus={this.props.onFocus}
-          onBlur={this.onBlur}
-        />
+        <NamespacesConsumer ns="translation">
+          {t => (
+            <input
+              ref={e => {
+                this.input = e
+              }}
+              type="text"
+              className={styles.messageInput}
+              placeholder={t('chatPlaceholder')}
+              spellCheck={this.state.spellcheck}
+              onKeyPress={this.submitText}
+              maxLength={CHAT_MAX_MESSAGE_LENGTH}
+              onChange={this.onInputChange}
+              onFocus={this.props.onFocus}
+              onBlur={this.onBlur}
+            />
+          )}
+        </NamespacesConsumer>
         {this.props.showHint && !this.state.hasOpened && (
           <div className={styles.hint}>
-            Press <Key /> to reveal chat.
+            <Trans i18nKey="chatRevealHint">
+              Press <Key /> to reveal chat.
+            </Trans>
           </div>
         )}
       </div>

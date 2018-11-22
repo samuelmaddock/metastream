@@ -3,7 +3,6 @@ import cx from 'classnames'
 
 import { IMessage } from 'renderer/lobby/reducers/chat'
 
-import { Message } from './Message'
 import { Messages } from './Messages'
 import { ChatForm } from './ChatForm'
 

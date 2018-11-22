@@ -17,13 +17,13 @@ import {
 
 import { HighlightButton, IconButton } from '../common/button'
 import { ListOverlay } from './ListOverlay'
-import { t } from '../../../locale/index'
 
 import { MenuItem } from 'material-ui/Menu'
 import { MediaItem } from '../media/MediaItem'
 import { localUser } from 'renderer/network'
 import { copyMediaLink, openMediaInBrowser } from '../../media/utils'
 import { IReactReduxProps } from 'types/redux-thunk'
+import { withNamespaces, WithNamespaces } from 'react-i18next'
 
 interface IProps {
   className?: string
@@ -38,7 +38,7 @@ interface IConnectedProps {
   mediaQueueLocked: boolean
 }
 
-type Props = IProps & IConnectedProps & IReactReduxProps
+type Props = IProps & IConnectedProps & IReactReduxProps & WithNamespaces
 
 class _MediaList extends Component<Props> {
   private listOverlay: ListOverlay<IMediaItem> | null = null
@@ -57,6 +57,7 @@ class _MediaList extends Component<Props> {
   }
 
   render(): JSX.Element | null {
+    const { t } = this.props
     return (
       <ListOverlay
         ref={(e: any) => (this.listOverlay = e)}
@@ -146,7 +147,7 @@ class _MediaList extends Component<Props> {
   }
 
   private renderQueueLock() {
-    const { hasPlaybackPermissions, mediaQueueLocked: locked } = this.props
+    const { t, hasPlaybackPermissions, mediaQueueLocked: locked } = this.props
     if (!hasPlaybackPermissions && !locked) return
 
     const title = hasPlaybackPermissions ? t(locked ? 'unlockQueue' : 'lockQueue') : undefined
@@ -166,7 +167,7 @@ class _MediaList extends Component<Props> {
 
   private renderAddMedia() {
     const { isQueueEmpty } = this
-    const { currentMedia, mediaQueueLocked, hasPlaybackPermissions } = this.props
+    const { t, currentMedia, mediaQueueLocked, hasPlaybackPermissions } = this.props
 
     if (!hasPlaybackPermissions && mediaQueueLocked) return
 
@@ -186,11 +187,13 @@ class _MediaList extends Component<Props> {
   }
 }
 
-export const MediaList = connect(
-  (state: IAppState): IConnectedProps => ({
-    hasPlaybackPermissions: hasPlaybackPermissions(state, localUser()),
-    currentMedia: getCurrentMedia(state),
-    mediaQueue: getMediaQueue(state),
-    mediaQueueLocked: state.mediaPlayer.queueLocked
-  })
-)(_MediaList) as React.ComponentClass<IProps>
+export const MediaList = withNamespaces()(
+  connect(
+    (state: IAppState): IConnectedProps => ({
+      hasPlaybackPermissions: hasPlaybackPermissions(state, localUser()),
+      currentMedia: getCurrentMedia(state),
+      mediaQueue: getMediaQueue(state),
+      mediaQueueLocked: state.mediaPlayer.queueLocked
+    })
+  )(_MediaList)
+)
