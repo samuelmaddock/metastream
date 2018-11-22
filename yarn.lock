@@ -214,6 +214,11 @@
   resolved "https://registry.yarnpkg.com/@types/history/-/history-4.6.1.tgz#0dbaef4febad5d074d06dbdfae6b027d1d701d25"
   integrity sha512-Z8DQIdWtl0ff+tXDKeG3P0IOXd0kCI5wCXqZZjymjwcwe/o46BlEXeDrN09L9qnhzHmo9ObpkrlMCHPfbVvewA==
 
+"@types/i18next@^11.9.3":
+  version "11.9.3"
+  resolved "https://registry.yarnpkg.com/@types/i18next/-/i18next-11.9.3.tgz#04d84c6539908ad69665d26d8967f942d1638550"
+  integrity sha512-snM7bMKy6gt7UYdpjsxycqSCAy0fr2JVPY0B8tJ2vp9bN58cE7C880k20PWFM4KXxQ3KsstKM8DLCawGCIH0tg==
+
 "@types/jss@^9.3.0":
   version "9.5.3"
   resolved "https://registry.yarnpkg.com/@types/jss/-/jss-9.5.3.tgz#0c106de3fe0b324cd4173fac7dab26c12cda624e"
