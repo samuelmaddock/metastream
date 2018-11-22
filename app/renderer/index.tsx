@@ -5,6 +5,7 @@ import { History } from 'history'
 
 import Root from './containers/Root'
 import * as cfgStore from './store/configureStore'
+import './i18n'
 
 import 'styles/app.global.css'
 

@@ -26,6 +26,7 @@ export default {
   discordPresenceDescription:
     'Share your session details in your Discord profile and allow users to request invites.',
   dj: 'DJ',
+  donate: 'Donate',
   donators: 'Donators',
   duplicate: 'Duplicate',
   endSessionTitle: 'End public session?',

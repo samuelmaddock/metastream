@@ -9,11 +9,11 @@ import { Icon } from 'renderer/components/Icon'
 import { MenuButton } from 'renderer/components/menu/MenuButton'
 import { MenuHeader } from './menu/MenuHeader'
 import { ExternalLink } from './common/link'
-import { t } from 'locale'
 import Tooltip from 'material-ui/Tooltip'
 import { assetUrl } from 'utils/appUrl'
 import { MenuTabs } from './menu/MenuTabs'
 import { DISCORD_INVITE_URL } from 'constants/social'
+import { withNamespaces, WithNamespaces } from 'react-i18next'
 
 const SocialLink = (props: { href: string; title: string; image?: string; icon?: string }) => (
   <ExternalLink href={props.href} className={styles.socialLink}>
@@ -27,10 +27,12 @@ const SocialLink = (props: { href: string; title: string; image?: string; icon?:
   </ExternalLink>
 )
 
-interface IProps {}
+interface IProps extends WithNamespaces {}
 
-export default class Home extends Component<IProps> {
+class Home extends Component<IProps> {
   render() {
+    const { t } = this.props
+
     const DEV = process.env.NODE_ENV === 'development'
     const gitv = `${process.env.GIT_BRANCH}@${process.env.GIT_COMMIT}`
 
@@ -76,7 +78,7 @@ export default class Home extends Component<IProps> {
             </li>
             <li>
               <ExternalLink href="https://www.patreon.com/metastream" className={styles.btn}>
-                <MenuButton icon="heart">Donate</MenuButton>
+                <MenuButton icon="heart">{t('donate')}</MenuButton>
               </ExternalLink>
             </li>
           </ul>
@@ -129,3 +131,5 @@ export default class Home extends Component<IProps> {
     )
   }
 }
+
+export default withNamespaces()(Home)
