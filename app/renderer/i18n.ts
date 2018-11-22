@@ -18,6 +18,7 @@ const resources = {
 }
 
 i18n.use(reactI18nextModule).init({
+  debug: process.env.NODE_ENV === 'development',
   resources,
   lng: 'en-US',
   fallbackLng: 'en-US',
