@@ -29,7 +29,7 @@ export default {
   donators: 'Doadores',
   duplicate: 'Duplicar',
   endSessionTitle: 'Encerrar sessão publica?',
-  endSessionDescription: 'Mudar para uma sessão privada irá desconectar todos os usarios concetados.',
+  endSessionDescription: 'Mudar para uma sessão privada irá desconectar todos os usarios conectados.',
   enterJoinDest: 'Insira um codigo de amigo ou IP.',
   extensions: 'Extensões',
   friendCode: 'Codigo de amigo',
