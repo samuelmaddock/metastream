@@ -30,3 +30,12 @@ i18n.use(reactI18nextModule).init({
 
 type keys = keyof typeof enUS
 export const t: TranslationFunction<any, object, keys> = i18n.t.bind(i18n)
+
+export const translateEscaped: typeof t = (key, vars) => {
+  return t(key, {
+    ...vars,
+    interpolation: {
+      escapeValue: true
+    }
+  })
+}

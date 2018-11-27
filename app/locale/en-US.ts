@@ -56,6 +56,12 @@ export default {
   networkDisconnectFull: 'Session is full.',
   networkDisconnectKicked: 'Kicked from session.',
   networkTroubleshootingHelp: 'See <1>Network Troubleshooting guide</1> for help.',
+  noticeAddedMedia: 'Added “{{mediaTitle}}”',
+  noticeMediaError: 'There was an error requesting {{url}}',
+  noticeNowPlaying:
+    'Now playing “{{mediaTitle}}” requested by <Username id="{{userId}}">{{username}}</Username>.',
+  noticeUserRequestJoin:
+    '<Username id="{{userId}}">{{username}}</Username> is requesting permission to join.',
   offline: 'Offline',
   ok: 'OK',
   openInBrowser: 'Open in browser',
@@ -84,6 +90,8 @@ export default {
   unlockQueue: 'Unlock queue',
   username: 'Username',
   users: 'Users',
+  userJoined: '<Username id="{{userId}}">{{username}}</Username> has joined.',
+  userLeft: '<Username id="{{userId}}">{{username}}</Username> has left.',
   viewOnGitHub: 'View on GitHub',
   waitingForHost: 'Waiting for host to allow connection',
   welcome: 'Welcome'

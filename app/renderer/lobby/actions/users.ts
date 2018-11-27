@@ -7,6 +7,7 @@ import { addChat } from './chat'
 import { NetworkDisconnectReason } from '../../../constants/network'
 import { setDisconnectReason } from './session'
 import { UserRole, IUserInvite } from '../reducers/users'
+import { translateEscaped } from 'locale'
 
 export const addUserInvite = actionCreator<IUserInvite>('ADD_USER_INVITE')
 export const answerUserInvite = actionCreator<IUserInvite & { response: string }>(
@@ -23,14 +24,14 @@ const userJoined = (userId: string): RpcThunk<void> => (dispatch, getState, cont
   }
 
   const username = getUserName(getState(), userId)
-  const content = `${username} has joined` // TODO: l10n
+  const content = translateEscaped('userJoined', { userId, username })
   dispatch(addChat({ content, timestamp: Date.now() }))
 }
 export const multi_userJoined = rpc(RpcRealm.Multicast, userJoined)
 
 const userLeft = (userId: string): RpcThunk<void> => (dispatch, getState, context) => {
   const username = getUserName(getState(), userId)
-  const content = `${username} has left` // TODO: l10n
+  const content = translateEscaped('userLeft', { userId, username })
   dispatch(addChat({ content, timestamp: Date.now() }))
 }
 export const multi_userLeft = rpc(RpcRealm.Multicast, userLeft)

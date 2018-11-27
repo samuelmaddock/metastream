@@ -5,6 +5,7 @@ import { isType } from 'utils/redux'
 import { addChat } from '../../lobby/actions/chat'
 import { decodeDiscordSecret } from './secret'
 import { push } from 'react-router-redux'
+import { translateEscaped } from 'locale'
 const { ipcRenderer } = chrome
 
 const DISCORD_INVITE_TIMEOUT = 30e3
@@ -32,13 +33,8 @@ const discordInviteMiddleware = (): Middleware<{}, IAppState> => {
 
       const username = `${user.username}#${user.discriminator}`
 
-      // TODO: l10n
-      dispatch(
-        addChat({
-          content: `${username} is requesting permission to join.`,
-          timestamp: Date.now()
-        })
-      )
+      const content = translateEscaped('noticeUserRequestJoin', { userId: '', username })
+      dispatch(addChat({ content, timestamp: Date.now() }))
 
       dispatch(
         addUserInvite({
