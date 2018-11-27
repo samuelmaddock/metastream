@@ -96,10 +96,13 @@
   composes: single-line from 'styles/text.css';
   color: var(--color-nice-blue);
   font-weight: bold;
-  margin-right: 5px;
   max-width: 240px;
   display: inline-block;
   vertical-align: top;
+}
+
+.textPrefix {
+  margin-right: 0.5rem;
 }
 
 .broadcast {

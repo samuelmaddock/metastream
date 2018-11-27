@@ -133,7 +133,7 @@ const announceMediaChange = (mediaId: string): RpcThunk<void> => (dispatch, getS
     username: media.ownerName,
     mediaTitle: media.title
   })
-  dispatch(addChat({ content, timestamp: Date.now() }))
+  dispatch(addChat({ content, html: true, timestamp: Date.now() }))
 }
 export const multi_announceMediaChange = rpc(RpcRealm.Multicast, announceMediaChange)
 
@@ -173,11 +173,11 @@ export const sendMediaRequest = (url: string, source: string): AppThunkAction =>
       const media = getMediaById(state, mediaId)
       if (media && media !== getCurrentMedia(state)) {
         const content = t('noticeAddedMedia', { mediaTitle: media.title })
-        dispatch(addChat({ content, timestamp: Date.now() }))
+        dispatch(addChat({ content, html: true, timestamp: Date.now() }))
       }
     } else {
       const content = t('noticeMediaError', { url })
-      dispatch(addChat({ content, timestamp: Date.now() }))
+      dispatch(addChat({ content, html: true, timestamp: Date.now() }))
     }
   }
 }

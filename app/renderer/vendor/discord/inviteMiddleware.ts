@@ -34,7 +34,7 @@ const discordInviteMiddleware = (): Middleware<{}, IAppState> => {
       const username = `${user.username}#${user.discriminator}`
 
       const content = translateEscaped('noticeUserRequestJoin', { userId: '', username })
-      dispatch(addChat({ content, timestamp: Date.now() }))
+      dispatch(addChat({ content, html: true, timestamp: Date.now() }))
 
       dispatch(
         addUserInvite({

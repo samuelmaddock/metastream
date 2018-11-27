@@ -17,6 +17,9 @@ export interface IMessage {
   /** Raw markdown content. */
   content: string
 
+  /** Whether content contains HTML markup to be parsed. */
+  html?: boolean
+
   /** Unix timestamp */
   timestamp: number
 }

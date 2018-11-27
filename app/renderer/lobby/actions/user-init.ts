@@ -194,7 +194,7 @@ const initClient = (info: ClientInitRequest): RpcThunk<ClientInitResponse | void
 
   if (shouldAwaitAuthorization) {
     const content = translateEscaped('noticeUserRequestJoin', { userId: id, username: name })
-    dispatch(addChat({ content, timestamp: Date.now() }))
+    dispatch(addChat({ content, html: true, timestamp: Date.now() }))
     return ClientInitResponse.Pending
   }
 

@@ -25,14 +25,14 @@ const userJoined = (userId: string): RpcThunk<void> => (dispatch, getState, cont
 
   const username = getUserName(getState(), userId)
   const content = translateEscaped('userJoined', { userId, username })
-  dispatch(addChat({ content, timestamp: Date.now() }))
+  dispatch(addChat({ content, html: true, timestamp: Date.now() }))
 }
 export const multi_userJoined = rpc(RpcRealm.Multicast, userJoined)
 
 const userLeft = (userId: string): RpcThunk<void> => (dispatch, getState, context) => {
   const username = getUserName(getState(), userId)
   const content = translateEscaped('userLeft', { userId, username })
-  dispatch(addChat({ content, timestamp: Date.now() }))
+  dispatch(addChat({ content, html: true, timestamp: Date.now() }))
 }
 export const multi_userLeft = rpc(RpcRealm.Multicast, userLeft)
 

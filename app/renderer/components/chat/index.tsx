@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import cx from 'classnames'
 
 import { IMessage } from 'renderer/lobby/reducers/chat'
@@ -20,7 +20,7 @@ interface IState {
   focused?: boolean
 }
 
-export class Chat extends Component<IProps, IState> {
+export class Chat extends PureComponent<IProps, IState> {
   private form: ChatForm | null = null
   private messages: Messages | null = null
 
