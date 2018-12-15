@@ -58,7 +58,7 @@ export class Messages extends Component<IProps, IState> {
   }
 
   private handleScroll = (): void => {
-    if (this.isScrolledToBottom()) {
+    if (this.state.hasNewMessage && this.isScrolledToBottom()) {
       this.setState({ hasNewMessage: false })
     }
   }

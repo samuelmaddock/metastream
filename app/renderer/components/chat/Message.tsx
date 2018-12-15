@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import * as cx from 'classnames'
 import { IMessage } from 'renderer/lobby/reducers/chat'
 import { ChatUsername } from './Username'
@@ -52,7 +52,7 @@ interface IProps {
   message: IMessage
 }
 
-export class Message extends Component<IProps> {
+export class Message extends PureComponent<IProps> {
   render(): JSX.Element | null {
     const { message } = this.props
     const { author } = message
