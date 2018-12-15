@@ -32,12 +32,16 @@ function renderHTMLMessage(message: string): React.ReactNode {
   // TODO: memoize results?
   // TODO: unescape interpolated variables like 'mediaTitle'
 
-  const result = astNodes.reduce((mem: React.ReactNode[], node) => {
+  const result = astNodes.reduce((mem: React.ReactNode[], node, idx) => {
     if (node.type === 'tag') {
       if (node.name === 'Username') {
         const userId = node.attrs.id || ''
         const username = unescapehtml(node.children[0].content || '')
-        mem.push(<ChatUsername userId={userId}>{username}</ChatUsername>)
+        mem.push(
+          <ChatUsername key={idx} userId={userId}>
+            {username}
+          </ChatUsername>
+        )
       }
     } else if (node.type === 'text') {
       mem.push(node.content)
