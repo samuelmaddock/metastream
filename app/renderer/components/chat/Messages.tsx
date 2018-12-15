@@ -64,9 +64,9 @@ export class Messages extends Component<IProps, IState> {
   }
 
   render(): JSX.Element | null {
-    const messages = this.props.messages.map((message, idx) => {
-      return <Message key={idx} message={message} />
-    })
+    const messages = this.props.messages.map(message => (
+      <Message key={message.id} message={message} />
+    ))
 
     return (
       <div className={styles.chatWrapper}>

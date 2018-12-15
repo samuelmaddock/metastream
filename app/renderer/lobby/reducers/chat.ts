@@ -3,6 +3,8 @@ import { isType } from 'utils/redux'
 import { addChat } from 'renderer/lobby/actions/chat'
 import { resetLobby } from '../actions/common'
 
+let CHAT_MESSAGE_COUNTER = 0
+
 export interface IMessageAuthor {
   id: string
   avatar?: string
@@ -10,7 +12,8 @@ export interface IMessageAuthor {
 }
 
 export interface IMessage {
-  // id: string;
+  /** Unique ID of message. */
+  id: string
 
   author?: IMessageAuthor
 
@@ -36,7 +39,13 @@ export const chat: Reducer<IChatState> = (state: IChatState = initialState, acti
   if (isType(action, addChat)) {
     return {
       ...state,
-      messages: [...state.messages, action.payload]
+      messages: [
+        ...state.messages,
+        {
+          ...action.payload,
+          id: `${++CHAT_MESSAGE_COUNTER}`
+        }
+      ]
     }
   }
 
