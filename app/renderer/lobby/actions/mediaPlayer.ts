@@ -131,6 +131,7 @@ const announceMediaChange = (mediaId: string): RpcThunk<void> => (dispatch, getS
   const content = translateEscaped('noticeNowPlaying', {
     userId: media.ownerId,
     username: media.ownerName,
+    mediaId: media.id,
     mediaTitle: media.title
   })
   dispatch(addChat({ content, html: true, timestamp: Date.now() }))
@@ -172,7 +173,7 @@ export const sendMediaRequest = (url: string, source: string): AppThunkAction =>
       state = getState()
       const media = getMediaById(state, mediaId)
       if (media && media !== getCurrentMedia(state)) {
-        const content = t('noticeAddedMedia', { mediaTitle: media.title })
+        const content = t('noticeAddedMedia', { mediaId: media.id, mediaTitle: media.title })
         dispatch(addChat({ content, html: true, timestamp: Date.now() }))
       }
     } else {

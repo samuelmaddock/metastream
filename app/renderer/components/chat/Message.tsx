@@ -29,9 +29,6 @@ function renderHTMLMessage(message: string): React.ReactNode {
   const ast: any[] = html.parse(`<0>${message}</0>`)
   const astNodes: any[] = ast[0].children
 
-  // TODO: memoize results?
-  // TODO: unescape interpolated variables like 'mediaTitle'
-
   const result = astNodes.reduce((mem: React.ReactNode[], node, idx) => {
     if (node.type === 'tag') {
       if (node.name === 'Username') {
@@ -42,6 +39,9 @@ function renderHTMLMessage(message: string): React.ReactNode {
             {username}
           </ChatUsername>
         )
+      } else if (node.name === 'Media') {
+        const title = unescapehtml(node.children[0].content || '')
+        mem.push(<em key={idx} className={styles.mediaTitle}>{`“${title}”`}</em>)
       }
     } else if (node.type === 'text') {
       mem.push(node.content)

@@ -102,6 +102,11 @@
   vertical-align: top;
 }
 
+.mediaTitle {
+  color: var(--color-highlight);
+  font-weight: bold;
+}
+
 .textPrefix {
   margin-right: 0.5rem;
 }

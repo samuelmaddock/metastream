@@ -56,10 +56,10 @@ export default {
   networkDisconnectFull: 'Session is full.',
   networkDisconnectKicked: 'Kicked from session.',
   networkTroubleshootingHelp: 'See <1>Network Troubleshooting guide</1> for help.',
-  noticeAddedMedia: 'Added “{{mediaTitle}}”',
+  noticeAddedMedia: 'Added <Media id="{{mediaId}}">{{mediaTitle}}</Media>',
   noticeMediaError: 'There was an error requesting {{url}}',
   noticeNowPlaying:
-    'Now playing “{{mediaTitle}}” requested by <Username id="{{userId}}">{{username}}</Username>.',
+    'Now playing <Media id="{{mediaId}}">{{mediaTitle}}</Media> requested by <Username id="{{userId}}">{{username}}</Username>.',
   noticeUserRequestJoin:
     '<Username id="{{userId}}">{{username}}</Username> is requesting permission to join.',
   offline: 'Offline',
