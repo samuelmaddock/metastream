@@ -22,6 +22,7 @@ import * as protocols from './browser/protocols'
 import { initUpdater } from 'browser/update'
 import 'browser/fetch'
 import { setupWindow, getMainWindow } from 'browser/window'
+import { initLocale } from 'browser/locale'
 
 app.commandLine.appendSwitch('enable-blink-features', 'CSSBackdropFilter')
 app.commandLine.appendSwitch('no-user-gesture-required')
@@ -49,6 +50,7 @@ if (process.env.NODE_ENV === 'production') {
 
 fixUserDataPath()
 protocols.init()
+initLocale()
 
 // Platform backend
 import 'browser/platform/swarm'

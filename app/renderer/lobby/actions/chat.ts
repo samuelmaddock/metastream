@@ -5,12 +5,13 @@ import { rpc, RpcRealm } from 'renderer/network/middleware/rpc'
 import { IMessage } from 'renderer/lobby/reducers/chat'
 import { CHAT_MAX_MESSAGE_LENGTH } from 'constants/chat'
 
-export const addChat = actionCreator<IMessage>('ADD_CHAT')
+/** Message prior to being processed by reducer. */
+type RawMessage = Pick<IMessage, Exclude<keyof IMessage, 'id'>>
+export const addChat = actionCreator<RawMessage>('ADD_CHAT')
 
 const broadcastChat = (text: string, userId: string | null): RpcThunk<void> => (
   dispatch,
-  getState,
-  context
+  getState
 ) => {
   dispatch(
     addChat({

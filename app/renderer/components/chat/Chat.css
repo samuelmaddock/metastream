@@ -1,4 +1,6 @@
 .container {
+  --chat-fade-delay: 10s;
+  --chat-fade-duration: 1s;
   display: block;
 }
 
@@ -62,12 +64,11 @@
 }
 
 .message {
-  --chat-fade-delay: 10s;
   width: 100%;
   padding: 2px 8px;
   word-break: break-word;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.66);
-  animation: 1s ease-in var(--chat-fade-delay);
+  animation: var(--chat-fade-duration) ease-in var(--chat-fade-delay);
   animation-name: fadeout;
   /* Maintain transparency after animation finishes */
   animation-fill-mode: forwards;
@@ -96,10 +97,18 @@
   composes: single-line from 'styles/text.css';
   color: var(--color-nice-blue);
   font-weight: bold;
-  margin-right: 5px;
   max-width: 240px;
   display: inline-block;
   vertical-align: top;
+}
+
+.mediaTitle {
+  color: var(--color-highlight);
+  font-weight: bold;
+}
+
+.textPrefix {
+  margin-right: 0.5rem;
 }
 
 .broadcast {

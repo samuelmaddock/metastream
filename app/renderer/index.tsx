@@ -1,3 +1,8 @@
+if (process.env.NODE_ENV === 'development') {
+  const app = Object.create(null)
+  ;(window as any).app = app
+}
+
 import React from 'react'
 import { render } from 'react-dom'
 import { AppContainer } from 'react-hot-loader'
@@ -11,6 +16,7 @@ import 'styles/app.global.css'
 import { PRODUCT_NAME } from 'constants/app'
 import { PlatformService } from 'renderer/platform'
 import { initAnalytics } from './analytics/index'
+import { initLocale } from 'locale'
 
 let store: any
 let history: History
@@ -33,7 +39,17 @@ function init() {
   store = storeCfg.store
   persistor = storeCfg.persistor
 
+  // DEBUG
+  if (process.env.NODE_ENV === 'development') {
+    Object.assign((window as any).app, {
+      history,
+      store,
+      platform: PlatformService
+    })
+  }
+
   initAnalytics(store, history)
+  initLocale()
 
   render(
     <AppContainer>
@@ -41,17 +57,6 @@ function init() {
     </AppContainer>,
     document.getElementById('root')
   )
-
-  // DEBUG
-  if (process.env.NODE_ENV === 'development') {
-    const app = Object.create(null)
-    Object.assign(app, {
-      history,
-      store,
-      platform: PlatformService
-    })
-    ;(window as any).app = app
-  }
 }
 
 init()

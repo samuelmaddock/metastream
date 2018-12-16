@@ -1,13 +1,14 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import cx from 'classnames'
 
 import { IMessage } from 'renderer/lobby/reducers/chat'
 
-import { Message } from './Message'
 import { Messages } from './Messages'
 import { ChatForm } from './ChatForm'
 
 import styles from './Chat.css'
+
+const CSS_PROP_CHAT_FADE_DELAY = '--chat-fade-delay'
 
 interface IProps {
   className?: string
@@ -15,25 +16,47 @@ interface IProps {
   sendMessage: (text: string) => void
   disabled?: boolean
   showHint: boolean
+  messageFadeDelay?: number
 }
 
 interface IState {
   focused?: boolean
+  filteredMessages: IMessage[]
 }
 
-export class Chat extends Component<IProps, IState> {
+export class Chat extends PureComponent<IProps, IState> {
   private form: ChatForm | null = null
-  private messages: Messages | null = null
+  private containerElement: HTMLElement | null = null
+  private messagesRef: Messages | null = null
 
-  state: IState = {}
+  static defaultProps = {
+    messageFadeDelay: 10000
+  }
+
+  state: IState = {
+    filteredMessages: []
+  }
 
   componentDidMount(): void {
     this.setupListeners(!this.props.disabled)
     this.scrollToBottom()
+
+    if (this.containerElement) {
+      this.containerElement.style.setProperty(
+        CSS_PROP_CHAT_FADE_DELAY,
+        `${this.props.messageFadeDelay}ms`
+      )
+    }
   }
 
   componentWillUnmount(): void {
     this.setupListeners(false)
+  }
+
+  componentWillReceiveProps(nextProps: IProps) {
+    if (this.props.messages !== nextProps.messages) {
+      this.filterMessages(nextProps.messages)
+    }
   }
 
   componentDidUpdate(prevProps: IProps) {
@@ -44,6 +67,24 @@ export class Chat extends Component<IProps, IState> {
         this.onBlur()
       }
     }
+  }
+
+  private filterMessages(messages: IMessage[]) {
+    // Minimize number of chat messages to render while chat isn't focused.
+    const numMessages = messages.length
+    const minMessages = 10
+    const cutoff = numMessages - minMessages - 1
+    const chatFadeDelay = this.props.messageFadeDelay!
+
+    const filteredMessages = this.state.focused
+      ? messages
+      : messages.filter((msg, idx) => {
+          if (idx > cutoff) return true
+          const dt = Date.now() - msg.timestamp
+          return dt <= chatFadeDelay
+        })
+
+    this.setState({ filteredMessages })
   }
 
   private setupListeners(enabled: boolean) {
@@ -59,6 +100,7 @@ export class Chat extends Component<IProps, IState> {
   render(): JSX.Element | null {
     return (
       <div
+        ref={e => (this.containerElement = e)}
         className={cx(this.props.className, styles.container, {
           [styles.focused]: this.state.focused
         })}
@@ -68,9 +110,9 @@ export class Chat extends Component<IProps, IState> {
           <div className={styles.foreground}>
             <Messages
               ref={e => {
-                this.messages = e
+                this.messagesRef = e
               }}
-              messages={this.props.messages}
+              messages={this.state.filteredMessages}
             />
             <ChatForm
               ref={e => {
@@ -88,18 +130,22 @@ export class Chat extends Component<IProps, IState> {
   }
 
   private scrollToBottom() {
-    if (this.messages) {
-      this.messages.scrollToBottom()
+    if (this.messagesRef) {
+      this.messagesRef.scrollToBottom()
     }
   }
 
   private onFocus = (): void => {
-    this.setState({ focused: true })
+    this.setState({ focused: true }, () => {
+      this.filterMessages(this.props.messages)
+    })
   }
 
   private onBlur = (): void => {
-    this.setState({ focused: false })
-    this.scrollToBottom()
+    this.setState({ focused: false }, () => {
+      this.filterMessages(this.props.messages)
+      this.scrollToBottom()
+    })
   }
 
   private onSend = (message: string) => {

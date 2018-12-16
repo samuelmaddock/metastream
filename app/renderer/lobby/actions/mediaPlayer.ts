@@ -16,6 +16,7 @@ import {
 import { getUserName, getNumUsers } from 'renderer/lobby/reducers/users.helpers'
 import { addChat } from './chat'
 import { AppThunkAction } from 'types/redux-thunk'
+import { translateEscaped, t } from 'locale'
 
 export const playPauseMedia = actionCreator<number>('PLAY_PAUSE_MEDIA')
 export const repeatMedia = actionCreator<number>('REPEAT_MEDIA')
@@ -127,9 +128,13 @@ const announceMediaChange = (mediaId: string): RpcThunk<void> => (dispatch, getS
   const media = getMediaById(getState(), mediaId)
   if (!media) return
 
-  // TODO: l10n
-  const content = `Now playing “${media.title}” requested by ${media.ownerName}`
-  dispatch(addChat({ content, timestamp: Date.now() }))
+  const content = translateEscaped('noticeNowPlaying', {
+    userId: media.ownerId,
+    username: media.ownerName,
+    mediaId: media.id,
+    mediaTitle: media.title
+  })
+  dispatch(addChat({ content, html: true, timestamp: Date.now() }))
 }
 export const multi_announceMediaChange = rpc(RpcRealm.Multicast, announceMediaChange)
 
@@ -164,15 +169,16 @@ export const sendMediaRequest = (url: string, source: string): AppThunkAction =>
 
     const mediaId = await requestPromise
 
-    // TODO: l10n
     if (mediaId) {
       state = getState()
       const media = getMediaById(state, mediaId)
       if (media && media !== getCurrentMedia(state)) {
-        dispatch(addChat({ content: `Added “${media.title}”`, timestamp: Date.now() }))
+        const content = t('noticeAddedMedia', { mediaId: media.id, mediaTitle: media.title })
+        dispatch(addChat({ content, html: true, timestamp: Date.now() }))
       }
     } else {
-      dispatch(addChat({ content: `There was an error requesting ${url}`, timestamp: Date.now() }))
+      const content = t('noticeMediaError', { url })
+      dispatch(addChat({ content, html: true, timestamp: Date.now() }))
     }
   }
 }

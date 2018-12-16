@@ -27,6 +27,7 @@ import { actionCreator } from 'utils/redux'
 import { AppThunkAction } from 'types/redux-thunk'
 import { avatarRegistry } from '../../services/avatar'
 import { parseQuery } from 'utils/url'
+import { translateEscaped } from 'locale'
 
 type ClientInitRequest = {
   name: string
@@ -192,10 +193,8 @@ const initClient = (info: ClientInitRequest): RpcThunk<ClientInitResponse | void
   )
 
   if (shouldAwaitAuthorization) {
-    // TODO: l10n
-    dispatch(
-      addChat({ content: `${name} is requesting permission to join.`, timestamp: Date.now() })
-    )
+    const content = translateEscaped('noticeUserRequestJoin', { userId: id, username: name })
+    dispatch(addChat({ content, html: true, timestamp: Date.now() }))
     return ClientInitResponse.Pending
   }
 

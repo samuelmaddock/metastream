@@ -11,7 +11,7 @@ export default {
   cancel: 'Cancelar',
   changelog: 'Registro de Alterações',
   chatColor: 'Cor no bate-papo',
-  chatPlaceholder: 'Insira uma mensagem ou link.',
+  chatPlaceholder: 'Mensagem ou link',
   chooseUsername: 'Escolha o seu nick',
   connecting: 'Conectando',
   continue: 'Continuar',

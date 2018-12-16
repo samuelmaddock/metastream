@@ -13,6 +13,7 @@ import { IReactReduxProps } from 'types/redux-thunk'
 import { assetUrl } from 'utils/appUrl'
 import { isDiscordAvailable } from 'renderer/vendor/discord'
 import { PRODUCT_NAME } from 'constants/app'
+import { withNamespaces, WithNamespaces, Trans } from 'react-i18next'
 
 interface IProps {
   className?: string
@@ -35,14 +36,9 @@ const mapStateToProps = (state: IAppState): IConnectedProps => {
   }
 }
 
-type PrivateProps = IProps & IConnectedProps & IReactReduxProps
+type PrivateProps = IProps & IConnectedProps & IReactReduxProps & WithNamespaces
 
 class Invite extends Component<PrivateProps> {
-  private get friendCodeLabel() {
-    // TODO: l10n
-    return this.props.isHost ? 'your friend code' : `${this.props.hostName}’s friend code`
-  }
-
   render(): JSX.Element {
     return (
       <div className={cx(styles.container, this.props.className)}>
@@ -54,12 +50,14 @@ class Invite extends Component<PrivateProps> {
   }
 
   private renderFriendCode() {
-    // TODO: l10n
-    const message = `Share ${this.friendCodeLabel} below to invite friends.`
+    const { t } = this.props
+    const message = this.props.isHost
+      ? t('shareFriendCode')
+      : t('shareFriendCodeOther', { name: this.props.hostName })
 
     return (
       <section className={styles.method}>
-        <h2 className={styles.header}>Friend Code</h2>
+        <h2 className={styles.header}>{t('friendCode')}</h2>
         <p>{message}</p>
         <ClipboardTextInput
           className={styles.idContainer}
@@ -71,29 +69,28 @@ class Invite extends Component<PrivateProps> {
     )
   }
 
-  // TODO: l10n
   private renderDiscord() {
+    const { t } = this.props
     let message
 
     if (this.props.discordPresenceEnabled) {
       const href =
         'https://support.discordapp.com/hc/en-us/articles/115001557452-Game-Invites-and-Detailed-Status-Rich-Presence-'
 
+      // prettier-ignore
       message = isDiscordAvailable() ? (
-        <>
-          <ExternalLink href={href} className="link">
-            Send Discord invites
-          </ExternalLink>
-          &nbsp;to share {this.friendCodeLabel} automatically.
-        </>
+        <Trans i18nKey="sendDiscordInvite">
+          <ExternalLink href={href} className="link">Send Discord invites</ExternalLink> to share friend codes automatically.
+        </Trans>
       ) : (
-        `Launch Discord and restart ${PRODUCT_NAME} to use Discord invites.`
+        t('launchDiscordInvite', { productName: PRODUCT_NAME })
       )
     } else {
+      // prettier-ignore
       message = (
-        <>
+        <Trans i18nKey="enableDiscordInvite">
           Enable <em>Discord Rich Presence</em> from the settings menu to allow Discord invites.
-        </>
+        </Trans>
       )
     }
 
@@ -109,27 +106,24 @@ class Invite extends Component<PrivateProps> {
     )
   }
 
-  // TODO: l10n
   private renderDirectIP() {
+    const { t } = this.props
+    const portHref = 'https://www.wikihow.com/Set-Up-Port-Forwarding-on-a-Router'
+    const port = `TCP ${WEBSOCKET_PORT_DEFAULT}`
+
+    // prettier-ignore
     return (
       <section className={styles.method}>
-        <h2 className={styles.header}>Direct IP</h2>
+        <h2 className={styles.header}>{t('directIP')}</h2>
         <p>
-          Share&nbsp;
-          <ExternalLink href="https://www.google.com/search?q=ip" className="link">
-            your public IP address
-          </ExternalLink>
-          &nbsp;to allow friends to connect directly.
+          <Trans i18nKey="sharePublicIP">
+            Share <ExternalLink href="https://www.google.com/search?q=ip" className="link">your public IP address</ExternalLink> to allow friends to connect directly.
+          </Trans>
           <br />
           <em>
-            Requires&nbsp;
-            <ExternalLink
-              href="https://www.wikihow.com/Set-Up-Port-Forwarding-on-a-Router"
-              className="link"
-            >
-              setting up port forwarding
-            </ExternalLink>
-            &nbsp;of <strong>TCP {WEBSOCKET_PORT_DEFAULT}</strong> to accept direct connections.
+            <Trans i18nKey="requiresPortForward" data-port={port}>
+              Requires <ExternalLink href={portHref} className="link">setting up port forwarding</ExternalLink> of <strong>{{port}}</strong> to accept direct connections.
+            </Trans>
           </em>
         </p>
       </section>
@@ -137,4 +131,4 @@ class Invite extends Component<PrivateProps> {
   }
 }
 
-export default connect(mapStateToProps)(Invite)
+export default withNamespaces()(connect(mapStateToProps)(Invite))

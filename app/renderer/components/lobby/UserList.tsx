@@ -11,12 +11,13 @@ import { MenuItem } from 'material-ui/Menu'
 import { HighlightButton } from '../common/button'
 import { ListOverlay } from './ListOverlay'
 import { UserItem, ConnectedUserItem } from './UserItem'
-import { t } from 'locale'
 import { IReactReduxProps } from 'types/redux-thunk'
 import { server_answerClient } from '../../lobby/actions/user-init'
 import { localUserId } from '../../network/index'
 import { assetUrl } from 'utils/appUrl'
 import { SessionMode } from 'renderer/reducers/settings'
+import { compose } from 'redux'
+import { withNamespaces, WithNamespaces } from 'react-i18next'
 
 interface IProps {
   className?: string
@@ -36,7 +37,7 @@ interface IState {
   sortedUsers: IUser[]
 }
 
-type Props = IProps & IConnectedProps & IReactReduxProps
+type Props = IProps & IConnectedProps & IReactReduxProps & WithNamespaces
 
 class _UserList extends Component<Props> {
   state: IState = { sortedUsers: [] }
@@ -79,6 +80,7 @@ class _UserList extends Component<Props> {
   }
 
   render(): JSX.Element | null {
+    const { t } = this.props
     return (
       <ListOverlay
         ref={(e: any) => (this.listOverlay = e)}
@@ -138,6 +140,7 @@ class _UserList extends Component<Props> {
   }
 
   private renderActions() {
+    const { t } = this.props
     return (
       <>
         {this.props.sessionMode !== SessionMode.Offline && (
@@ -153,7 +156,7 @@ class _UserList extends Component<Props> {
   }
 
   private renderMenuOptions = (user: IUser, close: Function) => {
-    const dispatch = this.props.dispatch!
+    const { t, dispatch } = this.props
 
     let items = [
       {
@@ -189,14 +192,16 @@ class _UserList extends Component<Props> {
   }
 }
 
-export const UserList = connect(
-  (state: IAppState): IConnectedProps => {
-    return {
-      maxUsers: getMaxUsers(state),
-      users: state.users,
-      isAdmin: isAdmin(state),
-      isHost: isHost(state),
-      sessionMode: state.settings.sessionMode
+export const UserList = withNamespaces()(
+  connect(
+    (state: IAppState): IConnectedProps => {
+      return {
+        maxUsers: getMaxUsers(state),
+        users: state.users,
+        isAdmin: isAdmin(state),
+        isHost: isHost(state),
+        sessionMode: state.settings.sessionMode
+      }
     }
-  }
-)(_UserList) as React.ComponentClass<IProps>
+  )(_UserList)
+)
