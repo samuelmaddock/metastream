@@ -180,9 +180,8 @@ class _MediaList extends Component<Props> {
             this.props.onAddMedia()
           }
         }}
-      >
-        {t('add')}
-      </HighlightButton>
+        title={t('add')}
+      />
     )
   }
 }
