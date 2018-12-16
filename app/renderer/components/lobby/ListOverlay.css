@@ -1,6 +1,6 @@
 .container {
   composes: glass rounded from 'styles/layout.css';
-  width: 275px;
+  width: 19rem;
   -webkit-mask-image: linear-gradient(180deg, white 0%, white 20%, transparent 100%);
 }
 
@@ -15,13 +15,16 @@
   flex-direction: row;
   align-items: center;
   padding: 10px;
+  flex-wrap: nowrap;
 }
 
 .title {
+  composes: single-line from 'styles/text.css';
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 2px;
   margin-right: 5px;
+  text-overflow: clip;
 }
 
 .tagline {
@@ -33,6 +36,10 @@
 }
 
 .actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: nowrap;
   margin-left: auto;
 }
 
