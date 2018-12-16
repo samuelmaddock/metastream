@@ -99,7 +99,7 @@ class Home extends Component<IProps> {
             <SocialLink
               href="https://www.patreon.com/metastream"
               image="./assets/icons/social/patreon-wordmark.svg"
-              title="Becoma a patron"
+              title="Become a patron"
             />
 
             <SocialLink
