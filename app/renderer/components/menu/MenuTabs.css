@@ -11,7 +11,7 @@
 }
 
 .tabItem {
-  width: auto;
+  flex: 0 1 auto;
 }
 
 .tabButton {

@@ -5,7 +5,7 @@
   grid-template:
     'header header' auto
     'nav intro' 1fr
-    'footer footer' auto / auto 45%;
+    'footer footer' auto / auto 50%;
 }
 
 .header {
