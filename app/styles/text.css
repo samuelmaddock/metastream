@@ -13,3 +13,8 @@
   mix-blend-mode: overlay;
   color: black;
 }
+
+.blend-text-invert {
+  mix-blend-mode: overlay;
+  color: white;
+}

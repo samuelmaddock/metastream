@@ -9,6 +9,12 @@ interface AvatarType {
 interface RawAvatarEntry {
   type: string
   params: string[]
+
+  /** Artist */
+  artist?: string
+
+  /** Link to artist. */
+  href?: string
 }
 
 export interface AvatarEntry extends RawAvatarEntry {
@@ -70,6 +76,10 @@ class AvatarRegistry implements ArrayLike<AvatarEntry> {
     return this.avatars
   }
 
+  getByURI(uri: string) {
+    return this.avatars.find(avatar => avatar.uri === uri)
+  }
+
   deleteByURI(uri: string) {
     this.avatars = this.avatars.filter(avatar => avatar.uri !== uri)
   }
@@ -87,6 +97,29 @@ function initAppAvatars() {
 
   localAvatars.forEach(fileName => {
     avatarRegistry.register({ type: 'asset', params: [fileName] })
+  })
+
+  const artistAvatars = [
+    {
+      name: '@Alisa_Aydin',
+      href: 'https://twitter.com/Alisa_Aydin',
+      fileNames: [
+        'alisa-aydin_luna.png',
+        'alisa-aydin_sailor-moon.png',
+        'alisa-aydin_luna-zoom.png'
+      ]
+    }
+  ]
+
+  artistAvatars.forEach(artist => {
+    artist.fileNames.forEach(fileName => {
+      avatarRegistry.register({
+        type: 'asset',
+        artist: artist.name,
+        href: artist.href,
+        params: [fileName]
+      })
+    })
   })
 }
 

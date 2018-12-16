@@ -155,6 +155,15 @@ em {
   -webkit-user-drag: none;
 }
 
+.link-alt,
+.link-alt:visited,
+.link-alt:hover,
+.link-alt:active {
+  color: var(--color-highlight);
+  text-decoration: none;
+  -webkit-user-drag: none;
+}
+
 ::selection {
   background: rgba(249, 134, 115, 0.44);
 }

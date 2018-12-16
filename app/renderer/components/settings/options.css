@@ -8,7 +8,7 @@
   margin-top: 1rem;
 }
 
-.option::after {
+.option:not(:last-child)::after {
   content: '';
   grid-column: 1 / 3;
   background: white;

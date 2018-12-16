@@ -8,6 +8,7 @@ export default {
   allowTrackingDesc:
     'Anonymous usage information is sent to the developer to better understand how the app is being used.',
   avatar: 'Avatar',
+  avatarCredit: '<0>Selected avatar art by</0> <1>{{artist}}</1>',
   cancel: 'Cancel',
   changelog: 'Changelog',
   chatColor: 'Chat Color',

@@ -9,6 +9,8 @@ import { setUsername, setColor, setSetting } from 'renderer/actions/settings'
 import { t } from '../../../../locale/index'
 import { avatarRegistry } from '../../../services/avatar'
 import { UserAvatar } from '../../lobby/UserAvatar'
+import { ExternalLink } from 'renderer/components/common/link'
+import { Trans } from 'react-i18next'
 
 interface IProps {}
 
@@ -27,23 +29,45 @@ class ProfileSettings extends Component<Props> {
     return this.usernameInput && this.usernameInput.value
   }
 
+  private get selectedAvatar() {
+    const { avatar } = this.props
+    return avatar ? avatarRegistry.getByURI(avatar) : null
+  }
+
   render(): JSX.Element | null {
+    const { selectedAvatar } = this
+    const hasArtist = selectedAvatar ? !!selectedAvatar.artist : false
     return (
       <section className={styles.section}>
         <h2>{t('profile')}</h2>
 
         <label>{t('avatar')}</label>
-        <div className={styles.avatarList}>
-          {avatarRegistry.getAll().map((avatar, idx) => (
-            <UserAvatar
-              key={idx}
-              avatar={avatar.src}
-              selected={avatar.uri === this.props.avatar}
-              onClick={() => {
-                this.props.dispatch!(setSetting('avatar', avatar.uri))
-              }}
-            />
-          ))}
+        <div className={styles.avatarContainer}>
+          <div className={styles.avatarList}>
+            {avatarRegistry.getAll().map((avatar, idx) => (
+              <UserAvatar
+                key={idx}
+                avatar={avatar.src}
+                selected={avatar.uri === this.props.avatar}
+                onClick={() => {
+                  this.props.dispatch!(setSetting('avatar', avatar.uri))
+                }}
+              />
+            ))}
+          </div>
+          {hasArtist && (
+            <div className={styles.avatarDesc}>
+              {/* prettier-ignore */}
+              <Trans i18nKey="avatarCredit" values={{ artist: selectedAvatar!.artist }}>
+                <span className={styles.blend}>Selected avatar art by</span>
+                {selectedAvatar!.href ? (
+                  <ExternalLink href={selectedAvatar!.href!} className="link-alt">Unknown</ExternalLink>
+                ) : (
+                  <span className={styles.blend}>Unknown</span>
+                )}
+              </Trans>
+            </div>
+          )}
         </div>
 
         <label htmlFor="profile_username">{t('username')}</label>

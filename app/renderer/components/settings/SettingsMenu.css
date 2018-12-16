@@ -48,12 +48,24 @@
   outline: none;
 }
 
+.avatarContainer {
+  margin-bottom: 0.8rem;
+}
+
 .avatarList {
   display: flex;
   flex-direction: row;
-  margin-bottom: 0.8rem;
+  margin-bottom: 0.2rem;
 }
 
 .avatarList > *:not(:last-child) {
   margin-right: 0.5rem;
+}
+
+.avatarDesc {
+  font-size: 12px;
+}
+
+.blend {
+  composes: blend-text-invert from 'styles/text.css';
 }
