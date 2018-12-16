@@ -67,7 +67,7 @@
   width: 100%;
   padding: 2px 8px;
   word-break: break-word;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.66);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.8);
   animation: var(--chat-fade-duration) ease-in var(--chat-fade-delay);
   animation-name: fadeout;
   /* Maintain transparency after animation finishes */
@@ -140,5 +140,5 @@
   composes: absolute-full center-vertical from 'styles/layout.css';
   padding: 0 var(--horizontal-padding);
   font-style: italic;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.66);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.8);
 }
