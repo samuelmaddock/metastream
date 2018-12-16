@@ -51,6 +51,7 @@ class ProfileSettings extends Component<Props> {
                 selected={avatar.uri === this.props.avatar}
                 onClick={() => {
                   this.props.dispatch!(setSetting('avatar', avatar.uri))
+                  ga('event', { ec: 'settings', ea: 'select_avatar', el: avatar.uri })
                 }}
               />
             ))}
