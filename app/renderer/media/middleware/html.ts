@@ -19,7 +19,10 @@ const mware: IMediaMiddleware = {
     })
 
     ctx.state.body = text
-    ctx.state.$ = load(text)
+    const $ = (ctx.state.$ = load(text))
+
+    // prettier-ignore
+    ctx.res.title = $('title').text().trim() || ctx.res.title
 
     return next()
   }
