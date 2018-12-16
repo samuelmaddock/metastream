@@ -24,6 +24,7 @@ const discordInviteMiddleware = (): Middleware<{}, IAppState> => {
 
       if (data) {
         dispatch(push(`/lobby/${data.id}?secret=${data.secret}`))
+        ga('event', { ec: 'discord', ea: 'join_lobby' })
       }
     })
 
@@ -63,6 +64,8 @@ const discordInviteMiddleware = (): Middleware<{}, IAppState> => {
           clearTimeout(timerId)
           pendingInviteTimers.delete(invite.id)
         }
+
+        ga('event', { ec: 'discord', ea: 'invite_reply', el: invite.response })
       }
       return next(action)
     }
