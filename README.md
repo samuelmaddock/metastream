@@ -61,13 +61,13 @@ Download the latest version of Metastream from
 
 ### Why Electron and not a web app?
 
+**tl;dr:** Electron is more flexible.
+
 There were two main designs goals in mind while building Metastream.
 1. Support most media streaming websites.
 1. Make networking resiliant in case any backend services go down. 
 
 #### Supporting websites
-
-tl;dr: Electron is more flexible.
 
 To synchronize media on websites, there are two options: use a public API provided by the service OR inject scripts to interact with the media player.
 
@@ -86,8 +86,6 @@ Ultimately Electron gives more flexibility to interact with webpages to help mak
 Most web apps typically provide only one way to connect to peers—using their proprietary backend service. If it ever goes down, you can no longer use the web app.
 
 By using Electron, I provide **two ways to connect to peers**: WebRTC, prone to downtime, and Websockets, always available for Direct IP connections.
-
-In the future, I'd like to investigate adding more ways to connect with friends such as using [Discord's Rich Presence](https://discordapp.com/developers/docs/rich-presence/how-to) features.
 
 ## How to Contribute
 
