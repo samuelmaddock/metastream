@@ -27,11 +27,13 @@
 	- Both P2P and Direct IP use client-server architecture.
 - Real-time chat with peers.
 - Queue of media requested by peers in session.
+- [Discord](https://discordapp.com/) Rich Presense, avatars, and [user session invites](https://support.discordapp.com/hc/en-us/articles/115001557452-Game-Invites-and-Detailed-Status-Rich-Presence-).
 - [Timestamp cue points](./resources/screenshots/screenshot2.png) parsed from media description.
 - Auto-fullscreen of embedded media players on websites.
 - Per-user playback permissions, managed by the host.
 - Basic host administrative functionality (kicking peers).
 - Partial [support for Chrome Extensions](./docs/extensions.md).
+- Localization—[see info on contributing](./app/locale).
 
 ## Install
 
