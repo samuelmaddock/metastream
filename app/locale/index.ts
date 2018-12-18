@@ -2,7 +2,7 @@ import i18n, { TranslationFunction } from 'i18next'
 import { reactI18nextModule } from 'react-i18next'
 
 import enUS from './en-US'
-import deDE from './de_DE'
+import deDE from './de-DE'
 import ptBR from './pt-BR'
 import { REQUEST_LANGUAGE, LANGUAGE } from 'constants/ipc'
 
