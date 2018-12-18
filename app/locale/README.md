@@ -14,3 +14,5 @@ Contributions are currently accepted via GitHub pull requests. If you'd like to 
 1. [Create a pull request](https://help.github.com/articles/creating-a-pull-request/) with your proposed changes.
 
 In the future, this process might be improved by switching to a translation service such as Crowdin.
+
+_If you'd rather not go through the steps above, but still want to contribute, get in touch at sam@getmetastream.com._
