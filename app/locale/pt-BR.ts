@@ -6,7 +6,7 @@ export default {
   allow: 'Permitir',
   allowTracking: 'Enviar informações de uso do aplicativo',
   allowTrackingDesc:
-    'Informações de uso anonimas serão enviadas para o desenvolvedor para entender melhor como o aplicativo está sendo usado.',
+    'Informações de uso anônimas serão enviadas para o desenvolvedor para entender melhor como o aplicativo está sendo usado.',
   avatar: 'Foto de Perfil',
   cancel: 'Cancelar',
   changelog: 'Registro de Alterações',
@@ -43,7 +43,7 @@ export default {
   lockQueue: 'Travar fila',
   moveToTop: 'Mover para o topo',
   next: 'Proximo',
-  nextUp: 'Proxima acima',
+  nextUp: 'Proximos',
   networkDisconnectHostDisconnect: 'O host fechou a sessão',
   networkDisconnectTimeout: 'Tempo Esgotado',
   networkDisconnectInvalidClientInfo: 'Informação de cliente invalida',
@@ -54,7 +54,7 @@ export default {
   noticeAddedMedia: '<Media id="{{mediaId}}">{{mediaTitle}}</Media> foi adcionado.',
   noticeMediaError: 'Erro ao acessar {{url}}',
   noticeNowPlaying:
-    'Agora reproduzindo <Media id="{{mediaId}}">{{mediaTitle}}</Media> adcionado por <Username id="{{userId}}">{{username}}</Username>.',
+    'Agora reproduzindo <Media id="{{mediaId}}">{{mediaTitle}}</Media> adicionado por <Username id="{{userId}}">{{username}}</Username>.',
   noticeUserRequestJoin:
     '<Username id="{{userId}}">{{username}}</Username> está pedindo para entrar.',
   offline: 'Offline',
@@ -62,7 +62,7 @@ export default {
   openInBrowser: 'Abrir no navegador',
   private: 'Privado',
   profile: 'Perfil',
-  public: 'Publico',
+  public: 'Público',
   reload: 'Recarregar',
   remove: 'Remover',
   repeat: 'Repetir',
@@ -72,7 +72,7 @@ export default {
   requiresPortForward:
     'Requer <1>liberação de portas</1> da porta <3>{{port}}</3> para aceitar coneções diretas.',
   sendDiscordInvite: '<1>Enviar convites do Discord</1> para enviar codigos de amigo automaticamente',
-  sessionModePublicDescription: 'Todo está permitdo para entrar.',
+  sessionModePublicDescription: 'Todos estão permitdos à entrar.',
   sessionModePrivateDescription: 'Permissão para entrar deve ser garantida explicitamente.',
   sessionModeOfflineDescription: 'Ninguém pode entrar.',
   settings: 'Configurações',
@@ -84,7 +84,7 @@ export default {
   toggleDJ: 'Alternar DJ',
   unlockQueue: 'Destravar fila',
   username: 'Nick',
-  users: 'Usuarios',
+  users: 'Usuários',
   userJoined: '<Username id="{{userId}}">{{username}}</Username> entrou.',
   userLeft: '<Username id="{{userId}}">{{username}}</Username> saiu.',
   viewOnGitHub: 'Ver no GitHub',
