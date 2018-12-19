@@ -8,6 +8,7 @@ export default {
   allowTrackingDesc:
     'Informações de uso anônimas serão enviadas para o desenvolvedor para entender melhor como o aplicativo está sendo usado.',
   avatar: 'Foto de Perfil',
+  avatarCredit: '<0>Arte do avatar selecionado por</0> <1>{{artist}}</1>',
   cancel: 'Cancelar',
   changelog: 'Registro de Alterações',
   chatColor: 'Cor no bate-papo',
