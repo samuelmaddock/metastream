@@ -4,20 +4,17 @@ import { reactI18nextModule } from 'react-i18next'
 import enUS from './en-US'
 import deDE from './de-DE'
 import ptBR from './pt-BR'
+import es from './es'
 import { REQUEST_LANGUAGE, LANGUAGE } from 'constants/ipc'
 
 export const DEFAULT_LANGUAGE = 'en-US'
 
 const resources = {
-  'de-DE': {
-    translation: deDE
-  },
-  'en-US': {
-    translation: enUS
-  },
-  'pt-BR': {
-    translation: ptBR
-  }
+  'de-DE': { translation: deDE },
+  'en-US': { translation: enUS },
+  es: { translation: es },
+  'es-ES': { translation: es },
+  'pt-BR': { translation: ptBR }
 }
 
 i18n.use(reactI18nextModule).init({
