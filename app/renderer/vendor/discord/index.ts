@@ -39,7 +39,8 @@ function init() {
       avatarEntry = avatarRegistry.register({
         type: DISCORD_AVATAR_TYPE,
         artist: 'Discord',
-        params: [id, avatar]
+        params: [id, avatar],
+        pii: true
       })
     }
   })

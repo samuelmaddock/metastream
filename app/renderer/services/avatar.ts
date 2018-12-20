@@ -15,6 +15,9 @@ interface RawAvatarEntry {
 
   /** Link to artist. */
   href?: string
+
+  /** Whether avatar uri may contain Personally identifiable information */
+  pii?: boolean
 }
 
 export interface AvatarEntry extends RawAvatarEntry {
