@@ -34,7 +34,7 @@ export default class MenuBuilder {
   }
 
   setupDevelopmentEnvironment() {
-    this.mainWindow.openDevTools()
+    this.mainWindow.webContents.openDevTools()
     this.mainWindow.webContents.on('context-menu', (e, props) => {
       const { x, y } = props
 
@@ -42,10 +42,10 @@ export default class MenuBuilder {
         {
           label: 'Inspect element',
           click: () => {
-            this.mainWindow.inspectElement(x, y)
+            this.mainWindow.webContents.inspectElement(x, y)
           }
         }
-      ]).popup(this.mainWindow)
+      ]).popup({window: this.mainWindow})
     })
   }
 
@@ -107,7 +107,7 @@ export default class MenuBuilder {
           label: 'Toggle Developer Tools',
           accelerator: 'Alt+Command+I',
           click: () => {
-            this.mainWindow.toggleDevTools()
+            this.mainWindow.webContents.toggleDevTools()
           }
         }
       ]
@@ -174,7 +174,7 @@ export default class MenuBuilder {
                 label: 'Toggle &Developer Tools',
                 accelerator: 'Ctrl+Shift+I',
                 click: () => {
-                  this.mainWindow.toggleDevTools()
+                  this.mainWindow.webContents.toggleDevTools()
                 }
               }
             ]

@@ -17,7 +17,6 @@ if (process.env.NODE_ENV === 'development') {
   ;(app as any).setVersion(VERSION)
 }
 
-import 'browser/net'
 import * as protocols from './browser/protocols'
 import { initUpdater } from 'browser/update'
 import 'browser/fetch'
@@ -60,16 +59,18 @@ import 'browser/media-router'
 import 'browser/vendor/discord'
 
 function main() {
-  const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
-    const win = getMainWindow()
-    // Someone tried to run a second instance, we should focus our window.
-    if (win) {
-      if (win.isMinimized()) win.restore()
-      win.focus()
-    }
-  })
+  const isFirstInstance = app.requestSingleInstanceLock()
 
-  if (shouldQuit) {
+  if (isFirstInstance) {
+    app.on('second-instance', () => {
+      const win = getMainWindow()
+      // Someone tried to run a second instance, we should focus our window.
+      if (win) {
+        if (win.isMinimized()) win.restore()
+        win.focus()
+      }
+    })
+  } else {
     app.quit()
     return
   }
