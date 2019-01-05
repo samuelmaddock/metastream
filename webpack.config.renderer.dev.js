@@ -37,7 +37,8 @@ export default merge.smart(baseConfig, {
   target: 'web',
 
   externals: {
-    electron: 'chrome'
+    electron: 'chrome',
+    'is-electron-renderer': JSON.stringify(true)
   },
 
   entry: [

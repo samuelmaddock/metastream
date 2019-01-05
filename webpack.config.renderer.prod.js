@@ -16,7 +16,8 @@ export default merge.smart(baseConfig, prodConfig, {
   target: 'web',
 
   externals: {
-    electron: 'chrome'
+    electron: 'chrome',
+    'is-electron-renderer': JSON.stringify(true)
   },
 
   entry: './app/renderer/index',

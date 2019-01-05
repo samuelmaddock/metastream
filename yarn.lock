@@ -3865,9 +3865,10 @@ electron-download@brave/electron-download:
     path-exists "^1.0.0"
     rc "^1.1.2"
 
-"electron-ipc-stream@git+ssh://git@github.com/samuelmaddock/electron-ipc-stream.git#0.3.0":
+electron-ipc-stream@^0.2.0:
   version "0.2.0"
-  resolved "git+ssh://git@github.com/samuelmaddock/electron-ipc-stream.git#a6dd3af79cfba196585607ac82506bfaddb0e7fc"
+  resolved "https://registry.yarnpkg.com/electron-ipc-stream/-/electron-ipc-stream-0.2.0.tgz#07b374e7e26e619de56d5caf99f8ba0a93209c06"
+  integrity sha1-B7N05+JuYZ3lbVyvmfi6CpMgnAY=
   dependencies:
     buffer-json "^1.0.0"
     is-electron-renderer "^2.0.0"

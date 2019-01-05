@@ -15,6 +15,7 @@ const depExclude = new Set([
   'request',
   'electron',
   'electron-debug',
+  'electron-ipc-stream',
   'electron-localshortcut',
   'electron-updater',
   'simple-websocket',

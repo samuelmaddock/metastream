@@ -2,7 +2,7 @@ import { ipcRenderer } from 'electron'
 import { NetConnection, NetUniqueId } from 'renderer/network'
 import { PeerCoordinator } from 'renderer/network/server'
 
-import * as IPCStream from 'electron-ipc-stream/renderer'
+import * as IPCStream from 'electron-ipc-stream'
 
 export class WebSocketServerCoordinator extends PeerCoordinator {
   constructor() {

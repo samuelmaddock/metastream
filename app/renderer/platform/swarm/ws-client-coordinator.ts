@@ -5,7 +5,7 @@ import { NetConnection, NetUniqueId } from 'renderer/network'
 import { PeerCoordinator } from 'renderer/network/server'
 
 import * as WebSocket from 'simple-websocket'
-import * as IPCStream from 'electron-ipc-stream/renderer'
+import * as IPCStream from 'electron-ipc-stream'
 import { WEBSOCKET_PORT_DEFAULT } from 'constants/network'
 import { isP2PHash } from 'utils/network'
 import { ipcRendererRpc } from 'utils/ipcRenderer'
