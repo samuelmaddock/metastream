@@ -163,7 +163,7 @@
     "css-loader": "^0.28.11",
     "dat-swarm-defaults": "^1.0.0",
     "dotenv-webpack": "^1.5.7",
-    "electron": "brave/electron-prebuilt",
+    "electron": "^4.0.1",
     "electron-builder": "20.20.4",
     "electron-devtools-installer": "^2.2.1",
     "electron-discord-register": "^1.0.0",
