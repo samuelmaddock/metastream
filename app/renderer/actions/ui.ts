@@ -1,5 +1,4 @@
-const { ipcRenderer } = chrome
-
+import { ipcRenderer } from 'electron'
 import { actionCreator } from 'utils/redux'
 import { LobbyModal } from '../reducers/ui'
 import { AppThunkAction } from 'types/redux-thunk'

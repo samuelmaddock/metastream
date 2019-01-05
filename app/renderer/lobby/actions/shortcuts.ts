@@ -1,5 +1,4 @@
-const { ipcRenderer } = chrome
-import { Dispatch } from 'react-redux'
+import { ipcRenderer } from 'electron'
 import { IAppState } from 'renderer/reducers'
 
 import {

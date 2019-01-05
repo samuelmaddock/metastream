@@ -1,4 +1,4 @@
-const { ipcRenderer } = chrome
+import { ipcRenderer } from 'electron'
 
 let ipcGuid = 0
 

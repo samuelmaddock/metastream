@@ -1,12 +1,9 @@
 import SimplePeer, { SimplePeerData } from 'simple-peer'
-const { remote, ipcRenderer } = chrome
-import { EventEmitter } from 'events'
+import { ipcRenderer } from 'electron'
 
-import { NetServer, NetUniqueId } from 'renderer/network'
+import { NetUniqueId } from 'renderer/network'
 import { PeerCoordinator } from 'renderer/network/server'
 import { RTCPeerConn } from 'renderer/network/rtc'
-
-import { PlatformService } from '../index'
 
 const iceServers = [
   { url: 'stun:stun1.l.google.com:19302' },

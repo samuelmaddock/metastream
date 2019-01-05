@@ -1,4 +1,4 @@
-const { ipcRenderer } = chrome;
+import { ipcRenderer } from 'electron'
 import { CoreOptions, RequestResponse } from 'request';
 
 let fetchId = 0;

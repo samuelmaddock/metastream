@@ -3,7 +3,7 @@ import { ISessionState } from 'renderer/lobby/reducers/session'
 import { ISettingsState } from '../../reducers/settings'
 import { encodeDiscordSecret } from './secret'
 import { PlaybackState } from 'renderer/lobby/reducers/mediaPlayer'
-const { ipcRenderer } = chrome
+import { ipcRenderer } from 'electron'
 
 class DiscordSessionObserver implements SessionObserver {
   setting: any = 'discordPresence'

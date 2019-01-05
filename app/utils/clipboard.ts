@@ -1,4 +1,4 @@
-const { remote } = chrome;
+import { remote } from 'electron'
 
 export const copyToClipboard = (data: any, type?: string): void => {
   const { clipboard } = remote;

@@ -1,5 +1,4 @@
-const { ipcRenderer, remote } = chrome
-
+import { ipcRenderer } from 'electron'
 import { Platform, ILobbyOptions, ILobbySession } from 'renderer/platform/types'
 import { NetServer, NetUniqueId } from 'renderer/network'
 import { SwarmRTCPeerCoordinator } from 'renderer/platform/swarm/rtc-coordinator'

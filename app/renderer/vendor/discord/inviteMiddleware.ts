@@ -6,7 +6,7 @@ import { addChat } from '../../lobby/actions/chat'
 import { decodeDiscordSecret } from './secret'
 import { push } from 'react-router-redux'
 import { translateEscaped } from 'locale'
-const { ipcRenderer } = chrome
+import { ipcRenderer } from 'electron'
 
 const DISCORD_INVITE_TIMEOUT = 30e3
 

@@ -2,7 +2,7 @@ export { default as DiscordSessionObserver } from './sessionObserver'
 export { default as discordInviteMiddleware } from './inviteMiddleware'
 
 import { avatarRegistry, AvatarEntry } from '../../services/avatar'
-const { ipcRenderer } = chrome
+import { ipcRenderer } from 'electron'
 
 const DISCORD_CDN = 'https://cdn.discordapp.com/'
 const DISCORD_AVATAR_TYPE = 'discord'

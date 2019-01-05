@@ -1,6 +1,5 @@
-const { ipcRenderer } = chrome
-
-import { NetConnection, NetServer, NetUniqueId } from 'renderer/network'
+import { ipcRenderer } from 'electron'
+import { NetConnection, NetUniqueId } from 'renderer/network'
 import { PeerCoordinator } from 'renderer/network/server'
 
 import * as IPCStream from 'electron-ipc-stream/renderer'

@@ -1,4 +1,4 @@
-const { remote } = chrome
+import { remote } from 'electron'
 
 type QueryParams = { [key: string]: any }
 

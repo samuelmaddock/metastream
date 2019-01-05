@@ -1,11 +1,8 @@
-const { ipcRenderer } = chrome
 import isIp from 'is-ip'
 import { format as urlFormat } from 'url'
 
-import { NetConnection, NetServer, NetUniqueId } from 'renderer/network'
+import { NetConnection, NetUniqueId } from 'renderer/network'
 import { PeerCoordinator } from 'renderer/network/server'
-
-import { PlatformService } from '../index'
 
 import * as WebSocket from 'simple-websocket'
 import * as IPCStream from 'electron-ipc-stream/renderer'

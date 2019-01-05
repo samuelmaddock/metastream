@@ -1,5 +1,6 @@
 import i18n, { TranslationFunction } from 'i18next'
 import { reactI18nextModule } from 'react-i18next'
+import { ipcRenderer } from 'electron'
 
 import enUS from './en-US'
 import deDE from './de-DE'
@@ -41,7 +42,6 @@ export const translateEscaped: typeof t = (key, vars) => {
 }
 
 export function initLocale() {
-  const { ipcRenderer } = chrome
   ipcRenderer.on(LANGUAGE, (e: Electron.Event, lang: string) => {
     console.debug(`Setting language to ${lang}`)
     if (lang !== i18n.language) {
