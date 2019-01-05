@@ -1,6 +1,6 @@
 import fs from 'fs-extra'
 import path from 'path'
-import { app, session, componentUpdater, ipcMain, BrowserWindow } from 'electron'
+import { app, session, ipcMain, BrowserWindow } from 'electron'
 import * as settings from 'electron-settings'
 import log from './log'
 import * as widevine from 'constants/widevine'
@@ -28,17 +28,17 @@ const getSettingsList = () => {
 const SETTINGS_EXT_LIST = 'extensions.list'
 
 const loadExtension = (session: Electron.session, extId: string, extPath: string) => {
-  session.extensions.load(extPath, {}, 'unpacked')
+  // session.extensions.load(extPath, {}, 'unpacked')
 }
 
 const enableExtension = (session: Electron.session, extId: string) => {
-  session.extensions.enable(extId)
+  // session.extensions.enable(extId)
   activeExtensions.add(extId)
   settings.set(SETTINGS_EXT_LIST, Array.from(activeExtensions))
 }
 
 const disableExtension = (session: Electron.session, extId: string) => {
-  session.extensions.disable(extId)
+  // session.extensions.disable(extId)
   activeExtensions.delete(extId)
   settings.set(SETTINGS_EXT_LIST, Array.from(activeExtensions))
 }
@@ -186,35 +186,35 @@ function loadMediaExtensions(session: Electron.Session) {
 
 const registerComponent = (extensionId: string, publicKeyString: string) => {
   if (typeof publicKeyString !== 'undefined') {
-    componentUpdater.registerComponent(extensionId, publicKeyString)
+    // componentUpdater.registerComponent(extensionId, publicKeyString)
   } else {
-    componentUpdater.registerComponent(extensionId)
+    // componentUpdater.registerComponent(extensionId)
   }
 }
 
 function loadComponents() {
-  componentUpdater.on('component-checking-for-updates', (e: any, cid: string) => {
-    log.debug(`[Component] Checking for update ${cid}`)
-  })
-  componentUpdater.on('component-update-found', (e: any, cid: string) => {
-    log.debug(`[Component] Update found ${cid}`)
-  })
-  componentUpdater.on('component-update-ready', (e: any, cid: string) => {
-    log.debug(`[Component] Update ready ${cid}`)
-  })
-  componentUpdater.on('component-update-updated', (e: any, cid: string, version: string) => {
-    log.debug(`[Component] Updated ${cid} to ${version}`)
-  })
-  componentUpdater.on('component-ready', (e: any, cid: string, extensionPath: string) => {
-    log.debug(`[Component] ${cid} ready in ${extensionPath}`)
-  })
-  componentUpdater.on('component-not-updated', (e: any, cid: string) => {
-    log.debug(`[Component] ${cid} not updated`)
-  })
-  componentUpdater.on('component-registered', (e: any, cid: string) => {
-    log.debug(`[Component] ${cid} registered`)
-    componentUpdater.checkNow(cid)
-  })
+  // componentUpdater.on('component-checking-for-updates', (e: any, cid: string) => {
+  //   log.debug(`[Component] Checking for update ${cid}`)
+  // })
+  // componentUpdater.on('component-update-found', (e: any, cid: string) => {
+  //   log.debug(`[Component] Update found ${cid}`)
+  // })
+  // componentUpdater.on('component-update-ready', (e: any, cid: string) => {
+  //   log.debug(`[Component] Update ready ${cid}`)
+  // })
+  // componentUpdater.on('component-update-updated', (e: any, cid: string, version: string) => {
+  //   log.debug(`[Component] Updated ${cid} to ${version}`)
+  // })
+  // componentUpdater.on('component-ready', (e: any, cid: string, extensionPath: string) => {
+  //   log.debug(`[Component] ${cid} ready in ${extensionPath}`)
+  // })
+  // componentUpdater.on('component-not-updated', (e: any, cid: string) => {
+  //   log.debug(`[Component] ${cid} not updated`)
+  // })
+  // componentUpdater.on('component-registered', (e: any, cid: string) => {
+  //   log.debug(`[Component] ${cid} registered`)
+  //   componentUpdater.checkNow(cid)
+  // })
 
   log.debug(`Registering widevine component ${widevine.widevineComponentId}`)
   registerComponent(widevine.widevineComponentId, widevine.widevineComponentPublicKey)
