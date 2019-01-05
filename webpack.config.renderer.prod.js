@@ -2,18 +2,22 @@
  * Build config for electron renderer process
  */
 
-import path from 'path';
-import webpack from 'webpack';
-import ExtractTextPlugin from 'extract-text-webpack-plugin';
+import path from 'path'
+import webpack from 'webpack'
+import ExtractTextPlugin from 'extract-text-webpack-plugin'
 // import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
-import merge from 'webpack-merge';
-import baseConfig from './webpack.config.base';
-import prodConfig from './webpack.config.prod';
+import merge from 'webpack-merge'
+import baseConfig from './webpack.config.base'
+import prodConfig from './webpack.config.prod'
 
 export default merge.smart(baseConfig, prodConfig, {
   devtool: 'source-map',
 
   target: 'web',
+
+  externals: {
+    electron: 'chrome'
+  },
 
   entry: './app/renderer/index',
 
@@ -121,17 +125,17 @@ export default merge.smart(baseConfig, prodConfig, {
       PRODUCTION: JSON.stringify(true),
       FEATURE_SESSION_BROWSER: JSON.stringify(false),
       FEATURE_DISCORD_RP: JSON.stringify(true),
-      FEATURE_DISCORD_INVITE: JSON.stringify(true),
+      FEATURE_DISCORD_INVITE: JSON.stringify(true)
     }),
 
     new ExtractTextPlugin({
       filename: 'style.css',
       ignoreOrder: true
-    }),
+    })
 
     // new BundleAnalyzerPlugin({
     //   analyzerMode: process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',
     //   openAnalyzer: process.env.OPEN_ANALYZER === 'true'
     // })
   ]
-});
+})
