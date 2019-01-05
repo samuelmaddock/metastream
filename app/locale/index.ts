@@ -19,7 +19,7 @@ const resources = {
 }
 
 i18n.use(reactI18nextModule).init({
-  debug: process.env.NODE_ENV === 'development',
+  debug: process.env.NODE_ENV === 'development' && process.type === 'renderer',
   resources,
   lng: DEFAULT_LANGUAGE,
   fallbackLng: DEFAULT_LANGUAGE,

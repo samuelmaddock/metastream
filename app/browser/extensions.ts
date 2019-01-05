@@ -76,12 +76,12 @@ function initProcessListeners() {
     info.file_path = fileUrl(info.base_path)
     extensionInfo.set(info.id, info)
 
-    log.info(
-      `Extension ready\n\tid=${info.id}\n\tbase_path=${
-        info.base_path
-      }\n\text_path=${getExtensionsPath()}\n\tisVendor=${isVendorExtension(info)}`,
-      info
-    )
+    log.info('Extension ready', {
+      id: info.id,
+      base_path: info.base_path,
+      text_path: getExtensionsPath(),
+      isVendor: isVendorExtension(info)
+    })
 
     if (isVendorExtension(info) && !activeExtensions.has(info.id)) {
       disableExtension(getSession(), info.id)
