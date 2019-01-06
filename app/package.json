@@ -12,7 +12,7 @@
   "license": "UNLICENSED",
   "private": true,
   "dependencies": {
-    "sodium-native": "^2.1.4",
-    "utp-native": "^1.2.2"
+    "sodium-native": "^2.2.4",
+    "utp-native": "^1.7.2"
   }
 }
