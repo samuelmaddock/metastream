@@ -10257,10 +10257,10 @@ svgo@^0.7.0:
     sax "~1.2.1"
     whet.extend "~0.9.9"
 
-swarm-peer-server@1.0.8:
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/swarm-peer-server/-/swarm-peer-server-1.0.8.tgz#642db4e056377ab4033bcc6202c0824a58d47535"
-  integrity sha512-aWMpxu0WM6OCdKYi3AVaanK57iPKwNjHuq7skenkol0q4/OK6nilyDeG7Xjz1fRg9GKdvc8pzTr077NzzF7uZw==
+swarm-peer-server@1.0.9:
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/swarm-peer-server/-/swarm-peer-server-1.0.9.tgz#6199ca538f1964deeb9471a0006a3732e8951c61"
+  integrity sha512-O38cMaU2S5CXLwJMr1o7+HxS2QGRt04npIUQS8uEbIlH2YKvQNabr2bGHOOwf+7Hl4LjuaXHjyQRTdxJrRCuMg==
   dependencies:
     debug "^3.1.0"
     discovery-swarm "^5.1.3"

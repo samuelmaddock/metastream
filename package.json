@@ -178,7 +178,7 @@
     "license-webpack-plugin": "^1.3.1",
     "redux-logger": "^3.0.1",
     "style-loader": "^0.21.0",
-    "swarm-peer-server": "1.0.8",
+    "swarm-peer-server": "1.0.9",
     "typescript": "2.8.4",
     "url-loader": "^1.0.1",
     "username": "^3.0.0",

@@ -48,7 +48,7 @@ export class WebSocketServer {
 
     esocket.once('connection', () => {
       log.debug(`Authenticated connection (${addr})`)
-      const peerKey = (esocket as any).peerKey as Buffer
+      const peerKey = Buffer.from((esocket as any).peerKey)
       const peerKeyStr = peerKey.toString('hex')
       const id = ++connId
       const streamChannel = `websocket/${peerKeyStr}/${id}`

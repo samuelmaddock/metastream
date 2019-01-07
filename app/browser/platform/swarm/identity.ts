@@ -2,6 +2,7 @@ import path from 'path'
 import fs from 'fs-extra'
 import { app } from 'electron'
 import { keyPair, KeyPair } from './crypto'
+import sodium from 'libsodium-wrappers'
 
 const KEYNAME = 'idkey'
 
@@ -36,6 +37,11 @@ export async function initIdentity(ephemeral: boolean = false) {
     } catch (e) {
       localKeyPair = keyPair()
     }
+  }
+
+  // convert old sodium-native keys to use new length compatible with libsodium-wrappers
+  if (localKeyPair.secretKey.length > sodium.crypto_box_PUBLICKEYBYTES) {
+    localKeyPair.secretKey = localKeyPair.secretKey.slice(0, sodium.crypto_box_PUBLICKEYBYTES)
   }
 
   return localKeyPair
