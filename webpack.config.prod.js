@@ -11,7 +11,6 @@ export default {
       unacceptablePattern: /GPL/,
       abortOnUnacceptableLicense: true,
       additionalPackages: [
-        'sodium-native',
         'utp-native'
       ],
       modulesDirectories: [

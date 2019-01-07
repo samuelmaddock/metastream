@@ -70,26 +70,30 @@ export class SwarmClient {
         this.swarmServer = null
       }
 
-      this.swarmServer = swarm.listen(
-        {
-          ...swarmDefaults({ hash: false }),
-          ...this.keyPair
-        },
-        async (esocket, peerKey) => {
-          const keyStr = peerKey.toString('hex')
-          log(`New swarm connection from ${keyStr}`)
+      swarm
+        .listen(
+          {
+            ...swarmDefaults({ hash: false }),
+            ...this.keyPair
+          },
+          async (esocket, peerKey) => {
+            const keyStr = peerKey.toString('hex')
+            log(`New swarm connection from ${keyStr}`)
 
-          try {
-            log(`${keyStr} signaling renderer`)
-            await signalRenderer(this.webContents, esocket, peerKey)
-            log(`${keyStr} connected to renderer`)
-          } catch (e) {
-            log.error(`Failed to connect to peer ${keyStr}:`, e)
-          } finally {
-            esocket.destroy()
+            try {
+              log(`${keyStr} signaling renderer`)
+              await signalRenderer(this.webContents, esocket, peerKey)
+              log(`${keyStr} connected to renderer`)
+            } catch (e) {
+              log.error(`Failed to connect to peer ${keyStr}:`, e)
+            } finally {
+              esocket.destroy()
+            }
           }
-        }
-      )
+        )
+        .then(swarmServer => {
+          this.swarmServer = swarmServer
+        })
 
       log('Swarm server now listening...')
     }

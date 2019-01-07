@@ -1,5 +1,4 @@
 declare module 'electron-localshortcut'
-declare module 'sodium-native'
 declare module 'username'
 declare module 'dat-swarm-defaults'
 declare module 'electron-devtools-installer'

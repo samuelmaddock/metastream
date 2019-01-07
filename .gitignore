@@ -28,20 +28,6 @@ node_modules/*
 app/node_modules/*
 
 # Checkin utp-native custom builds
-!app/node_modules/sodium-native
-app/node_modules/sodium-native/*
-!app/node_modules/sodium-native/prebuilds
-app/node_modules/sodium-native/prebuilds/*
-!app/node_modules/sodium-native/prebuilds/darwin-x64
-app/node_modules/sodium-native/prebuilds/darwin-x64/*
-!app/node_modules/sodium-native/prebuilds/darwin-x64/node-55.node
-!app/node_modules/sodium-native/prebuilds/darwin-x64/node-67.node
-!app/node_modules/sodium-native/prebuilds/win32-x64
-app/node_modules/sodium-native/prebuilds/win32-x64/*
-!app/node_modules/sodium-native/prebuilds/win32-x64/node-55.node
-!app/node_modules/sodium-native/prebuilds/win32-x64/node-67.node
-
-# Checkin utp-native custom builds
 !app/node_modules/utp-native
 app/node_modules/utp-native/*
 !app/node_modules/utp-native/prebuilds

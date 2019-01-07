@@ -1,4 +1,4 @@
-import sodium from 'sodium-native'
+import sodium from 'libsodium-wrappers'
 
 export type Key = Buffer
 export type KeyHexString = string
@@ -8,15 +8,10 @@ export type KeyPair = {
   secretKey: Key
 }
 
-export function keyPair(seed?: string): KeyPair {
-  const publicKey = new Buffer(sodium.crypto_sign_PUBLICKEYBYTES)
-  const secretKey = new Buffer(sodium.crypto_sign_SECRETKEYBYTES)
-
-  if (seed) sodium.crypto_box_seed_keypair(publicKey, secretKey, seed)
-  else sodium.crypto_box_keypair(publicKey, secretKey)
-
+export function keyPair(): KeyPair {
+  const { publicKey, privateKey } = sodium.crypto_box_keypair()
   return {
-    publicKey: publicKey,
-    secretKey: secretKey
+    publicKey: Buffer.from(publicKey as any),
+    secretKey: Buffer.from(privateKey as any)
   }
 }
