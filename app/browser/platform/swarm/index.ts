@@ -67,11 +67,20 @@ ipcMain.on(
     const client = getSwarmClient(event)
     if (!client || !client.keyPair) return
 
-    log.debug(`create-auth-stream`)
-
     const streamChannel = `auth/${hostPublicKeyStr}`
+    log.debug(`create-auth-stream ${streamChannel}`)
+
     const stream = new IPCStream(streamChannel, event.sender)
     stream.destroy = stream.end // HACK for esocket
+
+    const origWrite = stream.write
+    stream.write = function(data: any) {
+      // HACK: electron doesn't support Uint8Array over IPC
+      if (data instanceof Uint8Array) {
+        data = Buffer.from(data as any)
+      }
+      origWrite.call(stream, data)
+    }
 
     const hostPublicKey = Buffer.from(hostPublicKeyStr, 'hex')
 
