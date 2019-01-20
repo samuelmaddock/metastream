@@ -5,6 +5,7 @@ import { ipcRenderer } from 'electron'
 import enUS from './en-US'
 import deDE from './de-DE'
 import ptBR from './pt-BR'
+import huHU from './hu-HU'
 import es from './es'
 import { REQUEST_LANGUAGE, LANGUAGE } from 'constants/ipc'
 
@@ -13,6 +14,7 @@ export const DEFAULT_LANGUAGE = 'en-US'
 const resources = {
   'de-DE': { translation: deDE },
   'en-US': { translation: enUS },
+  'hu-HU': { translation: huHU },
   es: { translation: es },
   'es-ES': { translation: es },
   'pt-BR': { translation: ptBR }
