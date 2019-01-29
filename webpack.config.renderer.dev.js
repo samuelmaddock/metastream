@@ -188,6 +188,7 @@ export default merge.smart(baseConfig, {
     inline: true,
     lazy: false,
     hot: true,
+    disableHostCheck: true,
     headers: { 'Access-Control-Allow-Origin': '*' },
     contentBase: path.join(__dirname, 'dist'),
     watchOptions: {
