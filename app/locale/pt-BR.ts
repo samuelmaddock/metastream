@@ -41,6 +41,8 @@ export default {
   join: 'Entrar',
   joinSession: 'Entrar na sessão',
   kick: 'Expulsar',
+  language: 'Idioma',
+  launchDiscordInvite: 'Abra o Discord e reinicie o {{productName}} para usar os convites do Discord.',
   lockQueue: 'Travar fila',
   moveToTop: 'Mover para o topo',
   next: 'Proximo',
