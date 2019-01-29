@@ -24,3 +24,14 @@ export const SwitchOption: React.SFC<ISwitchOptionProps> = props => {
     </div>
   )
 }
+
+export const Dropdown: React.SFC<React.SelectHTMLAttributes<{ children: React.ReactNode }>> = ({
+  children,
+  ...props
+}) => {
+  return (
+    <select className={styles.dropdown} {...props}>
+      {children}
+    </select>
+  )
+}

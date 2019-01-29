@@ -7,6 +7,9 @@ import React from 'react'
 import { render } from 'react-dom'
 import { AppContainer } from 'react-hot-loader'
 import { History } from 'history'
+import { Store } from 'react-redux'
+import { IAppState } from 'renderer/reducers'
+import { Persistor } from 'redux-persist'
 
 import Root from './containers/Root'
 import * as cfgStore from './store/configureStore'
@@ -18,9 +21,9 @@ import { PlatformService } from 'renderer/platform'
 import { initAnalytics } from './analytics/index'
 import { initLocale } from 'locale'
 
-let store: any
+let store: Store<IAppState>
 let history: History
-let persistor: any
+let persistor: Persistor
 
 function logger() {
   chrome.ipcRenderer.on('log', (event: Electron.Event, payload: { type: string; args: any[] }) => {
@@ -35,7 +38,14 @@ function init() {
   document.title = PRODUCT_NAME
 
   history = cfgStore.history
-  const storeCfg = cfgStore.configureStore()
+
+  const storeCfg = cfgStore.configureStore({
+    persistCallback: () => {
+      const state = store.getState()
+      initLocale(state.settings.language)
+    }
+  })
+
   store = storeCfg.store
   persistor = storeCfg.persistor
 
@@ -49,7 +59,6 @@ function init() {
   }
 
   initAnalytics(store, history)
-  initLocale()
 
   render(
     <AppContainer>

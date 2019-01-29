@@ -89,7 +89,8 @@ body,
 body,
 input,
 input::-webkit-input-placeholder,
-textarea {
+textarea,
+select {
   font-family: 'Karla', sans-serif;
   font-size: 16px;
   color: var(--app-text-color);

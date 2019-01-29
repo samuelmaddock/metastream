@@ -1,23 +1,23 @@
-import { createStore, applyMiddleware, compose, DeepPartial } from 'redux'
-import thunk from 'redux-thunk'
 import { createHashHistory } from 'history'
-import { routerMiddleware, routerActions } from 'react-router-redux'
+import { routerActions, routerMiddleware } from 'react-router-redux'
+import { applyMiddleware, compose, createStore } from 'redux'
 import { createLogger } from 'redux-logger'
-import { persistStore, persistReducer } from 'redux-persist'
-import persistConfig from './persistStore'
-import rootReducer from '../reducers'
-import { IExtra } from 'types/thunk'
+import { persistReducer, persistStore } from 'redux-persist'
+import thunk from 'redux-thunk'
 import appMiddleware from 'renderer/store/appMiddleware'
+import rootReducer from '../reducers'
+import persistConfig from './persistStore'
+import { ConfigureStoreOptions } from './types'
 
 const history = createHashHistory()
 
-const configureStore = (extra: IExtra, initialState: {} = {}) => {
+const configureStore = (opts: ConfigureStoreOptions) => {
   // Redux Configuration
   const middleware = []
   const enhancers = []
 
   // Thunk Middleware
-  const thunkMiddleware = thunk.withExtraArgument(extra)
+  const thunkMiddleware = thunk.withExtraArgument(opts.extra)
   middleware.push(thunkMiddleware)
 
   // App Middleware
@@ -54,8 +54,8 @@ const configureStore = (extra: IExtra, initialState: {} = {}) => {
   const enhancer = composeEnhancers(...enhancers)
 
   // Create Store
-  const store = createStore(persistedReducer, initialState, enhancer)
-  const persistor = persistStore(store)
+  const store = createStore(persistedReducer, opts.initialState || {}, enhancer)
+  const persistor = persistStore(store, undefined, opts.persistCallback)
 
   if (module.hot) {
     module.hot.accept('../reducers', () => {

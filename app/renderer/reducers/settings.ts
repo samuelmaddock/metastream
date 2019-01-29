@@ -34,6 +34,7 @@ export interface ISettingsState {
   sessionMode: SessionMode
   discordPresence: boolean
   avatar?: string
+  language?: string
 }
 
 const initialState: ISettingsState = {

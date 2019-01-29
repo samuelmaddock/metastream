@@ -45,6 +45,7 @@ export default {
   join: 'Join',
   joinSession: 'Join Session',
   kick: 'Kick',
+  language: 'Language',
   launchDiscordInvite: 'Launch Discord and restart {{productName}} to use Discord invites.',
   lockQueue: 'Lock queue',
   moveToTop: 'Move to top',

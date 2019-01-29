@@ -1,4 +1,4 @@
-import i18n, { TranslationFunction } from 'i18next'
+import i18n, { TranslationFunction, Resource } from 'i18next'
 import { reactI18nextModule } from 'react-i18next'
 import { ipcRenderer } from 'electron'
 
@@ -11,14 +11,25 @@ import { REQUEST_LANGUAGE, LANGUAGE } from 'constants/ipc'
 
 export const DEFAULT_LANGUAGE = 'en-US'
 
-const resources = {
-  'de-DE': { translation: deDE },
-  'en-US': { translation: enUS },
-  es: { translation: es },
-  'es-ES': { translation: es },
-  'pt-BR': { translation: ptBR },
-  'hu-HU': { translation: huHU }
-}
+export const locales = [
+  { label: 'Deutsch', code: 'de-DE', translation: deDE, flag: '🇭🇺' },
+  { label: 'English', code: 'en-US', translation: enUS, flag: '🇺🇸' },
+  { label: 'Español', code: 'es-ES', translation: es, flag: '🇪🇸' },
+  { label: 'Português do Brasil', code: 'pt-BR', translation: ptBR, flag: '🇧🇷' },
+  { label: 'Magyar', code: 'hu-HU', translation: huHU, flag: '🇭🇺' }
+]
+
+const resources: Resource = locales.reduce(
+  (obj, locale) => ({
+    ...obj,
+    [locale.code]: {
+      translation: locale.translation
+    }
+  }),
+  {}
+)
+
+resources.es = resources['es-ES']
 
 i18n.use(reactI18nextModule).init({
   debug: process.env.NODE_ENV === 'development' && process.type === 'renderer',
@@ -43,16 +54,26 @@ export const translateEscaped: typeof t = (key, vars) => {
   })
 }
 
-export function initLocale() {
-  ipcRenderer.on(LANGUAGE, (e: Electron.Event, lang: string) => {
-    console.debug(`Setting language to ${lang}`)
-    if (lang !== i18n.language) {
-      i18n.changeLanguage(lang)
-    }
-  })
-  ipcRenderer.send(REQUEST_LANGUAGE)
-
+export function initLocale(defaultLocale?: string) {
   if (process.env.NODE_ENV === 'development') {
     Object.assign((window as any).app, { i18n })
+  }
+
+  if (typeof defaultLocale === 'string') {
+    setLocale(defaultLocale)
+  } else {
+    ipcRenderer.on(LANGUAGE, (e: Electron.Event, lang: string) => {
+      if (typeof lang === 'string') {
+        setLocale(lang)
+      }
+    })
+    ipcRenderer.send(REQUEST_LANGUAGE)
+  }
+}
+
+export const setLocale = (locale: string) => {
+  console.debug(`Setting locale to ${locale}`)
+  if (locale !== i18n.language) {
+    i18n.changeLanguage(locale)
   }
 }
