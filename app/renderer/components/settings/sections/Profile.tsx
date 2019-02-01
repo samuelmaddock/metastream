@@ -61,7 +61,7 @@ class ProfileSettings extends Component<Props> {
             ))}
           </div>
           {hasArtist && (
-            <div className={styles.avatarDesc}>
+            <div className={styles.small}>
               {/* prettier-ignore */}
               <Trans i18nKey="avatarCredit" values={{ artist: selectedAvatar!.artist }}>
                 <span className={styles.blend}>Selected avatar art by</span>
