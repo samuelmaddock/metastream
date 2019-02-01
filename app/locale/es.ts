@@ -81,7 +81,7 @@ export default {
   requiresPortForward:
     'Para aceptar conexiones directas se requiere <1>enrutar los siguientes puertos</1> <3>{{port}}</3>.',
   sendDiscordInvite:
-    '<1>Enviar invitaciones de Discord</1> para compartir código de amigo automáticamente.',
+    '<0>Enviar invitaciones de Discord</0> para compartir código de amigo automáticamente.',
   sessionModePublicDescription: 'Cualquier usuario puede unirse.',
   sessionModePrivateDescription: 'Permiso para unirse debe ser otorgado explicitamente.',
   sessionModeOfflineDescription: 'Nadie está permitido unirse.',

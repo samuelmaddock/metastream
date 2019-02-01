@@ -74,7 +74,7 @@ export default {
   requiresDJPermissions: 'Requer permissão de DJ',
   requiresPortForward:
     'Requer <1>liberação de portas</1> da porta <3>{{port}}</3> para aceitar coneções diretas.',
-  sendDiscordInvite: '<1>Enviar convites do Discord</1> para enviar codigos de amigo automaticamente',
+  sendDiscordInvite: '<0>Enviar convites do Discord</0> para enviar codigos de amigo automaticamente',
   sessionModePublicDescription: 'Todos podem entrar.',
   sessionModePrivateDescription: 'Quem entrar precisa de permissão.',
   sessionModeOfflineDescription: 'Uma sala privada.',

@@ -77,7 +77,7 @@ export default {
   requiresDJPermissions: 'A kérés DJ szerepkörhöz kötött',
   requiresPortForward:
     '<1>Port továbbítás</1> szükséges: <3>{{port}}</3>',
-  sendDiscordInvite: '<1>Discord meghívó küldése</1> a baráti kód automatikus megjelenítésére.',
+  sendDiscordInvite: '<0>Discord meghívó küldése</0> a baráti kód automatikus megjelenítésére.',
   sessionModePublicDescription: 'Bárki csatlakozhat.',
   sessionModePrivateDescription: 'Közvetlen engedély szükséges a csatlakozáshoz.',
   sessionModeOfflineDescription: 'Senki nem engedélyezte a csatlakozást.',

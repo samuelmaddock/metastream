@@ -78,7 +78,7 @@ export default {
   requiresDJPermissions: 'Requires DJ permissions',
   requiresPortForward:
     'Requires <1>setting up port forwarding</1> of <3>{{port}}</3> to accept direct connections.',
-  sendDiscordInvite: '<1>Send Discord invites</1> to share friend codes automatically',
+  sendDiscordInvite: '<0>Send Discord invites</0> to share friend codes automatically',
   sessionModePublicDescription: 'Anyone is allowed to join.',
   sessionModePrivateDescription: 'Permission to join must be granted explicitly.',
   sessionModeOfflineDescription: 'No one is allowed to join.',

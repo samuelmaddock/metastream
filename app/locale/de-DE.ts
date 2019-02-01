@@ -77,7 +77,7 @@ export default {
   requiresDJPermissions: 'Erfordert DJ Rechte',
   requiresPortForward:
     'Erfordert <1>das freigeben des Ports</1> <3>{{port}}</3> um direkte Verbindungen zu ermöglichen.',
-  sendDiscordInvite: '<1>Sende Discord Einladungen</1> um Freundescodes automatisch zu tauschen',
+  sendDiscordInvite: '<0>Sende Discord Einladungen</0> um Freundescodes automatisch zu tauschen',
   sessionModePublicDescription: 'Jedem ist es erlaubt beizutreten.',
   sessionModePrivateDescription: 'Erlaubnis um beizutreten muss gegeben werden.',
   sessionModeOfflineDescription: 'Niemand darf beitreten.',
