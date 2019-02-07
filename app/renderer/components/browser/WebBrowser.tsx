@@ -11,8 +11,6 @@ import { IReactReduxProps } from 'types/redux-thunk'
 const { ipcRenderer, remote } = chrome
 
 const DEFAULT_URL = absoluteUrl('./browser/resources/homescreen.html')
-// const DEFAULT_URL = 'https://www.google.com/';
-// const DEFAULT_URL = 'data:text/html,<style>html{color:#fff;font-size:36px}</style>B R O W S E R';
 
 interface IProps {
   className?: string

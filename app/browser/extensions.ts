@@ -1,11 +1,12 @@
 import fs from 'fs-extra'
 import path from 'path'
-import { app, session, componentUpdater, ipcMain, BrowserWindow } from 'electron'
+import { app, componentUpdater, ipcMain, BrowserWindow } from 'electron'
 import * as settings from 'electron-settings'
 import log from './log'
 import * as widevine from 'constants/widevine'
 import { fileUrl } from 'utils/appUrl'
 import * as walkdir from 'walkdir'
+import { getMediaSession } from './session'
 
 const extVerRegex = /^[\d._]+$/
 const isExtVersion = (dirName: string) => !!extVerRegex.exec(dirName)
@@ -44,7 +45,6 @@ const disableExtension = (session: Electron.session, extId: string) => {
 }
 
 const getActiveExtensions = () => Array.from(activeExtensions)
-const getSession = () => session.fromPartition('persist:mediaplayer', { cache: true })
 
 const APP_EXTENSIONS = new Set([
   'dfmpchfgfkhhkigicpheeacmlkbomihe' /*enhanced-media-viewer*/,
@@ -63,7 +63,7 @@ export function initExtensions() {
     loadComponents()
   }
 
-  const mediaSession = getSession()
+  const mediaSession = getMediaSession()
   loadMediaExtensions(mediaSession)
   loadVendorExtensions(mediaSession)
   initIpc(mediaSession)
@@ -84,7 +84,7 @@ function initProcessListeners() {
     })
 
     if (isVendorExtension(info) && !activeExtensions.has(info.id)) {
-      disableExtension(getSession(), info.id)
+      disableExtension(getMediaSession(), info.id)
     }
   })
 
@@ -264,7 +264,7 @@ function ipcError(sender: Electron.WebContents, err: Error) {
 
 async function ipcSet(event: Electron.Event, extId: string, enable: boolean) {
   log.debug(`[Extension] Setting extension ${extId} to ${enable}`)
-  const session = getSession()
+  const session = getMediaSession()
   if (enable) {
     enableExtension(session, extId)
   } else {
@@ -278,7 +278,7 @@ function ipcStatus(event: Electron.Event) {
 }
 
 function ipcReload(event: Electron.Event) {
-  loadVendorExtensions(getSession())
+  loadVendorExtensions(getMediaSession())
   onExtensionsChange()
 }
 

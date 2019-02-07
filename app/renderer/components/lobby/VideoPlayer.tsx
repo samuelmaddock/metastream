@@ -14,7 +14,7 @@ import { DispatchProp, connect } from 'react-redux'
 import { PlaybackControls } from 'renderer/components/media/PlaybackControls'
 import { setVolume } from 'renderer/actions/settings'
 import { clamp } from 'utils/math'
-import { WEBVIEW_PARTITION, MEDIA_REFERRER } from 'constants/http'
+import { WEBVIEW_PARTITION, MEDIA_REFERRER, MEDIA_SESSION_USER_AGENT } from 'constants/http'
 import { absoluteUrl } from 'utils/appUrl'
 import { IAppState } from 'renderer/reducers'
 import { getPlaybackTime2 } from 'renderer/lobby/reducers/mediaPlayer.helpers'
@@ -310,7 +310,10 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     // this.updatePlayback(PlaybackState.Paused);
 
     if (this.webContents) {
-      this.webContents.loadURL(this.mediaUrl, { httpReferrer: this.httpReferrer })
+      this.webContents.loadURL(this.mediaUrl, {
+        httpReferrer: this.httpReferrer,
+        userAgent: MEDIA_SESSION_USER_AGENT
+      })
     }
 
     ipcRenderer.send('media-cleanup')
