@@ -88,6 +88,8 @@ export default {
   unlockQueue: 'Destravar fila',
   username: 'Nick',
   users: 'Usuários',
+  maxUsers: 'Máximo de usuários',
+  unlimitedUsers: 'Usuários ilimitados',
   userJoined: '<Username id="{{userId}}">{{username}}</Username> entrou.',
   userLeft: '<Username id="{{userId}}">{{username}}</Username> saiu.',
   viewOnGitHub: 'Ver no GitHub',

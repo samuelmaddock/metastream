@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, ChangeEvent } from 'react'
 import { connect } from 'react-redux'
 import cx from 'classnames'
 
@@ -19,6 +19,9 @@ import Dialog, {
   DialogTitle
 } from 'material-ui/Dialog'
 import { IReactReduxProps } from 'types/redux-thunk'
+import { Dropdown } from 'renderer/components/settings/controls';
+import { setSessionData } from 'renderer/lobby/actions/session';
+import { getMaxUsers } from 'renderer/lobby/reducers/session';
 
 interface IProps {
   className?: string
@@ -37,6 +40,7 @@ interface IConnectedProps {
   hostId: string
   hostName: string
   numUsers: number
+  maxUsers: number
   settings: ISettingsState
 }
 
@@ -48,8 +52,6 @@ class SessionSettings extends Component<PrivateProps, IState> {
   render(): JSX.Element {
     /*
     TODO:
-    - public/private
-    - num users
     - password?
     - allow chat
     - Allow Direct IP [on/off]
@@ -58,7 +60,7 @@ class SessionSettings extends Component<PrivateProps, IState> {
     */
     return (
       <div className={cx(styles.container, this.props.className)}>
-        {/* <select>{this.renderUserOpts()}</select> */}
+        {this.renderUserOpts()}
         {this.renderSessionMode()}
         {this.renderSessionModeDialog()}
       </div>
@@ -153,21 +155,37 @@ class SessionSettings extends Component<PrivateProps, IState> {
   }
 
   private renderUserOpts() {
-    const userOpts = []
-
-    for (let i = 2; i <= USERS_MAX; i = i << 1) {
-      userOpts.push(i)
+    if (this.props.settings.sessionMode === SessionMode.Offline) {
+      return false
     }
 
-    const elems = userOpts.map(numUsers => {
-      return <option value={numUsers}>{numUsers} users</option>
-    })
+    const dispatch = this.props.dispatch!
+    const userOpts: JSX.Element[] = []
+
+    const updateMaxUsers = (ev: ChangeEvent<{ children: React.ReactNode }>) => {
+      const newValue = (ev.currentTarget as HTMLSelectElement).value
+      dispatch(setSessionData({ maxUsers: parseInt(newValue) }))
+    }
+
+    const addOption = (opt: number, customLbl: string | null) => {
+      const element = <option key={opt} value={opt} selected={opt === this.props.maxUsers}>
+        {customLbl || `${opt} ${t('users')}`}
+      </option>
+
+      userOpts.push(element)
+    }
+
+    for (let i = 2; i <= USERS_MAX; i = i << 1) {
+      addOption(i, null)
+    }
+    addOption(Infinity, t('unlimitedUsers'))
 
     return (
       <>
-        <option value={1}>Solo</option>
-        {elems}
-        <option value={Infinity}>Unlimited users (EXPERIMENTAL)</option>
+        <h4>{t('maxUsers')}</h4>
+        <Dropdown className={styles.maxUsers} onChange={updateMaxUsers}>
+          {userOpts}
+        </Dropdown>
       </>
     )
   }
@@ -180,6 +198,7 @@ export default connect(
       hostId: getHostId(state),
       hostName: getHost(state).name,
       numUsers: getNumUsers(state),
+      maxUsers: getMaxUsers(state),
       settings: state.settings
     }
   }

@@ -96,6 +96,8 @@ export default {
   unlockQueue: 'Desbloquear cola',
   username: 'Usuario',
   users: 'Usuarios',
+  maxUsers: 'Máximo de usuarios',
+  unlimitedUsers: 'Usuarios ilimitados',
   userJoined: '<Username id="{{userId}}">{{username}}</Username> se ha unido.',
   userLeft: '<Username id="{{userId}}">{{username}}</Username> se ha ido.',
   viewOnGitHub: 'Ver en GitHub',

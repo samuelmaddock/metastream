@@ -8,3 +8,8 @@
 .sessionMode button:not(:first-child) {
   margin-left: 1rem;
 }
+
+select.maxUsers {
+    mix-blend-mode: unset;
+    margin-bottom: 1rem;
+}

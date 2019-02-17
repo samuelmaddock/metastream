@@ -92,6 +92,8 @@ export default {
   unlockQueue: 'Unlock queue',
   username: 'Username',
   users: 'Users',
+  maxUsers: 'Max users',
+  unlimitedUsers: 'Unlimited users',
   userJoined: '<Username id="{{userId}}">{{username}}</Username> has joined.',
   userLeft: '<Username id="{{userId}}">{{username}}</Username> has left.',
   viewOnGitHub: 'View on GitHub',
