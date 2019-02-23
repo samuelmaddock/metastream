@@ -92,8 +92,6 @@ export default {
   unlockQueue: 'Warteschlange öffnen',
   username: 'Benutzername',
   users: 'Benutzer',
-  maxUsers: 'Max users', // need translate
-  unlimitedUsers: 'Unlimited users', // need translate
   userJoined: '<Username id="{{userId}}">{{username}}</Username> ist der Sitzung beigetreten.',
   userLeft: '<Username id="{{userId}}">{{username}}</Username> hat die Sitzung verlassen.',
   viewOnGitHub: 'Auf GitHub ansehen',

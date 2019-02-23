@@ -91,8 +91,6 @@ export default {
   unlockQueue: 'Sor feloldása',
   username: 'Felhasználónév',
   users: 'Felhasználók',
-  maxUsers: 'Max users', // need translate
-  unlimitedUsers: 'Unlimited users', // need translate
   userJoined: '<Username id="{{userId}}">{{username}}</Username> csatlakozott.',
   userLeft: '<Username id="{{userId}}">{{username}}</Username> lecsatlakozott.',
   viewOnGitHub: 'Megtekintés GitHub-on',
