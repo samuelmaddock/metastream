@@ -95,5 +95,5 @@ export const session: Reducer<ISessionState> = (
   return state
 }
 
-export const getMaxUsers = (state: IAppState) => state.session.maxUsers || Infinity
+export const getMaxUsers = (state: IAppState) => state.session.maxUsers !== -1 && state.session.maxUsers || Infinity 
 export const getDisconnectReason = (state: IAppState) => state.session.disconnectReason
