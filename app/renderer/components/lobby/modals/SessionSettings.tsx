@@ -19,9 +19,9 @@ import Dialog, {
     DialogTitle
 } from 'material-ui/Dialog'
 import { IReactReduxProps } from 'types/redux-thunk'
-import { Dropdown } from 'renderer/components/settings/controls';
-import { setSessionData } from 'renderer/lobby/actions/session';
-import { getMaxUsers } from 'renderer/lobby/reducers/session';
+import { Dropdown } from 'renderer/components/settings/controls'
+import { setSessionData } from 'renderer/lobby/actions/session'
+import { getMaxUsers } from 'renderer/lobby/reducers/session'
 
 interface IProps {
     className?: string
