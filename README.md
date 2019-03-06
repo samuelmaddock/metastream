@@ -35,6 +35,18 @@
 - Partial [support for Chrome Extensions](./docs/extensions.md).
 - Localization—[see info on contributing](./app/locale).
 
+## Roadmap
+
+- [x] Add Discord Rich Presence integration (#2).
+- [x] Add localization (#5).
+- [ ] Move back to Electron (#1).
+- [ ] Improve networking reliability.
+- [ ] Add favorites/bookmarks (#21).
+- [ ] Add playlists.
+- [ ] Add audio mode (#22).
+
+Have a feature in mind? Make a request by [creating a GitHub issue](https://github.com/samuelmaddock/metastream/issues).
+
 ## Install
 
 ### Recommended Install
