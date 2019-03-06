@@ -69,36 +69,6 @@ Download the latest version of Metastream from
 
 ![Screenshot3](./resources/screenshots/screenshot3.png)
 
-## Questions
-
-### Why Electron and not a web app?
-
-**tl;dr:** Electron is more flexible.
-
-There were two main designs goals in mind while building Metastream.
-1. Support most media streaming websites.
-1. Make networking resiliant in case any backend services go down. 
-
-#### Supporting websites
-
-To synchronize media on websites, there are two options: use a public API provided by the service OR inject scripts to interact with the media player.
-
-In [past](https://github.com/pixeltailgames/cinema) [projects](https://github.com/samuelmaddock/gm-mediaplayer) I used public APIs. This works great for a few websites, but it doesn't scale well since most don't have an API or requires a lot more effort.
-
-To inject scripts into a website, **a [browser extension](https://developer.chrome.com/extensions) is required**. If Metastream were a web app, it would require browser extensions for each vendor (Chrome, Firefox, Edge, etc.). On top of this, there's a history of extensions getting removed from vendor stores without an available recourse.
-
-Browser extensions can [inject scripts deeply](https://developer.chrome.com/extensions/content_scripts#frames) in nested [iframes](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe). This is necessary for **websites that embed external media players** such as YouTube embeds.
-
-Auto-fullscreen is a feature in Metastream in which video players on a webpage are enlarged to take up the full application frame. This required some trickery with injecting mouse clicks to trigger user gestures, something not possible with a browser extension.
-
-Ultimately Electron gives more flexibility to interact with webpages to help make all web streaming media better supported.
-
-#### Making it resiliant
-
-Most web apps typically provide only one way to connect to peers—using their proprietary backend service. If it ever goes down, you can no longer use the web app.
-
-By using Electron, I provide **two ways to connect to peers**: WebRTC, prone to downtime, and Websockets, always available for Direct IP connections.
-
 ## How to Contribute
 
 ### Get the code
