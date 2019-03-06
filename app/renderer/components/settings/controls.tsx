@@ -1,6 +1,7 @@
 import React from 'react'
 import { Switch } from './Switch'
 import styles from './options.css'
+import cx from 'classnames'
 
 interface ISwitchOptionProps {
   inputId: string
@@ -27,10 +28,11 @@ export const SwitchOption: React.SFC<ISwitchOptionProps> = props => {
 
 export const Dropdown: React.SFC<React.SelectHTMLAttributes<{ children: React.ReactNode }>> = ({
   children,
+  className,
   ...props
 }) => {
   return (
-    <select className={styles.dropdown} {...props}>
+    <select className={cx(className, styles.dropdown)} {...props}>
       {children}
     </select>
   )
