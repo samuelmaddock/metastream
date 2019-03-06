@@ -32,6 +32,7 @@ export interface ISettingsState {
   allowTracking: boolean
   developer: boolean
   sessionMode: SessionMode
+  maxUsers?: number
   discordPresence: boolean
   avatar?: string
   language?: string

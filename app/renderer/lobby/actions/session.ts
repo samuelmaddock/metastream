@@ -4,6 +4,7 @@ import { ISessionState, ConnectionStatus } from '../reducers/session'
 import { NetworkDisconnectReason } from 'constants/network'
 import { AppThunkAction } from 'types/redux-thunk'
 import { localUserId } from '../../network/index'
+import { cleanObject } from 'utils/object'
 
 export const setSessionData = actionCreator<Partial<ISessionState>>('SET_SESSION_DATA')
 export const setDisconnectReason = actionCreator<NetworkDisconnectReason | undefined>(
@@ -15,12 +16,13 @@ export const setConnectionStatus = actionCreator<ConnectionStatus | undefined>(
 )
 
 export const initHostSession = (): AppThunkAction => {
-  return dispatch => {
-    dispatch(
-      setSessionData({
-        id: localUserId(),
-        secret: btoa(shortid())
-      })
-    )
+  return (dispatch, getState) => {
+    const state = getState()
+    const sessionData = cleanObject({
+      id: localUserId(),
+      secret: btoa(shortid()),
+      maxUsers: state.settings.maxUsers
+    })
+    dispatch(setSessionData(sessionData))
   }
 }

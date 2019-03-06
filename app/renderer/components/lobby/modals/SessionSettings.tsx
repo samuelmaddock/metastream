@@ -156,32 +156,23 @@ class SessionSettings extends Component<PrivateProps, IState> {
   }
 
   private renderUserOpts() {
-    if (this.props.settings.sessionMode === SessionMode.Offline) {
-      return false
-    }
-
     const dispatch = this.props.dispatch!
     const userOpts: JSX.Element[] = []
 
-    const updateMaxUsers = (ev: ChangeEvent<{ children: React.ReactNode }>) => {
-      const newValue = (ev.currentTarget as HTMLSelectElement).value
-      dispatch(setSessionData({ maxUsers: parseInt(newValue) }))
+    const updateMaxUsers = (event: ChangeEvent<HTMLSelectElement>) => {
+      const value = parseInt(event.currentTarget.value, 10)
+      dispatch(setSessionData({ maxUsers: value }))
+      dispatch(setSetting('maxUsers', value))
     }
 
-    const addOption = (opt: number, label?: string) => {
-      const element = (
-        <option
-          key={opt}
-          value={opt}
-          selected={
-            opt === (isFinite(this.props.maxUsers) ? this.props.maxUsers : MAX_USERS_INFINITE)
-          }
-        >
-          {label || opt}
+    const addOption = (value: number, label?: string) => {
+      const opt = (
+        <option key={value} value={value} selected={value === this.props.maxUsers}>
+          {label || `${value}`}
         </option>
       )
 
-      userOpts.push(element)
+      userOpts.push(opt)
     }
 
     for (let i = 2; i <= USERS_MAX; i = i << 1) {
@@ -191,8 +182,15 @@ class SessionSettings extends Component<PrivateProps, IState> {
 
     return (
       <p>
-        <label htmlFor="maxusers" className={styles.label}>{t('maxUsers')}</label>
-        <Dropdown id="maxusers" theme="secondary" onChange={updateMaxUsers}>
+        <label htmlFor="maxusers" className={styles.label}>
+          {t('maxUsers')}
+        </label>
+        <Dropdown
+          id="maxusers"
+          theme="secondary"
+          onChange={updateMaxUsers}
+          disabled={this.props.settings.sessionMode === SessionMode.Offline}
+        >
           {userOpts}
         </Dropdown>
       </p>
@@ -207,7 +205,7 @@ export default connect(
       hostId: getHostId(state),
       hostName: getHost(state).name,
       numUsers: getNumUsers(state),
-      maxUsers: getMaxUsers(state),
+      maxUsers: state.session.maxUsers,
       settings: state.settings
     }
   }

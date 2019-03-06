@@ -43,6 +43,11 @@
   height: 2.5rem;
 }
 
+.dropdown:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .dropdown-primary {
   color: rgba(0, 0, 0, 0.7);
   background: white;

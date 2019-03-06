@@ -12,7 +12,7 @@ import { resetLobby } from '../actions/common'
 import { ReplicatedState } from 'renderer/network/types'
 import { updateServerClockSkew } from '../actions/mediaPlayer'
 import { PlaybackState } from './mediaPlayer'
-import { DEFAULT_USERS_MAX } from 'constants/settings';
+import { DEFAULT_USERS_MAX, MAX_USERS_INFINITE } from 'constants/settings'
 
 export const enum ConnectionStatus {
   Connected = 'Connected',
@@ -95,5 +95,6 @@ export const session: Reducer<ISessionState> = (
   return state
 }
 
-export const getMaxUsers = (state: IAppState) => state.session.maxUsers !== -1 && state.session.maxUsers || Infinity 
+export const getMaxUsers = (state: IAppState) =>
+  state.session.maxUsers === MAX_USERS_INFINITE ? Infinity : state.session.maxUsers
 export const getDisconnectReason = (state: IAppState) => state.session.disconnectReason
