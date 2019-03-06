@@ -44,8 +44,8 @@ export default {
   language: 'Idioma',
   launchDiscordInvite: 'Abra o Discord e reinicie o {{productName}} para usar os convites do Discord.',
   lockQueue: 'Travar fila',
-  maxUsers: 'Máximo de usuários',
   moveToTop: 'Mover para o topo',
+  maxUsers: 'Máximo de usuários',
   next: 'Proximo',
   nextUp: 'Proximos',
   networkDisconnectHostDisconnect: 'O host fechou a sessão',
@@ -54,7 +54,7 @@ export default {
   networkDisconnectVersionMismatch: `Versões diferentes`,
   networkDisconnectFull: 'A sessão está cheia',
   networkDisconnectKicked: 'Expulso da sessão',
-  networkTroubleshootingHelp: 'Veja o <1>Guia de transtornos de rede</1> par ajuda.',
+  networkTroubleshootingHelp: 'Veja o <1>Guia de transtornos de rede</1> para ajuda.',
   noticeAddedMedia: '<Media id="{{mediaId}}">{{mediaTitle}}</Media> foi adcionado.',
   noticeMediaError: 'Erro ao acessar {{url}}',
   noticeNowPlaying:
@@ -76,6 +76,7 @@ export default {
   requiresPortForward:
     'Requer <1>liberação de portas</1> da porta <3>{{port}}</3> para aceitar coneções diretas.',
   sendDiscordInvite: '<0>Enviar convites do Discord</0> para enviar codigos de amigo automaticamente',
+  sessionMode: 'Modo de sessão',
   sessionModePublicDescription: 'Todos podem entrar.',
   sessionModePrivateDescription: 'Quem entrar precisa de permissão.',
   sessionModeOfflineDescription: 'Uma sala privada.',
