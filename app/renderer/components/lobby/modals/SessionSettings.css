@@ -5,11 +5,15 @@
   flex-direction: column;
 }
 
-.sessionMode button:not(:first-child) {
-  margin-left: 1rem;
+.label {
+  composes: label from 'styles/typography.css';
+  display: block;
 }
 
-select.maxUsers {
-  mix-blend-mode: unset;
-  margin-bottom: 1rem;
+.descLabel {
+  display: block;
+}
+
+.sessionMode button:not(:first-of-type) {
+  margin-left: 1rem;
 }

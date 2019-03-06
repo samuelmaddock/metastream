@@ -60,9 +60,9 @@ class SessionSettings extends Component<PrivateProps, IState> {
         */
     return (
       <div className={cx(styles.container, this.props.className)}>
-        {this.renderUserOpts()}
         {this.renderSessionMode()}
         {this.renderSessionModeDialog()}
+        {this.renderUserOpts()}
       </div>
     )
   }
@@ -106,7 +106,8 @@ class SessionSettings extends Component<PrivateProps, IState> {
     const selectedMode = modes.find(mode => mode.mode === previewMode)
 
     return (
-      <div className={styles.sessionMode}>
+      <p className={styles.sessionMode}>
+        <label className={styles.label}>{t('sessionMode')}</label>
         {modes.map(mode => (
           <HighlightButton
             key={mode.label}
@@ -120,8 +121,8 @@ class SessionSettings extends Component<PrivateProps, IState> {
             {mode.label}
           </HighlightButton>
         ))}
-        {selectedMode && <p>{selectedMode.desc}</p>}
-      </div>
+        {selectedMode && <label className={styles.descLabel}>{selectedMode.desc}</label>}
+      </p>
     )
   }
 
@@ -167,7 +168,7 @@ class SessionSettings extends Component<PrivateProps, IState> {
       dispatch(setSessionData({ maxUsers: parseInt(newValue) }))
     }
 
-    const addOption = (opt: number, customLbl: string | null) => {
+    const addOption = (opt: number, label?: string) => {
       const element = (
         <option
           key={opt}
@@ -176,7 +177,7 @@ class SessionSettings extends Component<PrivateProps, IState> {
             opt === (isFinite(this.props.maxUsers) ? this.props.maxUsers : MAX_USERS_INFINITE)
           }
         >
-          {customLbl || `${opt} ${t('users')}`}
+          {label || opt}
         </option>
       )
 
@@ -184,17 +185,17 @@ class SessionSettings extends Component<PrivateProps, IState> {
     }
 
     for (let i = 2; i <= USERS_MAX; i = i << 1) {
-      addOption(i, null)
+      addOption(i)
     }
-    addOption(MAX_USERS_INFINITE, t('unlimitedUsers'))
+    addOption(MAX_USERS_INFINITE, t('unlimited'))
 
     return (
-      <>
-        <h4>{t('maxUsers')}</h4>
-        <Dropdown className={styles.maxUsers} onChange={updateMaxUsers}>
+      <p>
+        <label htmlFor="maxusers" className={styles.label}>{t('maxUsers')}</label>
+        <Dropdown id="maxusers" theme="secondary" onChange={updateMaxUsers}>
           {userOpts}
         </Dropdown>
-      </>
+      </p>
     )
   }
 }

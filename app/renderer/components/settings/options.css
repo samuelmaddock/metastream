@@ -37,12 +37,21 @@
 }
 
 .dropdown {
-  color: rgba(0, 0, 0, 0.7);
-  background: white;
-  mix-blend-mode: overlay;
-  border: none;
   border-radius: 4px;
   padding: 0 0.5rem;
   min-width: 200px;
   height: 2.5rem;
+}
+
+.dropdown-primary {
+  color: rgba(0, 0, 0, 0.7);
+  background: white;
+  mix-blend-mode: overlay;
+  border: none;
+}
+
+.dropdown-secondary {
+  color: white;
+  border: 1px solid white;
+  background: none;
 }

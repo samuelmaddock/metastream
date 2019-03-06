@@ -26,13 +26,11 @@ export const SwitchOption: React.SFC<ISwitchOptionProps> = props => {
   )
 }
 
-export const Dropdown: React.SFC<React.SelectHTMLAttributes<{ children: React.ReactNode }>> = ({
-  children,
-  className,
-  ...props
-}) => {
+export const Dropdown: React.SFC<
+  React.SelectHTMLAttributes<{}> & { theme?: 'primary' | 'secondary' }
+> = ({ children, className, theme = 'primary', ...props }) => {
   return (
-    <select className={cx(className, styles.dropdown)} {...props}>
+    <select className={cx(className, styles.dropdown, styles[`dropdown-${theme}`])} {...props}>
       {children}
     </select>
   )
