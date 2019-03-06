@@ -4,6 +4,7 @@ import { ISettingsState } from '../../reducers/settings'
 import { encodeDiscordSecret } from './secret'
 import { PlaybackState } from 'renderer/lobby/reducers/mediaPlayer'
 import { ipcRenderer } from 'electron'
+import { nextPowerOfTwo } from 'utils/math';
 
 class DiscordSessionObserver implements SessionObserver {
   setting: any = 'discordPresence'
@@ -16,13 +17,13 @@ class DiscordSessionObserver implements SessionObserver {
     let activity
 
     if (state) {
-      const { media, users, playback } = state
+      const { media, users, maxUsers, playback } = state
 
       const partySize = Math.max(1, users) || 1
 
-      // Temporary max party until Metastream implements a max
-      const nextPowerOfTwo = Math.pow(2, Math.ceil(Math.log(partySize + 1) / Math.log(2)))
-      const partyMax = Math.max(4, nextPowerOfTwo)
+      // Expand slots by power of two if set to unlimited (maxUsers === 0)
+      const unlimitedPartyMax = nextPowerOfTwo(Math.max(4, partySize))
+      const partyMax = Math.max(partySize, maxUsers > 0 ? maxUsers : unlimitedPartyMax) || partySize
 
       let rpState = 'In Session'
       if (playback === PlaybackState.Paused) {
