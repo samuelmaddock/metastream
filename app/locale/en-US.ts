@@ -14,6 +14,7 @@ export default {
   chatColor: 'Chat Color',
   chatPlaceholder: 'Message or URL',
   chatRevealHint: 'Press <1></1> to reveal chat.',
+  chatNewMessage: 'A new message has been posted!',
   chooseUsername: 'Choose your username',
   connecting: 'Connecting',
   continue: 'Continue',

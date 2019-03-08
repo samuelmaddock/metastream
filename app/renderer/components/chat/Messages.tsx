@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { IMessage } from 'renderer/lobby/reducers/chat'
 import { Message } from './Message'
 import styles from './Chat.css'
+import { t } from 'locale'
 
 interface IProps {
   messages: IMessage[]
@@ -18,7 +19,7 @@ export class Messages extends Component<IProps, IState> {
   state: IState = { hasNewMessage: false }
 
   private get scrollBottom() {
-    return this.list ? this.list.scrollHeight - this.list.clientHeight : 0
+    return this.list ? Math.trunc(this.list.scrollHeight - this.list.clientHeight) : 0
   }
 
   componentDidMount(): void {
@@ -33,10 +34,6 @@ export class Messages extends Component<IProps, IState> {
     }
   }
 
-  componentWillReceiveProps(nextProps: IProps): void {
-    this.wasAtBottom = this.isScrolledToBottom()
-  }
-
   componentDidUpdate(prevProps: IProps): void {
     if (this.props.messages !== prevProps.messages) {
       if (this.wasAtBottom) {
@@ -48,16 +45,18 @@ export class Messages extends Component<IProps, IState> {
   }
 
   private isScrolledToBottom(): boolean {
-    return !!(this.list && this.list.scrollTop === this.scrollBottom)
+    return !!(this.list && Math.trunc(this.list.scrollTop) === Math.trunc(this.scrollBottom))
   }
 
   scrollToBottom(): void {
     if (this.list) {
       this.list.scrollTop = this.scrollBottom
+      this.wasAtBottom = true
     }
   }
 
   private handleScroll = (): void => {
+    this.wasAtBottom = this.isScrolledToBottom()
     if (this.state.hasNewMessage && this.isScrolledToBottom()) {
       this.setState({ hasNewMessage: false })
     }
@@ -75,7 +74,7 @@ export class Messages extends Component<IProps, IState> {
         </ul>
         {this.state.hasNewMessage && (
           <div className={styles.newMessages} onClick={this.scrollToBottom.bind(this)}>
-            You've got new MESSAGES!
+            {t('chatNewMessage')}
           </div>
         )}
       </div>
