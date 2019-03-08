@@ -13,6 +13,8 @@ export default {
   changelog: 'Registro de Alterações',
   chatColor: 'Cor no bate-papo',
   chatPlaceholder: 'Mensagem ou link',
+  chatRevealHint: 'Aperte <1></1> para revelar o chat.',
+  chatNewMessage: 'Uma nova mensagem foi enviada!',
   chooseUsername: 'Escolha o seu nick',
   connecting: 'Conectando',
   continue: 'Continuar',
