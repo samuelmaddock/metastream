@@ -58,7 +58,7 @@ export default {
       'process.env.GIT_COMMIT': JSON.stringify(GIT_COMMIT),
       'process.env.LICENSED': Boolean(process.env.LICENSED)
     }),
-    new Dotenv(),
+    new Dotenv({ silent: true }),
     new webpack.NamedModulesPlugin(),
   ],
 };
