@@ -39,8 +39,11 @@ function setupAnalytics(store: Store<StoreState>) {
     return
   }
 
+  const clientId = process.env.GA_CLIENT_ID
+  if (!clientId) return
+
   // https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters
-  const analytics = new Analytics('UA-115004557-2', {
+  const analytics = new Analytics(clientId, {
     appName: PRODUCT_NAME,
     appVersion: VERSION,
     clientId: localUserId()
