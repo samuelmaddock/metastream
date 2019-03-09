@@ -13,12 +13,12 @@ import { REQUEST_LANGUAGE, LANGUAGE } from 'constants/ipc'
 export const DEFAULT_LANGUAGE = 'en-US'
 
 export const locales = [
-  { label: 'Deutsch', code: 'de-DE', translation: deDE, flag: '🇭🇺' },
+  { label: 'Deutsch', code: 'de-DE', translation: deDE, flag: '🇩🇪' },
   { label: 'English', code: 'en-US', translation: enUS, flag: '🇺🇸' },
   { label: 'Español', code: 'es-ES', translation: es, flag: '🇪🇸' },
   { label: 'Português do Brasil', code: 'pt-BR', translation: ptBR, flag: '🇧🇷' },
   { label: 'Magyar', code: 'hu-HU', translation: huHU, flag: '🇭🇺' },
-  { label: 'русский', code: 'ru', translation: ru, flag: '🇷🇺' }
+  { label: 'Pусский', code: 'ru', translation: ru, flag: '🇷🇺' }
 ]
 
 const resources: Resource = locales.reduce(
