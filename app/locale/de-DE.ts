@@ -45,10 +45,11 @@ export default {
   join: 'Beitreten',
   joinSession: 'Sitzung beitreten',
   kick: 'Kicken',
-  launchDiscordInvite:
-    'Starte Discord und starte {{productName}} neu um Discord Einladungen zu nutzen.',
+  language: 'Sprache',
+  launchDiscordInvite: 'Starte Discord und starte {{productName}} neu um Discord Einladungen zu nutzen.',
   lockQueue: 'Warteschlange schließen',
   moveToTop: 'Nach oben',
+  maxUsers: 'Nutzerlimit',
   next: 'Weiter',
   nextUp: 'Als nächstes',
   networkDisconnectHostDisconnect: 'Der Host hat die Verbindung geschlossen.',
@@ -62,7 +63,8 @@ export default {
   noticeMediaError: 'Es gab ein Problem die URL {{url}} anzufragen',
   noticeNowPlaying:
     'Aktuelle Wiedergabe: <Media id="{{mediaId}}">{{mediaTitle}}</Media> vorgeschlagen von <Username id="{{userId}}">{{username}}</Username>.',
-  noticeUserRequestJoin: '<Username id="{{userId}}">{{username}}</Username> möchte beitreten.',
+  noticeUserRequestJoin:
+	'<Username id="{{userId}}">{{username}}</Username> möchte beitreten.',
   offline: 'Offline',
   ok: 'OK',
   openInBrowser: 'Im Browser öffnen',
@@ -89,6 +91,7 @@ export default {
   startSession: 'Sitzung starten',
   thirdPartyIntegrations: 'Drittentwickler Integrationen',
   toggleDJ: 'DJ wechseln',
+  unlimited: 'Unlimitiert',
   unlockQueue: 'Warteschlange öffnen',
   username: 'Benutzername',
   users: 'Benutzer',
