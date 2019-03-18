@@ -12,6 +12,7 @@ export default {
   cancel: 'Abbrechen',
   changelog: 'Changelog',
   chatColor: 'Chatfarbe',
+  chatNewMessage: 'Eine neue Nachricht wurde gepostet!',
   chatPlaceholder: 'Nachricht oder URL',
   chatRevealHint: 'Drücke <1></1> um den Chat zu öffnen.',
   chooseUsername: 'Wähle deinen Benutzernamen',
@@ -46,7 +47,8 @@ export default {
   joinSession: 'Sitzung beitreten',
   kick: 'Kicken',
   language: 'Sprache',
-  launchDiscordInvite: 'Starte Discord und starte {{productName}} neu um Discord Einladungen zu nutzen.',
+  launchDiscordInvite:
+    'Starte Discord und starte {{productName}} neu um Discord Einladungen zu nutzen.',
   lockQueue: 'Warteschlange schließen',
   moveToTop: 'Nach oben',
   maxUsers: 'Nutzerlimit',
@@ -63,8 +65,7 @@ export default {
   noticeMediaError: 'Es gab ein Problem die URL {{url}} anzufragen',
   noticeNowPlaying:
     'Aktuelle Wiedergabe: <Media id="{{mediaId}}">{{mediaTitle}}</Media> vorgeschlagen von <Username id="{{userId}}">{{username}}</Username>.',
-  noticeUserRequestJoin:
-	'<Username id="{{userId}}">{{username}}</Username> möchte beitreten.',
+  noticeUserRequestJoin: '<Username id="{{userId}}">{{username}}</Username> möchte beitreten.',
   offline: 'Offline',
   ok: 'OK',
   openInBrowser: 'Im Browser öffnen',
