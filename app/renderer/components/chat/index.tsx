@@ -89,11 +89,11 @@ export class Chat extends PureComponent<IProps, IState> {
 
   private setupListeners(enabled: boolean) {
     if (enabled) {
-      document.addEventListener('keypress', this.onKeyPress, false)
-      document.addEventListener('keydown', this.onKeyDown, false)
+      document.addEventListener('keypress', this.onKeyPress, true)
+      document.addEventListener('keydown', this.onKeyDown, true)
     } else {
-      document.removeEventListener('keypress', this.onKeyPress, false)
-      document.removeEventListener('keydown', this.onKeyDown, false)
+      document.removeEventListener('keypress', this.onKeyPress, true)
+      document.removeEventListener('keydown', this.onKeyDown, true)
     }
   }
 
@@ -165,12 +165,24 @@ export class Chat extends PureComponent<IProps, IState> {
   }
 
   private onKeyDown = (event: KeyboardEvent): void => {
+    if (this.state.focused) {
+      // Prevent activity monitor from revealing UI
+      event.stopImmediatePropagation()
+    }
+
     switch (event.key) {
+      case 'Enter':
+        if (!this.state.focused) {
+          // Prevent activity monitor from revealing UI
+          event.stopImmediatePropagation()
+        }
+        break
       case 'Escape':
         if (this.state.focused && this.form) {
           event.preventDefault()
           this.form.dismiss()
         }
+        break
     }
   }
 }
