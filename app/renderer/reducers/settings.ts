@@ -12,6 +12,7 @@ import {
 import { IAppState } from './index'
 import { stripEmoji } from 'utils/string'
 import { avatarRegistry } from '../services/avatar'
+import { DEFAULT_LANGUAGE } from 'locale'
 
 export const enum SessionMode {
   /** Open to connections. */
@@ -35,7 +36,7 @@ export interface ISettingsState {
   maxUsers?: number
   discordPresence: boolean
   avatar?: string
-  language?: string
+  language: string
 }
 
 const initialState: ISettingsState = {
@@ -44,7 +45,8 @@ const initialState: ISettingsState = {
   allowTracking: false,
   developer: process.env.NODE_ENV === 'development',
   sessionMode: SessionMode.Private,
-  discordPresence: true
+  discordPresence: true,
+  language: DEFAULT_LANGUAGE
 }
 
 export const settings: Reducer<ISettingsState> = (
