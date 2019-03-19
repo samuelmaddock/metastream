@@ -6,13 +6,9 @@ import log from 'browser/log'
 import { ILobbyOptions } from 'renderer/platform/types'
 import { SwarmClient } from './client'
 
-function checkNativeDeps() {
-  try {
-    require('utp-native')
-  } catch (e) {
-    log.error('Failed to load utp-native')
-    log.error(e)
-  }
+let checkNativeDeps = () => {
+  require('utp-native')
+  checkNativeDeps = () => {} // only check once
 }
 
 const swarmClients = new Map<number, SwarmClient>()
