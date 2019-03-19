@@ -29,3 +29,7 @@
 .column a {
   display: inline-block;
 }
+
+.column button {
+  margin-top: 2rem;
+}
