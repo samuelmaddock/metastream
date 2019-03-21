@@ -8,6 +8,7 @@ import ptBR from './pt-BR'
 import huHU from './hu-HU'
 import es from './es'
 import ru from './ru'
+import ja from './ja-JP'
 import { REQUEST_LANGUAGE, LANGUAGE } from 'constants/ipc'
 
 export const DEFAULT_LANGUAGE = 'en-US'
@@ -18,7 +19,8 @@ export const locales = [
   { label: 'Español', code: 'es-ES', translation: es, flag: '🇪🇸' },
   { label: 'Português do Brasil', code: 'pt-BR', translation: ptBR, flag: '🇧🇷' },
   { label: 'Magyar', code: 'hu-HU', translation: huHU, flag: '🇭🇺' },
-  { label: 'Pусский', code: 'ru', translation: ru, flag: '🇷🇺' }
+  { label: 'Pусский', code: 'ru', translation: ru, flag: '🇷🇺' },
+  { label: '日本語', code: 'ja', translation: ja, flag: '🇯🇵' }
 ]
 
 const resources: Resource = locales.reduce(
