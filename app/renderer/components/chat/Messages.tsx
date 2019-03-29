@@ -45,7 +45,7 @@ export class Messages extends Component<IProps, IState> {
   }
 
   private isScrolledToBottom(): boolean {
-    return !!(this.list && Math.trunc(this.list.scrollTop) === Math.trunc(this.scrollBottom))
+    return !!(this.list && Math.round(this.list.scrollTop) === Math.round(this.scrollBottom))
   }
 
   scrollToBottom(): void {
