@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 ;(function() {
   let netflixPlayer
 
@@ -17,7 +17,7 @@
       }
     }
 
-    CustomVideoSession.prototype = VideoSession
+    CustomVideoSession.prototype = VideoSession.prototype
 
     return CustomVideoSession
   }
