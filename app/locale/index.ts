@@ -8,7 +8,7 @@ import ptBR from './pt-BR'
 import huHU from './hu-HU'
 import es from './es'
 import ru from './ru'
-import ja from './ja-JP'
+import ja from './ja'
 import { REQUEST_LANGUAGE, LANGUAGE } from 'constants/ipc'
 
 export const DEFAULT_LANGUAGE = 'en-US'
