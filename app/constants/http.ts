@@ -14,7 +14,7 @@ export const MEDIA_USER_AGENT = `${userAgent} (Googlebot)`
  * issue #1 can be resolved.
  */
 export const MEDIA_SESSION_USER_AGENT =
-  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.96 Safari/537.36'
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'
 
 export const APP_WEBSITE = 'https://getmetastream.com/'
 export const MEDIA_REFERRER = APP_WEBSITE
