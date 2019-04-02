@@ -13,7 +13,7 @@ export default {
   changelog: 'Registro de cambios',
   chatColor: 'Color de chat',
   chatPlaceholder: 'Mensaje o URL',
-  chatRevealHint: 'Presione<1></1> para revelar chat.',
+  chatRevealHint: 'Presione <1></1> para revelar chat.',
   chooseUsername: 'Elija su nombre de usuario',
   connecting: 'Conectando',
   continue: 'Continuar',
