@@ -13,8 +13,8 @@ export const MEDIA_USER_AGENT = `${userAgent} (Googlebot)`
  * User agent override to prevent sniffing from breaking apps until
  * issue #1 can be resolved.
  */
-export const MEDIA_SESSION_USER_AGENT =
-  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'
+const userAgentPlatform = userAgent.split(' Chrome/')[0]
+export const MEDIA_SESSION_USER_AGENT = `${userAgentPlatform} Chrome/73.0.3683.86 Safari/537.36`
 
 export const APP_WEBSITE = 'https://getmetastream.com/'
 export const MEDIA_REFERRER = APP_WEBSITE
