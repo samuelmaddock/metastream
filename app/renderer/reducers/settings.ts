@@ -37,6 +37,7 @@ export interface ISettingsState {
   discordPresence: boolean
   avatar?: string
   language: string
+  fade: number
 }
 
 const initialState: ISettingsState = {
@@ -46,7 +47,8 @@ const initialState: ISettingsState = {
   developer: process.env.NODE_ENV === 'development',
   sessionMode: SessionMode.Private,
   discordPresence: true,
-  language: DEFAULT_LANGUAGE
+  language: DEFAULT_LANGUAGE,
+  fade: 10000
 }
 
 export const settings: Reducer<ISettingsState> = (
@@ -89,6 +91,7 @@ export const getLocalUsername = (state: IAppState) => state.settings.username ||
 export const getLocalColor = (state: IAppState) => state.settings.color || DEFAULT_COLOR
 export const getLocalSessionMode = (state: IAppState) => state.settings.sessionMode || DEFAULT_COLOR
 export const isDeveloper = (state: IAppState) => state.settings.developer
+export const getFade = (state: IAppState) => state.settings.fade
 
 export const getLocalAvatar = (state: IAppState) => {
   const { avatar } = state.settings

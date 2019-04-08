@@ -7,6 +7,7 @@ import ProfileSettings from './sections/Profile'
 import AdvancedSettings from './sections/Advanced'
 import ThirdPartySettings from './sections/ThirdParty'
 import LanguageSettings from './sections/Language'
+import FadeSettings from './sections/Fade'
 import { t } from 'locale'
 
 interface IProps {}
@@ -36,6 +37,7 @@ export class SettingsMenu extends Component<IProps, State> {
           <AdvancedSettings />
           <LanguageSettings onChange={this.invalidate} />
           <ThirdPartySettings />
+          <FadeSettings />
         </div>
       </LayoutMain>
     )

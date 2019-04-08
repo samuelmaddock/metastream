@@ -39,6 +39,8 @@ export default {
   endSessionDescription: 'Changing to a private session will disconnect all connected users.',
   enterJoinDest: 'Enter a friend code or IP address.',
   extensions: 'Extensions',
+  fade: 'Chat Fade',
+  fadeDescription: 'Time delay before a chat message disappears.',
   friendCode: 'Friend code',
   getStarted: 'Get Started',
   info: 'Info',

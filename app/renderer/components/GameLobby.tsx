@@ -28,7 +28,7 @@ import { UserList } from './lobby/UserList'
 import { MediaList } from './lobby/MediaList'
 import { LobbyModal } from '../reducers/ui'
 import { setLobbyModal } from '../actions/ui'
-import { isDeveloper } from '../reducers/settings'
+import { isDeveloper, getFade } from '../reducers/settings'
 import { getNumUsers } from '../lobby/reducers/users.helpers'
 import { IReactReduxProps } from 'types/redux-thunk'
 
@@ -50,6 +50,7 @@ interface IConnectedProps {
   modal?: LobbyModal
   developer: boolean
   isMultiplayer: boolean
+  fade: number
 }
 
 type PrivateProps = IProps & IConnectedProps & IReactReduxProps
@@ -156,6 +157,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
           sendMessage={this.sendChat}
           disabled={!!this.state.modal}
           showHint={this.props.isMultiplayer}
+          messageFadeDelay={this.props.fade}
         />
       </section>
     )
@@ -261,7 +263,8 @@ export const GameLobby = connect(
       popup: state.extensions.popup,
       modal: state.ui.lobbyModal,
       developer: isDeveloper(state),
-      isMultiplayer: getNumUsers(state) > 1
+      isMultiplayer: getNumUsers(state) > 1,
+      fade: getFade(state)
     }
   }
 )(_GameLobby) as React.ComponentClass<IProps>
