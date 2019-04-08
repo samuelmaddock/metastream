@@ -38,7 +38,7 @@ class FadeSettings extends Component<Props> {
             value={10000}
             selected={10000 === this.props.settings.fade}
           >
-            10 Seconds
+            {t('fade10Seconds')}
           </option>
 
           <option
@@ -46,7 +46,7 @@ class FadeSettings extends Component<Props> {
             value={20000}
             selected={20000 === this.props.settings.fade}
           >
-            20 Seconds
+            {t('fade20Seconds')}
           </option>
 
           <option
@@ -54,7 +54,7 @@ class FadeSettings extends Component<Props> {
             value={30000}
             selected={30000 === this.props.settings.fade}
           >
-            30 Seconds
+            {t('fade30Seconds')}
           </option>
 
           <option
@@ -62,7 +62,7 @@ class FadeSettings extends Component<Props> {
             value={9999999999999999}
             selected={9999999999999999 === this.props.settings.fade}
           >
-            Forever
+            {t('fadeForever')}
           </option>
           
         </Dropdown>
