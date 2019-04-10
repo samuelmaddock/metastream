@@ -94,13 +94,13 @@ const injectContentScripts = (details, attempt = 0) => {
 }
 
 const startWatchingTab = tab => {
-  console.log(`Metastream watching tabId=${tab.id}`)
-  watchedTabs.add(tab.id)
-  // TODO: only listen for requests on tab.id
+  const { id: tabId } = tab
+  console.log(`Metastream watching tabId=${tabId}`)
+  watchedTabs.add(tabId)
 
   chrome.webRequest.onBeforeSendHeaders.addListener(
     onBeforeSendHeaders,
-    { urls: ['<all_urls>'] },
+    { tabId, urls: ['<all_urls>'] },
     [
       chrome.webRequest.OnBeforeSendHeadersOptions.BLOCKING,
       chrome.webRequest.OnBeforeSendHeadersOptions.REQUESTHEADERS, // firefox
@@ -111,7 +111,8 @@ const startWatchingTab = tab => {
   chrome.webRequest.onHeadersReceived.addListener(
     onHeadersReceived,
     {
-      urls: ['*://*/*'],
+      tabId,
+      urls: ['<all_urls>'],
       types: ['sub_frame']
     },
     [
@@ -135,23 +136,33 @@ const stopWatchingTab = tabId => {
   console.log(`Metastream stopped watching tabId=${tabId}`)
 }
 
-// Lazy-initialize Metastream listeners
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  const { id: tabId } = sender.tab
+
+  // Only listen for messages on Metastream app tab
   if (!isMetastreamUrl(sender.tab.url)) return
 
+  // Listen for Metastream app initialization signal
   if (message === 'initMetastream') {
     startWatchingTab(sender.tab)
     sendResponse(true)
     return
   }
 
-  const { id: tabId } = sender.tab
+  // Filter out messages from non-Metastream app tabs
+  if (!watchedTabs.has(tabId)) return
+  if (typeof message !== 'object') return
 
-  if (!watchedTabs.has(sender.tab.id)) return
-
-  // Forward receiver event to metastream app
-  if (typeof message === 'object' && message.type === 'metastream-receiver-event') {
-    // TODO: include frameId in message payload?
-    chrome.tabs.sendMessage(tabId, message, { frameId: 0 })
+  switch (message.type) {
+    case 'metastream-receiver-event':
+      // Forward receiver event to metastream app
+      // TODO: include frameId in message payload?
+      chrome.tabs.sendMessage(tabId, message, { frameId: 0 })
+      break
+    case 'metastream-host-event':
+      // Forward host event to all subframes
+      // TODO: exclude sending to top frame? allow sending to specific frame?
+      chrome.tabs.sendMessage(tabId, message)
+      break
   }
 })
