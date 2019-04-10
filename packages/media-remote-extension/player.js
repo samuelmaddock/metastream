@@ -82,3 +82,5 @@ code = code.substring(12, code.length - 1)
 const script = document.createElement('script')
 script.innerHTML = `(function(){${code}}())`
 document.documentElement.appendChild(script)
+
+void 0

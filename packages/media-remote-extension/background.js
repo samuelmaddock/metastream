@@ -67,33 +67,58 @@ const onCommitted = details => {
   }
 }
 
-const injectContentScripts = details => {
+const injectContentScripts = (details, attempt = 0) => {
+  if (attempt > 20) {
+    console.warn('Reached max attempts while injecting content scripts.', details)
+    return
+  }
+
   const { tabId, frameId, url } = details
   if (url === 'about:blank') return
 
   console.log(`Injecting player script tabId=${tabId}, frameId=${frameId}`)
-  chrome.tabs.executeScript(tabId, {
-    file: 'player.js',
-    runAt: 'document_start',
-    frameId
-  })
+  chrome.tabs.executeScript(
+    tabId,
+    {
+      file: '/player.js',
+      runAt: 'document_start',
+      frameId
+    },
+    result => {
+      if (chrome.runtime.lastError) {
+        // TODO: can we inject this any sooner in Firefox?
+        setTimeout(() => injectContentScripts(details, attempt + 1), 10)
+      }
+    }
+  )
 }
 
 const startWatchingTab = tab => {
   console.log(`Metastream watching tabId=${tab.id}`)
   watchedTabs.add(tab.id)
-  chrome.webRequest.onBeforeSendHeaders.addListener(onBeforeSendHeaders, { urls: ['<all_urls>'] }, [
-    'blocking',
-    'requestHeaders',
-    'extraHeaders'
-  ])
+  // TODO: only listen for requests on tab.id
+
+  chrome.webRequest.onBeforeSendHeaders.addListener(
+    onBeforeSendHeaders,
+    { urls: ['<all_urls>'] },
+    [
+      chrome.webRequest.OnBeforeSendHeadersOptions.BLOCKING,
+      chrome.webRequest.OnBeforeSendHeadersOptions.REQUESTHEADERS, // firefox
+      chrome.webRequest.OnBeforeSendHeadersOptions.REQUEST_HEADERS, // chromium
+      chrome.webRequest.OnBeforeSendHeadersOptions.EXTRA_HEADERS // chromium
+    ].filter(Boolean)
+  )
   chrome.webRequest.onHeadersReceived.addListener(
     onHeadersReceived,
     {
       urls: ['*://*/*'],
       types: ['sub_frame']
     },
-    ['blocking', 'responseHeaders']
+    [
+      chrome.webRequest.OnHeadersReceivedOptions.BLOCKING,
+      chrome.webRequest.OnHeadersReceivedOptions.RESPONSEHEADERS, // firefox
+      chrome.webRequest.OnHeadersReceivedOptions.RESPONSE_HEADERS // chromium
+    ].filter(Boolean)
   )
   chrome.webNavigation.onCommitted.addListener(onCommitted)
   chrome.tabs.onRemoved.addListener(onTabRemove)

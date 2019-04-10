@@ -13,10 +13,8 @@
     "scripts": ["background.js"],
     "persistent": true
   },
-  "web_accessible_resources": [],
   "manifest_version": 2,
   "permissions": [
-    "activeTab",
     "tabs",
     "webNavigation",
     "webRequest",
