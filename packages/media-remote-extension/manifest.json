@@ -1,0 +1,26 @@
+{
+  "name": "Metastream Media Remote",
+  "version": "1.0.0",
+  "description": "Remote controller for media on the web.",
+  "content_scripts": [
+    {
+      "matches": ["https://getmetastream.com/*"],
+      "js": ["app.js"],
+      "run_at": "document_start"
+    }
+  ],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": true
+  },
+  "web_accessible_resources": [],
+  "manifest_version": 2,
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "webNavigation",
+    "webRequest",
+    "webRequestBlocking",
+    "<all_urls>"
+  ]
+}
