@@ -1,0 +1,50 @@
+.tgl {
+  display: none;
+}
+.tgl + .tgl-btn {
+  --tgl-padding: 2px;
+  outline: 0;
+  display: block;
+  width: calc(3em - (var(--tgl-padding) * 2));
+  height: 1.5em;
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+}
+.tgl + .tgl-btn:after,
+.tgl + .tgl-btn:before {
+  position: relative;
+  display: block;
+  content: '';
+  width: 50%;
+  height: 100%;
+}
+
+.tgl + .tgl-btn:after {
+  left: 0;
+}
+
+.tgl + .tgl-btn:before {
+  display: none;
+}
+
+.tgl:checked + .tgl-btn:after {
+  left: 50%;
+}
+
+.tgl-light + .tgl-btn {
+  background: rgba(0, 0, 0, 0.16);
+  border-radius: 2em;
+  padding: var(--tgl-padding);
+  transition: all 200ms ease;
+}
+
+.tgl-light + .tgl-btn:after {
+  border-radius: 50%;
+  background: #fff;
+  transition: all 200ms ease;
+}
+
+.tgl-light:checked + .tgl-btn {
+  background: var(--color-highlight);
+}

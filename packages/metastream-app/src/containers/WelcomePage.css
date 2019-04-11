@@ -1,0 +1,35 @@
+.container {
+  composes: fill from 'styles/layout.css';
+  background: var(--app-bg-home);
+  justify-content: center;
+  align-items: center;
+}
+
+.column {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.name {
+  margin-bottom: 1rem;
+}
+
+.name input {
+  text-align: center;
+}
+
+.column label[for] {
+  margin-bottom: 0.5rem;
+}
+
+.column a {
+  display: inline-block;
+}
+
+.column button {
+  margin-top: 2rem;
+}

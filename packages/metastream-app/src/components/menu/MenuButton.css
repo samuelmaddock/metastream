@@ -1,0 +1,54 @@
+.btn {
+  width: auto;
+  height: 60px;
+
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.btn:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.btn *:not(svg) {
+  mix-blend-mode: soft-light;
+  color: black;
+  vertical-align: middle;
+}
+
+.btn span {
+  text-decoration: none;
+}
+
+.btn svg {
+  margin-right: 14px;
+}
+
+.medium {
+  composes: btn;
+  padding: 6px 12px;
+  height: 40px;
+  font-size: 18px;
+}
+
+.medium svg {
+  margin-right: 10px;
+}
+
+.large {
+  composes: btn;
+  padding: 10px 16px;
+  height: 60px;
+  font-size: 24px;
+}
+
+.large svg {
+  margin-right: 14px;
+}

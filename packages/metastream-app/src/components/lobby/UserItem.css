@@ -1,0 +1,52 @@
+.container {
+  display: flex;
+  padding: 8px 10px;
+  flex-direction: row;
+  align-items: center;
+  height: 50px;
+}
+
+.avatar {
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+.name {
+  composes: single-line from 'styles/text.css';
+}
+
+.role {
+  color: var(--color-highlight);
+  transform: scale(0.8);
+  margin-left: 5px;
+  flex-shrink: 0;
+}
+
+.menuBtn {
+  opacity: 0;
+  margin-left: auto;
+}
+
+.menuBtn:focus,
+.container:hover .menuBtn {
+  opacity: 1;
+}
+
+.pendingBtn {
+  border-radius: 4px;
+  width: 32px;
+  height: 32px;
+}
+
+.allowBtn {
+  composes: pendingBtn;
+  background: #63b852;
+
+  margin-left: auto;
+  margin-right: 0.5rem;
+}
+
+.disallowBtn {
+  composes: pendingBtn;
+  background: #f97373;
+}

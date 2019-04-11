@@ -1,0 +1,35 @@
+.container {
+  z-index: 99;
+  position: absolute;
+  top: 50%;
+
+  display: inline-block;
+  width: 1px;
+  height: calc(100% + 8px);
+  transform: translateY(-50%);
+
+  background: linear-gradient(0deg, transparent 0%, white 50%, transparent 100%);
+
+  pointer-events: none;
+}
+
+.container:global(.active):after {
+  content: attr(data-title);
+
+  display: block;
+  max-width: 300px;
+  padding: 8px 12px;
+
+  position: absolute;
+  top: -20px;
+  transform: translate(-50%, -100%);
+
+  background: rgba(60, 60, 60, 0.54);
+  border-radius: var(--rounded-radius);
+
+  font-size: 12px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

@@ -1,0 +1,15 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0 8px;
+  height: 100%;
+}
+
+.iconBtn {
+  margin-right: 10px;
+}
+
+.slider {
+  width: 80px;
+}

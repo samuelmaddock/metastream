@@ -1,0 +1,50 @@
+.container {
+  background: linear-gradient(200deg, #42275a, #734b6d);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.table {
+  text-align: left;
+  min-width: 600px;
+}
+
+.table th:nth-child(1) {
+  width: 80%;
+}
+.table th:nth-child(2) {
+  width: 20%;
+}
+
+.table td {
+  padding: 10px;
+  padding-left: 0;
+}
+.table td:last-child {
+  padding-right: 0;
+}
+
+.peerId {
+  vertical-align: bottom;
+  width: 100%;
+  max-width: 300px;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.discovery {
+  margin-top: 2rem;
+  max-width: 600px;
+}
+
+.header {
+  composes: h2 from 'styles/typography.css';
+  margin-bottom: 1rem;
+}
+
+.discovery img {
+  display: block;
+  margin-top: 1rem;
+  filter: invert(1);
+  height: 2rem;
+}

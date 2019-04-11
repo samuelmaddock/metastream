@@ -1,0 +1,66 @@
+.option {
+  max-width: 440px;
+  display: grid;
+  grid-template:
+    'a b' 2.5rem
+    'c c' auto / 1fr auto;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.option:not(:last-child)::after {
+  content: '';
+  grid-column: 1 / 3;
+  background: white;
+  mix-blend-mode: overlay;
+  margin-top: 1.5rem;
+}
+
+.option:not(:only-child)::after {
+  height: 1px;
+}
+
+.title {
+  grid-area: a;
+}
+
+.switchContainer {
+  grid-area: b;
+}
+
+.description {
+  align-self: stretch;
+  grid-area: c;
+  font-size: 0.8rem;
+  line-height: 1.25em;
+  mix-blend-mode: overlay;
+}
+
+.dropdown {
+  border-radius: 4px;
+  padding: 0 0.5rem;
+  min-width: 200px;
+  height: 2.5rem;
+}
+
+.dropdown:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.dropdown option {
+  color: black;
+}
+
+.dropdown-primary {
+  color: rgba(0, 0, 0, 0.7);
+  background: white;
+  mix-blend-mode: overlay;
+  border: none;
+}
+
+.dropdown-secondary {
+  color: white;
+  border: 1px solid white;
+  background: none;
+}

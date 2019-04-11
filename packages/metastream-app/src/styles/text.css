@@ -1,0 +1,20 @@
+.single-line {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.select-text {
+  user-select: text;
+  cursor: auto;
+}
+
+.blend-text {
+  mix-blend-mode: overlay;
+  color: black;
+}
+
+.blend-text-invert {
+  mix-blend-mode: overlay;
+  color: white;
+}

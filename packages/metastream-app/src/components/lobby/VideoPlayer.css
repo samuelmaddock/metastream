@@ -1,0 +1,39 @@
+.container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.video {
+  flex-grow: 1;
+}
+
+.video.initializing {
+  opacity: 0;
+}
+
+.video.playing {
+  background: black;
+}
+
+.interactTrigger {
+  composes: absolute-full from 'styles/layout.css';
+  z-index: 2;
+
+  /** WTF: Overlay must have slight visibility to capture mouse events from webview */
+  background: black;
+  opacity: 0.000001;
+}
+
+.interactNotice {
+  position: absolute;
+  top: var(--overlay-spacing);
+  left: 50%;
+  transform: translate(-50%, 0);
+  margin: 0 auto;
+  padding: 10px;
+  background: #222;
+  color: #fff;
+}

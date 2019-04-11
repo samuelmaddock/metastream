@@ -1,0 +1,38 @@
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  --time-spacing: 8px;
+}
+
+.time {
+  width: auto;
+  flex: 0 0 auto;
+  flex-shrink: 0;
+  font-size: 12px;
+  font-family: 'Noto Mono', monospace;
+  letter-spacing: 0.5px;
+
+  text-align: right;
+  margin-right: var(--time-spacing);
+}
+
+.time :global(.lead) {
+  opacity: 0.2;
+}
+
+.progressSlider + .time {
+  text-align: left;
+  margin: 0 0 0 var(--time-spacing);
+}
+
+.progressSlider {
+  height: 100%;
+  flex-grow: 1;
+}
+
+.progressBar {
+  background-color: var(--color-highlight);
+}
