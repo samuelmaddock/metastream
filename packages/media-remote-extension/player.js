@@ -20,12 +20,17 @@ const mediaEventMiddleware = event => {
       // Send to background script
       chrome.runtime.sendMessage(action)
       break
-    case 'metastream-host-event':
-      // TODO: send to main world
-      break
   }
 }
 window.addEventListener('message', mediaEventMiddleware)
+
+// Forward host events to main world
+chrome.runtime.onMessage.addListener(message => {
+  if (typeof message !== 'object' || typeof message.type !== 'string') return
+  if (message.type == 'metastream-host-event') {
+    window.postMessage(message.payload, location.origin)
+  }
+})
 
 // Code within function will be injected into main world.
 // No closure variables are allowed within the function body.
@@ -81,24 +86,29 @@ const mainWorldScript = function() {
     window.postMessage({ type: 'metastream-receiver-event', payload: action })
   }
 
-  // Listen for app actions
-  document.addEventListener(
-    'metastreamReceiverAction',
-    event => {
-      event.stopImmediatePropagation()
-      console.log('Metastream receiver action', event.detail)
-      const { type, payload } = event.detail
-      switch (type) {
-        case 'set-media-playback':
-          break
-        case 'seek-media':
-          break
-        case 'set-media-volume':
-          break
+  const mediaEventMiddleware = event => {
+    const { data: action } = event
+    if (typeof action !== 'object' || typeof action.type !== 'string') return
+    if (!player) return
+
+    switch (action.type) {
+      case 'set-media-playback': {
+        if (action.payload === PlaybackState.Playing) {
+          player.play()
+        } else if (action.payload === PlaybackState.Paused) {
+          player.pause()
+        }
+        break
       }
-    },
-    true
-  )
+      case 'seek-media':
+        player.seek(action.payload)
+        break
+      case 'set-media-volume':
+        player.setVolume(action.payload)
+        break
+    }
+  }
+  window.addEventListener('message', mediaEventMiddleware)
 
   //===========================================================================
   // HTMLMediaPlayer class for active media element.
