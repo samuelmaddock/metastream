@@ -42,7 +42,7 @@
 }
 
 .colorSwatch {
-  composes: circle from 'styles/layout.css';
+  composes: circle from '~styles/layout.css';
   width: 40px;
   height: 40px;
   outline: none;
@@ -67,5 +67,5 @@
 }
 
 .blend {
-  composes: blend-text-invert from 'styles/text.css';
+  composes: blend-text-invert from '~styles/text.css';
 }

@@ -3,7 +3,7 @@
 }
 
 .menu {
-  composes: glass rounded-top from 'styles/layout.css';
+  composes: glass rounded-top from '~styles/layout.css';
   position: absolute;
   top: 0;
   right: 0;

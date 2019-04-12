@@ -38,7 +38,7 @@
 }
 
 .header {
-  composes: h2 from 'styles/typography.css';
+  composes: h2 from '~styles/typography.css';
   margin-bottom: 1rem;
 }
 

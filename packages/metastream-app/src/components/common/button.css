@@ -38,7 +38,7 @@
 }
 
 .glass {
-  composes: masked-glass from 'styles/effect.css';
+  composes: masked-glass from '~styles/effect.css';
 }
 
 .highlight.glass {
@@ -78,5 +78,5 @@
 }
 
 .tooltip {
-  composes: absolute-full from 'styles/layout.css';
+  composes: absolute-full from '~styles/layout.css';
 }

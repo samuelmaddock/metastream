@@ -1,10 +1,10 @@
 .container {
-  composes: fill-center from 'styles/layout.css';
+  composes: fill-center from '~styles/layout.css';
   background: var(--app-bg-lobby);
 }
 
 .info {
-  composes: center-vertical from 'styles/layout.css';
+  composes: center-vertical from '~styles/layout.css';
   font-size: 1.2rem;
 }
 

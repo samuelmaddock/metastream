@@ -1,5 +1,5 @@
 .container {
-  composes: glass rounded from 'styles/layout.css';
+  composes: glass rounded from '~styles/layout.css';
   width: 19rem;
   -webkit-mask-image: linear-gradient(180deg, white 0%, white 20%, transparent 100%);
 }
@@ -19,7 +19,7 @@
 }
 
 .title {
-  composes: single-line from 'styles/text.css';
+  composes: single-line from '~styles/text.css';
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -48,7 +48,7 @@
 }
 
 .list {
-  composes: scroller from 'styles/layout.css';
+  composes: scroller from '~styles/layout.css';
   height: 200px;
   overflow-y: auto;
 }

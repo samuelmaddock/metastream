@@ -19,7 +19,7 @@
 }
 
 .interactTrigger {
-  composes: absolute-full from 'styles/layout.css';
+  composes: absolute-full from '~styles/layout.css';
   z-index: 2;
 
   /** WTF: Overlay must have slight visibility to capture mouse events from webview */

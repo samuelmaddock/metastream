@@ -12,7 +12,7 @@
 }
 
 .name {
-  composes: single-line from 'styles/text.css';
+  composes: single-line from '~styles/text.css';
 }
 
 .role {

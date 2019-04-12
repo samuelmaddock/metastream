@@ -1,5 +1,5 @@
 .container {
-  composes: fill from 'styles/layout.css';
+  composes: fill from '~styles/layout.css';
   background: var(--app-bg-home);
   justify-content: center;
   align-items: center;

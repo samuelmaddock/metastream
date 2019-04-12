@@ -18,7 +18,7 @@
 }
 
 .buildInfo {
-  composes: blend-text from 'styles/text.css';
+  composes: blend-text from '~styles/text.css';
   font-size: 0.8rem;
   opacity: 0.4;
   margin-left: 1rem;
@@ -29,7 +29,7 @@
 }
 
 .intro {
-  composes: blend-text from 'styles/text.css';
+  composes: blend-text from '~styles/text.css';
   grid-area: intro;
   font-weight: bold;
   overflow: hidden;
@@ -79,7 +79,7 @@
 }
 
 .credits {
-  composes: blend-text from 'styles/text.css';
+  composes: blend-text from '~styles/text.css';
 }
 
 .credits a {

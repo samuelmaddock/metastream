@@ -6,7 +6,7 @@
 }
 
 .label {
-  composes: label from 'styles/typography.css';
+  composes: label from '~styles/typography.css';
   display: block;
 }
 

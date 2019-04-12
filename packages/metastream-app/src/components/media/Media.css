@@ -25,7 +25,7 @@
 } */
 
 .title {
-  composes: single-line from 'styles/text.css';
+  composes: single-line from '~styles/text.css';
   flex: 1 1 100%;
 }
 
@@ -46,7 +46,7 @@
 }
 
 .author {
-  composes: single-line from 'styles/text.css';
+  composes: single-line from '~styles/text.css';
   display: inline-block;
   max-width: 140px;
   vertical-align: middle;

@@ -1,6 +1,6 @@
 .container {
-  composes: select-text from 'styles/text.css';
-  composes: clearfix from 'styles/layout.css';
+  composes: select-text from '~styles/text.css';
+  composes: clearfix from '~styles/layout.css';
   white-space: pre-line;
   word-wrap: break-word;
   width: 100%;

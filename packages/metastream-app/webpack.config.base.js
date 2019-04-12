@@ -92,7 +92,10 @@ module.exports = {
    */
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.mjs', '.json'],
-    modules: [path.join(__dirname, 'src'), 'node_modules']
+    modules: [path.join(__dirname, 'src'), 'node_modules'],
+    alias: {
+      styles: path.join(__dirname, 'src/styles')
+    }
   },
 
   plugins: [

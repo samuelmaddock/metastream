@@ -51,7 +51,7 @@
 }
 
 .title {
-  composes: single-line from 'styles/text.css';
+  composes: single-line from '~styles/text.css';
   position: absolute;
   left: 50%;
   transform: translateX(-50%);

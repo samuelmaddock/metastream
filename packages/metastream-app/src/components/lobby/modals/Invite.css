@@ -6,7 +6,7 @@
 }
 
 .header {
-  composes: h2 from 'styles/typography.css';
+  composes: h2 from '~styles/typography.css';
   margin-bottom: 1rem;
   text-transform: capitalize;
 }
@@ -29,7 +29,7 @@
 }
 
 .notice {
-  composes: rounded from 'styles/layout.css';
+  composes: rounded from '~styles/layout.css';
   position: relative;
   border: 1px solid white;
   text-align: left;

@@ -39,13 +39,13 @@
 
 /* Force mouse cursor to be hidden */
 .inactiveOverlay {
-  composes: absolute-full from 'styles/layout.css';
+  composes: absolute-full from '~styles/layout.css';
   z-index: 999;
   cursor: none;
 }
 
 .video {
-  composes: absolute-full from 'styles/layout.css';
+  composes: absolute-full from '~styles/layout.css';
 }
 
 .playbackControls {
@@ -89,7 +89,7 @@
 }
 
 .modal {
-  composes: absolute-full from 'styles/layout.css';
+  composes: absolute-full from '~styles/layout.css';
   top: var(--app-titlebar-height) !important;
   z-index: var(--overlay-z-index);
 }

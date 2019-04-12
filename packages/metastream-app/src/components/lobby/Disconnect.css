@@ -1,16 +1,16 @@
 .container {
-  composes: fill-center from 'styles/layout.css';
+  composes: fill-center from '~styles/layout.css';
   background: var(--app-bg-lobby);
 }
 
 .header {
-  composes: h2 from 'styles/typography.css';
+  composes: h2 from '~styles/typography.css';
   margin-bottom: 1rem;
 }
 
 .info {
-  composes: center-vertical from 'styles/layout.css';
-  composes: select-text from 'styles/text.css';
+  composes: center-vertical from '~styles/layout.css';
+  composes: select-text from '~styles/text.css';
 }
 
 .info svg {

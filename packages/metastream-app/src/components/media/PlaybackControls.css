@@ -1,5 +1,5 @@
 .container {
-  composes: glass rounded from 'styles/layout.css';
+  composes: glass rounded from '~styles/layout.css';
   display: flex;
   height: 40px;
   user-select: none;
