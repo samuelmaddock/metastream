@@ -35,3 +35,15 @@ export const Dropdown: React.SFC<
     </select>
   )
 }
+
+export const NumberBox: React.SFC<
+  React.InputHTMLAttributes<{}> & { theme?: 'primary' | 'secondary' }
+> = ({ children, className, theme = 'primary', ...props }) => {
+  return (
+    <input
+      type="number"
+      className={cx(className, styles.dropdown, styles[`dropdown-${theme}`])}
+      {...props}
+    />
+  )
+}

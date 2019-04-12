@@ -4,11 +4,10 @@ import { setSetting } from 'renderer/actions/settings'
 import { IAppState } from 'renderer/reducers/index'
 import { ISettingsState } from 'renderer/reducers/settings'
 import { t } from '../../../../locale/index'
-import { Dropdown } from '../controls'
+import { NumberBox, SwitchOption } from '../controls'
 import styles from '../SettingsMenu.css'
 import optionsStyles from '../options.css'
 import { RouterState } from 'react-router-redux'
-import { ExternalLink } from 'renderer/components/common/link'
 
 interface IProps {}
 
@@ -19,55 +18,51 @@ interface IConnectedProps {
 
 type Props = IProps & IConnectedProps & DispatchProp<{}>
 
-class FadeSettings extends Component<Props> {
+interface State {
+  numBoxDisabled: boolean
+}
+
+class FadeSettings extends Component<Props, State> {
+  state: State = {
+    numBoxDisabled: this.props.settings.fade >= 1000000000000000
+  }
+
   render(): JSX.Element | null {
     // prettier-ignore
     return (
       <section className={styles.section}>
         <h2>{t('fade')}</h2>
 
-        <Dropdown
+        <NumberBox
+          value={(this.props.settings.fade / 1000)} 
           onChange={e => {
-            const value = (e.target as HTMLSelectElement).value
-            this.props.dispatch!(setSetting('fade', parseInt(value)))
+            let value = parseInt((e.target as HTMLInputElement).value)
+            if (value < 1) {
+              (e.target as HTMLInputElement).value = '1'
+              value = 1
+            }
+            this.props.dispatch!(setSetting('fade', value * 1000))
           }}
-        >
-        
-          <option
-            key='10s'
-            value={10000}
-            selected={10000 === this.props.settings.fade}
-          >
-            {t('fade10Seconds')}
-          </option>
-
-          <option
-            key='20s'
-            value={20000}
-            selected={20000 === this.props.settings.fade}
-          >
-            {t('fade20Seconds')}
-          </option>
-
-          <option
-            key='30s'
-            value={30000}
-            selected={30000 === this.props.settings.fade}
-          >
-            {t('fade30Seconds')}
-          </option>
-
-          <option
-            key='forever'
-            value={9999999999999999}
-            selected={9999999999999999 === this.props.settings.fade}
-          >
-            {t('fadeForever')}
-          </option>
-          
-        </Dropdown>
+          disabled={this.state.numBoxDisabled}
+        />
 
         <div className={optionsStyles.description}>{t('fadeDescription')}</div>
+
+        <SwitchOption 
+          inputId='fadeForever'
+          title={t('fadeForever')}
+          description={t('fadeForeverDescription')}
+          checked={this.props.settings.fade >= 1000000000000000}
+          onChange={checked => {
+            if (checked) {
+              this.props.dispatch!(setSetting('fade', 1000000000000000))
+              this.setState({ numBoxDisabled: true })
+            } else {
+              this.props.dispatch!(setSetting('fade', 10000))
+              this.setState({ numBoxDisabled: false })
+            }
+          }}
+        />
       </section>
     )
   }
