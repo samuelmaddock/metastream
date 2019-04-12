@@ -5,7 +5,7 @@
   "description": "Metastream for the web browser",
   "license": "MIT",
   "scripts": {
-    "start": "webpack-dev-server --config webpack.config.dev.js"
+    "start": "cross-env NODE_ENV=development webpack-dev-server --config webpack.config.dev.js"
   },
   "browserslist": "Chrome >= 73, Firefox >= 66",
   "repository": {

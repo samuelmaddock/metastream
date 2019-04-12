@@ -30,7 +30,7 @@ module.exports = {
           options: {
             silent: true,
             useBabel: false,
-            useCache: true
+            useCache: process.env.NODE_ENV === 'development'
           }
         }
       },
@@ -91,7 +91,8 @@ module.exports = {
    * Determine the array of extensions that should be used to resolve modules.
    */
   resolve: {
-    extensions: ['.ts', '.tsx', '.js', '.mjs', '.json']
+    extensions: ['.ts', '.tsx', '.js', '.mjs', '.json'],
+    modules: [path.join(__dirname, 'src'), 'node_modules']
   },
 
   plugins: [
