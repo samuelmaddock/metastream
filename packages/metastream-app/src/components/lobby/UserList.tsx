@@ -7,7 +7,7 @@ import { isHost, isAdmin } from '../../lobby/reducers/users.helpers'
 import { getMaxUsers } from '../../lobby/reducers/session'
 import { server_kickUser, server_toggleUserRole, answerUserInvite } from '../../lobby/actions/users'
 
-import { MenuItem } from 'material-ui/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
 import { HighlightButton } from '../common/button'
 import { ListOverlay } from './ListOverlay'
 import { UserItem, ConnectedUserItem } from './UserItem'

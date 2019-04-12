@@ -58,6 +58,7 @@
     "webpack-node-externals": "^1.7.2"
   },
   "dependencies": {
+    "@material-ui/core": "^3.9.3",
     "cheerio": "^1.0.0-rc.2",
     "classnames": "^2.2.5",
     "deep-diff": "^0.3.8",
@@ -68,7 +69,6 @@
     "length-prefixed-stream": "^1.6.0",
     "lodash": "^4.17.10",
     "marked": "^0.5.1",
-    "material-ui": "^1.0.0-beta.47",
     "qs": "6.5.1",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",

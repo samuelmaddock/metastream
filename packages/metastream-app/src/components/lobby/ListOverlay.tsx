@@ -2,7 +2,7 @@ import React, { Component, ReactNode } from 'react'
 import cx from 'classnames'
 import styles from './ListOverlay.css'
 
-import Menu from 'material-ui/Menu'
+import Menu from '@material-ui/core/Menu'
 
 interface IProps<T> {
   className?: string

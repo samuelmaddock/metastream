@@ -2,7 +2,7 @@ import React from 'react'
 import * as cx from 'classnames'
 import styles from './button.css'
 import { Icon } from 'components/Icon'
-import Tooltip from 'material-ui/Tooltip'
+import Tooltip from '@material-ui/core/Tooltip'
 
 export interface IIconButtonProps {
   icon: string

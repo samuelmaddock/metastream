@@ -18,7 +18,7 @@ import {
 import { HighlightButton, IconButton } from '../common/button'
 import { ListOverlay } from './ListOverlay'
 
-import { MenuItem } from 'material-ui/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
 import { MediaItem } from '../media/MediaItem'
 import { localUser } from 'network'
 import { copyMediaLink, openMediaInBrowser } from '../../media/utils'
