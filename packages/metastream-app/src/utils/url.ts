@@ -1,5 +1,3 @@
-import { remote } from 'electron'
-
 type QueryParams = { [key: string]: any }
 
 const esc = encodeURIComponent
@@ -32,5 +30,9 @@ export const isUrl = (str: string): boolean => {
 }
 
 export const openInBrowser = (href: string): void => {
-  remote.shell.openExternal(href)
+  // TODO: convert code using this to links
+  const elem = document.createElement('a')
+  elem.href = href
+  elem.target = '_blank'
+  elem.click()
 }

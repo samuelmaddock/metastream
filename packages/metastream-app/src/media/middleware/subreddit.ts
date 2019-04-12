@@ -1,13 +1,6 @@
-import { Url, parse } from 'url'
-import { buildUrl, encodeQueryParams } from 'utils/url'
-import {
-  MediaThumbnailSize,
-  IMediaMiddleware,
-  IMediaRequest,
-  IMediaResponse,
-  MediaType,
-  IMediaContext
-} from '../types'
+import { parse } from 'url'
+import { encodeQueryParams } from 'utils/url'
+import { IMediaMiddleware, MediaType, IMediaContext } from '../types'
 import { fetchText } from 'utils/http'
 import { MEDIA_REFERRER } from 'constants/http'
 
@@ -57,7 +50,7 @@ const transformPost = ({ data }: any) => {
 const getListing = async (url: string, after?: string) => {
   const urlobj = parse(url, true)
 
-  const paramObj = {
+  const paramObj: { [key: string]: string | number } = {
     ...urlobj.query,
     limit: API_LIMIT
   }

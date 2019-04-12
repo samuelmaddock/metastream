@@ -8,7 +8,6 @@ import { WebControls } from 'components/browser/Controls'
 import { sendMediaRequest } from 'lobby/actions/mediaPlayer'
 import { absoluteUrl } from 'utils/appUrl'
 import { IReactReduxProps } from 'types/redux-thunk'
-import { ipcRenderer, remote } from 'electron'
 
 const DEFAULT_URL = absoluteUrl('./browser/resources/homescreen.html')
 
@@ -22,8 +21,7 @@ interface IProps {
 type PrivateProps = IProps & IReactReduxProps
 
 export class _WebBrowser extends Component<PrivateProps> {
-  private webview?: Electron.WebviewTag | null
-  private webContents!: Electron.webContents
+  private webview?: HTMLIFrameElement | null
   private controls?: WebControls | null
 
   private hasSetupControls?: boolean
@@ -32,16 +30,7 @@ export class _WebBrowser extends Component<PrivateProps> {
     return this.props.initialUrl || DEFAULT_URL
   }
 
-  componentDidMount(): void {
-    ipcRenderer.on('command', this.dispatchCommand)
-  }
-
-  componentWillUnmount(): void {
-    ipcRenderer.removeListener('command', this.dispatchCommand)
-    ;(window as any).WEBBROWSER = null
-  }
-
-  private dispatchCommand = (sender: Electron.WebContents, cmd: string) => {
+  private dispatchCommand = (cmd: string) => {
     if (!this.webview) {
       return
     }
@@ -58,48 +47,30 @@ export class _WebBrowser extends Component<PrivateProps> {
         }
         break
       case 'window:history-prev':
-        if (this.webContents.canGoBack()) {
-          this.webContents.goBack()
-        }
+        // if (this.webContents.canGoBack()) {
+        //   this.webContents.goBack()
+        // }
         break
       case 'window:history-next':
-        if (this.webContents.canGoForward()) {
-          this.webContents.goForward()
-        }
+        // if (this.webContents.canGoForward()) {
+        //   this.webContents.goForward()
+        // }
         break
     }
   }
 
   private setupControls() {
-    if (!this.hasSetupControls && this.controls && this.webview && this.webContents) {
-      this.controls.setWebview(this.webview, this.webContents)
+    if (!this.hasSetupControls && this.controls && this.webview) {
+      // this.controls.setWebview(this.webview, this.webContents)
       this.hasSetupControls = true
     }
   }
 
-  private setupWebview = (webview: Electron.WebviewTag | null): void => {
+  private setupWebview = (webview: HTMLIFrameElement | null): void => {
     this.webview = webview
 
     if (this.webview) {
-      // this.webview.addEventListener('new-window', e => {
-      //   TODO: security???
-      //   this.webview!.loadURL(e.url);
-      // });
-
-      const wv = this.webview as any
-      wv.addEventListener('did-attach', (e: any) => {
-        ;(remote as any).getWebContents(e.tabId, (webContents: Electron.WebContents) => {
-          this.webContents = webContents
-          this.setupControls()
-
-          if (process.env.NODE_ENV === 'development') {
-            const win = window as any
-            win.WEBBROWSER = webContents
-          }
-        })
-      })
-    } else {
-      this.webContents = undefined as any
+      // this.setupControls()
     }
   }
 

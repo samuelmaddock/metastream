@@ -1,5 +1,4 @@
 import React from 'react'
-import { openInBrowser } from '../../../utils/url'
 
 interface IExternalLinkProps {
   href: string
@@ -8,14 +7,7 @@ interface IExternalLinkProps {
 
 export const ExternalLink: React.SFC<IExternalLinkProps> = props => {
   return (
-    <a
-      href="#"
-      className={props.className}
-      onClick={e => {
-        e.preventDefault()
-        openInBrowser(props.href)
-      }}
-    >
+    <a href={props.href} className={props.className} target="_blank">
       {props.children}
     </a>
   )

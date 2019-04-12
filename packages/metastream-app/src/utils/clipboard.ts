@@ -1,12 +1,10 @@
-import { remote } from 'electron'
-
 export const copyToClipboard = (data: any, type?: string): void => {
-  const { clipboard } = remote
-  switch (type || typeof data) {
-    case 'string':
-      clipboard.writeText(data)
-      break
-    default:
-      clipboard.writeText(data + '')
+  const clipboard = (navigator as any).clipboard
+
+  if (!clipboard) {
+    alert('Clipboard not supported in browser.')
+    return
   }
+
+  clipboard.writeText(data + '').catch(() => {})
 }

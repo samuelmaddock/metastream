@@ -3,6 +3,7 @@ import * as cx from 'classnames'
 import styles from './input.css'
 import { HighlightButton } from 'components/common/button'
 import { t } from 'locale'
+import { copyToClipboard } from 'utils/clipboard'
 
 interface ITextInputProps extends React.HTMLProps<HTMLInputElement> {
   theRef?: (e: HTMLInputElement | null) => void
@@ -56,7 +57,7 @@ export class ClipboardTextInput extends React.Component<IClipboardTextInputProps
   private copy = () => {
     if (this.input) {
       const { value } = this.input
-      chrome.remote.clipboard.writeText(value)
+      copyToClipboard(value)
     }
   }
 }

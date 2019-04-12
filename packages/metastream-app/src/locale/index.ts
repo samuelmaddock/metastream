@@ -1,6 +1,5 @@
 import i18n, { TranslationFunction, Resource } from 'i18next'
 import { reactI18nextModule } from 'react-i18next'
-import { ipcRenderer } from 'electron'
 
 import enUS from './en-US'
 import deDE from './de-DE'
@@ -9,7 +8,6 @@ import huHU from './hu-HU'
 import es from './es'
 import ru from './ru'
 import ja from './ja'
-import { REQUEST_LANGUAGE, LANGUAGE } from 'constants/ipc'
 
 export const DEFAULT_LANGUAGE = 'en-US'
 
@@ -36,7 +34,7 @@ const resources: Resource = locales.reduce(
 resources.es = resources['es-ES']
 
 i18n.use(reactI18nextModule).init({
-  debug: process.env.NODE_ENV === 'development' && process.type === 'renderer',
+  debug: process.env.NODE_ENV === 'development',
   resources,
   lng: DEFAULT_LANGUAGE,
   fallbackLng: DEFAULT_LANGUAGE,
@@ -65,13 +63,6 @@ export function initLocale(defaultLocale?: string) {
 
   if (typeof defaultLocale === 'string') {
     setLocale(defaultLocale)
-  } else {
-    ipcRenderer.on(LANGUAGE, (e: Electron.Event, lang: string) => {
-      if (typeof lang === 'string') {
-        setLocale(lang)
-      }
-    })
-    ipcRenderer.send(REQUEST_LANGUAGE)
   }
 }
 

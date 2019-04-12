@@ -11,7 +11,6 @@ import { ExternalLink } from 'components/common/link'
 import { WEBSOCKET_PORT_DEFAULT } from 'constants/network'
 import { IReactReduxProps } from 'types/redux-thunk'
 import { assetUrl } from 'utils/appUrl'
-import { isDiscordAvailable } from 'vendor/discord'
 import { PRODUCT_NAME } from 'constants/app'
 import { withNamespaces, WithNamespaces, Trans } from 'react-i18next'
 
@@ -78,7 +77,7 @@ class Invite extends Component<PrivateProps> {
         'https://support.discordapp.com/hc/en-us/articles/115001557452-Game-Invites-and-Detailed-Status-Rich-Presence-'
 
       // prettier-ignore
-      message = isDiscordAvailable() ? (
+      message = 0 ? (
         <Trans i18nKey="sendDiscordInvite">
           <ExternalLink href={href} className="link">Send Discord invites</ExternalLink> to share friend codes automatically.
         </Trans>

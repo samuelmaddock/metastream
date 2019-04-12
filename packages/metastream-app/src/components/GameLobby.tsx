@@ -1,7 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import cx from 'classnames'
-import { ipcRenderer } from 'electron'
 
 import { server_addChat } from 'lobby/actions/chat'
 import { VideoPlayer } from 'components/lobby/VideoPlayer'
@@ -73,12 +72,10 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
   state: IState = { inactive: false }
 
   componentDidMount() {
-    ipcRenderer.on('command', this.onWindowCommand)
     this.props.dispatch!(registerMediaShortcuts())
   }
 
   componentWillUnmount() {
-    ipcRenderer.removeListener('command', this.onWindowCommand)
     this.props.dispatch!(unregisterMediaShortcuts())
   }
 
@@ -205,14 +202,6 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
         showInfo={this.showInfo}
       />
     )
-  }
-
-  private onWindowCommand = (sender: Electron.WebContents, cmd: string) => {
-    switch (cmd) {
-      case 'window:new-tab':
-        this.openBrowser()
-        break
-    }
   }
 
   private sendChat = (text: string): void => {

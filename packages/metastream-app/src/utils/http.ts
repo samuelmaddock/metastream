@@ -1,8 +1,11 @@
-import { ipcRenderer } from 'electron'
 import { CoreOptions, RequestResponse } from 'request'
 
 let fetchId = 0
 const mainFetch = (url: string, options?: CoreOptions): Promise<RequestResponse> => {
+  if (1) {
+    throw new Error('not yet implemented')
+  }
+
   return new Promise((resolve, reject) => {
     if (url.startsWith('//')) {
       url = `https:${url}`
@@ -21,7 +24,7 @@ const mainFetch = (url: string, options?: CoreOptions): Promise<RequestResponse>
       if (requestId !== responseId) {
         return
       }
-      ipcRenderer.removeListener('fetch-response', handler)
+      // ipcRenderer.removeListener('fetch-response', handler)
 
       if (err) {
         reject(err)
@@ -31,9 +34,9 @@ const mainFetch = (url: string, options?: CoreOptions): Promise<RequestResponse>
       resolve(resp)
     }
 
-    ipcRenderer.on('fetch-response', handler)
+    // ipcRenderer.on('fetch-response', handler)
 
-    ipcRenderer.send('fetch-request', requestId, url, options)
+    // ipcRenderer.send('fetch-request', requestId, url, options)
   })
 }
 

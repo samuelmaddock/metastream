@@ -22,8 +22,7 @@ interface IState {
 }
 
 export class WebControls extends Component<IProps, IState> {
-  private webview: Electron.WebviewTag | null = null
-  private webContents!: Electron.WebContents
+  private webview: HTMLIFrameElement | null = null
   private addressInput: HTMLInputElement | null = null
 
   state: IState = {}
@@ -41,10 +40,10 @@ export class WebControls extends Component<IProps, IState> {
         icon="arrow-left"
         onClick={() => {
           if (this.webview) {
-            this.webContents.goBack()
+            // this.webContents.goBack()
           }
         }}
-        disabled={this.webview ? !this.webContents.canGoBack() : true}
+        // disabled={this.webview ? !this.webContents.canGoBack() : true}
       />
     )
 
@@ -54,10 +53,10 @@ export class WebControls extends Component<IProps, IState> {
         icon="arrow-right"
         onClick={() => {
           if (this.webview) {
-            this.webContents.goForward()
+            // this.webContents.goForward()
           }
         }}
-        disabled={this.webview ? !this.webContents.canGoForward() : true}
+        // disabled={this.webview ? !this.webContents.canGoForward() : true}
       />
     )
 
@@ -68,11 +67,11 @@ export class WebControls extends Component<IProps, IState> {
         onClick={e => {
           if (this.webview) {
             if (this.state.loading) {
-              this.webContents.stop()
+              // this.webContents.stop()
             } else if (e.shiftKey || process.env.NODE_ENV === 'development') {
-              this.webContents.reloadIgnoringCache()
+              // this.webContents.reloadIgnoringCache()
             } else {
-              this.webContents.reload()
+              // this.webContents.reload()
             }
           }
         }}
@@ -86,7 +85,7 @@ export class WebControls extends Component<IProps, IState> {
         onClick={e => {
           if (this.webview) {
             // TODO: navigate forward instead of back
-            this.webContents.goToIndex(0)
+            // this.webContents.goToIndex(0)
           }
         }}
       />
@@ -110,9 +109,9 @@ export class WebControls extends Component<IProps, IState> {
         className={styles.button}
         icon="settings"
         onClick={() => {
-          if (this.webContents) {
-            this.webContents.toggleDevTools()
-          }
+          // if (this.webContents) {
+          // this.webContents.toggleDevTools()
+          // }
         }}
       />
     ) : (
@@ -161,16 +160,16 @@ export class WebControls extends Component<IProps, IState> {
     )
   }
 
-  setWebview(webview: Electron.WebviewTag | null, webContents: Electron.WebContents) {
+  setWebview(webview: HTMLIFrameElement | null) {
     this.webview = webview
-    this.webContents = webContents
+    // this.webContents = webContents
 
     if (this.webview) {
-      this.setState({ tabId: (this.webContents as any).getId() })
+      // this.setState({ tabId: (this.webContents as any).getId() })
 
       this.webview.addEventListener('dom-ready', e => {
         if (this.webview) {
-          this.updateURL(this.webContents.getURL())
+          // this.updateURL(this.webContents.getURL())
         }
       })
 
@@ -178,9 +177,9 @@ export class WebControls extends Component<IProps, IState> {
         this.updateURL(e.url)
       }
 
-      this.webview.addEventListener('will-navigate', updateUrl)
-      this.webview.addEventListener('did-navigate', updateUrl)
-      this.webview.addEventListener('did-navigate-in-page', updateUrl)
+      // this.webview.addEventListener('will-navigate', updateUrl)
+      // this.webview.addEventListener('did-navigate', updateUrl)
+      // this.webview.addEventListener('did-navigate-in-page', updateUrl)
 
       const setLoading = (loading: boolean) => this.setState({ loading })
       this.webview.addEventListener('did-start-loading', setLoading.bind(null, true))
@@ -254,7 +253,7 @@ export class WebControls extends Component<IProps, IState> {
 
     if (this.webview) {
       const httpReferrer = this.webview.getAttribute('httpreferrer') || undefined
-      this.webContents.loadURL(url, { httpReferrer })
+      // this.webContents.loadURL(url, { httpReferrer })
     }
   }
 

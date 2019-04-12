@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { IAppState } from 'reducers'
-import { listenForUiEvents } from 'actions/ui'
 import { PlatformService } from '../platform'
 import { localUser } from '../network'
 import { setUsername } from '../actions/settings'
@@ -21,7 +20,6 @@ class App extends Component<Props> {
 
   private init() {
     this.initSettings()
-    this.props.dispatch!(listenForUiEvents())
   }
 
   private initSettings() {

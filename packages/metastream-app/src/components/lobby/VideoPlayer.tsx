@@ -1,4 +1,3 @@
-import { remote, ipcRenderer } from 'electron'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import cx from 'classnames'
@@ -44,8 +43,8 @@ const mapStateToProps = (state: IAppState): IConnectedProps => {
 type PrivateProps = IProps & IConnectedProps & IReactReduxProps
 
 class _VideoPlayer extends PureComponent<PrivateProps, IState> {
-  private webview: Electron.WebviewTag | null = null
-  private webContents!: Electron.WebContents
+  private webview: HTMLIFrameElement | null = null
+  // private webContents!: Electron.WebContents
 
   state: IState = { interacting: false }
 
@@ -128,46 +127,43 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     }
   }
 
-  private setupWebview = (webview: Electron.WebviewTag | null): void => {
+  private setupWebview = (webview: HTMLIFrameElement | null): void => {
     this.webview = webview
 
     if (this.webview) {
-      this.webview.addEventListener('ipc-message', this.onIpcMessage)
-
-      const wv = this.webview as any
-      wv.addEventListener('did-attach', (e: any) => {
-        ;(remote as any).getWebContents(e.tabId, (webContents: Electron.WebContents) => {
-          this.webContents = webContents
-          this.reload()
-
-          const win = window as any
-
-          if (process.env.NODE_ENV === 'development') {
-            win.WEBCONTENTS = webContents
-          }
-        })
-      })
+      // this.webview.addEventListener('ipc-message', this.onIpcMessage)
+      // const wv = this.webview as any
+      // wv.addEventListener('did-attach', (e: any) => {
+      //   ;(remote as any).getWebContents(e.tabId, (webContents: Electron.WebContents) => {
+      //     this.webContents = webContents
+      //     this.reload()
+      //     const win = window as any
+      //     if (process.env.NODE_ENV === 'development') {
+      //       win.WEBCONTENTS = webContents
+      //     }
+      //   })
+      // })
     } else {
-      this.webContents = undefined as any
+      // this.webContents = undefined as any
     }
   }
 
   private dispatchMedia(type: string, payload: any) {
-    ipcRenderer.send('media-action', { type, payload })
+    // ipcRenderer.send('media-action', { type, payload })
   }
 
-  private onIpcMessage = (event: Electron.IpcMessageEvent) => {
-    console.log('Received VideoPlayer IPC message', event, event.args)
+  // private onIpcMessage = (event: Electron.IpcMessageEvent) => {
+  //   console.log('Received VideoPlayer IPC message', event, event.args)
 
-    switch (event.channel) {
-      case 'media-ready':
-        this.onMediaReady(...event.args)
-        break
-      case 'media-iframes':
-        this.requestFullScreenIFrame(event.args[0])
-        break
-    }
-  }
+  //   switch (event.channel) {
+  //     case 'media-ready':
+  //       this.onMediaReady(...event.args)
+  //       break
+  //     case 'media-iframes':
+  //       this.requestFullScreenIFrame(event.args[0])
+  //       break
+  //   }
+  // }
 
   private onMediaReady = (info?: any) => {
     console.debug('onMediaReady', info)
@@ -190,31 +186,6 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
         this.props.dispatch!(updatePlaybackTimer())
       }
     }
-
-    // Auto-fullscreen
-    if (info) {
-      if (info.iframe) {
-        this.webContents.send('media-iframes', info.href)
-      } else {
-        // HACK: Delay to prevent embed-disabled YouTube vids from fullscreening then closing
-        const delay = this.mediaUrl.indexOf('youtube.com/watch') > -1 ? 500 : 0
-        setTimeout(() => this.requestFullScreen(), delay)
-      }
-    }
-  }
-
-  private requestFullScreen(x: number = 0, y: number = 0) {
-    // Insert gesture event to allow triggering fullscreen
-    console.debug(`requestFullscreen x=${x} y=${y}`)
-    this.webContents.sendInputEvent({ type: 'mouseUp', x, y, movementX: 1234 } as any)
-
-    // Hide player controls
-    this.webContents.sendInputEvent({ type: 'mouseLeave', x: 0, y: 0 } as any)
-  }
-
-  private requestFullScreenIFrame(points: { x: number; y: number }[]) {
-    console.debug('FS POINTS', points)
-    points.forEach((p, idx) => this.requestFullScreen(p.x, p.y))
   }
 
   private updatePlaybackTime = () => {
@@ -227,28 +198,28 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
 
     let time = getPlaybackTime2(this.props)
 
-    if (this.webContents && typeof time === 'number') {
-      console.log('Sending seek IPC message', time)
-      this.dispatchMedia('seek', time)
-    }
+    // if (this.webContents && typeof time === 'number') {
+    //   console.log('Sending seek IPC message', time)
+    //   this.dispatchMedia('seek', time)
+    // }
   }
 
   private updatePlayback = (state: PlaybackState) => {
-    if (this.webContents) {
-      this.dispatchMedia('playback', state)
-    }
+    // if (this.webContents) {
+    //   this.dispatchMedia('playback', state)
+    // }
   }
 
   private updateVolume = () => {
-    if (!this.webContents) {
-      return
-    }
+    // if (!this.webContents) {
+    //   return
+    // }
 
-    const { volume, mute } = this.props
+    // const { volume, mute } = this.props
 
-    if (mute !== this.webContents.isAudioMuted()) {
-      this.webContents.setAudioMuted(mute)
-    }
+    // if (mute !== this.webContents.isAudioMuted()) {
+    //   this.webContents.setAudioMuted(mute)
+    // }
 
     const newVolume = this.props.mute ? 0 : this.props.volume
     this.dispatchMedia('volume', this.scaleVolume(newVolume))
@@ -298,21 +269,19 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     // Sometimes loadURL won't work if media is still playing
     // This happens with mixcloud.com
     // this.updatePlayback(PlaybackState.Paused);
-
-    if (this.webContents) {
-      this.webContents.loadURL(this.mediaUrl, {
-        httpReferrer: this.httpReferrer,
-        userAgent: MEDIA_SESSION_USER_AGENT
-      })
-    }
-
-    ipcRenderer.send('media-cleanup')
+    // if (this.webContents) {
+    //   this.webContents.loadURL(this.mediaUrl, {
+    //     httpReferrer: this.httpReferrer,
+    //     userAgent: MEDIA_SESSION_USER_AGENT
+    //   })
+    // }
+    // ipcRenderer.send('media-cleanup')
   }
 
   debug(): void {
-    if (this.webContents && !this.webContents.isDevToolsOpened()) {
-      this.webContents.openDevTools()
-    }
+    // if (this.webContents && !this.webContents.isDevToolsOpened()) {
+    //   this.webContents.openDevTools()
+    // }
   }
 
   private enterInteractMode = () => {

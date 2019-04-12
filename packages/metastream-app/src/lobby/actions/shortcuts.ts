@@ -1,11 +1,8 @@
-import { ipcRenderer } from 'electron'
 import { IAppState } from 'reducers'
 
 import { server_requestNextMedia, server_requestPlayPause } from 'lobby/actions/mediaPlayer'
 import { AppThunkAction } from 'types/redux-thunk'
 import { ThunkDispatch } from 'redux-thunk'
-
-let unregister: Function | undefined
 
 const dispatchCommand = (cmd: string, dispatch: ThunkDispatch<IAppState, any, any>) => {
   switch (cmd) {
@@ -19,23 +16,11 @@ const dispatchCommand = (cmd: string, dispatch: ThunkDispatch<IAppState, any, an
 }
 
 export const registerMediaShortcuts = (): AppThunkAction => {
-  return (dispatch, getState, extra) => {
-    const onCommand = (sender: Electron.WebContents, cmd: string) =>
-      dispatch(dispatchCommand.bind(null, cmd))
-
-    ipcRenderer.on('command', onCommand)
-
-    unregister = () => {
-      ipcRenderer.removeListener('command', onCommand)
-    }
+  return () => {
+    // TODO: listen for media hotkeys
   }
 }
 
 export const unregisterMediaShortcuts = (): AppThunkAction => {
-  return (dispatch, getState) => {
-    if (unregister) {
-      unregister()
-      unregister = undefined
-    }
-  }
+  return () => {}
 }
