@@ -59,6 +59,7 @@
     "dist",
     "old",
     "app/extensions",
-    "release"
+    "release",
+    "packages"
   ]
 }

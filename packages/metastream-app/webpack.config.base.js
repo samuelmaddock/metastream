@@ -81,7 +81,7 @@ module.exports = {
   },
 
   output: {
-    path: path.join(__dirname, 'src'),
+    path: path.join(__dirname, 'dist'),
     filename: 'app.dev.js',
     // https://github.com/webpack/webpack/issues/1114
     libraryTarget: 'commonjs2'

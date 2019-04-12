@@ -10,12 +10,13 @@ const port = process.env.PORT || 1212
 const publicPath = `http://localhost:${port}/dist`
 
 module.exports = merge.smart(baseConfig, {
-  devtool: 'inline-source-map',
+  // TODO: re-enable this when it isn't 15MB
+  devtool: 'none',
 
   entry: [
-    // 'react-hot-loader/patch',
-    // `webpack-dev-server/client?http://localhost:${port}/`,
-    // 'webpack/hot/only-dev-server',
+    'react-hot-loader/patch',
+    `webpack-dev-server/client?http://localhost:${port}/`,
+    'webpack/hot/only-dev-server',
     path.join(__dirname, 'src/index.tsx')
   ],
 
