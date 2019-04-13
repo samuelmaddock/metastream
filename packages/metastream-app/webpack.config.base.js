@@ -6,6 +6,7 @@ const path = require('path')
 const webpack = require('webpack')
 const Dotenv = require('dotenv-webpack')
 const childProcess = require('child_process')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 const GIT_BRANCH = childProcess
   .execSync('git rev-parse --abbrev-ref HEAD')
@@ -103,6 +104,9 @@ module.exports = {
       GIT_BRANCH,
       GIT_COMMIT
     }),
-    new Dotenv({ silent: true })
+    new Dotenv({ silent: true }),
+    new HtmlWebpackPlugin({
+      template: path.join(__dirname, 'src/index.html')
+    })
   ]
 }

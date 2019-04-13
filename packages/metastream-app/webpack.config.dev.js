@@ -4,14 +4,14 @@ const webpack = require('webpack')
 const chalk = require('chalk')
 const merge = require('webpack-merge')
 const { spawn, execSync } = require('child_process')
+
 const baseConfig = require('./webpack.config.base')
 
-const port = process.env.PORT || 1212
-const publicPath = `http://localhost:${port}/dist`
+const port = process.env.PORT || 8080
+const publicPath = `http://localhost:${port}`
 
 module.exports = merge.smart(baseConfig, {
-  // TODO: re-enable this when it isn't 15MB
-  devtool: 'none',
+  devtool: 'inline-source-map',
 
   entry: [
     'react-hot-loader/patch',
@@ -21,7 +21,7 @@ module.exports = merge.smart(baseConfig, {
   ],
 
   output: {
-    publicPath: `http://localhost:${port}/dist/`,
+    publicPath: `http://localhost:${port}/`,
     libraryTarget: 'var'
   },
 
@@ -97,24 +97,23 @@ module.exports = merge.smart(baseConfig, {
 
   devServer: {
     port,
-    publicPath,
-    compress: true,
-    noInfo: true,
-    stats: 'errors-only',
-    inline: true,
-    lazy: false,
-    hot: true,
-    disableHostCheck: true,
-    headers: { 'Access-Control-Allow-Origin': '*' },
-    contentBase: path.join(__dirname, 'dist'),
-    watchOptions: {
-      aggregateTimeout: 300,
-      ignored: /node_modules/,
-      poll: 100
-    },
-    historyApiFallback: {
-      verbose: true,
-      disableDotRule: false
-    }
+    publicPath
+    // compress: true,
+    // noInfo: true,
+    // stats: 'errors-only',
+    // inline: true,
+    // lazy: false,
+    // hot: true,
+    // disableHostCheck: true,
+    // headers: { 'Access-Control-Allow-Origin': '*' },
+    // watchOptions: {
+    //   aggregateTimeout: 300,
+    //   ignored: /node_modules/,
+    //   poll: 100
+    // },
+    // historyApiFallback: {
+    //   verbose: true,
+    //   disableDotRule: false
+    // }
   }
 })
