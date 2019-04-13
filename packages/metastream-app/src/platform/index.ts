@@ -1,10 +1,15 @@
 import { Platform } from 'platform/types'
+import { WebPlatform } from 'platform/web'
 
 class _PlatformService {
   private static platform: Platform
 
   static get(): Platform {
-    throw new Error('Not yet implemented')
+    if (!this.platform) {
+      this.platform = new WebPlatform()
+    }
+
+    return this.platform
   }
 }
 
