@@ -4,7 +4,7 @@
   "description": "Remote controller for media on the web.",
   "content_scripts": [
     {
-      "matches": ["https://getmetastream.com/*"],
+      "matches": ["https://getmetastream.com/*", "http://localhost:8080/*"],
       "js": ["app.js"],
       "run_at": "document_start"
     }
