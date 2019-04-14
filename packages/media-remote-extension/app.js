@@ -16,6 +16,8 @@
     console.debug(`[Metastream Remote] Initialized`, initialized)
   })
 
+  let internalMessage = false
+
   // Listen for subframe events
   chrome.runtime.onMessage.addListener(message => {
     if (typeof message !== 'object' || typeof message.type !== 'string') return
@@ -24,12 +26,18 @@
       console.debug('[Metastream Remote] Received message', message)
 
       // Send to main world
+      internalMessage = true
       window.postMessage(message, location.origin)
     }
   })
 
   // Listen for events to forward to background script
   window.addEventListener('message', event => {
+    if (internalMessage) {
+      internalMessage = false
+      return
+    }
+
     const { data: action } = event
     if (typeof action !== 'object' && typeof action.type !== 'string') return
 

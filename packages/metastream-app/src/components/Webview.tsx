@@ -40,7 +40,9 @@ export class Webview extends Component<Props> {
   }
 
   loadURL(url: string, opts: { httpReferrer: string; userAgent: string }) {
-    // TODO
+    if (this.iframe) {
+      this.iframe.src = url
+    }
   }
 
   addEventListener(eventName: string, listener: Function) {

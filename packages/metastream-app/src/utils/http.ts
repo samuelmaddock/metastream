@@ -5,8 +5,20 @@ type FetchResponse = Response & {
   headers: { [key: string]: string }
 }
 
+const transformList = new Set(['user-agent', 'referer'])
+const transformHeaders = (options: RequestInit) => {
+  const headers = options.headers as any
+  if (typeof headers === 'object') {
+    Object.keys(headers).forEach(name => {
+      if (transformList.has(name.toLowerCase())) {
+        headers[`X-Metastream-${name}`] = headers[name]
+      }
+    })
+  }
+}
+
 let fetchId = 0
-const mainFetch = (url: string, options?: CoreOptions): Promise<FetchResponse> => {
+const mainFetch = (url: string, options: RequestInit = {}): Promise<FetchResponse> => {
   return new Promise((resolve, reject) => {
     if (url.startsWith('//')) {
       url = `https:${url}`
@@ -18,6 +30,8 @@ const mainFetch = (url: string, options?: CoreOptions): Promise<FetchResponse> =
       reject(e)
       return
     }
+
+    transformHeaders(options)
 
     const requestId = fetchId++
 

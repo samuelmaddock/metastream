@@ -265,16 +265,13 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
   }
 
   reload(): void {
-    // Sometimes loadURL won't work if media is still playing
-    // This happens with mixcloud.com
-    // this.updatePlayback(PlaybackState.Paused);
-    // if (this.webContents) {
-    //   this.webContents.loadURL(this.mediaUrl, {
-    //     httpReferrer: this.httpReferrer,
-    //     userAgent: MEDIA_SESSION_USER_AGENT
-    //   })
-    // }
-    // ipcRenderer.send('media-cleanup')
+    this.updatePlayback(PlaybackState.Paused)
+    if (this.webview) {
+      this.webview.loadURL(this.mediaUrl, {
+        httpReferrer: this.httpReferrer,
+        userAgent: MEDIA_SESSION_USER_AGENT
+      })
+    }
   }
 
   debug(): void {

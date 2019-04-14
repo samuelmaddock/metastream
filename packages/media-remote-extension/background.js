@@ -7,7 +7,7 @@
 // message brokering between embedded websites and the app itself.
 //
 
-const HEADER_PREFIX = 'X-Metastream'
+const HEADER_PREFIX = 'x-metastream'
 const isMetastreamUrl = url => url.includes('getmetastream.com') || url.includes('localhost')
 const isTopFrame = details => details.frameId === 0
 const isDirectChild = details => details.parentFrameId === 0
@@ -18,13 +18,14 @@ const watchedTabs = new Set()
 // Add Metastream header overwrites
 const onBeforeSendHeaders = details => {
   const { tabId, requestHeaders: headers } = details
-  if (watchedTabs.has(tabId) && isTopFrame(details)) {
+  const shouldModify = (watchedTabs.has(tabId) && isTopFrame(details)) || tabId === -1
+  if (shouldModify) {
     for (let i = headers.length - 1; i >= 0; --i) {
       const header = headers[i].name.toLowerCase()
       if (header.startsWith(HEADER_PREFIX)) {
-        headers.splice(i, 1)
         const name = header.substr(HEADER_PREFIX.length + 1)
-        headers.push({ name, value: header.value })
+        headers.push({ name, value: headers[i].value })
+        headers.splice(i, 1)
       }
     }
   }
@@ -164,7 +165,9 @@ const serializeResponse = async (response) => {
 const request = async (tabId, requestId, url, options) => {
   let response, err
 
+
   try {
+    console.debug(`Requesting ${url}`)
     response = await fetch(url, options)
   } catch (e) {
     err = e.message
@@ -179,6 +182,18 @@ const request = async (tabId, requestId, url, options) => {
   }
   chrome.tabs.sendMessage(tabId, message, { frameId: 0 })
 }
+
+// Listen for requests from background script
+chrome.webRequest.onBeforeSendHeaders.addListener(
+  onBeforeSendHeaders,
+  { tabId: -1, urls: ['<all_urls>'] },
+  [
+    chrome.webRequest.OnBeforeSendHeadersOptions.BLOCKING,
+    chrome.webRequest.OnBeforeSendHeadersOptions.REQUESTHEADERS, // firefox
+    chrome.webRequest.OnBeforeSendHeadersOptions.REQUEST_HEADERS, // chromium
+    chrome.webRequest.OnBeforeSendHeadersOptions.EXTRA_HEADERS // chromium
+  ].filter(Boolean)
+)
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   const { id: tabId } = sender.tab
