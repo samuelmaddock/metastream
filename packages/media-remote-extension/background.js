@@ -11,9 +11,13 @@ const HEADER_PREFIX = 'x-metastream'
 const isMetastreamUrl = url => url.includes('getmetastream.com') || url.includes('localhost')
 const isTopFrame = details => details.frameId === 0
 const isDirectChild = details => details.parentFrameId === 0
+const isValidAction = action => typeof action === 'object' && typeof action.type === 'string'
 
 // Observed tabs on Metastream URL
 const watchedTabs = new Set()
+
+// Local state for active tabs
+const tabState = {}
 
 // Add Metastream header overwrites
 const onBeforeSendHeaders = details => {
@@ -99,8 +103,15 @@ const startWatchingTab = tab => {
   console.log(`Metastream watching tabId=${tabId}`)
   watchedTabs.add(tabId)
 
+  const state = {
+    onBeforeSendHeaders: onBeforeSendHeaders.bind(null),
+    onHeadersReceived: onHeadersReceived.bind(null)
+  }
+
+  tabState[tabId] = state
+
   chrome.webRequest.onBeforeSendHeaders.addListener(
-    onBeforeSendHeaders,
+    state.onBeforeSendHeaders,
     { tabId, urls: ['<all_urls>'] },
     [
       chrome.webRequest.OnBeforeSendHeadersOptions.BLOCKING,
@@ -110,7 +121,7 @@ const startWatchingTab = tab => {
     ].filter(Boolean)
   )
   chrome.webRequest.onHeadersReceived.addListener(
-    onHeadersReceived,
+    state.onHeadersReceived,
     {
       tabId,
       urls: ['<all_urls>'],
@@ -122,22 +133,46 @@ const startWatchingTab = tab => {
       chrome.webRequest.OnHeadersReceivedOptions.RESPONSE_HEADERS // chromium
     ].filter(Boolean)
   )
-  chrome.webNavigation.onCommitted.addListener(onCommitted)
-  chrome.tabs.onRemoved.addListener(onTabRemove)
+
+  const shouldAddGlobalListeners = watchedTabs.size === 1
+  if (shouldAddGlobalListeners) {
+    chrome.webNavigation.onCommitted.addListener(onCommitted)
+    chrome.tabs.onRemoved.addListener(onTabRemove)
+
+    // Listen for requests from background script
+    chrome.webRequest.onBeforeSendHeaders.addListener(
+      onBeforeSendHeaders,
+      { tabId: -1, urls: ['<all_urls>'] },
+      [
+        chrome.webRequest.OnBeforeSendHeadersOptions.BLOCKING,
+        chrome.webRequest.OnBeforeSendHeadersOptions.REQUESTHEADERS, // firefox
+        chrome.webRequest.OnBeforeSendHeadersOptions.REQUEST_HEADERS, // chromium
+        chrome.webRequest.OnBeforeSendHeadersOptions.EXTRA_HEADERS // chromium
+      ].filter(Boolean)
+    )
+  }
 }
 
 const stopWatchingTab = tabId => {
   watchedTabs.delete(tabId)
-  if (watchedTabs.size === 0) {
-    chrome.webRequest.onBeforeSendHeaders.removeListener(onBeforeSendHeaders)
-    chrome.webRequest.onHeadersReceived.removeListener(onHeadersReceived)
+
+  const state = tabState[tabId]
+  if (state) {
+    chrome.webRequest.onBeforeSendHeaders.removeListener(state.onBeforeSendHeaders)
+    chrome.webRequest.onHeadersReceived.removeListener(state.onHeadersReceived)
+    delete tabState[tabId]
+  }
+
+  const shouldRemoveGlobalListeners = watchedTabs.size === 0
+  if (shouldRemoveGlobalListeners) {
     chrome.webNavigation.onCommitted.removeListener(onCommitted)
     chrome.tabs.onRemoved.removeListener(onTabRemove)
   }
+
   console.log(`Metastream stopped watching tabId=${tabId}`)
 }
 
-const serializeResponse = async (response) => {
+const serializeResponse = async response => {
   let body
   let headers = {}
 
@@ -165,7 +200,6 @@ const serializeResponse = async (response) => {
 const request = async (tabId, requestId, url, options) => {
   let response, err
 
-
   try {
     console.debug(`Requesting ${url}`)
     response = await fetch(url, options)
@@ -173,36 +207,22 @@ const request = async (tabId, requestId, url, options) => {
     err = e.message
   }
 
-  const message = {
+  const action = {
     type: `metastream-fetch-response${requestId}`,
     payload: {
       err,
       resp: response ? await serializeResponse(response) : null
     }
   }
-  chrome.tabs.sendMessage(tabId, message, { frameId: 0 })
+  chrome.tabs.sendMessage(tabId, action, { frameId: 0 })
 }
 
-// Listen for requests from background script
-chrome.webRequest.onBeforeSendHeaders.addListener(
-  onBeforeSendHeaders,
-  { tabId: -1, urls: ['<all_urls>'] },
-  [
-    chrome.webRequest.OnBeforeSendHeadersOptions.BLOCKING,
-    chrome.webRequest.OnBeforeSendHeadersOptions.REQUESTHEADERS, // firefox
-    chrome.webRequest.OnBeforeSendHeadersOptions.REQUEST_HEADERS, // chromium
-    chrome.webRequest.OnBeforeSendHeadersOptions.EXTRA_HEADERS // chromium
-  ].filter(Boolean)
-)
-
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((action, sender, sendResponse) => {
   const { id: tabId } = sender.tab
-
-  // Only listen for messages on Metastream app tab
-  if (!isMetastreamUrl(sender.tab.url)) return
+  if (!isValidAction(action)) return
 
   // Listen for Metastream app initialization signal
-  if (message === 'initMetastream') {
+  if (action.type === 'metastream-init' && isMetastreamUrl(sender.tab.url)) {
     startWatchingTab(sender.tab)
     sendResponse(true)
     return
@@ -210,21 +230,20 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   // Filter out messages from non-Metastream app tabs
   if (!watchedTabs.has(tabId)) return
-  if (typeof message !== 'object') return
 
-  switch (message.type) {
+  switch (action.type) {
     case 'metastream-receiver-event':
       // Forward receiver event to metastream app
       // TODO: include frameId in message payload?
-      chrome.tabs.sendMessage(tabId, message, { frameId: 0 })
+      chrome.tabs.sendMessage(tabId, action, { frameId: 0 })
       break
     case 'metastream-host-event':
       // Forward host event to all subframes
       // TODO: exclude sending to top frame? allow sending to specific frame?
-      chrome.tabs.sendMessage(tabId, message)
+      chrome.tabs.sendMessage(tabId, action)
       break
     case 'metastream-fetch':
-      const { requestId, url, options } = message.payload
+      const { requestId, url, options } = action.payload
       request(tabId, requestId, url, options)
       break
   }

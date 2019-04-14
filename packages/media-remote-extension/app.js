@@ -11,7 +11,7 @@
   }
 
   // Notify background script of initialization request
-  chrome.runtime.sendMessage('initMetastream', initialized => {
+  chrome.runtime.sendMessage({ type: 'metastream-init' }, initialized => {
     // TODO: notify app of initialization response
     console.debug(`[Metastream Remote] Initialized`, initialized)
   })
