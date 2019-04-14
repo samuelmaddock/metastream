@@ -72,6 +72,8 @@ const mainWorldScript = function() {
 
   const SEC2MS = 1000
 
+  const noop = () => {}
+
   const mediaList = new Set()
   let player
   let activeMedia

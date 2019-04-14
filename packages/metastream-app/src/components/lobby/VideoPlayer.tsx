@@ -150,7 +150,10 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
   }
 
   private dispatchMedia(type: string, payload: any) {
-    // ipcRenderer.send('media-action', { type, payload })
+    window.postMessage(
+      { type: 'metastream-host-event', payload: { type, payload } },
+      location.origin
+    )
   }
 
   // private onIpcMessage = (event: Electron.IpcMessageEvent) => {
@@ -199,31 +202,25 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
 
     let time = getPlaybackTime2(this.props)
 
-    // if (this.webContents && typeof time === 'number') {
-    //   console.log('Sending seek IPC message', time)
-    //   this.dispatchMedia('seek', time)
-    // }
+    if (typeof time === 'number') {
+      console.log('Sending seek IPC message', time)
+      this.dispatchMedia('seek-media', time)
+    }
   }
 
   private updatePlayback = (state: PlaybackState) => {
-    // if (this.webContents) {
-    //   this.dispatchMedia('playback', state)
-    // }
+    this.dispatchMedia('set-media-playback', state)
   }
 
   private updateVolume = () => {
-    // if (!this.webContents) {
-    //   return
-    // }
-
-    // const { volume, mute } = this.props
+    const { volume, mute } = this.props
 
     // if (mute !== this.webContents.isAudioMuted()) {
     //   this.webContents.setAudioMuted(mute)
     // }
 
-    const newVolume = this.props.mute ? 0 : this.props.volume
-    this.dispatchMedia('volume', this.scaleVolume(newVolume))
+    const newVolume = mute ? 0 : volume
+    this.dispatchMedia('set-media-volume', this.scaleVolume(newVolume))
   }
 
   /**
