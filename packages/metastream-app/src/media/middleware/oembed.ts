@@ -9,7 +9,6 @@ const WORDPRESS_OEMBED_PATH = /\/wp-json\/oembed\/.*?\/embed/i
 
 async function fetchOEmbed(url: string) {
   const [json] = await fetchText(url, {
-    json: true,
     headers: {
       'user-agent': MEDIA_USER_AGENT
     }

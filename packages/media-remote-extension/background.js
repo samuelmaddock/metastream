@@ -136,6 +136,50 @@ const stopWatchingTab = tabId => {
   console.log(`Metastream stopped watching tabId=${tabId}`)
 }
 
+const serializeResponse = async (response) => {
+  let body
+  let headers = {}
+
+  const contentType = (response.headers.get('content-type') || '').toLowerCase()
+  if (contentType && contentType.indexOf('application/json') !== -1) {
+    try {
+      body = await response.json()
+    } catch (e) {}
+  } else {
+    body = await response.text()
+  }
+
+  for (let pair of response.headers.entries()) {
+    headers[pair[0]] = pair[1]
+  }
+
+  return {
+    ...response,
+    headers,
+    body
+  }
+}
+
+// Fetch on behalf of Metastream app, skips cross-domain security restrictions
+const request = async (tabId, requestId, url, options) => {
+  let response, err
+
+  try {
+    response = await fetch(url, options)
+  } catch (e) {
+    err = e.message
+  }
+
+  const message = {
+    type: `metastream-fetch-response${requestId}`,
+    payload: {
+      err,
+      resp: response ? await serializeResponse(response) : null
+    }
+  }
+  chrome.tabs.sendMessage(tabId, message, { frameId: 0 })
+}
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   const { id: tabId } = sender.tab
 
@@ -163,6 +207,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       // Forward host event to all subframes
       // TODO: exclude sending to top frame? allow sending to specific frame?
       chrome.tabs.sendMessage(tabId, message)
+      break
+    case 'metastream-fetch':
+      const { requestId, url, options } = message.payload
+      request(tabId, requestId, url, options)
       break
   }
 })

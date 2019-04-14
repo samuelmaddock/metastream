@@ -10,25 +10,21 @@
     return
   }
 
-  // Dispatch action to main world
-  const dispatch = action => {
-    window.postMessage(action, location.origin)
-  }
-
   // Notify background script of initialization request
   chrome.runtime.sendMessage('initMetastream', initialized => {
     // TODO: notify app of initialization response
-    console.log(`Metastream initialized`, initialized)
+    console.debug(`[Metastream Remote] Initialized`, initialized)
   })
 
   // Listen for subframe events
   chrome.runtime.onMessage.addListener(message => {
-    if (typeof message !== 'object') return
+    if (typeof message !== 'object' || typeof message.type !== 'string') return
 
-    if (message.type === 'metastream-receiver-event') {
-      // TODO: send to app in main world
-      console.log('app content script received', message)
-      dispatch(message.payload)
+    if (message.type.startsWith('metastream-')) {
+      console.debug('[Metastream Remote] Received message', message)
+
+      // Send to main world
+      window.postMessage(message, location.origin)
     }
   })
 
@@ -37,7 +33,8 @@
     const { data: action } = event
     if (typeof action !== 'object' && typeof action.type !== 'string') return
 
-    if (action.type === 'metastream-host-event') {
+    if (action.type.startsWith('metastream-')) {
+      console.debug('[Metastream Remote] Forwarding message to background', action)
       chrome.runtime.sendMessage(action)
     }
   })

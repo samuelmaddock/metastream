@@ -66,7 +66,6 @@ const getListing = async (url: string, after?: string) => {
   const apiUrl = `${urlobj.protocol}//${urlobj.hostname}${urlobj.pathname}.json?${params}`
 
   const [json] = await fetchText<any>(apiUrl, {
-    json: true,
     headers: {
       Referer: MEDIA_REFERRER
     }

@@ -25,7 +25,7 @@ const mware: IMediaMiddleware = {
       }
     })
 
-    const code = response.statusCode || 200
+    const code = response.status || 200
     // if (code >= 400) {
     //   return;
     // }
