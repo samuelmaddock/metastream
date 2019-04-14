@@ -4,6 +4,7 @@ const webpack = require('webpack')
 const chalk = require('chalk')
 const merge = require('webpack-merge')
 const { spawn, execSync } = require('child_process')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 const baseConfig = require('./webpack.config.base')
 
@@ -88,11 +89,15 @@ module.exports = merge.smart(baseConfig, {
       FEATURE_SESSION_BROWSER: JSON.stringify(false),
       FEATURE_DISCORD_RP: JSON.stringify(true),
       FEATURE_DISCORD_INVITE: JSON.stringify(true)
-    })
+    }),
 
     // new webpack.LoaderOptionsPlugin({
     //   debug: true
     // }),
+
+    new CopyWebpackPlugin([
+      { from: path.join(__dirname, 'src/assets'), to: path.join(__dirname, 'dist/assets') }
+    ])
   ],
 
   devServer: {

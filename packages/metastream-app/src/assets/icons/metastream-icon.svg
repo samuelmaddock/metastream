@@ -1,0 +1,43 @@
+<svg width="417" height="417" viewBox="0 0 417 417"
+	xmlns="http://www.w3.org/2000/svg">
+	<defs>
+		<radialGradient id="gradient" fx="0.5" fy="0.5" r="100%" gradientTransform="translate(-0.4 -0.4)">
+			<stop offset="0%" stop-color="#6f749e"/>
+			<stop offset="31%" stop-color="#9a8daf"/>
+			<stop offset="58%" stop-color="#d0a8b9"/>
+			<stop offset="80%" stop-color="#f8bbb1"/>
+			<stop offset="100%" stop-color="#fde6b1"/>
+		</radialGradient>
+		<mask id="circle">
+			<circle fill="#FFFFFF" cx="208.511" cy="208.511" r="50%" />
+		</mask>
+		<mask id="play">
+			<path fill="#fff" d="M140.057,344.595c-3.065,0-6.13-0.792-8.877-2.378c-5.493-3.172-8.877-9.032-8.877-15.375V92.543		c0-6.343,3.384-12.204,8.877-15.375c5.493-3.171,12.261-3.171,17.753,0l202.908,117.148c5.493,3.171,8.877,9.032,8.877,15.375		c0,6.343-3.384,12.204-8.877,15.375l-202.908,117.15C146.188,343.803,143.123,344.595,140.057,344.595z M157.811,123.293v172.798		l149.647-86.4L157.811,123.293z" />
+			<circle fill="#fff" cx="35%" cy="25%" r="10%" />
+			<circle fill="#fff" cx="35%" cy="75%" r="10%" />
+			<circle fill="#fff" cx="78%" cy="50%" r="10%" />
+		</mask>
+		<filter id="invert">
+			<feColorMatrix in="SourceGraphic" type="matrix" values="-1 0 0 0 1
+																	0 -1 0 0 1
+																	0 0 -1 0 1
+																	0 0 0 1 0"/>
+		</filter>
+		<filter id="blend">
+			<feColorMatrix
+				type="matrix"
+				values="1.6   0   0   0   0
+						0  1.6   0   0   0
+						0   0  1.6   0   0
+						0   0   0   1   0 "/>
+		</filter>
+	</defs>
+
+	<!-- <rect width="100%" height="100%" fill="#fff" /> -->
+	<g transform="scale(0.95) translate(11 11)">
+		<g>
+			<circle fill="url(#gradient)" mask="url(#circle)" cx="50%" cy="50%" r="50%" />
+			<rect width="100%" height="100%" fill="url(#gradient)" mask="url(#play)" filter="url(#blend)" />
+		</g>
+	</g>
+</svg>
