@@ -3,13 +3,13 @@ import { connect } from 'react-redux'
 import cx from 'classnames'
 
 import styles from './WebBrowser.css'
-import { WEBVIEW_PARTITION } from 'constants/http'
 import { WebControls } from 'components/browser/Controls'
 import { sendMediaRequest } from 'lobby/actions/mediaPlayer'
-import { absoluteUrl } from 'utils/appUrl'
+import { assetUrl } from 'utils/appUrl'
 import { IReactReduxProps } from 'types/redux-thunk'
+import { Webview } from 'components/Webview'
 
-const DEFAULT_URL = absoluteUrl('./browser/resources/homescreen.html')
+const DEFAULT_URL = assetUrl('homescreen.html')
 
 interface IProps {
   className?: string
@@ -21,7 +21,7 @@ interface IProps {
 type PrivateProps = IProps & IReactReduxProps
 
 export class _WebBrowser extends Component<PrivateProps> {
-  private webview?: HTMLIFrameElement | null
+  private webview?: Webview | null
   private controls?: WebControls | null
 
   private hasSetupControls?: boolean
@@ -66,7 +66,7 @@ export class _WebBrowser extends Component<PrivateProps> {
     }
   }
 
-  private setupWebview = (webview: HTMLIFrameElement | null): void => {
+  private setupWebview = (webview: Webview | null): void => {
     this.webview = webview
 
     if (this.webview) {
@@ -99,17 +99,9 @@ export class _WebBrowser extends Component<PrivateProps> {
   }
 
   private renderContent() {
-    return React.createElement('webview', {
-      is: 'is',
-      ref: this.setupWebview,
-      src: this.initialUrl,
-      class: styles.content,
-      /* Some website embeds are disabled without an HTTP referrer */
-      httpreferrer: 'http://mediaplayer.samuelmaddock.com/',
-      plugins: 'true',
-      partition: WEBVIEW_PARTITION,
-      allowtransparency: true
-    })
+    return (
+      <Webview componentRef={this.setupWebview} src={this.initialUrl} className={styles.content} />
+    )
   }
 }
 

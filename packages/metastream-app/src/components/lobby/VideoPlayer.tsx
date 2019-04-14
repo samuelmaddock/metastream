@@ -5,13 +5,14 @@ import styles from './VideoPlayer.css'
 import { PlaybackState, IMediaPlayerState } from 'lobby/reducers/mediaPlayer'
 import { updateMedia, updatePlaybackTimer } from 'lobby/actions/mediaPlayer'
 import { clamp } from 'utils/math'
-import { WEBVIEW_PARTITION, MEDIA_REFERRER, MEDIA_SESSION_USER_AGENT } from 'constants/http'
-import { absoluteUrl } from 'utils/appUrl'
+import { MEDIA_REFERRER, MEDIA_SESSION_USER_AGENT } from 'constants/http'
+import { assetUrl } from 'utils/appUrl'
 import { IAppState } from 'reducers'
 import { getPlaybackTime2 } from 'lobby/reducers/mediaPlayer.helpers'
 import { isHost } from 'lobby/reducers/users.helpers'
 import { isEqual } from 'lodash'
 import { IReactReduxProps } from 'types/redux-thunk'
+import { Webview } from 'components/Webview'
 
 interface IProps {
   className?: string
@@ -29,7 +30,7 @@ interface IState {
   interacting: boolean
 }
 
-const DEFAULT_URL = absoluteUrl('./browser/resources/idlescreen.html')
+const DEFAULT_URL = assetUrl('idlescreen.html')
 
 const mapStateToProps = (state: IAppState): IConnectedProps => {
   return {
@@ -43,7 +44,7 @@ const mapStateToProps = (state: IAppState): IConnectedProps => {
 type PrivateProps = IProps & IConnectedProps & IReactReduxProps
 
 class _VideoPlayer extends PureComponent<PrivateProps, IState> {
-  private webview: HTMLIFrameElement | null = null
+  private webview: Webview | null = null
   // private webContents!: Electron.WebContents
 
   state: IState = { interacting: false }
@@ -127,7 +128,7 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     }
   }
 
-  private setupWebview = (webview: HTMLIFrameElement | null): void => {
+  private setupWebview = (webview: Webview | null): void => {
     this.webview = webview
 
     if (this.webview) {
@@ -251,18 +252,16 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
   }
 
   private renderBrowser(): JSX.Element {
-    return React.createElement('webview', {
-      is: 'is',
-      ref: this.setupWebview,
-      src: DEFAULT_URL,
-      class: cx(styles.video, {
-        [styles.interactive]: this.state.interacting,
-        [styles.playing]: !!this.props.current
-      }),
-      plugins: true,
-      partition: WEBVIEW_PARTITION,
-      allowtransparency: true
-    })
+    return (
+      <Webview
+        componentRef={this.setupWebview}
+        src={DEFAULT_URL}
+        className={cx(styles.video, {
+          [styles.interactive]: this.state.interacting,
+          [styles.playing]: !!this.props.current
+        })}
+      />
+    )
   }
 
   reload(): void {
