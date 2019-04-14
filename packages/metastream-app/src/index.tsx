@@ -74,8 +74,8 @@ if (module.hot) {
   })
 }
 
-if (process.env.NODE_ENV === 'development') {
-  window.addEventListener('beforeunload', () => {
-    debugger
-  })
-}
+// if (process.env.NODE_ENV === 'development') {
+//   window.addEventListener('beforeunload', () => {
+//     debugger
+//   })
+// }

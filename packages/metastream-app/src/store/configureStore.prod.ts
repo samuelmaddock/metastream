@@ -1,15 +1,14 @@
-import { createMemoryHistory } from 'history'
+import { createBrowserHistory } from 'history'
 import { routerMiddleware } from 'react-router-redux'
 import { applyMiddleware, createStore } from 'redux'
 import { persistReducer, persistStore } from 'redux-persist'
 import thunk from 'redux-thunk'
 import appMiddleware from 'store/appMiddleware'
-import rootReducer, { IAppState } from '../reducers'
+import rootReducer from '../reducers'
 import persistConfig from './persistStore'
 import { ConfigureStoreOptions } from './types'
 
-// Use memory history to disable app navigation commands (#11)
-const history = createMemoryHistory()
+const history = createBrowserHistory()
 
 function configureStore(opts: ConfigureStoreOptions) {
   const thunkMiddleware = thunk.withExtraArgument(opts.extra)
