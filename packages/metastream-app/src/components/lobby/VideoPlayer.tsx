@@ -132,20 +132,9 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     this.webview = webview
 
     if (this.webview) {
-      // this.webview.addEventListener('ipc-message', this.onIpcMessage)
-      // const wv = this.webview as any
-      // wv.addEventListener('did-attach', (e: any) => {
-      //   ;(remote as any).getWebContents(e.tabId, (webContents: Electron.WebContents) => {
-      //     this.webContents = webContents
-      //     this.reload()
-      //     const win = window as any
-      //     if (process.env.NODE_ENV === 'development') {
-      //       win.WEBCONTENTS = webContents
-      //     }
-      //   })
-      // })
+      window.addEventListener('message', this.onIpcMessage, false)
     } else {
-      // this.webContents = undefined as any
+      window.removeEventListener('message', this.onIpcMessage, false)
     }
   }
 
@@ -156,18 +145,23 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     )
   }
 
-  // private onIpcMessage = (event: Electron.IpcMessageEvent) => {
-  //   console.log('Received VideoPlayer IPC message', event, event.args)
+  private onIpcMessage = (event: MessageEvent) => {
+    const { data } = event
+    if (typeof data !== 'object' || typeof data.type !== 'string') return
 
-  //   switch (event.channel) {
-  //     case 'media-ready':
-  //       this.onMediaReady(...event.args)
-  //       break
-  //     case 'media-iframes':
-  //       this.requestFullScreenIFrame(event.args[0])
-  //       break
-  //   }
-  // }
+    // TODO: filter out messages from other webviews
+    if (data.type !== 'metastream-receiver-event') return
+
+    const { payload: action } = data
+
+    console.log('Received VideoPlayer IPC message', action)
+
+    switch (action.type) {
+      case 'media-ready':
+        this.onMediaReady(action.payload)
+        break
+    }
+  }
 
   private onMediaReady = (info?: any) => {
     console.debug('onMediaReady', info)
