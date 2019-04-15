@@ -20,7 +20,6 @@ import { IAppState } from 'reducers'
 import { IconButton } from 'components/common/button'
 import { hasPlaybackPermissions } from 'lobby/reducers/mediaPlayer.helpers'
 import { absoluteUrl } from 'utils/appUrl'
-import { isDeveloper } from '../../reducers/settings'
 import { t } from 'locale'
 import { IReactReduxProps } from 'types/redux-thunk'
 
@@ -82,7 +81,6 @@ interface IProps {
 interface IConnectedProps extends IMediaPlayerState {
   mute: boolean
   volume: number
-  developer: boolean
 
   /** Has permission to change playback state */
   dj: boolean
@@ -94,7 +92,6 @@ const mapStateToProps = (state: IAppState): IConnectedProps => {
     ...state.mediaPlayer,
     mute: state.settings.mute,
     volume: state.settings.volume,
-    developer: isDeveloper(state),
     dj: hasPlaybackPermissions(state),
     queueLocked: state.mediaPlayer.queueLocked
   }
@@ -207,12 +204,6 @@ class _PlaybackControls extends Component<PrivateProps> {
   private renderMenu() {
     const { current: media } = this.props
 
-    const debugBtn = this.props.developer && (
-      <ButtonListItem icon="settings" onClick={this.props.debug}>
-        {t('debug')}
-      </ButtonListItem>
-    )
-
     const extensionsBtn = (
       <ButtonListItem icon="package" onClick={() => this.props.openBrowser(EXTENSIONS_URL)}>
         {t('extensions')}
@@ -241,7 +232,6 @@ class _PlaybackControls extends Component<PrivateProps> {
       <MoreButton buttonClassName={styles.button}>
         {mediaButtons}
         {extensionsBtn}
-        {debugBtn}
       </MoreButton>
     )
   }

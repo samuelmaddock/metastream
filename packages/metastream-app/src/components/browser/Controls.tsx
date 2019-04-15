@@ -12,7 +12,6 @@ interface IProps {
   className?: string
   onRequestUrl?: (url: string) => void
   onClose?: () => void
-  devTools?: boolean
 }
 
 interface IState {
@@ -105,20 +104,6 @@ export class WebControls extends Component<IProps, IState> {
       </div>
     )
 
-    const debugBtn = this.props.devTools ? (
-      <IconButton
-        className={styles.button}
-        icon="settings"
-        onClick={() => {
-          // if (this.webContents) {
-          // this.webContents.toggleDevTools()
-          // }
-        }}
-      />
-    ) : (
-      undefined
-    )
-
     const closeBtn = (
       <IconButton className={styles.button} icon="x" onClick={this.onCloseClicked.bind(this)} />
     )
@@ -131,7 +116,6 @@ export class WebControls extends Component<IProps, IState> {
         {homeBtn}
         {this.renderLocation()}
         {playBtn}
-        {debugBtn}
         {closeBtn}
       </div>
     )

@@ -15,7 +15,6 @@ interface IProps {
   className?: string
   initialUrl?: string
   onClose?: () => void
-  devTools?: boolean
 }
 
 type PrivateProps = IProps & IReactReduxProps
@@ -91,7 +90,6 @@ export class _WebBrowser extends Component<PrivateProps> {
               this.props.onClose()
             }
           }}
-          devTools={this.props.devTools}
         />
         {this.renderContent()}
       </div>

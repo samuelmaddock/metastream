@@ -24,7 +24,6 @@ import { UserList } from './lobby/UserList'
 import { MediaList } from './lobby/MediaList'
 import { LobbyModal } from '../reducers/ui'
 import { setLobbyModal } from '../actions/ui'
-import { isDeveloper } from '../reducers/settings'
 import { getNumUsers } from '../lobby/reducers/users.helpers'
 import { IReactReduxProps } from 'types/redux-thunk'
 
@@ -43,7 +42,6 @@ interface IConnectedProps {
   messages: IMessage[]
   playback: PlaybackState
   modal?: LobbyModal
-  developer: boolean
   isMultiplayer: boolean
 }
 
@@ -158,7 +156,6 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
             className={styles.modal}
             onClose={this.closeModal}
             {...this.state.modalProps}
-            devTools={this.props.developer}
           />
         )
       case LobbyModal.Invite:
@@ -240,7 +237,6 @@ export const GameLobby = connect(
       messages: state.chat.messages,
       playback: getPlaybackState(state),
       modal: state.ui.lobbyModal,
-      developer: isDeveloper(state),
       isMultiplayer: getNumUsers(state) > 1
     }
   }
