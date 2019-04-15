@@ -178,7 +178,7 @@ export class WebControls extends Component<IProps, IState> {
         this.updateURL(e.url)
       }
 
-      // this.webview.addEventListener('will-navigate', updateUrl)
+      this.webview.addEventListener('will-navigate', updateUrl)
       this.webview.addEventListener('did-navigate', updateUrl)
       this.webview.addEventListener('did-navigate-in-page', updateUrl)
 

@@ -87,6 +87,20 @@ const onTabRemove = (tabId, removeInfo) => {
   }
 }
 
+const onBeforeNavigate = details => {
+  const { tabId, frameId, url } = details
+  if (!watchedTabs.has(tabId)) return
+  if (isTopFrame(frameId)) return
+
+  (async () => {
+    const framePath = await getFramePath(tabId, frameId)
+    const isWebviewFrame = framePath[1] === frameId
+    if (isWebviewFrame) {
+      sendWebviewEventToHost(tabId, frameId, { type: 'will-navigate', payload: { url } })
+    }
+  })()
+}
+
 // Programmatically inject content scripts into Metastream subframes
 const onCommitted = details => {
   const { tabId, frameId, url } = details
@@ -202,6 +216,7 @@ const startWatchingTab = tab => {
 
   const shouldAddGlobalListeners = watchedTabs.size === 1
   if (shouldAddGlobalListeners) {
+    chrome.webNavigation.onBeforeNavigate.addListener(onBeforeNavigate)
     chrome.webNavigation.onCommitted.addListener(onCommitted)
     chrome.webNavigation.onCompleted.addListener(onCompleted)
     chrome.webNavigation.onHistoryStateUpdated.addListener(onHistoryStateUpdated)
@@ -233,6 +248,7 @@ const stopWatchingTab = tabId => {
 
   const shouldRemoveGlobalListeners = watchedTabs.size === 0
   if (shouldRemoveGlobalListeners) {
+    chrome.webNavigation.onBeforeNavigate.removeListener(onBeforeNavigate)
     chrome.webNavigation.onCommitted.removeListener(onCommitted)
     chrome.webNavigation.onCompleted.removeListener(onCompleted)
     chrome.webNavigation.onHistoryStateUpdated.removeListener(onHistoryStateUpdated)
