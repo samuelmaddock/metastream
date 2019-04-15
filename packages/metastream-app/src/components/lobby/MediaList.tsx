@@ -113,22 +113,18 @@ class _MediaList extends Component<Props> {
             ]
           }
 
-          return (
-            <>
-              {items.map((item, idx) => (
-                <MenuItem
-                  key={idx}
-                  onClick={() => {
-                    item.onClick()
-                    close()
-                  }}
-                  dense
-                >
-                  {item.label}
-                </MenuItem>
-              ))}
-            </>
-          )
+          return items.map((item, idx) => (
+            <MenuItem
+              key={idx}
+              onClick={() => {
+                item.onClick()
+                close()
+              }}
+              dense
+            >
+              {item.label}
+            </MenuItem>
+          ))
         }}
       >
         {this.mediaList.map(media => {
