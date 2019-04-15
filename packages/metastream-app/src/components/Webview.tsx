@@ -70,7 +70,7 @@ export class Webview extends Component<Props> {
       this.loadURL(this.props.src)
     }
 
-    this.emitter.emit('webview-ready')
+    this.emitter.emit('ready')
   }
 
   componentWillUnmount() {

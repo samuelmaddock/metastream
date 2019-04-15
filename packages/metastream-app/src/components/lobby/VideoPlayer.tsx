@@ -134,6 +134,7 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
 
     if (this.webview) {
       this.webview.addEventListener('message', this.onIpcMessage)
+      this.webview.addEventListener('ready', this.reload)
     } else if (prevWebview) {
       prevWebview.removeEventListener('message', this.onIpcMessage)
     }
@@ -248,7 +249,7 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     )
   }
 
-  reload(): void {
+  reload = () => {
     this.updatePlayback(PlaybackState.Paused)
     if (this.webview) {
       this.webview.loadURL(this.mediaUrl, {
