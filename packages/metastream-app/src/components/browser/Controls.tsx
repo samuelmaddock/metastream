@@ -5,6 +5,7 @@ import { IconButton, HighlightButton } from 'components/common/button'
 
 import styles from './Controls.css'
 import { t } from 'locale'
+import { Webview } from 'components/Webview'
 
 interface IProps {
   initialUrl: string
@@ -22,7 +23,7 @@ interface IState {
 }
 
 export class WebControls extends Component<IProps, IState> {
-  private webview: HTMLIFrameElement | null = null
+  private webview: Webview | null = null
   private addressInput: HTMLInputElement | null = null
 
   state: IState = {}
@@ -160,7 +161,7 @@ export class WebControls extends Component<IProps, IState> {
     )
   }
 
-  setWebview(webview: HTMLIFrameElement | null) {
+  setWebview(webview: Webview | null) {
     this.webview = webview
     // this.webContents = webContents
 
@@ -178,7 +179,7 @@ export class WebControls extends Component<IProps, IState> {
       }
 
       // this.webview.addEventListener('will-navigate', updateUrl)
-      // this.webview.addEventListener('did-navigate', updateUrl)
+      this.webview.addEventListener('did-navigate', updateUrl)
       // this.webview.addEventListener('did-navigate-in-page', updateUrl)
 
       const setLoading = (loading: boolean) => this.setState({ loading })
@@ -232,7 +233,7 @@ export class WebControls extends Component<IProps, IState> {
         this.requestUrl(url)
       } else if (url) {
         this.loadURL(url)
-        this.webview!.focus()
+        // this.webview!.focus()
       }
     }
   }
@@ -252,7 +253,7 @@ export class WebControls extends Component<IProps, IState> {
     }
 
     if (this.webview) {
-      const httpReferrer = this.webview.getAttribute('httpreferrer') || undefined
+      // const httpReferrer = this.webview.getAttribute('httpreferrer') || undefined
       // this.webContents.loadURL(url, { httpReferrer })
     }
   }

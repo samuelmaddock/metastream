@@ -61,7 +61,7 @@ export class _WebBrowser extends Component<PrivateProps> {
 
   private setupControls() {
     if (!this.hasSetupControls && this.controls && this.webview) {
-      // this.controls.setWebview(this.webview, this.webContents)
+      this.controls.setWebview(this.webview)
       this.hasSetupControls = true
     }
   }
@@ -70,7 +70,7 @@ export class _WebBrowser extends Component<PrivateProps> {
     this.webview = webview
 
     if (this.webview) {
-      // this.setupControls()
+      this.setupControls()
     }
   }
 

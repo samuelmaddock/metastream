@@ -13,6 +13,36 @@ const isTopFrame = details => details.frameId === 0
 const isDirectChild = details => details.parentFrameId === 0
 const isValidAction = action => typeof action === 'object' && typeof action.type === 'string'
 
+// Memoized frame paths
+const framePaths = {}
+
+// Get path from top level frame to subframe.
+const getFramePath = async (tabId, frameId) => {
+  if (framePaths[frameId]) return framePaths[frameId]
+  let path = [frameId]
+  let currentFrameId = frameId
+  while (currentFrameId > 0) {
+    const { parentFrameId } = await new Promise(resolve => {
+      const details = { tabId, frameId: currentFrameId }
+      chrome.webNavigation.getFrame(details, resolve)
+    })
+    path.push(parentFrameId)
+    currentFrameId = parentFrameId
+  }
+  path = path.reverse()
+  framePaths[frameId] = path
+  return path
+}
+
+const sendToHost = (tabId, message) => {
+  chrome.tabs.sendMessage(tabId, message, { frameId: 0 })
+}
+
+const sendWebviewEventToHost = async (tabId, frameId, event) => {
+  const framePath = await getFramePath(tabId, frameId)
+  sendToHost(tabId, { type: 'metastream-webview-event', payload: event, framePath }, { frameId: 0 })
+}
+
 // Observed tabs on Metastream URL
 const watchedTabs = new Set()
 
@@ -62,6 +92,13 @@ const onCommitted = details => {
   const { tabId, frameId, url } = details
   if (!watchedTabs.has(tabId)) return
 
+  // Initialize webview
+  if (url.startsWith('about:blank?webview')) {
+    const webviewId = url.split('=').pop()
+    sendToHost(tabId, { type: `metastream-webview-init${webviewId}`, payload: { frameId } })
+    return
+  }
+
   if (isTopFrame(details)) {
     // Listen for top frame navigating away from Metastream
     if (!isMetastreamUrl(details.url)) {
@@ -70,6 +107,20 @@ const onCommitted = details => {
   } else {
     injectContentScripts(details)
   }
+}
+
+const onCompleted = details => {
+  const { tabId, frameId, url } = details
+  if (!watchedTabs.has(tabId)) return
+  if (isTopFrame(frameId)) return
+
+  (async () => {
+    const framePath = await getFramePath(tabId, frameId)
+    const isWebviewFrame = framePath[1] === frameId
+    if (isWebviewFrame) {
+      sendWebviewEventToHost(tabId, frameId, { type: 'did-navigate', payload: { url } })
+    }
+  })()
 }
 
 const injectContentScripts = (details, attempt = 0) => {
@@ -105,7 +156,8 @@ const startWatchingTab = tab => {
 
   const state = {
     onBeforeSendHeaders: onBeforeSendHeaders.bind(null),
-    onHeadersReceived: onHeadersReceived.bind(null)
+    onHeadersReceived: onHeadersReceived.bind(null),
+    onCompleted: onCompleted.bind(null)
   }
 
   tabState[tabId] = state
@@ -137,6 +189,7 @@ const startWatchingTab = tab => {
   const shouldAddGlobalListeners = watchedTabs.size === 1
   if (shouldAddGlobalListeners) {
     chrome.webNavigation.onCommitted.addListener(onCommitted)
+    chrome.webNavigation.onCompleted.addListener(onCompleted)
     chrome.tabs.onRemoved.addListener(onTabRemove)
 
     // Listen for requests from background script
@@ -166,6 +219,7 @@ const stopWatchingTab = tabId => {
   const shouldRemoveGlobalListeners = watchedTabs.size === 0
   if (shouldRemoveGlobalListeners) {
     chrome.webNavigation.onCommitted.removeListener(onCommitted)
+    chrome.webNavigation.onCompleted.removeListener(onCompleted)
     chrome.tabs.onRemoved.removeListener(onTabRemove)
   }
 
@@ -214,7 +268,13 @@ const request = async (tabId, requestId, url, options) => {
       resp: response ? await serializeResponse(response) : null
     }
   }
-  chrome.tabs.sendMessage(tabId, action, { frameId: 0 })
+  sendToHost(tabId, action)
+}
+
+const handleWebviewEvent = async (sender, action) => {
+  const { frameId } = sender
+  const { id: tabId } = sender.tab
+  sendWebviewEventToHost(tabId, frameId, action.payload)
 }
 
 chrome.runtime.onMessage.addListener((action, sender, sendResponse) => {
@@ -232,10 +292,8 @@ chrome.runtime.onMessage.addListener((action, sender, sendResponse) => {
   if (!watchedTabs.has(tabId)) return
 
   switch (action.type) {
-    case 'metastream-receiver-event':
-      // Forward receiver event to metastream app
-      // TODO: include frameId in message payload?
-      chrome.tabs.sendMessage(tabId, action, { frameId: 0 })
+    case 'metastream-webview-event':
+      handleWebviewEvent(sender, action)
       break
     case 'metastream-host-event':
       // Forward host event to all subframes

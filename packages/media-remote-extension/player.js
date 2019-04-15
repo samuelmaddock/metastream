@@ -11,18 +11,16 @@ console.debug(`Metastream player content script ${location.href}`)
 
 // Listen for events from the main world to forward to the
 // background process
-const mediaEventMiddleware = event => {
+const eventMiddleware = event => {
   const { data: action } = event
   if (typeof action !== 'object' || typeof action.type !== 'string') return
 
-  switch (action.type) {
-    case 'metastream-receiver-event':
-      // Send to background script
-      chrome.runtime.sendMessage(action)
-      break
+  if (action.type.startsWith('metastream-')) {
+    // Send to background script
+    chrome.runtime.sendMessage(action)
   }
 }
-window.addEventListener('message', mediaEventMiddleware)
+window.addEventListener('message', eventMiddleware)
 
 // Forward host events to main world
 chrome.runtime.onMessage.addListener(message => {
@@ -85,7 +83,10 @@ const mainWorldScript = function() {
   // Dispatch event
   // main world -> content script world -> background -> metastream content script -> metastream app
   const dispatchMediaEvent = action => {
-    window.postMessage({ type: 'metastream-receiver-event', payload: action })
+    window.postMessage({
+      type: 'metastream-webview-event',
+      payload: { type: 'message', payload: action }
+    })
   }
 
   const mediaEventMiddleware = event => {

@@ -129,12 +129,13 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
   }
 
   private setupWebview = (webview: Webview | null): void => {
+    const prevWebview = this.webview
     this.webview = webview
 
     if (this.webview) {
-      window.addEventListener('message', this.onIpcMessage, false)
-    } else {
-      window.removeEventListener('message', this.onIpcMessage, false)
+      this.webview.addEventListener('message', this.onIpcMessage)
+    } else if (prevWebview) {
+      prevWebview.removeEventListener('message', this.onIpcMessage)
     }
   }
 
@@ -145,15 +146,7 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     )
   }
 
-  private onIpcMessage = (event: MessageEvent) => {
-    const { data } = event
-    if (typeof data !== 'object' || typeof data.type !== 'string') return
-
-    // TODO: filter out messages from other webviews
-    if (data.type !== 'metastream-receiver-event') return
-
-    const { payload: action } = data
-
+  private onIpcMessage = (action: any) => {
     console.log('Received VideoPlayer IPC message', action)
 
     switch (action.type) {
