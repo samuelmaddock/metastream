@@ -36,6 +36,7 @@ export class Webview extends Component<Props> {
     return [
       'forms',
       'popups',
+      'presentation',
       'same-origin',
       'scripts',
     ].map(feature => `allow-${feature}`).join(' ')
