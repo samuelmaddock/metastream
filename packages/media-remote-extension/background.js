@@ -22,10 +22,12 @@ const getFramePath = async (tabId, frameId) => {
   let path = [frameId]
   let currentFrameId = frameId
   while (currentFrameId > 0) {
-    const { parentFrameId } = await new Promise(resolve => {
+    const result = await new Promise(resolve => {
       const details = { tabId, frameId: currentFrameId }
       chrome.webNavigation.getFrame(details, resolve)
     })
+    if (!result) return []
+    const { parentFrameId } = result
     path.push(parentFrameId)
     currentFrameId = parentFrameId
   }
@@ -92,7 +94,7 @@ const onBeforeNavigate = details => {
   if (!watchedTabs.has(tabId)) return
   if (isTopFrame(frameId)) return
 
-  (async () => {
+  ;(async () => {
     const framePath = await getFramePath(tabId, frameId)
     const isWebviewFrame = framePath[1] === frameId
     if (isWebviewFrame) {
@@ -128,7 +130,7 @@ const onCompleted = details => {
   if (!watchedTabs.has(tabId)) return
   if (isTopFrame(frameId)) return
 
-  (async () => {
+  ;(async () => {
     const framePath = await getFramePath(tabId, frameId)
     const isWebviewFrame = framePath[1] === frameId
     if (isWebviewFrame) {
@@ -142,7 +144,7 @@ const onHistoryStateUpdated = details => {
   if (!watchedTabs.has(tabId)) return
   if (isTopFrame(frameId)) return
 
-  (async () => {
+  ;(async () => {
     const framePath = await getFramePath(tabId, frameId)
     const isWebviewFrame = framePath[1] === frameId
     if (isWebviewFrame) {
