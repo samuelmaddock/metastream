@@ -71,14 +71,23 @@ const onBeforeSendHeaders = details => {
 // Allow embedding any website in Metastream iframe
 const onHeadersReceived = details => {
   const { tabId, responseHeaders: headers } = details
+  let permitted = false
   if (watchedTabs.has(tabId) && isDirectChild(details)) {
     for (let i = headers.length - 1; i >= 0; --i) {
       const header = headers[i].name.toLowerCase()
+      const value = headers[i].value
       if (header === 'x-frame-options' || header === 'frame-options') {
-        console.log(`Permitting iframe embedded in tabId=${tabId}, url=${details.url}`)
         headers.splice(i, 1)
+        permitted = true
+      } else if (header === 'content-security-policy' && value.includes('frame-ancestors')) {
+        const policies = value.split(';').filter(value => !value.includes('frame-ancestors'))
+        headers[i].value = policies.join(';')
+        permitted = true
       }
     }
+  }
+  if (permitted) {
+    console.log(`Permitting iframe embedded in tabId=${tabId}, url=${details.url}`)
   }
   return { responseHeaders: headers }
 }
