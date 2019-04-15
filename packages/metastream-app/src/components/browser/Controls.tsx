@@ -180,7 +180,7 @@ export class WebControls extends Component<IProps, IState> {
 
       // this.webview.addEventListener('will-navigate', updateUrl)
       this.webview.addEventListener('did-navigate', updateUrl)
-      // this.webview.addEventListener('did-navigate-in-page', updateUrl)
+      this.webview.addEventListener('did-navigate-in-page', updateUrl)
 
       const setLoading = (loading: boolean) => this.setState({ loading })
       this.webview.addEventListener('did-start-loading', setLoading.bind(null, true))

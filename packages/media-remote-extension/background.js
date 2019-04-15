@@ -123,6 +123,20 @@ const onCompleted = details => {
   })()
 }
 
+const onHistoryStateUpdated = details => {
+  const { tabId, frameId, url } = details
+  if (!watchedTabs.has(tabId)) return
+  if (isTopFrame(frameId)) return
+
+  (async () => {
+    const framePath = await getFramePath(tabId, frameId)
+    const isWebviewFrame = framePath[1] === frameId
+    if (isWebviewFrame) {
+      sendWebviewEventToHost(tabId, frameId, { type: 'did-navigate-in-page', payload: { url } })
+    }
+  })()
+}
+
 const injectContentScripts = (details, attempt = 0) => {
   if (attempt > 20) {
     console.warn('Reached max attempts while injecting content scripts.', details)
@@ -190,6 +204,7 @@ const startWatchingTab = tab => {
   if (shouldAddGlobalListeners) {
     chrome.webNavigation.onCommitted.addListener(onCommitted)
     chrome.webNavigation.onCompleted.addListener(onCompleted)
+    chrome.webNavigation.onHistoryStateUpdated.addListener(onHistoryStateUpdated)
     chrome.tabs.onRemoved.addListener(onTabRemove)
 
     // Listen for requests from background script
@@ -220,6 +235,7 @@ const stopWatchingTab = tabId => {
   if (shouldRemoveGlobalListeners) {
     chrome.webNavigation.onCommitted.removeListener(onCommitted)
     chrome.webNavigation.onCompleted.removeListener(onCompleted)
+    chrome.webNavigation.onHistoryStateUpdated.removeListener(onHistoryStateUpdated)
     chrome.tabs.onRemoved.removeListener(onTabRemove)
   }
 
