@@ -96,7 +96,16 @@ module.exports = merge.smart(baseConfig, {
     // }),
 
     new CopyWebpackPlugin([
-      { from: path.join(__dirname, 'src/assets'), to: path.join(__dirname, 'dist/assets') }
+      { from: path.join(__dirname, 'src/assets'), to: path.join(__dirname, 'dist/assets') },
+      {
+        from: '*.global.css',
+        to: path.join(__dirname, 'dist/styles'),
+        context: path.join(__dirname, 'src/styles')
+      },
+      {
+        from: path.join(__dirname, 'src/styles/common'),
+        to: path.join(__dirname, 'dist/styles/common')
+      }
     ])
   ],
 
