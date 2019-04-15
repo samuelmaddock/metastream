@@ -17,7 +17,6 @@ interface IProps {
 interface IState {
   url?: string
   loading?: boolean
-  tabId?: number
   canRequest?: boolean
 }
 
@@ -150,13 +149,11 @@ export class WebControls extends Component<IProps, IState> {
     // this.webContents = webContents
 
     if (this.webview) {
-      // this.setState({ tabId: (this.webContents as any).getId() })
-
-      this.webview.addEventListener('dom-ready', e => {
-        if (this.webview) {
-          // this.updateURL(this.webContents.getURL())
-        }
-      })
+      // this.webview.addEventListener('dom-ready', e => {
+      //   if (this.webview) {
+      //     this.updateURL(this.webContents.getURL())
+      //   }
+      // })
 
       const updateUrl = (e: { url: string }) => {
         this.updateURL(e.url)
@@ -166,10 +163,10 @@ export class WebControls extends Component<IProps, IState> {
       this.webview.addEventListener('did-navigate', updateUrl)
       this.webview.addEventListener('did-navigate-in-page', updateUrl)
 
-      const setLoading = (loading: boolean) => this.setState({ loading })
-      this.webview.addEventListener('did-start-loading', setLoading.bind(null, true))
-      this.webview.addEventListener('did-stop-loading', setLoading.bind(null, false))
-      this.webview.addEventListener('did-finish-load', setLoading.bind(null, false))
+      // const setLoading = (loading: boolean) => this.setState({ loading })
+      // this.webview.addEventListener('did-start-loading', setLoading.bind(null, true))
+      // this.webview.addEventListener('did-stop-loading', setLoading.bind(null, false))
+      // this.webview.addEventListener('did-finish-load', setLoading.bind(null, false))
     }
   }
 
@@ -196,7 +193,7 @@ export class WebControls extends Component<IProps, IState> {
   }
 
   private requestUrl(url: string) {
-    if (url.startsWith('chrome://') || url.startsWith('chrome-extension://')) {
+    if (url.startsWith(location.origin)) {
       return
     }
 
