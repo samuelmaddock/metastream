@@ -8,6 +8,7 @@ import { Icon } from 'components/Icon'
 interface IProps {
   className?: string
   buttonClassName?: string
+  disabled?: boolean
 }
 
 interface IState {
@@ -43,7 +44,12 @@ export class MoreButton extends Component<IProps> {
   render(): JSX.Element | null {
     return (
       <div className={styles.container}>
-        <button type="button" className={this.props.buttonClassName} onClick={this.toggleMenu}>
+        <button
+          type="button"
+          className={this.props.buttonClassName}
+          onClick={this.toggleMenu}
+          disabled={this.props.disabled}
+        >
           <Icon name="more-vertical" />
         </button>
         {this.state.isOpen && this.renderMenu()}

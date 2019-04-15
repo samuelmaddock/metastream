@@ -38,7 +38,6 @@ export default {
   endSessionDescription:
     'Privát munkamenet engedélyezéskor, minden már kapcsolódott felhasználó munkamenete megszűnik',
   enterJoinDest: 'Adj meg egy baráttól kapcsott kódot, IP-címet.',
-  extensions: 'Kiterjesztések',
   friendCode: 'Baráti kód',
   getStarted: 'Kezdés',
   info: 'Információ',

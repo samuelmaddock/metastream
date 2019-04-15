@@ -23,8 +23,6 @@ import { absoluteUrl } from 'utils/appUrl'
 import { t } from 'locale'
 import { IReactReduxProps } from 'types/redux-thunk'
 
-const EXTENSIONS_URL = absoluteUrl('./browser/resources/extensions.html')
-
 const Button: React.SFC<{
   className?: string
   icon: string
@@ -202,13 +200,7 @@ class _PlaybackControls extends Component<PrivateProps> {
   }
 
   private renderMenu() {
-    const { current: media } = this.props
-
-    const extensionsBtn = (
-      <ButtonListItem icon="package" onClick={() => this.props.openBrowser(EXTENSIONS_URL)}>
-        {t('extensions')}
-      </ButtonListItem>
-    )
+    const { current: media, playback } = this.props
 
     const mediaButtons = media && (
       <>
@@ -223,15 +215,12 @@ class _PlaybackControls extends Component<PrivateProps> {
         <ButtonListItem icon="rotate-cw" onClick={this.props.reload}>
           {t('reload')}
         </ButtonListItem>
-
-        <hr className={styles.menuDivider} />
       </>
     )
 
     return (
-      <MoreButton buttonClassName={styles.button}>
+      <MoreButton buttonClassName={styles.button} disabled={playback === PlaybackState.Idle}>
         {mediaButtons}
-        {extensionsBtn}
       </MoreButton>
     )
   }

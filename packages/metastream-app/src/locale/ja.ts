@@ -37,7 +37,6 @@ export default {
   endSessionTitle: '公開セッションを終了しますか？',
   endSessionDescription: '限定公開セッションに切り替えると、すべてのユーザーが切断されます。',
   enterJoinDest: 'フレンドコード/IPアドレスを入力してください。',
-  extensions: '拡張機能',
   friendCode: 'フレンドコード',
   getStarted: '開始',
   info: '情報',

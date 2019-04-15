@@ -38,7 +38,6 @@ export default {
   endSessionTitle: 'End public session?',
   endSessionDescription: 'Changing to a private session will disconnect all connected users.',
   enterJoinDest: 'Enter a friend code or IP address.',
-  extensions: 'Extensions',
   friendCode: 'Friend code',
   getStarted: 'Get Started',
   info: 'Info',
