@@ -31,6 +31,16 @@ export class Webview extends Component<Props> {
     ].map(feature => `${feature} *`).join(', ')
   }
 
+  private get sandboxPolicy() {
+    // prettier-ignore
+    return [
+      'forms',
+      'popups',
+      'same-origin',
+      'scripts',
+    ].map(feature => `allow-${feature}`).join(' ')
+  }
+
   constructor(props: Props) {
     super(props)
 
@@ -89,6 +99,7 @@ export class Webview extends Component<Props> {
           }
         }}
         allow={this.featurePolicy}
+        sandbox={this.sandboxPolicy}
         src={this.initialUrl}
         {...rest}
       />
