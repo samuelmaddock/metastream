@@ -181,7 +181,7 @@ export class WebControls extends Component<IProps, IState> {
   }
 
   private updateURL(url: string) {
-    if (url.startsWith('chrome://brave/')) {
+    if (url.startsWith(location.origin)) {
       url = ''
     }
 

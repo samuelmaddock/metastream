@@ -27,7 +27,3 @@ export const fileUrl = (filePath: string) => {
 
   return encodeURI('file://' + fileUrlPath)
 }
-
-export const chromeUrl = (fileUrl = '') => {
-  return fileUrl.replace('file://', 'chrome://brave')
-}
