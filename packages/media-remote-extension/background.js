@@ -70,9 +70,14 @@ const onBeforeSendHeaders = details => {
 
 // Allow embedding any website in Metastream iframe
 const onHeadersReceived = details => {
-  const { tabId, responseHeaders: headers } = details
+  const { tabId, frameId, responseHeaders: headers } = details
   let permitted = false
-  if (watchedTabs.has(tabId) && isDirectChild(details)) {
+
+  const isMetastreamTab = watchedTabs.has(tabId) && isDirectChild(details)
+  const isServiceWorkerRequest = tabId === -1 && frameId === -1
+  const shouldModify = isMetastreamTab || isServiceWorkerRequest
+
+  if (shouldModify) {
     for (let i = headers.length - 1; i >= 0; --i) {
       const header = headers[i].name.toLowerCase()
       const value = headers[i].value
@@ -86,9 +91,11 @@ const onHeadersReceived = details => {
       }
     }
   }
+
   if (permitted) {
     console.log(`Permitting iframe embedded in tabId=${tabId}, url=${details.url}`)
   }
+
   return { responseHeaders: headers }
 }
 
@@ -102,7 +109,6 @@ const onBeforeNavigate = details => {
   const { tabId, frameId, url } = details
   if (!watchedTabs.has(tabId)) return
   if (isTopFrame(frameId)) return
-
   ;(async () => {
     const framePath = await getFramePath(tabId, frameId)
     const isWebviewFrame = framePath[1] === frameId
@@ -138,7 +144,6 @@ const onCompleted = details => {
   const { tabId, frameId, url } = details
   if (!watchedTabs.has(tabId)) return
   if (isTopFrame(frameId)) return
-
   ;(async () => {
     const framePath = await getFramePath(tabId, frameId)
     const isWebviewFrame = framePath[1] === frameId
@@ -152,7 +157,6 @@ const onHistoryStateUpdated = details => {
   const { tabId, frameId, url } = details
   if (!watchedTabs.has(tabId)) return
   if (isTopFrame(frameId)) return
-
   ;(async () => {
     const framePath = await getFramePath(tabId, frameId)
     const isWebviewFrame = framePath[1] === frameId
@@ -216,7 +220,7 @@ const startWatchingTab = tab => {
     {
       tabId,
       urls: ['<all_urls>'],
-      types: ['sub_frame']
+      types: ['sub_frame', 'xmlhttprequest']
     },
     [
       chrome.webRequest.OnHeadersReceivedOptions.BLOCKING,
