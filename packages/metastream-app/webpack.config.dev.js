@@ -111,20 +111,20 @@ module.exports = merge.smart(baseConfig, {
 
   devServer: {
     port,
-    publicPath
+    publicPath,
     // compress: true,
     // noInfo: true,
     // stats: 'errors-only',
     // inline: true,
     // lazy: false,
     // hot: true,
-    // disableHostCheck: true,
+    disableHostCheck: true,
     // headers: { 'Access-Control-Allow-Origin': '*' },
-    // watchOptions: {
-    //   aggregateTimeout: 300,
-    //   ignored: /node_modules/,
-    //   poll: 100
-    // },
+    watchOptions: {
+      aggregateTimeout: 300,
+      ignored: /node_modules/,
+      poll: 100
+    }
     // historyApiFallback: {
     //   verbose: true,
     //   disableDotRule: false
