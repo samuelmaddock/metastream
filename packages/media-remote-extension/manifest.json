@@ -1,7 +1,12 @@
 {
   "name": "Metastream Media Remote",
   "version": "1.0.0",
-  "description": "Remote controller for media on the web.",
+  "description": "Remote controller for media on the web. Part of Metastream.",
+  "icons": { 
+    "16": "icon16.png",
+	"48": "icon48.png",
+	"128": "icon128.png"
+  },
   "content_scripts": [
     {
       "matches": ["https://getmetastream.com/*", "http://localhost:8080/*"],
