@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux'
 import { routerReducer as router, RouterState } from 'react-router-redux'
 import { Reducer } from 'redux'
-import { merge } from 'lodash'
+import { merge } from 'lodash-es'
 
 import { lobby, ILobbyState } from './lobby'
 import { settings, ISettingsState } from './settings'

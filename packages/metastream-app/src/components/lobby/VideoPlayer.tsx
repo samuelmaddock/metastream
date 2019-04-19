@@ -10,7 +10,7 @@ import { assetUrl } from 'utils/appUrl'
 import { IAppState } from 'reducers'
 import { getPlaybackTime2 } from 'lobby/reducers/mediaPlayer.helpers'
 import { isHost } from 'lobby/reducers/users.helpers'
-import { isEqual } from 'lodash'
+import { isEqual } from 'lodash-es'
 import { IReactReduxProps } from 'types/redux-thunk'
 import { Webview } from 'components/Webview'
 

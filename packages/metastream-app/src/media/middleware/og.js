@@ -1,5 +1,5 @@
 import { load } from 'cheerio'
-import { zip } from 'lodash'
+import { zip } from 'lodash-es'
 
 const fieldsArray = [
   {

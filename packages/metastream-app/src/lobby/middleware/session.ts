@@ -1,6 +1,6 @@
 import { Middleware } from 'redux'
 import { isType } from 'utils/redux'
-import { isEqual } from 'lodash'
+import { isEqual } from 'lodash-es'
 
 import { initHostSession, setSessionData } from '../actions/session'
 import { IAppState } from '../../reducers'

@@ -1,4 +1,4 @@
-import { set as _set, clone } from 'lodash'
+import { set as _set, clone } from 'lodash-es'
 
 const enum DiffKind {
   New = 'N',
