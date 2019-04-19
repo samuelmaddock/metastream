@@ -4,13 +4,17 @@
 
 const path = require('path')
 const webpack = require('webpack')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const merge = require('webpack-merge')
 const baseConfig = require('./webpack.config.base')
 
+const LOCAL_SRC = path.join(__dirname, 'src')
+
 module.exports = merge.smart(baseConfig, {
   devtool: 'source-map',
+
+  entry: path.join(__dirname, 'src/index.tsx'),
 
   output: {
     path: path.join(__dirname, 'dist'),
@@ -24,24 +28,33 @@ module.exports = merge.smart(baseConfig, {
       // Extract all .global.css to style.css as is
       {
         test: /\.global\.css$/,
-        use: ExtractTextPlugin.extract({
-          use: 'css-loader',
-          fallback: 'style-loader'
-        })
+        include: LOCAL_SRC,
+        use: [
+          MiniCssExtractPlugin.loader,
+          {
+            loader: 'css-loader',
+            options: {
+              sourceMap: true
+            }
+          }
+        ]
       },
       // Pipe other styles through css modules and append to style.css
       {
         test: /^((?!\.global).)*\.css$/,
-        use: ExtractTextPlugin.extract({
-          use: {
+        include: LOCAL_SRC,
+        use: [
+          MiniCssExtractPlugin.loader,
+          {
             loader: 'css-loader',
             options: {
+              sourceMap: true,
               modules: true,
               importLoaders: 1,
               localIdentName: '[name]__[local]__[hash:base64:5]'
             }
           }
-        })
+        ]
       }
     ]
   },
@@ -62,15 +75,14 @@ module.exports = merge.smart(baseConfig, {
       FEATURE_DISCORD_INVITE: JSON.stringify(false)
     }),
 
-    new ExtractTextPlugin({
-      filename: 'style.css',
-      ignoreOrder: true
-    }),
-
     new BundleAnalyzerPlugin({
       analyzerMode: process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',
       openAnalyzer: process.env.OPEN_ANALYZER === 'true',
       generateStatsFile: process.env.OPEN_ANALYZER === 'true'
+    }),
+
+    new MiniCssExtractPlugin({
+      filename: 'style.css'
     })
   ]
 })
