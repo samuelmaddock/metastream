@@ -5,17 +5,17 @@
 const path = require('path')
 const webpack = require('webpack')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
-// const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 const merge = require('webpack-merge')
 const baseConfig = require('./webpack.config.base')
 
-export default merge.smart(baseConfig, {
+module.exports = merge.smart(baseConfig, {
   devtool: 'source-map',
 
   output: {
-    path: path.join(__dirname, 'app/dist'),
-    publicPath: '../dist/',
-    filename: 'renderer.prod.js',
+    path: path.join(__dirname, 'dist'),
+    publicPath: '/',
+    filename: 'app.prod.js',
     libraryTarget: 'var'
   },
 
@@ -57,22 +57,20 @@ export default merge.smart(baseConfig, {
      * development checks
      */
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production'),
-      DEV: JSON.stringify(false),
-      PRODUCTION: JSON.stringify(true),
       FEATURE_SESSION_BROWSER: JSON.stringify(false),
-      FEATURE_DISCORD_RP: JSON.stringify(true),
-      FEATURE_DISCORD_INVITE: JSON.stringify(true)
+      FEATURE_DISCORD_RP: JSON.stringify(false),
+      FEATURE_DISCORD_INVITE: JSON.stringify(false)
     }),
 
     new ExtractTextPlugin({
       filename: 'style.css',
       ignoreOrder: true
-    })
+    }),
 
-    // new BundleAnalyzerPlugin({
-    //   analyzerMode: process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',
-    //   openAnalyzer: process.env.OPEN_ANALYZER === 'true'
-    // })
+    new BundleAnalyzerPlugin({
+      analyzerMode: process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',
+      openAnalyzer: process.env.OPEN_ANALYZER === 'true',
+      generateStatsFile: process.env.OPEN_ANALYZER === 'true'
+    })
   ]
 })

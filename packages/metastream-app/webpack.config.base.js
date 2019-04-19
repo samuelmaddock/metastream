@@ -7,6 +7,7 @@ const webpack = require('webpack')
 const Dotenv = require('dotenv-webpack')
 const childProcess = require('child_process')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 const GIT_BRANCH = childProcess
   .execSync('git rev-parse --abbrev-ref HEAD')
@@ -107,6 +108,18 @@ module.exports = {
     new Dotenv({ silent: true }),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'src/index.html')
-    })
+    }),
+    new CopyWebpackPlugin([
+      { from: path.join(__dirname, 'src/assets'), to: path.join(__dirname, 'dist/assets') },
+      {
+        from: '*.global.css',
+        to: path.join(__dirname, 'dist/styles'),
+        context: path.join(__dirname, 'src/styles')
+      },
+      {
+        from: path.join(__dirname, 'src/styles/common'),
+        to: path.join(__dirname, 'dist/styles/common')
+      }
+    ])
   ]
 }
