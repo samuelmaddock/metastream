@@ -1,11 +1,12 @@
 {
-  "name": "Metastream Media Remote",
-  "version": "1.0.0",
-  "description": "Remote controller for media on the web. Part of Metastream.",
-  "icons": { 
+  "name": "Metastream Remote",
+  "short_name": "Metastream",
+  "version": "0.1.0",
+  "description": "Watch streaming media with friends.",
+  "icons": {
     "16": "icon16.png",
-	"48": "icon48.png",
-	"128": "icon128.png"
+    "48": "icon48.png",
+    "128": "icon128.png"
   },
   "content_scripts": [
     {
@@ -19,11 +20,5 @@
     "persistent": true
   },
   "manifest_version": 2,
-  "permissions": [
-    "tabs",
-    "webNavigation",
-    "webRequest",
-    "webRequestBlocking",
-    "<all_urls>"
-  ]
+  "permissions": ["tabs", "webNavigation", "webRequest", "webRequestBlocking", "<all_urls>"]
 }
