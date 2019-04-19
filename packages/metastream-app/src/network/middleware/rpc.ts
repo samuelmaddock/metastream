@@ -333,25 +333,23 @@ const execRpc = <T>({ payload }: RpcAction, client: NetConnection): T | string =
 }
 
 // prettier-ignore
-export function rpc<TResult>(realm: RpcRealm.Multicast | RpcRealm.Server, action: () => TResult, opts?: IRPCOptions): (() => TResult);
+export function rpc<TResult>(name: string, realm: RpcRealm.Multicast | RpcRealm.Server, action: () => TResult, opts?: IRPCOptions): (() => TResult);
 // prettier-ignore
-export function rpc<T1, TResult>(realm: RpcRealm.Multicast | RpcRealm.Server, action: (a: T1) => TResult, opts?: IRPCOptions): ((a: T1) => TResult);
+export function rpc<T1, TResult>(name: string, realm: RpcRealm.Multicast | RpcRealm.Server, action: (a: T1) => TResult, opts?: IRPCOptions): ((a: T1) => TResult);
 // prettier-ignore
-export function rpc<T1, T2, TResult>(realm: RpcRealm.Multicast | RpcRealm.Server, action: (a: T1, b: T2) => TResult, opts?: IRPCOptions): ((a: T1, b: T2) => TResult);
+export function rpc<T1, T2, TResult>(name: string, realm: RpcRealm.Multicast | RpcRealm.Server, action: (a: T1, b: T2) => TResult, opts?: IRPCOptions): ((a: T1, b: T2) => TResult);
 // prettier-ignore
-export function rpc<T1, T2, T3, TResult>(realm: RpcRealm.Multicast | RpcRealm.Server, action: (a: T1, b: T2, c: T3) => TResult, opts?: IRPCOptions): ((a: T1, b: T2, c: T3) => TResult);
+export function rpc<T1, T2, T3, TResult>(name: string, realm: RpcRealm.Multicast | RpcRealm.Server, action: (a: T1, b: T2, c: T3) => TResult, opts?: IRPCOptions): ((a: T1, b: T2, c: T3) => TResult);
 // prettier-ignore
-export function rpc<TResult>(realm: RpcRealm.Client, action: () => TResult, opts?: IRPCOptions): (() => (...clients: RecipientFilter) => TResult);
+export function rpc<TResult>(name: string, realm: RpcRealm.Client, action: () => TResult, opts?: IRPCOptions): (() => (...clients: RecipientFilter) => TResult);
 // prettier-ignore
-export function rpc<T1, TResult>(realm: RpcRealm.Client, action: (a: T1) => TResult, opts?: IRPCOptions): ((a: T1) => (...clients: RecipientFilter) => TResult);
+export function rpc<T1, TResult>(name: string, realm: RpcRealm.Client, action: (a: T1) => TResult, opts?: IRPCOptions): ((a: T1) => (...clients: RecipientFilter) => TResult);
 // prettier-ignore
-export function rpc<T1, T2, TResult>(realm: RpcRealm.Client, action: (a: T1, b: T2) => TResult, opts?: IRPCOptions): ((a: T1, b: T2) => (...clients: RecipientFilter) => TResult);
+export function rpc<T1, T2, TResult>(name: string, realm: RpcRealm.Client, action: (a: T1, b: T2) => TResult, opts?: IRPCOptions): ((a: T1, b: T2) => (...clients: RecipientFilter) => TResult);
 // prettier-ignore
-export function rpc<T1, T2, T3, TResult>(realm: RpcRealm.Client, action: (a: T1, b: T2, c: T3) => TResult, opts?: IRPCOptions): ((a: T1, b: T2, c: T3) => (...clients: RecipientFilter) => TResult);
+export function rpc<T1, T2, T3, TResult>(name: string, realm: RpcRealm.Client, action: (a: T1, b: T2, c: T3) => TResult, opts?: IRPCOptions): ((a: T1, b: T2, c: T3) => (...clients: RecipientFilter) => TResult);
 // prettier-ignore
-export function rpc(realm: RpcRealm, action: (...args: any[]) => any, opts?: IRPCOptions): Function {
-  const { name } = action
-
+export function rpc(name: string, realm: RpcRealm, action: (...args: any[]) => any, opts?: IRPCOptions): Function {
   if (name === 'action') {
     throw new Error('Invalid RPC action name, must define function name.')
   }

@@ -27,14 +27,14 @@ const userJoined = (userId: string): RpcThunk<void> => (dispatch, getState, cont
   const content = translateEscaped('userJoined', { userId, username })
   dispatch(addChat({ content, html: true, timestamp: Date.now() }))
 }
-export const multi_userJoined = rpc(RpcRealm.Multicast, userJoined)
+export const multi_userJoined = rpc('userJoined', RpcRealm.Multicast, userJoined)
 
 const userLeft = (userId: string): RpcThunk<void> => (dispatch, getState, context) => {
   const username = getUserName(getState(), userId)
   const content = translateEscaped('userLeft', { userId, username })
   dispatch(addChat({ content, html: true, timestamp: Date.now() }))
 }
-export const multi_userLeft = rpc(RpcRealm.Multicast, userLeft)
+export const multi_userLeft = rpc('userLeft', RpcRealm.Multicast, userLeft)
 
 const kickClient = (reason: NetworkDisconnectReason): RpcThunk<void> => (
   dispatch,
@@ -45,7 +45,7 @@ const kickClient = (reason: NetworkDisconnectReason): RpcThunk<void> => (
   dispatch(setDisconnectReason(reason))
   server.close()
 }
-export const client_kick = rpc(RpcRealm.Client, kickClient)
+export const client_kick = rpc('kickClient', RpcRealm.Client, kickClient)
 
 const kickUser = (targetId: string): RpcThunk<void> => (dispatch, getState, context) => {
   const state = getState()
@@ -64,7 +64,7 @@ const kickUser = (targetId: string): RpcThunk<void> => (dispatch, getState, cont
     }
   }
 }
-export const server_kickUser = rpc(RpcRealm.Server, kickUser)
+export const server_kickUser = rpc('kickUser', RpcRealm.Server, kickUser)
 
 const toggleUserRole = (targetId: string, role: UserRole): RpcThunk<void> => (
   dispatch,
@@ -85,4 +85,4 @@ const toggleUserRole = (targetId: string, role: UserRole): RpcThunk<void> => (
     })
   )
 }
-export const server_toggleUserRole = rpc(RpcRealm.Server, toggleUserRole)
+export const server_toggleUserRole = rpc('toggleUserRole', RpcRealm.Server, toggleUserRole)

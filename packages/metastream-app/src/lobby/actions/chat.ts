@@ -26,7 +26,7 @@ const broadcastChat = (text: string, userId: string | null): RpcThunk<void> => (
     })
   )
 }
-export const multi_broadcastChat = rpc(RpcRealm.Multicast, broadcastChat)
+export const multi_broadcastChat = rpc('broadcastChat', RpcRealm.Multicast, broadcastChat)
 
 const rpcAddChat = (text: string): RpcThunk<void> => (dispatch, getState, context) => {
   text = text.trim()
@@ -39,4 +39,4 @@ const rpcAddChat = (text: string): RpcThunk<void> => (dispatch, getState, contex
   const userId = context.client.id.toString()
   dispatch(multi_broadcastChat(text, userId))
 }
-export const server_addChat = rpc(RpcRealm.Server, rpcAddChat)
+export const server_addChat = rpc('rpcAddChat', RpcRealm.Server, rpcAddChat)

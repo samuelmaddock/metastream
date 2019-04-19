@@ -139,7 +139,11 @@ const announceMediaChange = (mediaId: string): RpcThunk<void> => (dispatch, getS
   })
   dispatch(addChat({ content, html: true, timestamp: Date.now() }))
 }
-export const multi_announceMediaChange = rpc(RpcRealm.Multicast, announceMediaChange)
+export const multi_announceMediaChange = rpc(
+  'announceMediaChange',
+  RpcRealm.Multicast,
+  announceMediaChange
+)
 
 const enqueueMedia = (media: IMediaItem): AppThunkAction => {
   return (dispatch, getState) => {
@@ -237,7 +241,7 @@ const requestMedia = (url: string): RpcThunk<Promise<string | null>> => async (
 
   return media.id
 }
-const server_requestMedia = rpc(RpcRealm.Server, requestMedia)
+const server_requestMedia = rpc('requestMedia', RpcRealm.Server, requestMedia)
 
 const requestPlayPause = (): RpcThunk<void> => (dispatch, getState, context) => {
   const state = getState()
@@ -254,19 +258,23 @@ const requestPlayPause = (): RpcThunk<void> => (dispatch, getState, context) => 
       break
   }
 }
-export const server_requestPlayPause = rpc(RpcRealm.Server, requestPlayPause)
+export const server_requestPlayPause = rpc('requestPlayPause', RpcRealm.Server, requestPlayPause)
 
 const requestNextMedia = (): RpcThunk<void> => (dispatch, getState, context) => {
   if (!hasPlaybackPermissions(getState(), context.client)) return
   dispatch(nextMedia())
 }
-export const server_requestNextMedia = rpc(RpcRealm.Server, requestNextMedia)
+export const server_requestNextMedia = rpc('requestNextMedia', RpcRealm.Server, requestNextMedia)
 
 const requestRepeatMedia = (): RpcThunk<void> => (dispatch, getState, context) => {
   if (!hasPlaybackPermissions(getState(), context.client)) return
   dispatch(repeatMedia())
 }
-export const server_requestRepeatMedia = rpc(RpcRealm.Server, requestRepeatMedia)
+export const server_requestRepeatMedia = rpc(
+  'requestRepeatMedia',
+  RpcRealm.Server,
+  requestRepeatMedia
+)
 
 const requestSeek = (time: number): RpcThunk<void> => (dispatch, getState, context) => {
   if (!hasPlaybackPermissions(getState(), context.client)) return
@@ -285,7 +293,7 @@ const requestSeek = (time: number): RpcThunk<void> => (dispatch, getState, conte
   dispatch(seekMedia(time))
   dispatch(updatePlaybackTimer())
 }
-export const server_requestSeek = rpc(RpcRealm.Server, requestSeek)
+export const server_requestSeek = rpc('requestSeek', RpcRealm.Server, requestSeek)
 
 const requestDeleteMedia = (mediaId: string): RpcThunk<void> => (dispatch, getState, context) => {
   if (!hasPlaybackPermissions(getState(), context.client)) return
@@ -298,16 +306,24 @@ const requestDeleteMedia = (mediaId: string): RpcThunk<void> => (dispatch, getSt
 
   dispatch(deleteMedia(mediaId))
 }
-export const server_requestDeleteMedia = rpc(RpcRealm.Server, requestDeleteMedia)
+export const server_requestDeleteMedia = rpc(
+  'requestDeleteMedia',
+  RpcRealm.Server,
+  requestDeleteMedia
+)
 
 const requestMoveToTop = (mediaId: string): RpcThunk<void> => (dispatch, getState, context) => {
   if (!hasPlaybackPermissions(getState(), context.client)) return
   dispatch(moveToTop(mediaId))
 }
-export const server_requestMoveToTop = rpc(RpcRealm.Server, requestMoveToTop)
+export const server_requestMoveToTop = rpc('requestMoveToTop', RpcRealm.Server, requestMoveToTop)
 
 const requestToggleQueueLock = (): RpcThunk<void> => (dispatch, getState, context) => {
   if (!hasPlaybackPermissions(getState(), context.client)) return
   dispatch(lockQueue())
 }
-export const server_requestToggleQueueLock = rpc(RpcRealm.Server, requestToggleQueueLock)
+export const server_requestToggleQueueLock = rpc(
+  'requestToggleQueueLock',
+  RpcRealm.Server,
+  requestToggleQueueLock
+)

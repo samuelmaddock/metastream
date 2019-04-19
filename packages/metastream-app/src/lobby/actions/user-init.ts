@@ -117,7 +117,7 @@ const clientAuthorized = (info: AuthorizeInfo): RpcThunk<void> => (dispatch, get
   dispatch(updateServerClockSkew(dt))
   dispatch(setAuthorized(true))
 }
-const client_authorized = rpc(RpcRealm.Client, clientAuthorized)
+const client_authorized = rpc('clientAuthorized', RpcRealm.Client, clientAuthorized)
 
 /** Create new unique name with counter appended. */
 const appendNameCount = (state: IAppState, name: string) => {
@@ -196,7 +196,7 @@ const initClient = (info: ClientInitRequest): RpcThunk<ClientInitResponse | void
   dispatch(authorizeClient(client))
   return ClientInitResponse.Ok
 }
-const server_initClient = rpc(RpcRealm.Server, initClient, {
+const server_initClient = rpc('initClient', RpcRealm.Server, initClient, {
   allowUnauthed: true
 })
 
@@ -233,4 +233,4 @@ const answerClient = (userId: string, allow: boolean): RpcThunk<void> => (
     userClient.close()
   }
 }
-export const server_answerClient = rpc(RpcRealm.Server, answerClient)
+export const server_answerClient = rpc('answerClient', RpcRealm.Server, answerClient)
