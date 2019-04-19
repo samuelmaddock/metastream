@@ -3,7 +3,6 @@ import shortid from 'shortid'
 import { IMediaItem, PlaybackState } from 'lobby/reducers/mediaPlayer'
 import { rpc, RpcRealm } from 'network/middleware/rpc'
 import { RpcThunk } from 'lobby/types'
-import { resolveMediaUrl, resolveMediaPlaylist } from 'media'
 import { MediaThumbnailSize } from 'media/types'
 import {
   getCurrentMedia,
@@ -17,6 +16,9 @@ import { getUserName, getNumUsers } from 'lobby/reducers/users.helpers'
 import { addChat } from './chat'
 import { AppThunkAction } from 'types/redux-thunk'
 import { translateEscaped, t } from 'locale'
+
+/** Code-split media parsing due to large dependencies and it's only used by the host. */
+const getMediaParser = () => import(/* webpackChunkName: "media-parser" */ 'media')
 
 export const playPauseMedia = actionCreator<number>('PLAY_PAUSE_MEDIA')
 export const repeatMedia = actionCreator<number>('REPEAT_MEDIA')
@@ -62,7 +64,8 @@ const advanceMedia = (playlist: IMediaItem): AppThunkAction => {
     let res
 
     try {
-      res = await resolveMediaPlaylist(playlist)
+      const mediaParser = await getMediaParser()
+      res = await mediaParser.resolveMediaPlaylist(playlist)
     } catch (e) {
       console.error(e)
     }
@@ -198,7 +201,8 @@ const requestMedia = (url: string): RpcThunk<Promise<string | null>> => async (
   let res
 
   try {
-    res = await resolveMediaUrl(url)
+    const mediaParser = await getMediaParser()
+    res = await mediaParser.resolveMediaUrl(url)
   } catch (e) {
     console.error(e)
   }
