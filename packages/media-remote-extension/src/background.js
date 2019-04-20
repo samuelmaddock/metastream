@@ -355,3 +355,18 @@ chrome.runtime.onMessage.addListener((action, sender, sendResponse) => {
       break
   }
 })
+
+//=============================================================================
+// Inject content scripts into existing tabs on startup
+//=============================================================================
+
+const { content_scripts: contentScripts = [] } = chrome.runtime.getManifest();
+const appContentScript = contentScripts.find(script => script.js && script.js.includes('app.js'))
+
+if (appContentScript) {
+  chrome.tabs.query({ url: appContentScript.matches }, tabs => {
+    tabs.forEach(tab => {
+      chrome.tabs.executeScript(tab.id, { file: appContentScript.js[0] })
+    })
+  })
+}
