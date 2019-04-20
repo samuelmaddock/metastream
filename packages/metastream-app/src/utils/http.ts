@@ -6,15 +6,17 @@ type FetchResponse = Response & {
 }
 
 const transformList = new Set(['user-agent', 'referer'])
-const transformHeaders = (options: RequestInit) => {
-  const headers = options.headers as any
+const prefixHeaders = (headers: any) => {
   if (typeof headers === 'object') {
+    headers = { ...headers }
+    // Prefix reserved headers to be fixed in the extension background script
     Object.keys(headers).forEach(name => {
       if (transformList.has(name.toLowerCase())) {
         headers[`X-Metastream-${name}`] = headers[name]
       }
     })
   }
+  return headers
 }
 
 let fetchId = 0
@@ -31,7 +33,11 @@ const mainFetch = (url: string, options: RequestInit = {}): Promise<FetchRespons
       return
     }
 
-    transformHeaders(options)
+    options = {
+      credentials: 'omit', // ignore cookies
+      ...options,
+      headers: prefixHeaders(options.headers)
+    }
 
     const requestId = fetchId++
 

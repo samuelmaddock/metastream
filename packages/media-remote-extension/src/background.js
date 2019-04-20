@@ -61,7 +61,8 @@ const onBeforeSendHeaders = details => {
       const header = headers[i].name.toLowerCase()
       if (header.startsWith(HEADER_PREFIX)) {
         const name = header.substr(HEADER_PREFIX.length + 1)
-        headers.push({ name, value: headers[i].value })
+        const value = headers[i].value
+        headers.push({ name, value })
         headers.splice(i, 1)
       }
     }
