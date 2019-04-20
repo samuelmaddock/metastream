@@ -8,7 +8,8 @@
 //
 
 const HEADER_PREFIX = 'x-metastream'
-const isMetastreamUrl = url => url.includes('getmetastream.com') || url.includes('localhost')
+const isMetastreamUrl = url =>
+  url.startsWith('https://app.getmetastream.com') || url.startsWith('http://localhost:8080')
 const isTopFrame = details => details.frameId === 0
 const isDirectChild = details => details.parentFrameId === 0
 const isValidAction = action => typeof action === 'object' && typeof action.type === 'string'
