@@ -33,6 +33,13 @@ class WelcomePage extends Component<Props> {
       <LayoutMain className={styles.container}>
         <section className={styles.column}>
           <MenuHeader text={`Welcome to ${PRODUCT_NAME}`} />
+
+          <div className={styles.wip}>
+            <strong>⚠ EARLY ACCESS PREVIEW ⚠</strong>
+            <br />
+            This web application is still under development. Expect things to be broken. :)
+          </div>
+
           <label htmlFor="profile_username">{t('chooseUsername')}</label>
           <TextInput
             id="profile_username"

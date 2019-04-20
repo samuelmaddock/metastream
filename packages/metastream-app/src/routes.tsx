@@ -13,16 +13,16 @@ export default () => (
   <App>
     <Switch>
       <WelcomeRoute exact path="/" component={HomePage} />
-      <Route path="/lobby/:lobbyId" component={LobbyPage} />
-      <Route path="/servers" component={ServerBrowserPage} />
-      <Route path="/join" component={SessionJoinPage} />
-      <Route path="/settings" component={SettingsPage} />
+      <WelcomeRoute path="/lobby/:lobbyId" component={LobbyPage} />
+      <WelcomeRoute path="/servers" component={ServerBrowserPage} />
+      <WelcomeRoute path="/join" component={SessionJoinPage} />
+      <WelcomeRoute path="/settings" component={SettingsPage} />
     </Switch>
   </App>
 )
 
 interface PrivateRouteProps extends RouteProps {
-  component: any
+  component: React.ComponentType<any>
 }
 
 // prettier-ignore
