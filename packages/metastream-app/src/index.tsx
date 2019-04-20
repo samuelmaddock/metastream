@@ -16,7 +16,6 @@ import * as cfgStore from './store/configureStore'
 
 import 'styles/app.global.css'
 
-import { PRODUCT_NAME } from 'constants/app'
 import { PlatformService } from 'platform'
 import { initAnalytics } from './analytics'
 import { initLocale } from 'locale'
@@ -26,9 +25,6 @@ let history: History
 let persistor: Persistor
 
 function init() {
-  // Set default title
-  document.title = PRODUCT_NAME
-
   history = cfgStore.history
 
   const storeCfg = cfgStore.configureStore({
