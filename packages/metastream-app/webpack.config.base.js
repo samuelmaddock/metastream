@@ -119,6 +119,10 @@ module.exports = {
       {
         from: path.join(__dirname, 'src/styles/common'),
         to: path.join(__dirname, 'dist/styles/common')
+      },
+      {
+        from: path.join(__dirname, 'public'),
+        to: path.join(__dirname, 'dist')
       }
     ])
   ]
