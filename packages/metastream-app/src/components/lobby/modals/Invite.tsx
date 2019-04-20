@@ -41,9 +41,14 @@ class Invite extends Component<PrivateProps> {
   render(): JSX.Element {
     return (
       <div className={cx(styles.container, this.props.className)}>
-        {FEATURE_DISCORD_INVITE && this.renderDiscord()}
-        {this.renderFriendCode()}
-        {this.props.isHost && this.renderDirectIP()}
+        {/* {FEATURE_DISCORD_INVITE && this.renderDiscord()} */}
+        {/* {this.renderFriendCode()} */}
+        {/* {this.props.isHost && this.renderDirectIP()} */}
+        <h2 className={styles.header}>
+          Networking is still a work-in-progress.
+          <br />
+          Follow development on Discord.
+        </h2>
       </div>
     )
   }
