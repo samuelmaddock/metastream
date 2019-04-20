@@ -44,6 +44,7 @@
 
 .messages {
   composes: scroller from '~styles/layout.css';
+  max-height: 100%;
   flex-grow: 1;
   overflow-y: auto;
   position: relative;
