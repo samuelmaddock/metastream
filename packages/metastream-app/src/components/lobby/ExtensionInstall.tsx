@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import cx from 'classnames'
 import styles from './ExtensionInstall.css'
 import { IReactReduxProps } from 'types/redux-thunk'
-import { install } from 'utils/extension'
 import { checkExtensionInstall } from 'actions/ui'
 import { HighlightButton } from '../common/button'
 
@@ -29,21 +28,30 @@ class _ExtensionInstall extends React.Component<PrivateProps> {
     }
   }
 
-  private onInstallClick = () => {
-    install()
-      .then(() => {
-        this.props.dispatch(checkExtensionInstall())
-      })
-      .catch(() => {})
-  }
-
   render(): JSX.Element | null {
     return (
       <div className={cx(styles.container, this.props.className)}>
         <p>A browser extension is required for playback.</p>
-        <HighlightButton icon="download" size="large" highlight onClick={this.onInstallClick}>
-          Install
-        </HighlightButton>
+        <div className={styles.badgeList}>
+          <a
+            href="https://chrome.google.com/webstore/detail/fakegmdomhmegokfomgmkbopjibonfcp"
+            target="_blank"
+          >
+            <img
+              src="/images/badge-chrome-webstore.png"
+              alt="View extension in the Chrome Web Store"
+            />
+          </a>
+          <a
+            href="https://addons.mozilla.org/en-US/firefox/addon/metastream-remote/"
+            target="_blank"
+          >
+            <img
+              src="/images/badge-firefox-addon.png"
+              alt="View extension in the Firefox Addon store"
+            />
+          </a>
+        </div>
       </div>
     )
   }

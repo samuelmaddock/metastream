@@ -1,3 +1,11 @@
 .container {
   composes: fill-center from '~styles/layout.css';
 }
+
+.badgeList img {
+  height: 3.75rem;
+}
+
+.badgeList a:not(:last-child) {
+  margin-right: 1rem;
+}
