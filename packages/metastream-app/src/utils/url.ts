@@ -30,9 +30,5 @@ export const isUrl = (str: string): boolean => {
 }
 
 export const openInBrowser = (href: string): void => {
-  // TODO: convert code using this to links
-  const elem = document.createElement('a')
-  elem.href = href
-  elem.target = '_blank'
-  elem.click()
+  window.open(href, '_blank', 'noopener')
 }
