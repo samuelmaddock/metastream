@@ -13,6 +13,7 @@ import { isHost } from 'lobby/reducers/users.helpers'
 import { isEqual } from 'lodash-es'
 import { IReactReduxProps } from 'types/redux-thunk'
 import { Webview } from 'components/Webview'
+import { ExtensionInstall } from './ExtensionInstall'
 
 interface IProps {
   className?: string
@@ -24,6 +25,7 @@ interface IConnectedProps extends IMediaPlayerState {
   mute: boolean
   volume: number
   host: boolean
+  isExtensionInstalled: boolean
 }
 
 interface IState {
@@ -37,7 +39,8 @@ const mapStateToProps = (state: IAppState): IConnectedProps => {
     ...state.mediaPlayer,
     mute: state.settings.mute,
     volume: state.settings.volume,
-    host: isHost(state)
+    host: isHost(state),
+    isExtensionInstalled: state.ui.isExtensionInstalled
   }
 }
 
@@ -226,17 +229,16 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
         onDoubleClick={this.enterInteractMode}
       >
         {this.renderBrowser()}
-        {!this.state.interacting ? (
-          <div className={styles.interactTrigger} onDoubleClick={this.enterInteractMode} />
-        ) : null}
-        {this.state.interacting ? (
-          <div className={styles.interactNotice}>Interact ON. Press Esc to cancel.</div>
-        ) : null}
+        {this.renderInteract()}
       </div>
     )
   }
 
   private renderBrowser(): JSX.Element {
+    if (!this.props.isExtensionInstalled) {
+      return <ExtensionInstall />
+    }
+
     return (
       <Webview
         componentRef={this.setupWebview}
@@ -246,6 +248,17 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
           [styles.playing]: !!this.props.current
         })}
       />
+    )
+  }
+
+  private renderInteract = () => {
+    // Allow interacting with extension install
+    if (!this.props.isExtensionInstalled) return
+
+    return this.state.interacting ? (
+      <div className={styles.interactNotice}>Interact ON. Press Esc to cancel.</div>
+    ) : (
+      <div className={styles.interactTrigger} onDoubleClick={this.enterInteractMode} />
     )
   }
 
@@ -266,6 +279,8 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
   }
 
   private enterInteractMode = () => {
+    if (!this.props.isExtensionInstalled) return
+
     this.setState({ interacting: true }, () => {
       document.addEventListener('keydown', this.onKeyDown, false)
       this.dispatchMedia('interact', true)

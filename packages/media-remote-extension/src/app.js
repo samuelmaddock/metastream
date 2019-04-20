@@ -12,7 +12,7 @@
 
   // Notify background script of initialization request
   chrome.runtime.sendMessage({ type: 'metastream-init' }, initialized => {
-    // TODO: notify app of initialization response
+    document.documentElement.dataset.extensionInstalled = ''
     console.debug(`[Metastream Remote] Initialized`, initialized)
   })
 
