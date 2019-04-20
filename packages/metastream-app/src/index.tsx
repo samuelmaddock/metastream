@@ -20,6 +20,12 @@ import { PlatformService } from 'platform'
 import { initAnalytics } from './analytics'
 import { initLocale } from 'locale'
 
+if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/service-worker.js')
+  })
+}
+
 let store: Store<IAppState>
 let history: History
 let persistor: Persistor

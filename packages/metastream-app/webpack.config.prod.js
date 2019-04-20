@@ -6,6 +6,7 @@ const path = require('path')
 const webpack = require('webpack')
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const { GenerateSW } = require('workbox-webpack-plugin')
 const merge = require('webpack-merge')
 const baseConfig = require('./webpack.config.base')
 
@@ -83,6 +84,11 @@ module.exports = merge.smart(baseConfig, {
 
     new MiniCssExtractPlugin({
       filename: 'style.css'
+    }),
+
+    new GenerateSW({
+      importWorkboxFrom: 'local',
+      exclude: ['CNAME', '404.html', 'robots.txt']
     })
   ]
 })
