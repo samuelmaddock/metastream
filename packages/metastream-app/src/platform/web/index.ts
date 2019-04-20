@@ -16,8 +16,8 @@ export class WebPlatform extends Platform {
   constructor() {
     super()
 
-    this.id = new NetUniqueId<SwarmId>('1234')
-    this.username = 'Foobar'
+    this.id = new NetUniqueId<SwarmId>('not-yet-available')
+    this.username = ''
   }
 
   getServer() {
@@ -76,7 +76,7 @@ export class WebPlatform extends Platform {
   }
 
   getUserName(userId: NetUniqueId): string {
-    let name = (this.getLocalId().equals(userId) && this.username) || `Web-${userId}`
+    let name = (this.getLocalId().equals(userId) && this.username) || ''
 
     if (name.length > MAX_NAME_LEN) {
       name = name.substr(0, MAX_NAME_LEN)

@@ -31,7 +31,7 @@ class WelcomePage extends Component<Props> {
     const dispatch = this.props.dispatch!
     return (
       <LayoutMain className={styles.container}>
-        <section className={styles.column}>
+        <form className={styles.column}>
           <MenuHeader text={`Welcome to ${PRODUCT_NAME}`} />
 
           <div className={styles.wip}>
@@ -43,14 +43,19 @@ class WelcomePage extends Component<Props> {
           <label htmlFor="profile_username">{t('chooseUsername')}</label>
           <TextInput
             id="profile_username"
+            autoComplete="username"
             defaultValue={this.props.settings.username}
             maxLength={USERNAME_MAX_LEN}
             onChange={e => {
               const username = (e.target as HTMLInputElement).value
-              dispatch(setUsername(username))
+              if (username) {
+                dispatch(setUsername(username))
+              }
             }}
             onBlur={e => {
-              ;(e.target as HTMLInputElement).value = this.props.settings.username!
+              if (this.props.settings.username) {
+                ;(e.target as HTMLInputElement).value = this.props.settings.username
+              }
             }}
           />
           <div>
@@ -71,7 +76,7 @@ class WelcomePage extends Component<Props> {
           >
             {t('getStarted')}
           </MenuButton>
-        </section>
+        </form>
       </LayoutMain>
     )
   }
