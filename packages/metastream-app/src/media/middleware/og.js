@@ -348,12 +348,12 @@ export function parse(body, options) {
   })
 
   // set the ogImage or fallback to ogImageURL or ogImageSecureURL
-  ogObject.ogImage = ogObject.ogImage
+  ogObject.ogImage = ogObject.ogImageSecureURL
+    ? ogObject.ogImageSecureURL
+    : ogObject.ogImage
     ? ogObject.ogImage
     : ogObject.ogImageURL
     ? ogObject.ogImageURL
-    : ogObject.ogImageSecureURL
-    ? ogObject.ogImageSecureURL
     : []
   if (!ogObject.ogImage || !ogObject.ogImage.length) {
     delete ogObject['ogImage']
@@ -391,6 +391,7 @@ export function parse(body, options) {
     ogObject.ogVideoDuration
   ) {
     ogObject.ogVideo = ogObject.ogVideo ? ogObject.ogVideo : [null]
+    ogObject.ogVideo = ogObject.ogVideoSecureURL ? ogObject.ogVideoSecureURL : ogObject.ogVideo
     ogObject.ogVideoWidth = ogObject.ogVideoWidth ? ogObject.ogVideoWidth : [null]
     ogObject.ogVideoHeight = ogObject.ogVideoHeight ? ogObject.ogVideoHeight : [null]
     ogObject.ogVideoType = ogObject.ogVideoType ? ogObject.ogVideoType : [null]
