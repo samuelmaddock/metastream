@@ -79,6 +79,8 @@ const onHeadersReceived = details => {
   const isServiceWorkerRequest = tabId === -1 && frameId === -1
   const shouldModify = isMetastreamTab || isServiceWorkerRequest
 
+  // TODO: HTTP 301 redirects don't get captured. Try https://reddit.com/
+
   if (shouldModify) {
     for (let i = headers.length - 1; i >= 0; --i) {
       const header = headers[i].name.toLowerCase()
@@ -222,7 +224,7 @@ const startWatchingTab = tab => {
     {
       tabId,
       urls: ['<all_urls>'],
-      types: ['sub_frame', 'xmlhttprequest']
+      types: ['sub_frame', 'xmlhttprequest', 'script']
     },
     [
       chrome.webRequest.OnHeadersReceivedOptions.BLOCKING,
