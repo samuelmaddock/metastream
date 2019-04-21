@@ -360,8 +360,10 @@ chrome.runtime.onMessage.addListener((action, sender, sendResponse) => {
 // Inject content scripts into existing tabs on startup
 //=============================================================================
 
-const { content_scripts: contentScripts = [] } = chrome.runtime.getManifest();
-const appContentScript = contentScripts.find(script => script.js && script.js.includes('app.js'))
+const { content_scripts: contentScripts = [] } = chrome.runtime.getManifest()
+const appContentScript = contentScripts.find(
+  script => script.js && script.js.some(file => file.endsWith('app.js'))
+)
 
 if (appContentScript) {
   chrome.tabs.query({ url: appContentScript.matches }, tabs => {
