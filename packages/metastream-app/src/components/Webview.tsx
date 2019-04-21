@@ -91,6 +91,11 @@ export class Webview extends Component<Props> {
   render() {
     const { componentRef, src, ...rest } = this.props
 
+    // TODO(samuelmaddock): Update React and types so these props can be passed in
+    const untypedProps: any = {
+      referrerpolicy: 'origin'
+    }
+
     return (
       <iframe
         ref={e => {
@@ -102,6 +107,7 @@ export class Webview extends Component<Props> {
         allow={this.featurePolicy}
         sandbox={this.sandboxPolicy}
         src={this.initialUrl}
+        {...untypedProps}
         {...rest}
       />
     )
