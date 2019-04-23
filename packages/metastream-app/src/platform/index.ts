@@ -1,14 +1,12 @@
-import { Platform } from 'platform/types'
 import { WebPlatform } from 'platform/web'
 
 class _PlatformService {
-  private static platform: Platform
+  private static platform: WebPlatform
 
-  static get(): Platform {
+  static get() {
     if (!this.platform) {
       this.platform = new WebPlatform()
     }
-
     return this.platform
   }
 }
