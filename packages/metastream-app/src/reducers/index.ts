@@ -3,7 +3,6 @@ import { routerReducer as router, RouterState } from 'react-router-redux'
 import { Reducer } from 'redux'
 import { merge } from 'lodash-es'
 
-import { lobby, ILobbyState } from './lobby'
 import { settings, ISettingsState } from './settings'
 import { ui, IUIState } from './ui'
 
@@ -18,7 +17,6 @@ import { isType } from 'utils/redux'
 import { reduceChange } from './deepDiff'
 
 export interface IAppState extends ILobbyNetState {
-  lobby: ILobbyState
   settings: ISettingsState
   ui: IUIState
   router: RouterState
@@ -32,7 +30,6 @@ export const AppReplicatedState: ReplicatedState<IAppState> = {
 
 const rootReducer = combineReducers<IAppState>({
   router: router as Reducer<any>,
-  lobby, // TODO: rename to 'servers'?
   ...lobbyReducers,
   settings,
   ui

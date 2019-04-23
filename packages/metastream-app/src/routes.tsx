@@ -3,7 +3,6 @@ import { Switch, Route, RouteProps } from 'react-router'
 
 import App from './containers/App'
 import { HomePage } from './containers/HomePage'
-import { ServerBrowserPage } from './containers/ServerBrowserPage'
 import { LobbyPage } from './containers/LobbyPage'
 import { SessionJoinPage } from './containers/SessionJoinPage'
 import { SettingsPage } from './containers/SettingsPage'
@@ -14,7 +13,6 @@ export default () => (
     <Switch>
       <WelcomeRoute exact path="/" component={HomePage} />
       <WelcomeRoute path="/lobby/:lobbyId" component={LobbyPage} />
-      <WelcomeRoute path="/servers" component={ServerBrowserPage} />
       <WelcomeRoute path="/join" component={SessionJoinPage} />
       <WelcomeRoute path="/settings" component={SettingsPage} />
     </Switch>
