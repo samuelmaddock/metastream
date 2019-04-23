@@ -9,7 +9,7 @@ export async function initIdentity(ephemeral: boolean = false) {
   await sodium.ready
 
   if (ephemeral) {
-    return await keyPair()
+    return keyPair()
   }
 
   let localKeyPair
@@ -27,7 +27,7 @@ export async function initIdentity(ephemeral: boolean = false) {
   }
 
   if (!localKeyPair) {
-    localKeyPair = await keyPair()
+    localKeyPair = keyPair()
 
     try {
       localStorage.setItem(PUBKEY_PROP, sodium.to_hex(localKeyPair.publicKey))

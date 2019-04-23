@@ -30,7 +30,7 @@ let store: Store<IAppState>
 let history: History
 let persistor: Persistor
 
-function init() {
+async function init() {
   history = cfgStore.history
 
   const storeCfg = cfgStore.configureStore({
@@ -51,6 +51,9 @@ function init() {
       platform: PlatformService
     })
   }
+
+  // Setup libsodium and cryptographic identity
+  await PlatformService.ready
 
   initAnalytics(store, history)
 

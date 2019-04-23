@@ -8,8 +8,7 @@ export type KeyPair = {
   secretKey: Key
 }
 
-export async function keyPair(): Promise<KeyPair> {
-  await sodium.ready
+export function keyPair(): KeyPair {
   const { publicKey, privateKey } = sodium.crypto_box_keypair()
   return {
     publicKey: Buffer.from(publicKey as any),
