@@ -20,7 +20,6 @@ export abstract class Platform {
 
   // Users
   abstract getLocalId(): NetUniqueId
-  abstract getUserName(id: NetUniqueId): string
   abstract requestUserInfo(id: NetUniqueId | string): Promise<any>
   abstract requestAvatarUrl(id: NetUniqueId | string): Promise<string | void>
 }

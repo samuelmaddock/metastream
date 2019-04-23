@@ -1,23 +1,28 @@
+import sodium from 'libsodium-wrappers'
 import { Platform, ILobbyOptions, ILobbySession } from 'platform/types'
 import { NetServer, NetUniqueId } from 'network'
 import { isP2PHash, isIP, isUrlDomain } from 'utils/network'
 import { PeerCoordinator } from 'network/server'
+import { initIdentity } from './identity'
 
-type SwarmId = string
+type HexId = string
 
 const MAX_NAME_LEN = 32
 
 export class WebPlatform extends Platform {
-  private id: NetUniqueId<SwarmId>
-  private username: string
+  ready: Promise<void>
 
+  private id: NetUniqueId<HexId>
   private server: NetServer | null = null
 
   constructor() {
     super()
 
-    this.id = new NetUniqueId<SwarmId>('not-yet-available')
-    this.username = ''
+    this.id = new NetUniqueId<HexId>('')
+
+    this.ready = initIdentity().then(keyPair => {
+      this.id = new NetUniqueId<HexId>(sodium.to_hex(keyPair.publicKey))
+    })
   }
 
   getServer() {
@@ -73,16 +78,6 @@ export class WebPlatform extends Platform {
 
   async findLobbies(): Promise<ILobbySession[]> {
     return []
-  }
-
-  getUserName(userId: NetUniqueId): string {
-    let name = (this.getLocalId().equals(userId) && this.username) || ''
-
-    if (name.length > MAX_NAME_LEN) {
-      name = name.substr(0, MAX_NAME_LEN)
-    }
-
-    return name
   }
 
   getLocalId(): NetUniqueId {
