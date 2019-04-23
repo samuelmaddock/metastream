@@ -14,6 +14,7 @@ export class Webview extends Component<Props> {
   private frameId = -1
   private emitter = new EventEmitter()
   private iframe: HTMLIFrameElement | null = null
+  private url: string = 'about:blank'
 
   private get initialUrl() {
     return `about:blank?webview=${this.id}`
@@ -45,6 +46,7 @@ export class Webview extends Component<Props> {
   constructor(props: Props) {
     super(props)
 
+    this.emitter.setMaxListeners(32)
     this.onMessage = this.onMessage.bind(this)
 
     window.addEventListener('message', this.onMessage)
@@ -71,6 +73,11 @@ export class Webview extends Component<Props> {
 
     if (data.type === 'metastream-webview-event') {
       const action = data.payload
+
+      if (typeof action.payload === 'object' && typeof action.payload.url === 'string') {
+        this.url = action.payload.url
+      }
+
       this.emitter.emit(action.type, action.payload)
     }
   }
@@ -93,7 +100,7 @@ export class Webview extends Component<Props> {
 
     // TODO(samuelmaddock): Update React and types so these props can be passed in
     const untypedProps: any = {
-      referrerpolicy: 'origin'
+      referrerPolicy: 'origin'
     }
 
     return (
@@ -113,17 +120,52 @@ export class Webview extends Component<Props> {
     )
   }
 
-  loadURL(url: string, opts: { httpReferrer?: string; userAgent?: string } = {}) {
-    if (this.iframe) {
-      this.iframe.src = url
-    }
-  }
-
   addEventListener(eventName: string, listener: (...args: any[]) => void) {
     this.emitter.addListener(eventName, listener)
   }
 
   removeEventListener(eventName: string, listener: (...args: any[]) => void) {
     this.emitter.removeListener(eventName, listener)
+  }
+
+  private dispatchRemoteEvent<T>(type: string, payload?: T): void {
+    if (!this.frameId) return
+    window.postMessage(
+      { type: 'metastream-webview-event', payload: { type, payload }, frameId: this.frameId },
+      location.origin
+    )
+  }
+
+  loadURL(url: string, opts: { httpReferrer?: string; userAgent?: string } = {}) {
+    this.url = url
+
+    if (this.iframe) {
+      this.iframe.src = url
+    }
+  }
+
+  getURL() {
+    return this.url
+  }
+
+  goBack() {
+    this.dispatchRemoteEvent('navigate', -1)
+  }
+
+  goForward() {
+    this.dispatchRemoteEvent('navigate', 1)
+  }
+
+  stop() {
+    this.dispatchRemoteEvent('stop')
+    this.emitter.emit('did-stop-loading')
+  }
+
+  reload() {
+    this.dispatchRemoteEvent('reload')
+  }
+
+  reloadIgnoringCache() {
+    this.dispatchRemoteEvent('reload', true)
   }
 }

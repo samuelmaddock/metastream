@@ -27,11 +27,26 @@ const eventMiddleware = event => {
 window.addEventListener('message', eventMiddleware)
 
 // Forward host events to main world
-chrome.runtime.onMessage.addListener(message => {
-  if (typeof message !== 'object' || typeof message.type !== 'string') return
-  if (message.type == 'metastream-host-event') {
-    window.postMessage(message.payload, location.origin)
+chrome.runtime.onMessage.addListener(action => {
+  if (typeof action !== 'object' || typeof action.type !== 'string') return
+
+  if (action.type == 'metastream-host-event') {
+    window.postMessage(action.payload, location.origin)
+    return
   }
+
+  switch (action.type) {
+    case 'navigate':
+      history.go(Number(action.payload) || 0)
+      break
+    case 'reload':
+      location.reload(Boolean(action.payload))
+      break
+    case 'stop':
+      stop()
+      break
+  }
+
 })
 
 //=============================================================================
@@ -180,10 +195,12 @@ const mainWorldScript = function() {
     })
   }
 
-  const mediaEventMiddleware = event => {
+  const eventMiddleware = event => {
     const { data: action } = event
     if (typeof action !== 'object' || typeof action.type !== 'string') return
     if (!player) return
+
+    console.debug(`[Metastream Remote] Received player event`, action)
 
     switch (action.type) {
       case 'set-media-playback': {
@@ -202,7 +219,7 @@ const mainWorldScript = function() {
         break
     }
   }
-  window.addEventListener('message', mediaEventMiddleware)
+  window.addEventListener('message', eventMiddleware)
 
   //===========================================================================
   // HTMLMediaPlayer class for active media element.

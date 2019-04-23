@@ -39,10 +39,10 @@ export class WebControls extends Component<IProps, IState> {
         icon="arrow-left"
         onClick={() => {
           if (this.webview) {
-            // this.webContents.goBack()
+            this.webview.goBack()
           }
         }}
-        // disabled={this.webview ? !this.webContents.canGoBack() : true}
+        // disabled={this.webview ? this.webview.getURL() === this.props.initialUrl : true}
       />
     )
 
@@ -52,7 +52,7 @@ export class WebControls extends Component<IProps, IState> {
         icon="arrow-right"
         onClick={() => {
           if (this.webview) {
-            // this.webContents.goForward()
+            this.webview.goForward()
           }
         }}
         // disabled={this.webview ? !this.webContents.canGoForward() : true}
@@ -66,11 +66,11 @@ export class WebControls extends Component<IProps, IState> {
         onClick={e => {
           if (this.webview) {
             if (this.state.loading) {
-              // this.webContents.stop()
+              this.webview.stop()
             } else if (e.shiftKey || process.env.NODE_ENV === 'development') {
-              // this.webContents.reloadIgnoringCache()
+              this.webview.reloadIgnoringCache()
             } else {
-              // this.webContents.reload()
+              this.webview.reload()
             }
           }
         }}
@@ -83,8 +83,7 @@ export class WebControls extends Component<IProps, IState> {
         icon="home"
         onClick={e => {
           if (this.webview) {
-            // TODO: navigate forward instead of back
-            // this.webContents.goToIndex(0)
+            this.webview.loadURL(this.props.initialUrl)
           }
         }}
       />
@@ -146,27 +145,20 @@ export class WebControls extends Component<IProps, IState> {
 
   setWebview(webview: Webview | null) {
     this.webview = webview
-    // this.webContents = webContents
 
     if (this.webview) {
-      // this.webview.addEventListener('dom-ready', e => {
-      //   if (this.webview) {
-      //     this.updateURL(this.webContents.getURL())
-      //   }
-      // })
-
-      const updateUrl = (e: { url: string }) => {
-        this.updateURL(e.url)
-      }
-
+      const updateUrl = (e: { url: string }) => this.updateURL(e.url)
       this.webview.addEventListener('will-navigate', updateUrl)
       this.webview.addEventListener('did-navigate', updateUrl)
       this.webview.addEventListener('did-navigate-in-page', updateUrl)
 
-      // const setLoading = (loading: boolean) => this.setState({ loading })
-      // this.webview.addEventListener('did-start-loading', setLoading.bind(null, true))
-      // this.webview.addEventListener('did-stop-loading', setLoading.bind(null, false))
-      // this.webview.addEventListener('did-finish-load', setLoading.bind(null, false))
+      const setLoading = (loading: boolean) => this.setState({ loading })
+      this.webview.addEventListener('will-navigate', setLoading.bind(null, true))
+      this.webview.addEventListener('did-navigate', setLoading.bind(null, false))
+      this.webview.addEventListener('did-navigate-in-page', setLoading.bind(null, false))
+      this.webview.addEventListener('did-stop-loading', setLoading.bind(null, false))
+    } else {
+      // TODO
     }
   }
 
@@ -228,14 +220,12 @@ export class WebControls extends Component<IProps, IState> {
   }
 
   private loadURL(url: string) {
-    // TODO: make this robust and use https everywhere extension
     if (!url.match(/^[\w-]+?:\/\//i)) {
-      url = `http://${url}`
+      url = `https://${url}`
     }
 
     if (this.webview) {
-      // const httpReferrer = this.webview.getAttribute('httpreferrer') || undefined
-      // this.webContents.loadURL(url, { httpReferrer })
+      this.webview.loadURL(url)
     }
   }
 

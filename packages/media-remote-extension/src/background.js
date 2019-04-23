@@ -7,11 +7,12 @@
 // message brokering between embedded websites and the app itself.
 //
 
+const TOP_FRAME = 0
 const HEADER_PREFIX = 'x-metastream'
 const isMetastreamUrl = url =>
   url.startsWith('https://app.getmetastream.com') || url.startsWith('http://localhost:8080')
-const isTopFrame = details => details.frameId === 0
-const isDirectChild = details => details.parentFrameId === 0
+const isTopFrame = details => details.frameId === TOP_FRAME
+const isDirectChild = details => details.parentFrameId === TOP_FRAME
 const isValidAction = action => typeof action === 'object' && typeof action.type === 'string'
 
 // Memoized frame paths
@@ -37,13 +38,18 @@ const getFramePath = async (tabId, frameId) => {
   return path
 }
 
-const sendToHost = (tabId, message) => {
-  chrome.tabs.sendMessage(tabId, message, { frameId: 0 })
-}
+const sendToFrame = (tabId, frameId, message) =>
+  chrome.tabs.sendMessage(tabId, message, { frameId })
 
-const sendWebviewEventToHost = async (tabId, frameId, event) => {
+const sendToHost = (tabId, message) => sendToFrame(tabId, TOP_FRAME, message)
+
+const sendWebviewEventToHost = async (tabId, frameId, message) => {
   const framePath = await getFramePath(tabId, frameId)
-  sendToHost(tabId, { type: 'metastream-webview-event', payload: event, framePath }, { frameId: 0 })
+  sendToHost(
+    tabId,
+    { type: 'metastream-webview-event', payload: message, framePath },
+    { frameId: TOP_FRAME }
+  )
 }
 
 // Observed tabs on Metastream URL
@@ -325,7 +331,12 @@ const request = async (tabId, requestId, url, options) => {
 const handleWebviewEvent = async (sender, action) => {
   const { frameId } = sender
   const { id: tabId } = sender.tab
-  sendWebviewEventToHost(tabId, frameId, action.payload)
+  if (isTopFrame(sender)) {
+    console.debug(`Forwarding WEBVIEW event`, sender, action)
+    sendToFrame(tabId, action.frameId, action.payload)
+  } else {
+    sendWebviewEventToHost(tabId, frameId, action.payload)
+  }
 }
 
 chrome.runtime.onMessage.addListener((action, sender, sendResponse) => {
