@@ -7,17 +7,13 @@ import { initIdentity } from './identity'
 
 type HexId = string
 
-const MAX_NAME_LEN = 32
-
 export class WebPlatform {
   ready: Promise<void>
 
-  private id: NetUniqueId<HexId>
+  private id!: NetUniqueId<HexId>
   private server: NetServer | null = null
 
   constructor() {
-    this.id = new NetUniqueId<HexId>('')
-
     this.ready = initIdentity().then(keyPair => {
       this.id = new NetUniqueId<HexId>(sodium.to_hex(keyPair.publicKey))
     })
