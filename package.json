@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "description": "Metastream root",
   "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "packages/metastream-app",
+    "packages/metastream-signal-server"
+  ],
   "prettier": {
     "printWidth": 100,
     "singleQuote": true,
