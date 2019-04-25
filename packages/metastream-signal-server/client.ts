@@ -5,15 +5,16 @@ import SimplePeer, { SignalData } from 'simple-peer'
 import { Request, MessageType, RoomID, ClientID } from './types'
 import { waitEvent } from './util'
 
-interface SignalClientOptions {
+interface KeyPair {
   publicKey: Uint8Array
   privateKey: Uint8Array
+}
+
+interface SignalClientOptions {
   peerOpts?: SimplePeer.Options
 }
 
-class SignalClient extends EventEmitter {
-  private publicKey: Uint8Array
-  private privateKey: Uint8Array
+export class SignalClient extends EventEmitter {
   private simplePeerOpts: SimplePeer.Options
 
   private connectingPeers: { [key: number]: SimplePeer.Instance | undefined } = {}
@@ -21,17 +22,17 @@ class SignalClient extends EventEmitter {
   constructor(private ws: WebSocket, opts: SignalClientOptions) {
     super()
 
-    this.publicKey = opts.publicKey
-    this.privateKey = opts.privateKey
     this.simplePeerOpts = opts.peerOpts || {}
 
     this.onConnect = this.onConnect.bind(this)
     this.onDisconnect = this.onDisconnect.bind(this)
+    this.onError = this.onError.bind(this)
     this.onMessage = this.onMessage.bind(this)
     this.onOfferReceived = this.onOfferReceived.bind(this)
 
     this.ws.addEventListener('open', this.onConnect)
     this.ws.addEventListener('close', this.onDisconnect)
+    this.ws.addEventListener('error', this.onError)
     this.ws.addEventListener('message', this.onMessage)
   }
 
@@ -57,6 +58,11 @@ class SignalClient extends EventEmitter {
     this.ws.removeEventListener('open', this.onConnect)
     this.ws.removeEventListener('close', this.onDisconnect)
     this.ws.removeEventListener('message', this.onMessage)
+  }
+
+  private onError(err: any) {
+    this.emit('error', err)
+    this.close()
   }
 
   private onMessage(event: WebSocketEventMap['message']) {
@@ -85,14 +91,14 @@ class SignalClient extends EventEmitter {
     }
   }
 
-  async createRoom() {
+  async createRoom(keyPair: KeyPair) {
     this.send({
       type: MessageType.CreateRoom,
-      id: sodium.to_hex(this.publicKey)
+      id: sodium.to_hex(keyPair.publicKey)
     })
 
     const [challenge] = await waitEvent(this, 'challenge')
-    this.solveChallenge(challenge)
+    this.solveChallenge(keyPair, challenge)
 
     await waitEvent(this, 'create-room-success')
 
@@ -132,9 +138,9 @@ class SignalClient extends EventEmitter {
     return peer
   }
 
-  private solveChallenge(data: string) {
+  private solveChallenge(keyPair: KeyPair, data: string) {
     const challenge = sodium.from_base64(data, sodium.base64_variants.URLSAFE_NO_PADDING)
-    const nonce = sodium.crypto_box_seal_open(challenge, this.publicKey, this.privateKey)
+    const nonce = sodium.crypto_box_seal_open(challenge, keyPair.publicKey, keyPair.privateKey)
 
     const decoded = sodium.to_base64(nonce, sodium.base64_variants.URLSAFE_NO_PADDING)
     this.send({
