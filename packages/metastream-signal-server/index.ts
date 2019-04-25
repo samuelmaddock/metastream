@@ -38,7 +38,7 @@ interface Room {
   host: ClientID
 }
 
-class SignalServer extends EventEmitter {
+export class SignalServer extends EventEmitter {
   private clients = new Map<ClientID, Client>()
   private rooms = new Map<RoomID, Room>()
 
@@ -194,7 +194,8 @@ class SignalServer extends EventEmitter {
     if (client.status !== ClientStatus.PendingAuth) return
 
     const secret =
-      typeof challenge === 'string' && sodium.from_base64(challenge, sodium.base64_variants.URLSAFE_NO_PADDING)
+      typeof challenge === 'string' &&
+      sodium.from_base64(challenge, sodium.base64_variants.URLSAFE_NO_PADDING)
 
     if (secret && sodium.to_hex(client.authSecret!) === sodium.to_hex(secret)) {
       client.status = ClientStatus.Authed
@@ -299,7 +300,7 @@ class SignalServer extends EventEmitter {
   }
 }
 
-interface Options {
+export interface Options {
   port?: number
 }
 
