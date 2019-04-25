@@ -73,6 +73,7 @@
     "libsodium-wrappers": "^0.7.3",
     "lodash-es": "^4.17.11",
     "marked": "^0.5.1",
+    "metastream-signal-server": "^1.0.0",
     "qs": "6.5.1",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",

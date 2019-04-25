@@ -11,7 +11,7 @@
     // "sourceMap": true,                     /* Generates corresponding '.map' file. */
     // "outFile": "./",                       /* Concatenate and emit output to single file. */
     // "outDir": "./",                        /* Redirect output structure to the directory. */
-    "rootDir": "./",                          /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */
+    // "rootDir": ".",                          /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */
     // "removeComments": true,                /* Do not emit comments to output. */
     // "noEmit": true,                        /* Do not emit outputs. */
     // "importHelpers": true,                 /* Import emit helpers from 'tslib'. */
@@ -36,7 +36,8 @@
     "baseUrl": "./src",                       /* Base directory to resolve non-absolute module names. */
     // "paths": {},                           /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */
     "rootDirs": [                             /* List of root folders whose combined content represents the structure of the project at runtime. */
-      "src"
+      "src",
+      "../../node_modules"
     ],
     // "typeRoots": [],                       /* List of folders to include type definitions from. */
     // "types": [],                           /* Type declaration files to be included in compilation. */
@@ -55,7 +56,6 @@
   "exclude": [
     ".awcache",
     "node_modules",
-    "dll",
     "dist",
   ]
 }

@@ -1,5 +1,5 @@
-import { keyPair, KeyPair } from './crypto'
-import sodium from 'libsodium-wrappers'
+import { keyPair } from './crypto'
+import sodium, { KeyPair } from 'libsodium-wrappers'
 
 const KEYNAME = 'identity'
 const PUBKEY_PROP = `${KEYNAME}.pub`
@@ -12,16 +12,17 @@ export async function initIdentity(ephemeral: boolean = false) {
     return keyPair()
   }
 
-  let localKeyPair
+  let localKeyPair: KeyPair | undefined
 
   {
     const publicKey = localStorage.getItem(PUBKEY_PROP)
-    const secretKey = localStorage.getItem(SECKEY_PROP)
+    const privateKey = localStorage.getItem(SECKEY_PROP)
 
-    if (publicKey && secretKey) {
+    if (publicKey && privateKey) {
       localKeyPair = {
         publicKey: sodium.from_hex(publicKey),
-        secretKey: sodium.from_hex(secretKey)
+        privateKey: sodium.from_hex(privateKey),
+        keyType: 'curve25519'
       }
     }
   }
@@ -31,7 +32,7 @@ export async function initIdentity(ephemeral: boolean = false) {
 
     try {
       localStorage.setItem(PUBKEY_PROP, sodium.to_hex(localKeyPair.publicKey))
-      localStorage.setItem(SECKEY_PROP, sodium.to_hex(localKeyPair.secretKey))
+      localStorage.setItem(SECKEY_PROP, sodium.to_hex(localKeyPair.privateKey))
     } catch (e) {}
   }
 

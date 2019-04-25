@@ -1,24 +1,38 @@
 import { EventEmitter } from 'events'
 import * as lpstream from 'length-prefixed-stream'
 import { Duplex } from 'stream'
+import { KeyPair } from 'libsodium-wrappers'
 
-export class NetUniqueId<T = any> {
-  id: T
+export class NetUniqueId {
+  private id: string
 
-  constructor(id: T) {
-    this.id = id
+  get publicKey() {
+    return this.keyPair.publicKey
+  }
+
+  get privateKey() {
+    return this.keyPair.privateKey
+  }
+
+  constructor(private keyPair: KeyPair) {
+    this.id = new Buffer(this.keyPair.publicKey).toString('hex')
   }
 
   toString(): string {
     return this.id + ''
   }
 
-  equals(other: NetUniqueId<T>): boolean {
+  /** Override to prevent serialization of keypair */
+  toJSON() {
+    return this.toString()
+  }
+
+  equals(other: NetUniqueId): boolean {
     return this.id === other.id
   }
 }
 
-abstract class NetConnection extends EventEmitter {
+class NetConnection extends EventEmitter {
   id: NetUniqueId
   connected?: boolean
 
@@ -93,8 +107,12 @@ abstract class NetConnection extends EventEmitter {
     this.close()
   }
 
-  abstract getIP(): string
-  abstract getPort(): string
+  getIP(): string {
+    return ''
+  }
+  getPort(): string {
+    return ''
+  }
 
   toString(): string {
     return `${this.id.toString()} (${this.getIP()}:${this.getPort()})`

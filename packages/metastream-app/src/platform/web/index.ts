@@ -5,17 +5,19 @@ import { isP2PHash, isIP, isUrlDomain } from 'utils/network'
 import { PeerCoordinator } from 'network/server'
 import { initIdentity } from './identity'
 
+import createClient from 'metastream-signal-server/client'
+
 type HexId = string
 
 export class WebPlatform {
   ready: Promise<void>
 
-  private id!: NetUniqueId<HexId>
+  private id!: NetUniqueId
   private server: NetServer | null = null
 
   constructor() {
     this.ready = initIdentity().then(keyPair => {
-      this.id = new NetUniqueId<HexId>(sodium.to_hex(keyPair.publicKey))
+      this.id = new NetUniqueId(keyPair)
     })
   }
 
@@ -30,6 +32,15 @@ export class WebPlatform {
     // if (opts.p2p) {
     //   coordinators.push(new SwarmRTCPeerCoordinator(isHost))
     // }
+
+    // TEST
+    const client = await createClient({
+      server: 'ws://127.0.0.1:27064',
+      publicKey: this.id.publicKey,
+      privateKey: this.id.privateKey
+    })
+
+    console.log('lobby client', client)
 
     this.server = new NetServer({ isHost, coordinators })
 
