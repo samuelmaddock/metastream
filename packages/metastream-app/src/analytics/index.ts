@@ -99,7 +99,7 @@ function addSettingListener(store: Store<IAppState>, cb: Function) {
 
 function getHistoryPath(history: History) {
   let pathname = history.location.pathname
-  if (pathname.startsWith('/lobby/') && !pathname.endsWith('/create')) {
+  if (pathname.startsWith('/lobby/')) {
     pathname = '/lobby/join' // hide identifying info
   }
   return pathname

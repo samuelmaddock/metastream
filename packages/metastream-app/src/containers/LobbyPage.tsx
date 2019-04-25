@@ -6,7 +6,7 @@ import { IAppState, AppReplicatedState } from 'reducers'
 
 import { GameLobby } from 'components/GameLobby'
 import { PlatformService } from 'platform'
-import { NetServer } from 'network'
+import { NetServer, localUserId } from 'network'
 import { NetActions } from 'network/actions'
 import { ReplicatedState } from 'network/types'
 import { push } from 'react-router-redux'
@@ -69,27 +69,26 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
     return this.props.sessionMode !== SessionMode.Offline
   }
 
-  private get lobbyId(): string | undefined {
+  private get lobbyId(): string {
     const { match } = this.props
-    const lobbyId = match.params.lobbyId
-    return lobbyId === 'create' ? undefined : lobbyId
+    return match.params.lobbyId
   }
 
   constructor(props: PrivateProps) {
     super(props)
-    this.host = props.match.params.lobbyId === 'create'
+    this.host = props.match.params.lobbyId === localUserId()
   }
 
   private async setupLobby(): Promise<void> {
     let successPromise
 
-    if (this.lobbyId) {
-      successPromise = PlatformService.joinLobby(this.lobbyId)
-    } else {
+    if (this.host) {
       successPromise = PlatformService.createLobby({
         p2p: true,
         websocket: true
       })
+    } else {
+      successPromise = PlatformService.joinLobby(this.lobbyId)
     }
 
     // TODO: will this reject the promise that loses?
@@ -112,7 +111,7 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
       this.server = undefined
     }
 
-    PlatformService.leaveLobby(this.lobbyId || '')
+    PlatformService.leaveLobby(this.lobbyId)
     this.props.dispatch(NetActions.disconnect({ host: this.host }))
   }
 
@@ -179,7 +178,7 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
   }
 
   private onLoadScreen() {
-    this.host = this.props.match.params.lobbyId === 'create'
+    this.host = this.props.match.params.lobbyId === localUserId()
     this.props.dispatch(initLobby({ host: this.host }))
 
     if (!this.host || this.supportsNetworking) {
@@ -208,8 +207,7 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
   }
 
   componentDidUpdate(prevProps: PrivateProps) {
-    const lobbyId = this.props.match.params.lobbyId
-    if (lobbyId !== prevProps.match.params.lobbyId) {
+    if (this.lobbyId !== prevProps.match.params.lobbyId) {
       // Accepted Discord invites can join a session while currently hosting a session
       this.onLeaveScreen()
       this.onLoadScreen()

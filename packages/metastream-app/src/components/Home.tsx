@@ -14,6 +14,7 @@ import { assetUrl } from 'utils/appUrl'
 import { MenuTabs } from './menu/MenuTabs'
 import { DISCORD_INVITE_URL } from 'constants/social'
 import { withNamespaces, WithNamespaces } from 'react-i18next'
+import { localUserId } from '../network/index'
 
 const SocialLink = (props: { href: string; title: string; image?: string; icon?: string }) => (
   <ExternalLink href={props.href} className={styles.socialLink}>
@@ -57,7 +58,7 @@ class Home extends Component<IProps> {
         <section className={styles.nav}>
           <ul>
             <li>
-              <Link to="/lobby/create" className={styles.btn}>
+              <Link to={`/lobby/${localUserId()}`} className={styles.btn}>
                 <MenuButton icon="play">{t('startSession')}</MenuButton>
               </Link>
             </li>
