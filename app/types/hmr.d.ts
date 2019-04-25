@@ -1,3 +1,0 @@
-interface NodeModule {
-  hot: any;
-}

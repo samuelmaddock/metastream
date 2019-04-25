@@ -1,4 +1,0 @@
-.masked-glass {
-  backdrop-filter: blur(12px);
-  -webkit-mask-image: linear-gradient(#000, #000);
-}

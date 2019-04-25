@@ -2,5 +2,3 @@
 *.png binary
 *.ico binary
 *.icns binary
-*.node text=auto eol=auto
-*.dll text=auto eol=auto
