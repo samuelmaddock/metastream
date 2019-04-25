@@ -1,11 +1,12 @@
 import sodium from 'libsodium-wrappers'
-import { ILobbyOptions } from 'platform/types'
+import createClient from 'metastream-signal-server/client'
+import { waitEvent } from 'metastream-signal-server/util'
+
 import { NetServer, NetUniqueId } from 'network'
+import { ILobbyOptions } from 'platform/types'
 import { isP2PHash, isIP, isUrlDomain } from 'utils/network'
 import { PeerCoordinator } from 'network/server'
 import { initIdentity } from './identity'
-
-import createClient from 'metastream-signal-server/client'
 import { WebRTCPeerCoordinator } from './rtc-coordinator'
 
 type HexId = string
@@ -18,7 +19,7 @@ export class WebPlatform {
 
   constructor() {
     this.ready = initIdentity().then(keyPair => {
-      this.id = new NetUniqueId(keyPair)
+      this.id = new NetUniqueId(keyPair.publicKey, keyPair.privateKey)
     })
   }
 
@@ -41,10 +42,14 @@ export class WebPlatform {
   private async joinP2PLobby(hash: string): Promise<boolean> {
     ga('event', { ec: 'session', ea: 'connect', el: 'p2p' })
 
+    const coordinator = new WebRTCPeerCoordinator({ host: false, hostId: hash })
+
     this.server = new NetServer({
       isHost: false,
-      coordinators: [new WebRTCPeerCoordinator({ host: false, hostId: hash })]
+      coordinators: [coordinator]
     })
+
+    await waitEvent(coordinator, 'connection')
 
     return true
   }

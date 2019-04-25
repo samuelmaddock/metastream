@@ -17,8 +17,13 @@ export class RTCPeerConn extends NetConnection {
     this.peer.on('close', this.close)
     this.peer.on('error', this.onError)
     this.peer.on('iceStateChange', this.onStateChange)
-    this.peer.on('signal', this.onSignal)
     this.peer.once('connect', this.onConnect)
+
+    if ((this.peer as any).connected) {
+      this.onConnect()
+    } else {
+      this.peer.on('signal', this.onSignal)
+    }
   }
 
   private onSignal = (signal: SignalData) => {

@@ -1,6 +1,9 @@
 import SimplePeer, { SimplePeerData } from 'simple-peer'
 import createClient, { SignalClient } from 'metastream-signal-server/client'
 
+import shortid from 'shortid'
+import sodium from 'libsodium-wrappers'
+
 import { NetUniqueId, localUserId, localUser } from 'network'
 import { PeerCoordinator } from 'network/server'
 import { RTCPeerConn } from 'network/rtc'
@@ -25,6 +28,8 @@ export class WebRTCPeerCoordinator extends PeerCoordinator {
     super()
 
     this.host = opts.host
+
+    this.authenticatePeer = this.authenticatePeer.bind(this)
 
     if (this.host) {
       this.createSession()
@@ -56,7 +61,10 @@ export class WebRTCPeerCoordinator extends PeerCoordinator {
     }
 
     try {
-      await client.createRoom(localUser().id)
+      await client.createRoom({
+        publicKey: localUser().id.publicKey,
+        privateKey: localUser().id.privateKey!
+      })
     } catch {
       // TODO: bubble error
       return
@@ -101,9 +109,16 @@ export class WebRTCPeerCoordinator extends PeerCoordinator {
   }
 
   private async authenticatePeer(peer: SimplePeer.Instance) {
-    // TODO
-    // const netId = new NetUniqueId(userId)
-    // const conn = new RTCPeerConn(netId, peer)
+    // TODO: authenticate and use user's real identity
+    const userId = 'deadbeafdeadbeafdeadbeafdeadbeaf'
+    const publicKey = sodium.from_hex(userId)
+
+    const netId = new NetUniqueId(publicKey)
+    const conn = new RTCPeerConn(netId, peer)
+
+    console.log(`Authenticated peer ${userId}`, conn)
+    this.emit('connection', conn)
+
     // this.connecting.set(userId, conn)
     // conn.once('connect', () => {
     //   conn.removeAllListeners()

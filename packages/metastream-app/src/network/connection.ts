@@ -6,16 +6,8 @@ import { KeyPair } from 'libsodium-wrappers'
 export class NetUniqueId {
   private id: string
 
-  get publicKey() {
-    return this.keyPair.publicKey
-  }
-
-  get privateKey() {
-    return this.keyPair.privateKey
-  }
-
-  constructor(private keyPair: KeyPair) {
-    this.id = new Buffer(this.keyPair.publicKey).toString('hex')
+  constructor(public publicKey: Uint8Array, public privateKey?: Uint8Array) {
+    this.id = new Buffer(this.publicKey).toString('hex')
   }
 
   toString(): string {
