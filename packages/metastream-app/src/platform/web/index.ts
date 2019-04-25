@@ -6,6 +6,7 @@ import { PeerCoordinator } from 'network/server'
 import { initIdentity } from './identity'
 
 import createClient from 'metastream-signal-server/client'
+import { WebRTCPeerCoordinator } from './rtc-coordinator'
 
 type HexId = string
 
@@ -26,23 +27,13 @@ export class WebPlatform {
   }
 
   async createLobby(opts: ILobbyOptions): Promise<boolean> {
-    const isHost = true
     const coordinators: PeerCoordinator[] = []
 
-    // if (opts.p2p) {
-    //   coordinators.push(new SwarmRTCPeerCoordinator(isHost))
-    // }
+    if (opts.p2p) {
+      coordinators.push(new WebRTCPeerCoordinator({ host: true }))
+    }
 
-    // TEST
-    const client = await createClient({
-      server: 'ws://127.0.0.1:27064',
-      publicKey: this.id.publicKey,
-      privateKey: this.id.privateKey
-    })
-
-    console.log('lobby client', client)
-
-    this.server = new NetServer({ isHost, coordinators })
+    this.server = new NetServer({ isHost: true, coordinators })
 
     return true
   }
@@ -52,7 +43,7 @@ export class WebPlatform {
 
     this.server = new NetServer({
       isHost: false,
-      coordinators: []
+      coordinators: [new WebRTCPeerCoordinator({ host: false, hostId: hash })]
     })
 
     return true
