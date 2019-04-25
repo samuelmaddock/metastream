@@ -1,0 +1,27 @@
+{
+  "name": "metastream-signal-server",
+  "private": true,
+  "version": "1.0.0",
+  "description": "WebRTC signaling server solution for Metastream.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "start": "tsc && node ./dist/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "libsodium-wrappers": "^0.7.4",
+    "simple-peer": "^9.3.0",
+    "ws": "^6.1.2"
+  },
+  "devDependencies": {
+    "@types/libsodium-wrappers": "^0.7.2",
+    "@types/simple-peer": "^6.1.5",
+    "@types/ws": "^6.0.1",
+    "typescript": "^3.2.2"
+  },
+  "optionalDependencies": {
+    "wrtc": "^0.3.7"
+  }
+}
