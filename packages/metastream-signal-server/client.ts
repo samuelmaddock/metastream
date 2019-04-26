@@ -76,15 +76,15 @@ export class SignalClient extends EventEmitter {
       return
     }
 
-    switch (req.type) {
+    switch (req.t) {
       case MessageType.AuthChallenge:
-        this.emit('challenge', req.challenge)
+        this.emit('challenge', req.c)
         break
       case MessageType.CreateRoomSuccess:
         this.emit('create-room-success')
         break
       case MessageType.CandidateOffer:
-        this.emit('offer', req.offer, req.from)
+        this.emit('offer', req.o, req.f)
         break
       default:
         break
@@ -93,7 +93,7 @@ export class SignalClient extends EventEmitter {
 
   async createRoom(keyPair: KeyPair) {
     this.send({
-      type: MessageType.CreateRoom,
+      t: MessageType.CreateRoom,
       id: sodium.to_hex(keyPair.publicKey)
     })
 
@@ -110,15 +110,15 @@ export class SignalClient extends EventEmitter {
     const [initialOffer] = await waitEvent(peer, 'signal')
 
     this.send({
-      type: MessageType.JoinRoom,
+      t: MessageType.JoinRoom,
       id,
-      offer: initialOffer
+      o: initialOffer
     })
 
     const onSignal = (offer: SignalData) => {
       this.send({
-        type: MessageType.CandidateOffer,
-        offer
+        t: MessageType.CandidateOffer,
+        o: offer
       })
     }
     const onOffer = (offer: SignalData) => {
@@ -144,8 +144,8 @@ export class SignalClient extends EventEmitter {
 
     const decoded = sodium.to_base64(nonce, sodium.base64_variants.URLSAFE_NO_PADDING)
     this.send({
-      type: MessageType.AuthResponse,
-      challenge: decoded
+      t: MessageType.AuthResponse,
+      c: decoded
     })
   }
 
@@ -162,8 +162,8 @@ export class SignalClient extends EventEmitter {
     // Forward signal data to peer
     const onSignal = (offer: SignalData) => {
       this.send({
-        type: MessageType.CandidateOffer,
-        offer,
+        t: MessageType.CandidateOffer,
+        o: offer,
         to: clientId
       })
     }

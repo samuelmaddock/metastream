@@ -16,11 +16,31 @@ export const enum MessageType {
 
 export type Request =
   | {
-      type: MessageType.CreateRoom
+      t: MessageType.CreateRoom
       id: string
     }
-  | { type: MessageType.CreateRoomSuccess }
-  | { type: MessageType.JoinRoom; id: string; offer: SignalData }
-  | { type: MessageType.AuthResponse; challenge: string }
-  | { type: MessageType.AuthChallenge; challenge: string }
-  | { type: MessageType.CandidateOffer; offer: SignalData; from?: ClientID; to?: ClientID }
+  | { t: MessageType.CreateRoomSuccess }
+  | {
+      t: MessageType.JoinRoom
+      id: string
+      /** Offer */
+      o: SignalData
+    }
+  | {
+      t: MessageType.AuthResponse
+      /** Challenge */
+      c: string
+    }
+  | {
+      t: MessageType.AuthChallenge
+      /** Challenge */
+      c: string
+    }
+  | {
+      t: MessageType.CandidateOffer
+      /** Offer */
+      o: SignalData
+      /** From */
+      f?: ClientID
+      to?: ClientID
+    }

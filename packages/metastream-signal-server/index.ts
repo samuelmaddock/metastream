@@ -136,7 +136,12 @@ export class SignalServer extends EventEmitter {
         return
       }
 
-      this.dispatchRequest(client, req)
+      try {
+        this.dispatchRequest(client, req)
+      } catch (e) {
+        this.logError('Error dispatching request:', e)
+        this.removeClient(client.id)
+      }
     })
 
     socket.once('close', () => {
@@ -150,18 +155,18 @@ export class SignalServer extends EventEmitter {
   }
 
   private dispatchRequest(client: Client, req: Request) {
-    switch (req.type) {
+    switch (req.t) {
       case MessageType.CreateRoom:
         this.createRoom(client, req.id)
         break
       case MessageType.AuthResponse:
-        this.validateAuth(client, req.challenge)
+        this.validateAuth(client, req.c)
         break
       case MessageType.JoinRoom:
-        this.joinRoom(client, req.id, req.offer)
+        this.joinRoom(client, req.id, req.o)
         break
       case MessageType.CandidateOffer:
-        this.brokerOffer(client, req.offer, req.from || client.id, req.to)
+        this.brokerOffer(client, req.o, req.f || client.id, req.to)
         break
       default:
         this.log('Unknown request', req)
@@ -183,8 +188,8 @@ export class SignalServer extends EventEmitter {
     client.authSecret = nonce
 
     this.sendTo(client, {
-      type: MessageType.AuthChallenge,
-      challenge
+      t: MessageType.AuthChallenge,
+      c: challenge
     })
 
     return false
@@ -236,7 +241,7 @@ export class SignalServer extends EventEmitter {
     client.room = id
 
     this.sendTo(client, {
-      type: MessageType.CreateRoomSuccess
+      t: MessageType.CreateRoomSuccess
     })
 
     this.log(`Created room ${id} [${client.id}]`)
@@ -284,19 +289,18 @@ export class SignalServer extends EventEmitter {
       if (!targetClient) return
 
       this.sendTo(targetClient, {
-        type: MessageType.CandidateOffer,
-        offer
+        t: MessageType.CandidateOffer,
+        o: offer
       })
     } else {
       const host = this.clients.get(room.host)
       if (!host) return
 
-      const response = JSON.stringify({
-        type: MessageType.CandidateOffer,
-        offer,
-        from
+      this.sendTo(host, {
+        t: MessageType.CandidateOffer,
+        o: offer,
+        f: from
       })
-      host.socket.send(response)
     }
   }
 }
