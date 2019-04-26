@@ -204,9 +204,6 @@ export class SignalServer extends EventEmitter {
         const room = client.pendingRoom
         client.pendingRoom = undefined
         this.createRoom(client, room)
-        this.sendTo(client, {
-          type: MessageType.CreateRoomSuccess
-        })
       }
     } else {
       client.socket.close()
@@ -237,6 +234,10 @@ export class SignalServer extends EventEmitter {
     const room: Room = { id, clients, host: client.id }
     this.rooms.set(id, room)
     client.room = id
+
+    this.sendTo(client, {
+      type: MessageType.CreateRoomSuccess
+    })
 
     this.log(`Created room ${id} [${client.id}]`)
     this.emit('create-room', id)
