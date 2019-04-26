@@ -7,6 +7,7 @@ import sodium from 'libsodium-wrappers'
 import { NetUniqueId, localUserId, localUser } from 'network'
 import { PeerCoordinator } from 'network/server'
 import { RTCPeerConn } from 'network/rtc'
+import { mutualHandshake } from './authenticate'
 
 const iceServers = [
   { url: 'stun:stun1.l.google.com:19302' },
@@ -94,7 +95,7 @@ export class WebRTCPeerCoordinator extends PeerCoordinator {
     }
 
     console.debug('Joined signal client session', peer)
-    await this.authenticatePeer(peer)
+    await this.authenticatePeer(peer, hostId)
   }
 
   close() {
@@ -108,12 +109,17 @@ export class WebRTCPeerCoordinator extends PeerCoordinator {
     this.connecting.clear()
   }
 
-  private async authenticatePeer(peer: SimplePeer.Instance) {
-    // TODO: authenticate and use user's real identity
-    const userId = 'deadbeafdeadbeafdeadbeafdeadbeaf'
-    const publicKey = sodium.from_hex(userId)
+  private async authenticatePeer(peer: SimplePeer.Instance, peerId?: string) {
+    const peerPublicKey = peerId ? sodium.from_hex(peerId) : undefined
+    const userPublicKey = await mutualHandshake(peer, localUser().id, peerPublicKey)
 
-    const netId = new NetUniqueId(publicKey)
+    if (!userPublicKey) {
+      console.error('Failed to authenticate with peer', peer.address())
+      return
+    }
+
+    const userId = sodium.to_hex(userPublicKey)
+    const netId = new NetUniqueId(userPublicKey)
     const conn = new RTCPeerConn(netId, peer)
 
     console.log(`Authenticated peer ${userId}`, conn)

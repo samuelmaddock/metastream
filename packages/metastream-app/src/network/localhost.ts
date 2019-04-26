@@ -1,7 +1,9 @@
-import NetConnection from './connection'
+import NetConnection, { NetUniqueId } from './connection'
 import { PlatformService } from 'platform'
 
 class LocalHostConnection extends NetConnection {
+  id!: NetUniqueId & { privateKey: Uint8Array }
+
   constructor() {
     const id = PlatformService.getLocalId()
     super(id)
@@ -20,7 +22,7 @@ class LocalHostConnection extends NetConnection {
 
 let client: LocalHostConnection
 
-const localUser = (): NetConnection => {
+const localUser = () => {
   if (!client) {
     client = new LocalHostConnection()
   }
