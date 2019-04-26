@@ -32,12 +32,10 @@ async function main() {
 
   const clientA = await createClient({
     peerOpts,
-    server: `ws://127.0.0.1:${port}`,
-    publicKey: keypair.publicKey,
-    privateKey: keypair.privateKey
+    server: `ws://127.0.0.1:${port}`
   })
 
-  await clientA.createRoom()
+  await clientA.createRoom(keypair)
 
   const clientB = await createClient({
     peerOpts,
