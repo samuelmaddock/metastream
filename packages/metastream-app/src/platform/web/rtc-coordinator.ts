@@ -8,13 +8,7 @@ import { NetUniqueId, localUserId, localUser } from 'network'
 import { PeerCoordinator } from 'network/server'
 import { RTCPeerConn } from 'network/rtc'
 import { mutualHandshake } from './authenticate'
-
-const iceServers = [
-  { url: 'stun:stun1.l.google.com:19302' },
-  { url: 'stun:stun2.l.google.com:19302' },
-  { url: 'stun:stun3.l.google.com:19302' },
-  { url: 'stun:stun4.l.google.com:19302' }
-]
+import { METASTREAM_STUN_SERVERS, METASTREAM_SIGNAL_SERVER } from '../../constants/network'
 
 interface Options {
   host: boolean
@@ -44,9 +38,11 @@ export class WebRTCPeerCoordinator extends PeerCoordinator {
   private getClient() {
     return createClient({
       // TODO: get from env vars
-      server: 'ws://127.0.0.1:27064',
+      server: METASTREAM_SIGNAL_SERVER,
       peerOpts: {
-        config: { iceServers }
+        config: {
+          iceServers: METASTREAM_STUN_SERVERS.map(url => ({ url }))
+        }
       }
     })
   }
