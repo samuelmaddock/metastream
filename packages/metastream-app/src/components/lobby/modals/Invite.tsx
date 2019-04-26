@@ -41,15 +41,25 @@ class Invite extends Component<PrivateProps> {
   render(): JSX.Element {
     return (
       <div className={cx(styles.container, this.props.className)}>
-        {/* {FEATURE_DISCORD_INVITE && this.renderDiscord()} */}
+        {this.renderURL()}
         {/* {this.renderFriendCode()} */}
-        {/* {this.props.isHost && this.renderDirectIP()} */}
-        <h2 className={styles.header}>
-          Networking is still a work-in-progress.
-          <br />
-          Follow development on Discord.
-        </h2>
       </div>
+    )
+  }
+
+  private renderURL() {
+    const { t } = this.props
+
+    return (
+      <section className={styles.method}>
+        <p>Share the URL below to invite friends.</p>
+        <ClipboardTextInput
+          className={styles.idContainer}
+          inputClassName={styles.idText}
+          defaultValue={location.href}
+          disabled
+        />
+      </section>
     )
   }
 
@@ -69,67 +79,6 @@ class Invite extends Component<PrivateProps> {
           defaultValue={this.props.hostId}
           disabled
         />
-      </section>
-    )
-  }
-
-  private renderDiscord() {
-    const { t } = this.props
-    let message
-
-    if (this.props.discordPresenceEnabled) {
-      const href =
-        'https://support.discordapp.com/hc/en-us/articles/115001557452-Game-Invites-and-Detailed-Status-Rich-Presence-'
-
-      // prettier-ignore
-      message = 0 ? (
-        <Trans i18nKey="sendDiscordInvite">
-          <ExternalLink href={href} className="link">Send Discord invites</ExternalLink> to share friend codes automatically.
-        </Trans>
-      ) : (
-        t('launchDiscordInvite', { productName: PRODUCT_NAME })
-      )
-    } else {
-      // prettier-ignore
-      message = (
-        <Trans i18nKey="enableDiscordInvite">
-          Enable <em>Discord Rich Presence</em> from the settings menu to allow Discord invites.
-        </Trans>
-      )
-    }
-
-    return (
-      <section className={styles.method}>
-        <h2 className={styles.header}>
-          <ExternalLink href="https://discordapp.com/">
-            <img src={assetUrl('icons/social/discord-color.svg')} className={styles.discordLogo} />
-          </ExternalLink>
-        </h2>
-        <p>{message}</p>
-      </section>
-    )
-  }
-
-  private renderDirectIP() {
-    const { t } = this.props
-    const portHref = 'https://www.wikihow.com/Set-Up-Port-Forwarding-on-a-Router'
-    const port = `TCP ${WEBSOCKET_PORT_DEFAULT}`
-
-    // prettier-ignore
-    return (
-      <section className={styles.method}>
-        <h2 className={styles.header}>{t('directIP')}</h2>
-        <p>
-          <Trans i18nKey="sharePublicIP">
-            Share <ExternalLink href="https://www.google.com/search?q=ip" className="link">your public IP address</ExternalLink> to allow friends to connect directly.
-          </Trans>
-          <br />
-          <em>
-            <Trans i18nKey="requiresPortForward" data-port={port}>
-              Requires <ExternalLink href={portHref} className="link">setting up port forwarding</ExternalLink> of <strong>{{port}}</strong> to accept direct connections.
-            </Trans>
-          </em>
-        </p>
       </section>
     )
   }
