@@ -43,7 +43,7 @@ class Home extends Component<IProps> {
           className={styles.header}
           text={
             <>
-              <img src={assetUrl('icons/metastream-icon.svg')} className={styles.logo} />
+              <img src={assetUrl('icons/metastream-icon.svg')} className={styles.logo} width="48" />
               {PRODUCT_NAME}
               <div className={styles.buildInfo}>
                 <h3>

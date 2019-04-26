@@ -22,7 +22,34 @@
       }
       body {
         color: #e1e1e1;
-        font-family: sans-serif;
+        font-family: Helvetica, Arial, sans-serif;
+        margin: 0;
+        background: rgba(0,0,0,0.33);
+        animation: pulse 3s infinite;
+      }
+      body, #root, .loading-screen {
+        min-height: 100vh;
+      }
+      .loading-screen {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        text-align: center;
+        font-style: italic;
+        line-height: 1.2;
+      }
+      @keyframes pulse {
+        from {
+          background: rgba(0,0,0,0.33);
+        }
+        50% {
+          background: rgba(0,0,0,0.22);
+        }
+        to {
+          background: rgba(0,0,0,0.33);
+        }
       }
     </style>
     <script type="text/javascript">
@@ -52,8 +79,31 @@
         }
       })(window.location)
     </script>
+    <script>
+      ;(function() {
+        function warnBrowserSupport() {
+          var load = document.querySelector('.loading-screen')
+          if (load) {
+            load.innerText = [
+              'An error occured while launching Metastream.',
+              'Currently supported browsers include Chrome and Firefox.',
+              'Contact: hello@getmetastream.com'
+            ].join('\n')
+          }
+        }
+
+        window.onerror = function() {
+          warnBrowserSupport()
+          window.onerror = null
+        }
+      })()
+    </script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div class="loading-screen">
+        <img src="/assets/icons/metastream-icon.svg" width="192" />
+      </div>
+    </div>
   </body>
 </html>
