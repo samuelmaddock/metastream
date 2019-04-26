@@ -49,7 +49,11 @@ export class WebPlatform {
       coordinators: [coordinator]
     })
 
-    await waitEvent(coordinator, 'connection')
+    try {
+      await waitEvent(coordinator, 'connection')
+    } catch {
+      return false
+    }
 
     return true
   }
