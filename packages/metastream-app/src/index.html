@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="referrer" content="origin" />
     <meta name="description" content="Watch streaming media with friends." />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Metastream</title>
     <link rel="manifest" href="/manifest.json" />
     <link rel="icon" type="image/png" href="/images/icon-192.png" sizes="192x192" />
@@ -24,8 +25,6 @@
         color: #e1e1e1;
         font-family: Helvetica, Arial, sans-serif;
         margin: 0;
-        background: rgba(0,0,0,0.33);
-        animation: pulse 3s infinite;
       }
       body, #root, .loading-screen {
         min-height: 100vh;
@@ -39,6 +38,8 @@
         text-align: center;
         font-style: italic;
         line-height: 1.2;
+        background: rgba(0,0,0,0.33);
+        animation: pulse 3s infinite;
       }
       @keyframes pulse {
         from {
@@ -79,7 +80,7 @@
         }
       })(window.location)
     </script>
-    <script>
+    <script type="text/javascript">
       ;(function() {
         function warnBrowserSupport() {
           var load = document.querySelector('.loading-screen')
