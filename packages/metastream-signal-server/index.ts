@@ -96,17 +96,16 @@ export class SignalServer extends EventEmitter {
   }
 
   private removeClientFromRoom(client: Client) {
-    const roomId = client.room!
+    const roomId = client.room
     const room = this.rooms.get(roomId)
     if (!room) return
 
-    if (room.host === client.id) {
-      this.closeRoom(roomId)
-    } else {
-      room.clients.delete(client.id)
-    }
-
+    room.clients.delete(client.id)
     client.room = undefined
+
+    if (room.host === client.id) {
+      this.closeRoom(room.id)
+    }
   }
 
   private closeRoom(id: RoomID) {
