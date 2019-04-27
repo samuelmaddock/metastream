@@ -6,9 +6,9 @@ const wrtc = require('wrtc')
 
 global.WebSocket = WebSocket
 
-const createServer = require('./dist').default
-const createClient = require('./dist/client').default
-const { waitEvent } = require('./dist/util')
+const createServer = require('./lib').default
+const createClient = require('./lib/client').default
+const { waitEvent } = require('./lib/util')
 
 process.on('unhandledRejection', err => {
   console.error(err)

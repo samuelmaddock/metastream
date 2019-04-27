@@ -2,10 +2,15 @@
   "name": "@metastream/signal-server",
   "version": "1.0.0",
   "description": "WebRTC signaling server solution for Metastream.",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib",
+    "cli.js"
+  ],
   "scripts": {
-    "start": "tsc && node ./dist/index.js"
+    "build": "tsc",
+    "start": "npm run build && node ./cli.js"
   },
   "author": "",
   "license": "ISC",

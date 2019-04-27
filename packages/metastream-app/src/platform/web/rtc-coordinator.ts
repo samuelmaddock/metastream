@@ -1,5 +1,5 @@
 import SimplePeer, { SimplePeerData } from 'simple-peer'
-import createClient, { SignalClient } from '@metastream/signal-server/client'
+import createClient, { SignalClient } from '@metastream/signal-server/lib/client'
 
 import shortid from 'shortid'
 import sodium from 'libsodium-wrappers'

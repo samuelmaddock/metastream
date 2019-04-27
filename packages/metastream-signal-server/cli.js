@@ -1,4 +1,4 @@
-const createServer = require('./').default
+const createServer = require('./lib').default
 
 const PORT = parseInt(process.env.PORT, 10) || 27064
 
