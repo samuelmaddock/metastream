@@ -1,19 +1,20 @@
 {
   "name": "@metastream/signal-server",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "WebRTC signaling server solution for Metastream.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "files": [
     "lib",
-    "cli.js"
+    "cli.js",
+    "README.md"
   ],
   "scripts": {
     "build": "tsc",
     "start": "npm run build && node ./cli.js"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Samuel Maddock",
+  "license": "MIT",
   "dependencies": {
     "libsodium-wrappers": "^0.7.4",
     "simple-peer": "^9.3.0",
