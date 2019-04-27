@@ -1,6 +1,6 @@
 import sodium from 'libsodium-wrappers'
-import createClient from 'metastream-signal-server/client'
-import { waitEvent } from 'metastream-signal-server/util'
+import createClient from '@metastream/signal-server/client'
+import { waitEvent } from '@metastream/signal-server/util'
 
 import { NetServer, NetUniqueId } from 'network'
 import { ILobbyOptions } from 'platform/types'

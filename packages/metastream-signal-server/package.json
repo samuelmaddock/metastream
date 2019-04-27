@@ -1,6 +1,5 @@
 {
-  "name": "metastream-signal-server",
-  "private": true,
+  "name": "@metastream/signal-server",
   "version": "1.0.0",
   "description": "WebRTC signaling server solution for Metastream.",
   "main": "dist/index.js",

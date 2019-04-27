@@ -3,7 +3,7 @@ import SimplePeer from 'simple-peer'
 import { NetConnection } from 'network'
 import { KeyPair, Key } from '../types'
 import { Duplex } from 'stream'
-import { waitEvent } from 'metastream-signal-server/util'
+import { waitEvent } from '@metastream/signal-server/util'
 import * as crypto from './crypto'
 
 const SUCCESS = sodium.from_string('success')
