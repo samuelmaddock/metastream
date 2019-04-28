@@ -15,7 +15,7 @@ export class WebPlatform {
   ready: Promise<void>
 
   private id!: NetUniqueId
-  private server: NetServer | null = null
+  private server?: NetServer
 
   constructor() {
     this.ready = initIdentity().then(keyPair => {
@@ -52,6 +52,8 @@ export class WebPlatform {
     try {
       await waitEvent(coordinator, 'connection')
     } catch {
+      this.server.close()
+      this.server = undefined
       return false
     }
 
@@ -75,7 +77,7 @@ export class WebPlatform {
   leaveLobby(id: string): boolean {
     if (this.server) {
       this.server.close()
-      this.server = null
+      this.server = undefined
     }
 
     return true

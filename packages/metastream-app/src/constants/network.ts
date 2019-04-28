@@ -1,12 +1,18 @@
 export const METASTREAM_SIGNAL_SERVER =
-  process.env.METASTREAM_SIGNAL_SERVER || 'ws://sig1.rtc.getmetastream.com:27064'
-export const METASTREAM_STUN_SERVERS = [
-  'stun:stun1.l.google.com:19302',
-  'stun:stun2.l.google.com:19302',
-  'stun:stun3.l.google.com:19302',
-  'stun:stun4.l.google.com:19302'
+  process.env.METASTREAM_SIGNAL_SERVER || 'wss://signal.rtc.getmetastream.com'
+
+const METASTREAM_STUN_SERVERS = [
+  { url: 'stun:stun1.l.google.com:19302' },
+  { url: 'stun:stun2.l.google.com:19302' },
+  { url: 'stun:stun3.l.google.com:19302' },
+  { url: 'stun:stun4.l.google.com:19302' }
 ]
-export const METASTREAM_TURN_SERVER = undefined
+const METASTREAM_TURN_SERVER = {
+  url: 'turn:turn.rtc.getmetastream.com:5349',
+  username: 'ninefingers',
+  credential: 'youhavetoberealistic'
+}
+export const METASTREAM_ICE_SERVERS = [...METASTREAM_STUN_SERVERS, METASTREAM_TURN_SERVER]
 
 export const NETWORK_TIMEOUT = 15000
 export const RECONNECT_TIMEOUT = 30000

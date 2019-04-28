@@ -8,7 +8,7 @@ import { NetUniqueId, localUserId, localUser } from 'network'
 import { PeerCoordinator } from 'network/server'
 import { RTCPeerConn } from 'network/rtc'
 import { mutualHandshake } from './authenticate'
-import { METASTREAM_STUN_SERVERS, METASTREAM_SIGNAL_SERVER } from '../../constants/network'
+import { METASTREAM_SIGNAL_SERVER, METASTREAM_ICE_SERVERS } from '../../constants/network'
 
 interface Options {
   host: boolean
@@ -21,9 +21,7 @@ export class WebRTCPeerCoordinator extends PeerCoordinator {
 
   constructor(opts: Options) {
     super()
-
     this.host = opts.host
-
     this.authenticatePeer = this.authenticatePeer.bind(this)
 
     if (this.host) {
@@ -37,11 +35,10 @@ export class WebRTCPeerCoordinator extends PeerCoordinator {
 
   private getClient() {
     return createClient({
-      // TODO: get from env vars
       server: METASTREAM_SIGNAL_SERVER,
       peerOpts: {
         config: {
-          iceServers: METASTREAM_STUN_SERVERS.map(url => ({ url }))
+          iceServers: METASTREAM_ICE_SERVERS
         }
       }
     })
@@ -88,6 +85,8 @@ export class WebRTCPeerCoordinator extends PeerCoordinator {
     } catch {
       // TODO: bubble error
       return
+    } finally {
+      client.close()
     }
 
     console.debug('Joined signal client session', peer)
@@ -111,6 +110,7 @@ export class WebRTCPeerCoordinator extends PeerCoordinator {
 
     if (!userPublicKey) {
       console.error('Failed to authenticate with peer', peer.address())
+      peer.destroy()
       return
     }
 
