@@ -20,6 +20,7 @@ import { PRODUCT_NAME } from 'constants/app'
 interface IProps extends RouteComponentProps<any> {}
 
 interface IConnectedProps {
+  pathname: string
   settings: ISettingsState
 }
 
@@ -71,7 +72,7 @@ class WelcomePage extends Component<Props> {
             icon="check-circle"
             onClick={() => {
               localStorage.setItem('welcomed', 'true')
-              this.props.dispatch!(replace('/'))
+              this.props.dispatch!(replace(this.props.pathname))
             }}
           >
             {t('getStarted')}
@@ -84,7 +85,9 @@ class WelcomePage extends Component<Props> {
 
 export default connect(
   (state: IAppState): IConnectedProps => {
+    const { location } = state.router
     return {
+      pathname: location ? location.pathname : '/',
       settings: state.settings
     }
   }
