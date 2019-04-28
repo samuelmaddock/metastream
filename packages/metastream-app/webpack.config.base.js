@@ -9,6 +9,7 @@ const childProcess = require('child_process')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 
+const VERSION = require('./package.json').version
 const GIT_BRANCH = childProcess
   .execSync('git rev-parse --abbrev-ref HEAD')
   .toString()
@@ -107,7 +108,10 @@ module.exports = {
     }),
     new Dotenv({ silent: true }),
     new HtmlWebpackPlugin({
-      template: path.join(__dirname, 'src/index.html')
+      template: path.join(__dirname, 'src/index.html'),
+      meta: {
+        version: `v${VERSION} (${GIT_BRANCH}@${GIT_COMMIT})`
+      }
     }),
     new CopyWebpackPlugin([
       { from: path.join(__dirname, 'src/assets'), to: path.join(__dirname, 'dist/assets') },
