@@ -15,8 +15,11 @@ interface SignalClientOptions {
 }
 
 export class SignalClient extends EventEmitter {
-  private simplePeerOpts: SimplePeer.Options
+  get connected() {
+    return this.ws.readyState === 1 /* Open */
+  }
 
+  private simplePeerOpts: SimplePeer.Options
   private connectingPeers: { [key: number]: SimplePeer.Instance | undefined } = {}
 
   constructor(private ws: WebSocket, opts: SignalClientOptions) {
@@ -57,11 +60,11 @@ export class SignalClient extends EventEmitter {
       this.connectingPeers = {}
     }
 
-    this.removeListener('offer', this.onOfferReceived)
-
     this.ws.removeEventListener('open', this.onConnect)
     this.ws.removeEventListener('close', this.onDisconnect)
     this.ws.removeEventListener('message', this.onMessage)
+
+    this.emit('close')
   }
 
   private onError(err: any) {
@@ -106,7 +109,10 @@ export class SignalClient extends EventEmitter {
 
     await waitEvent(this, 'create-room-success')
 
-    this.addListener('offer', this.onOfferReceived)
+    this.on('offer', this.onOfferReceived)
+    this.once('close', () => {
+      this.removeListener('offer', this.onOfferReceived)
+    })
   }
 
   async joinRoom(id: RoomID) {

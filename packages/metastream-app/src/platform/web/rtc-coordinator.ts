@@ -10,6 +10,9 @@ import { RTCPeerConn } from 'network/rtc'
 import { mutualHandshake } from './authenticate'
 import { METASTREAM_SIGNAL_SERVER, METASTREAM_ICE_SERVERS } from '../../constants/network'
 
+/** Interval to ping WebSocket to keep connection open. */
+const KEEP_ALIVE_INTERVAL = 9 * 60 * 1000
+
 interface Options {
   host: boolean
   hostId?: string
@@ -18,11 +21,13 @@ interface Options {
 export class WebRTCPeerCoordinator extends PeerCoordinator {
   private connecting = new Map<string, RTCPeerConn>()
   private sessionClient?: SignalClient
+  private intervalId?: number
 
   constructor(opts: Options) {
     super()
     this.host = opts.host
     this.authenticatePeer = this.authenticatePeer.bind(this)
+    this.keepAlive = this.keepAlive.bind(this)
 
     if (this.host) {
       this.createSession()
@@ -30,6 +35,20 @@ export class WebRTCPeerCoordinator extends PeerCoordinator {
       this.joinSession(opts.hostId)
     } else {
       throw new Error('Failed to initialize WebRTCPeerCoordinator')
+    }
+  }
+
+  private keepAlive() {
+    const { sessionClient: client } = this
+    if (!client) return
+
+    // TODO: allow disconnect while app is inactive
+
+    if (client.connected) {
+      client.ping()
+    } else {
+      clearInterval(this.intervalId)
+      this.intervalId = undefined
     }
   }
 
@@ -65,7 +84,9 @@ export class WebRTCPeerCoordinator extends PeerCoordinator {
     }
 
     client.on('peer', this.authenticatePeer)
+
     this.sessionClient = client
+    this.intervalId = setInterval(this.keepAlive, KEEP_ALIVE_INTERVAL) as any
 
     console.debug('Created signal client session')
   }
@@ -98,6 +119,11 @@ export class WebRTCPeerCoordinator extends PeerCoordinator {
       this.sessionClient.removeListener('peer', this.authenticatePeer)
       this.sessionClient.close()
       this.sessionClient = undefined
+    }
+
+    if (this.intervalId) {
+      clearInterval(this.intervalId)
+      this.intervalId = undefined
     }
 
     this.connecting.forEach(conn => conn.close())
