@@ -44,6 +44,10 @@ export class SignalClient extends EventEmitter {
     this.ws.send(JSON.stringify(data))
   }
 
+  ping() {
+    this.send({ t: MessageType.Ping })
+  }
+
   private onConnect() {
     this.emit('connect')
   }

@@ -155,6 +155,9 @@ export class SignalServer extends EventEmitter {
 
   private dispatchRequest(client: Client, req: Request) {
     switch (req.t) {
+      case MessageType.Ping:
+        this.sendTo(client, { t: MessageType.Pong })
+        break
       case MessageType.CreateRoom:
         this.createRoom(client, req.id)
         break

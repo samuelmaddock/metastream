@@ -11,7 +11,9 @@ export const enum MessageType {
   JoinRoom,
   AuthChallenge,
   AuthResponse,
-  CandidateOffer
+  CandidateOffer,
+  Ping,
+  Pong
 }
 
 export type Request =
@@ -44,3 +46,5 @@ export type Request =
       f?: ClientID
       to?: ClientID
     }
+  | { t: MessageType.Ping }
+  | { t: MessageType.Pong }
