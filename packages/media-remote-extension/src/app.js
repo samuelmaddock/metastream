@@ -5,6 +5,12 @@
 // script from the Metastream application.
 //
 ;(function app() {
+  const isInstalled = typeof document.documentElement.dataset.extensionInstalled !== 'undefined'
+  if (isInstalled) {
+    console.warn(`Metastream already initialized, is the extension installed twice?`)
+    return
+  }
+
   if (window.self !== window.top) {
     console.warn('Metastream is unsupported within subframes.')
     return
