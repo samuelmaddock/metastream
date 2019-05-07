@@ -247,6 +247,7 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
           [styles.interactive]: this.state.interacting,
           [styles.playing]: !!this.props.current
         })}
+        allowScripts
       />
     )
   }

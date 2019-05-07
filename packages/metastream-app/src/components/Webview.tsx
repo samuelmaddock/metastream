@@ -5,6 +5,8 @@ interface Props {
   src?: string
   className?: string
   componentRef?: (c: Webview | null) => any
+  /** Allow Metastream Remote extension to inject player scripts. */
+  allowScripts?: boolean
 }
 
 let webviewId = 0
@@ -17,7 +19,7 @@ export class Webview extends Component<Props> {
   private url: string = 'about:blank'
 
   private get initialUrl() {
-    return `about:blank?webview=${this.id}`
+    return `about:blank?webview=${this.id}&allowScripts=${!!this.props.allowScripts}`
   }
 
   /** https://developer.mozilla.org/en-US/docs/Web/HTTP/Feature_Policy */
@@ -96,7 +98,7 @@ export class Webview extends Component<Props> {
   }
 
   render() {
-    const { componentRef, src, ...rest } = this.props
+    const { componentRef, src, allowScripts, ...rest } = this.props
 
     // TODO(samuelmaddock): Update React and types so these props can be passed in
     const untypedProps: any = {

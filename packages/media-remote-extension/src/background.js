@@ -55,8 +55,8 @@ const sendWebviewEventToHost = async (tabId, frameId, message) => {
 // Observed tabs on Metastream URL
 const watchedTabs = new Set()
 
-// Local state for active tabs
-const tabState = {}
+// Store for active tabs state
+const tabStore = {}
 
 // Add Metastream header overwrites
 const onBeforeSendHeaders = details => {
@@ -133,10 +133,8 @@ const onCommitted = details => {
   const { tabId, frameId, url } = details
   if (!watchedTabs.has(tabId)) return
 
-  // Initialize webview
   if (url.startsWith('about:blank?webview')) {
-    const webviewId = url.split('=').pop()
-    sendToHost(tabId, { type: `metastream-webview-init${webviewId}`, payload: { frameId } })
+    initializeWebview(details)
     return
   }
 
@@ -176,30 +174,60 @@ const onHistoryStateUpdated = details => {
   })()
 }
 
-const injectContentScripts = (details, attempt = 0) => {
-  if (attempt > 20) {
-    console.warn('Reached max attempts while injecting content scripts.', details)
-    return
-  }
-
+const initializeWebview = details => {
+  console.log('Initialize webview', details)
   const { tabId, frameId, url } = details
-  if (url === 'about:blank') return
 
-  console.log(`Injecting player script tabId=${tabId}, frameId=${frameId}`)
+  const { searchParams } = new URL(url)
+
+  const webviewId = searchParams.get('webview')
+  sendToHost(tabId, { type: `metastream-webview-init${webviewId}`, payload: { frameId } })
+
+  const tabState = tabStore[tabId]
+  const allowScripts = searchParams.get('allowScripts') === 'true'
+  if (allowScripts && tabState) {
+    tabState.scriptableFrames.add(frameId)
+  }
+}
+
+const executeScript = (opts, attempt = 0) => {
   chrome.tabs.executeScript(
-    tabId,
+    opts.tabId,
     {
-      file: '/player.js',
-      runAt: 'document_start',
-      frameId
+      file: opts.file,
+      runAt: opts.runAt || 'document_start',
+      frameId: opts.frameId
     },
     result => {
       if (chrome.runtime.lastError) {
-        // TODO: can we inject this any sooner in Firefox?
-        setTimeout(() => injectContentScripts(details, attempt + 1), 10)
+        if (opts.retry !== false) {
+          if (attempt < 20) {
+            // TODO: can we inject this any sooner in Firefox?
+            setTimeout(() => executeScript(opts, attempt + 1), 10)
+          } else {
+            console.error('Reached max attempts while injecting content script.', opts)
+          }
+        } else {
+          console.error('Failed to inject content script', chrome.runtime.lastError, opts)
+        }
       }
     }
   )
+}
+
+const injectContentScripts = (details, attempt = 0) => {
+  const { tabId, frameId, url } = details
+  if (url === 'about:blank') return
+
+  const tabState = tabStore[tabId]
+  const scriptable = tabState && tabState.scriptableFrames.has(frameId)
+
+  executeScript({ tabId, frameId, file: '/webview.js' })
+
+  if (scriptable) {
+    console.log(`Injecting player script tabId=${tabId}, frameId=${frameId}`)
+    executeScript({ tabId, frameId, file: '/player.js' })
+  }
 }
 
 const startWatchingTab = tab => {
@@ -208,12 +236,16 @@ const startWatchingTab = tab => {
   watchedTabs.add(tabId)
 
   const state = {
+    // Webview frames which allow scripts to be injected
+    scriptableFrames: new Set(),
+
+    // Event handlers
     onBeforeSendHeaders: onBeforeSendHeaders.bind(null),
     onHeadersReceived: onHeadersReceived.bind(null),
     onCompleted: onCompleted.bind(null)
   }
 
-  tabState[tabId] = state
+  tabStore[tabId] = state
 
   chrome.webRequest.onBeforeSendHeaders.addListener(
     state.onBeforeSendHeaders,
@@ -264,11 +296,11 @@ const startWatchingTab = tab => {
 const stopWatchingTab = tabId => {
   watchedTabs.delete(tabId)
 
-  const state = tabState[tabId]
+  const state = tabStore[tabId]
   if (state) {
     chrome.webRequest.onBeforeSendHeaders.removeListener(state.onBeforeSendHeaders)
     chrome.webRequest.onHeadersReceived.removeListener(state.onHeadersReceived)
-    delete tabState[tabId]
+    delete tabStore[tabId]
   }
 
   const shouldRemoveGlobalListeners = watchedTabs.size === 0
@@ -332,7 +364,6 @@ const handleWebviewEvent = async (sender, action) => {
   const { frameId } = sender
   const { id: tabId } = sender.tab
   if (isTopFrame(sender)) {
-    console.debug(`Forwarding WEBVIEW event`, sender, action)
     sendToFrame(tabId, action.frameId, action.payload)
   } else {
     sendWebviewEventToHost(tabId, frameId, action.payload)

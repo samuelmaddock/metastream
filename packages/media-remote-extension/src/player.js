@@ -128,18 +128,6 @@ const mainWorldScript = function() {
   console.debug(`Metastream main world script ${location.href}`)
 
   //===========================================================================
-  // Global overrides
-  //===========================================================================
-
-  try {
-    // Fix for setting document.domain in sandboxed iframe
-    Object.defineProperty(document, 'domain', {
-      value: document.domain,
-      writable: true
-    })
-  } catch (e) {}
-
-  //===========================================================================
   // Globals
   //===========================================================================
 
