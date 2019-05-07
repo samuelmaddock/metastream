@@ -7,6 +7,10 @@
 // message brokering between embedded websites and the app itself.
 //
 
+//=============================================================================
+// Helpers
+//=============================================================================
+
 const TOP_FRAME = 0
 const HEADER_PREFIX = 'x-metastream'
 const isMetastreamUrl = url =>
@@ -14,6 +18,21 @@ const isMetastreamUrl = url =>
 const isTopFrame = details => details.frameId === TOP_FRAME
 const isDirectChild = details => details.parentFrameId === TOP_FRAME
 const isValidAction = action => typeof action === 'object' && typeof action.type === 'string'
+
+const escapePattern = pattern => pattern.replace(/[\\^$+?.()|[\]{}]/g, '\\$&')
+
+// Check whether pattern matches.
+// https://developer.chrome.com/extensions/match_patterns
+const matchesPattern = function(url, pattern) {
+  if (pattern === '<all_urls>') return true
+  const regexp = new RegExp(
+    `^${pattern
+      .split('*')
+      .map(escapePattern)
+      .join('.*')}$`
+  )
+  return url.match(regexp)
+}
 
 // Memoized frame paths
 const framePaths = {}
@@ -52,11 +71,30 @@ const sendWebviewEventToHost = async (tabId, frameId, message) => {
   )
 }
 
+//=============================================================================
+// Locals
+//=============================================================================
+
 // Observed tabs on Metastream URL
 const watchedTabs = new Set()
 
 // Store for active tabs state
 const tabStore = {}
+
+//=============================================================================
+// Content scripts
+//=============================================================================
+
+const CONTENT_SCRIPTS = [
+  {
+    matches: ['https://*.netflix.com/*'],
+    file: '/scripts/netflix.js'
+  }
+]
+
+//=============================================================================
+// Event listeners
+//=============================================================================
 
 // Add Metastream header overwrites
 const onBeforeSendHeaders = details => {
@@ -223,12 +261,20 @@ const injectContentScripts = (details, attempt = 0) => {
   const scriptable = tabState && tabState.scriptableFrames.has(frameId)
 
   executeScript({ tabId, frameId, file: '/webview.js' })
+  if (!scriptable) return
 
-  if (scriptable) {
-    console.log(`Injecting player script tabId=${tabId}, frameId=${frameId}`)
-    executeScript({ tabId, frameId, file: '/player.js' })
-  }
+  console.log(`Injecting player script tabId=${tabId}, frameId=${frameId}`)
+  executeScript({ tabId, frameId, file: '/player.js' })
+
+  CONTENT_SCRIPTS.forEach(script => {
+    if (!script.matches.some(matchesPattern.bind(null, url))) return
+    executeScript({ tabId, frameId, file: script.file })
+  })
 }
+
+//=============================================================================
+// Metastream tab management
+//=============================================================================
 
 const startWatchingTab = tab => {
   const { id: tabId } = tab
@@ -315,6 +361,10 @@ const stopWatchingTab = tabId => {
   console.log(`Metastream stopped watching tabId=${tabId}`)
 }
 
+//=============================================================================
+// Background fetch proxy
+//=============================================================================
+
 const serializeResponse = async response => {
   let body
   let headers = {}
@@ -359,6 +409,10 @@ const request = async (tabId, requestId, url, options) => {
   }
   sendToHost(tabId, action)
 }
+
+//=============================================================================
+// Message passing interface
+//=============================================================================
 
 const handleWebviewEvent = async (sender, action) => {
   const { frameId } = sender
