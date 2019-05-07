@@ -13,6 +13,12 @@
       "matches": ["https://app.getmetastream.com/*", "http://localhost:8080/*"],
       "js": ["app.js"],
       "run_at": "document_start"
+    },
+    {
+      "matches": ["*://*/*"],
+      "js": ["first.js"],
+      "run_at": "document_start",
+      "all_frames": true
     }
   ],
   "background": {

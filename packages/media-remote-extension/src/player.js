@@ -549,12 +549,10 @@
 
     // Proxy document.createElement to trap media elements created in-memory
     const origCreateElement = document.createElement
-    const capturedTags = new Set(['audio', 'video'])
     const proxyCreateElement = function(tagName) {
       const element = origCreateElement.call(document, tagName)
-      const name = tagName.toLowerCase()
 
-      if (capturedTags.has(name)) {
+      if (element instanceof HTMLMediaElement) {
         console.debug(`Captured createElement ${tagName}`, element)
         // Wait for attributes to be set
         setTimeout(addMedia, 0, element)
@@ -564,6 +562,13 @@
     }
     proxyCreateElement.toString = () => 'function createElement() { [native code] }'
     document.createElement = proxyCreateElement
+
+    // Process media elements from first.js
+    const mediaElements = window.__metastreamMediaElements
+    if (mediaElements) {
+      Array.from(mediaElements).forEach(addMedia)
+      window.__metastreamMediaElements = undefined
+    }
   }
 
   // Inject inline script at top of DOM to execute as soon as possible
@@ -577,7 +582,12 @@
       document.head.appendChild(script)
     }
   } else {
-    document.documentElement.appendChild(script)
+    const id = setInterval(() => {
+      try {
+        document.documentElement.appendChild(script)
+        clearInterval(id)
+      } catch (e) {}
+    }, 10)
   }
 })()
 

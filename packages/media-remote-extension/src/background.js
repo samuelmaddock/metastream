@@ -89,6 +89,10 @@ const CONTENT_SCRIPTS = [
   {
     matches: ['https://*.netflix.com/*'],
     file: '/scripts/netflix.js'
+  },
+  {
+    matches: ['https://*.soundcloud.com/*'],
+    file: '/scripts/soundcloud.js'
   }
 ]
 
@@ -238,6 +242,7 @@ const executeScript = (opts, attempt = 0) => {
     },
     result => {
       if (chrome.runtime.lastError) {
+        console.log(`executeScript error [${opts.file}]: ${chrome.runtime.lastError}`)
         if (opts.retry !== false) {
           if (attempt < 20) {
             // TODO: can we inject this any sooner in Firefox?
@@ -259,8 +264,6 @@ const injectContentScripts = (details, attempt = 0) => {
 
   const tabState = tabStore[tabId]
   const scriptable = tabState && tabState.scriptableFrames.has(frameId)
-
-  executeScript({ tabId, frameId, file: '/webview.js' })
   if (!scriptable) return
 
   console.log(`Injecting player script tabId=${tabId}, frameId=${frameId}`)
