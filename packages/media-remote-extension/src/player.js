@@ -580,11 +580,19 @@ const mainWorldScript = function() {
   document.createElement = proxyCreateElement
 }
 
-// Inject script into documentElement as the body won't be ready yet.
-// Needs to be inline script to prevent any async loading.
+// Inject inline script at top of DOM to execute as soon as possible
 const script = document.createElement('script')
 script.textContent = `(${mainWorldScript}());`
-;(document.head || document.documentElement).appendChild(script)
+if (document.head) {
+  const { firstChild } = document.head
+  if (firstChild) {
+    document.head.insertBefore(script, firstChild)
+  } else {
+    document.head.appendChild(script)
+  }
+} else {
+  document.documentElement.appendChild(script)
+}
 
 // Don't serialize result
 void 0
