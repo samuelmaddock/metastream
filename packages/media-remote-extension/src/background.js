@@ -47,7 +47,14 @@ const getFramePath = async (tabId, frameId) => {
   while (currentFrameId > 0) {
     const result = await new Promise(resolve => {
       const details = { tabId, frameId: currentFrameId }
-      chrome.webNavigation.getFrame(details, resolve)
+      chrome.webNavigation.getFrame(details, details => {
+        if (chrome.runtime.lastError) {
+          console.error(`Error in getFramePath: ${chrome.runtime.lastError}`)
+          resolve()
+          return
+        }
+        resolve(details)
+      })
     })
     if (!result) return []
     const { parentFrameId } = result
