@@ -239,12 +239,12 @@
       }
 
       play() {
-        if (this.dispatch('ms:play')) return
+        if (this.dispatch('metastreamplay')) return
         this.startWaitingListener()
         return this.media.play()
       }
       pause() {
-        if (this.dispatch('ms:pause')) return
+        if (this.dispatch('metastreampause')) return
         this.stopWaitingListener()
         this.media.pause()
       }
@@ -255,7 +255,7 @@
         return this.media.duration
       }
       seek(time) {
-        if (this.dispatch('ms:seek', time)) return
+        if (this.dispatch('metastreamseek', time)) return
 
         // Infinity is generally used for a dynamically allocated media object
         // or live media
@@ -366,8 +366,8 @@
             startTime = time
             this.seek(time * 1000)
           } else {
-            this.dispatch('ms:pause') || this.media.pause()
-            const playPromise = this.dispatch('ms:play') || this.media.play()
+            this.dispatch('metastreampause') || this.media.pause()
+            const playPromise = this.dispatch('metastreamplay') || this.media.play()
             if (playPromise && playPromise.then) playPromise.catch(noop)
           }
 

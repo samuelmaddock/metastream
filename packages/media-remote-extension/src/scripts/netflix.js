@@ -31,21 +31,21 @@
     var p = new Proxy(target, handler)
     window.netflix = p
 
-    document.addEventListener('ms:play', e => {
+    document.addEventListener('metastreamplay', e => {
       e.preventDefault()
       if (netflixPlayer && netflixPlayer.getPaused()) {
         netflixPlayer.play()
       }
     })
 
-    document.addEventListener('ms:pause', e => {
+    document.addEventListener('metastreampause', e => {
       e.preventDefault()
       if (netflixPlayer && !netflixPlayer.getPaused()) {
         netflixPlayer.pause()
       }
     })
 
-    document.addEventListener('ms:seek', e => {
+    document.addEventListener('metastreamseek', e => {
       e.preventDefault()
       if (netflixPlayer) {
         const time = e.detail

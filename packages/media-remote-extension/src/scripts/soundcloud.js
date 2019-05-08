@@ -1,4 +1,4 @@
-document.addEventListener('ms:seek', e => {
+document.addEventListener('metastreamseek', e => {
   e.preventDefault()
   const time = e.detail
   const action = { method: 'seekTo', value: time }
