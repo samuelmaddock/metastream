@@ -29,6 +29,8 @@ document.addEventListener('metastreamseek', e => {
   e.preventDefault()
   const time = e.detail / 1000
   const media = document.querySelector('video')
+  if (media.paused) return
+
   const progress = Math.max(0, Math.min(time / media.duration, 1))
 
   const controlsContainer = document.querySelector('.controls-bar-container')
