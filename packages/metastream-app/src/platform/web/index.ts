@@ -52,8 +52,10 @@ export class WebPlatform {
     try {
       await waitEvent(coordinator, 'connection')
     } catch {
-      this.server.close()
-      this.server = undefined
+      if (this.server) {
+        this.server.close()
+        this.server = undefined
+      }
       return false
     }
 
