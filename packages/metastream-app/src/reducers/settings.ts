@@ -31,7 +31,6 @@ export interface ISettingsState {
   username?: string
   color?: string
   allowTracking: boolean
-  developer: boolean
   sessionMode: SessionMode
   maxUsers?: number
   discordPresence: boolean
@@ -43,7 +42,6 @@ const initialState: ISettingsState = {
   mute: false,
   volume: 0.75,
   allowTracking: false,
-  developer: process.env.NODE_ENV === 'development',
   sessionMode: SessionMode.Private,
   discordPresence: true,
   language: DEFAULT_LANGUAGE
@@ -88,7 +86,6 @@ export const settings: Reducer<ISettingsState> = (
 export const getLocalUsername = (state: IAppState) => state.settings.username || DEFAULT_USERNAME
 export const getLocalColor = (state: IAppState) => state.settings.color || DEFAULT_COLOR
 export const getLocalSessionMode = (state: IAppState) => state.settings.sessionMode || DEFAULT_COLOR
-export const isDeveloper = (state: IAppState) => state.settings.developer
 
 export const getLocalAvatar = (state: IAppState) => {
   const { avatar } = state.settings

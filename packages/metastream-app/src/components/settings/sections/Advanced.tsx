@@ -29,14 +29,6 @@ class AdvancedSettings extends Component<Props> {
           checked={this.props.settings.allowTracking}
           onChange={checked => dispatch!(setSetting('allowTracking', checked))}
         />
-
-        <SwitchOption
-          inputId="advanced_developer"
-          title={t('developerMode')}
-          description={t('developerModeDesc')}
-          checked={this.props.settings.developer}
-          onChange={checked => dispatch!(setSetting('developer', checked))}
-        />
       </section>
     )
   }
