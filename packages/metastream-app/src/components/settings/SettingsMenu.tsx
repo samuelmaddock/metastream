@@ -32,8 +32,8 @@ export class SettingsMenu extends Component<IProps, State> {
         <MenuHeader text={t('settings')} />
         <div className={styles.content}>
           <ProfileSettings />
-          <AdvancedSettings />
           <LanguageSettings onChange={this.invalidate} />
+          <AdvancedSettings />
         </div>
       </LayoutMain>
     )
