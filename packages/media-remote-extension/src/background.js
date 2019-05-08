@@ -19,7 +19,7 @@ const isTopFrame = details => details.frameId === TOP_FRAME
 const isDirectChild = details => details.parentFrameId === TOP_FRAME
 const isValidAction = action => typeof action === 'object' && typeof action.type === 'string'
 const sleep = delay => new Promise(resolve => setTimeout(resolve, delay))
-const isFirefox = () => navigator.userAgent.toLowerCase().includes('firefox');
+const isFirefox = () => navigator.userAgent.toLowerCase().includes('firefox')
 
 const escapePattern = pattern => pattern.replace(/[\\^$+?.()|[\]{}]/g, '\\$&')
 
@@ -102,6 +102,10 @@ const CONTENT_SCRIPTS = [
   {
     matches: ['https://*.soundcloud.com/*'],
     file: '/scripts/soundcloud.js'
+  },
+  {
+    matches: ['https://*.hulu.com/*'],
+    file: '/scripts/hulu.js'
   }
 ]
 
@@ -268,7 +272,7 @@ const executeScript = (opts, attempt = 0) => {
   )
 }
 
-const injectContentScripts = async (details) => {
+const injectContentScripts = async details => {
   const { tabId, frameId, url } = details
   if (url === 'about:blank') return
 
