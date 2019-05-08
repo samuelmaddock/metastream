@@ -295,7 +295,11 @@
       onVolumeChange() {
         const { volume } = this
         if (volume && this.media.volume !== volume) {
-          console.debug(`[Metastream Remote] Volume changed internally (${this.media.volume}), reverting to ${volume}`)
+          console.debug(
+            `[Metastream Remote] Volume changed internally (${
+              this.media.volume
+            }), reverting to ${volume}`
+          )
           this.setVolume(volume)
         }
       }

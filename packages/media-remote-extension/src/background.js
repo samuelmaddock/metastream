@@ -276,8 +276,10 @@ const injectContentScripts = async details => {
   const { tabId, frameId, url } = details
   if (url === 'about:blank') return
 
+  const framePath = await getFramePath(tabId, frameId)
+  const topIFrameId = framePath[1]
   const tabState = tabStore[tabId]
-  const scriptable = tabState && tabState.scriptableFrames.has(frameId)
+  const scriptable = tabState && tabState.scriptableFrames.has(topIFrameId)
   if (!scriptable) return
 
   // BUG: Firefox injects scripts prior to page loading on refresh
