@@ -17,7 +17,7 @@
     const isTopFrame = window.self === window.top
     if (isTopFrame) return
 
-    const mediaElements = window.__metastreamMediaElements = new Set()
+    const mediaElements = (window.__metastreamMediaElements = new Set())
 
     // Proxy document.createElement to trap media elements created in-memory
     const origCreateElement = document.createElement
@@ -28,7 +28,7 @@
       }
       return element
     }
-    proxyCreateElement.toString = () => 'function createElement() { [native code] }'
+    proxyCreateElement.toString = origCreateElement.toString.bind(origCreateElement)
     document.createElement = proxyCreateElement
 
     setTimeout(() => {

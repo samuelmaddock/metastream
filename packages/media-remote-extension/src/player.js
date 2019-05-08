@@ -553,14 +553,13 @@
       const element = origCreateElement.call(document, tagName)
 
       if (element instanceof HTMLMediaElement) {
-        console.debug(`Captured createElement ${tagName}`, element)
         // Wait for attributes to be set
         setTimeout(addMedia, 0, element)
       }
 
       return element
     }
-    proxyCreateElement.toString = () => 'function createElement() { [native code] }'
+    proxyCreateElement.toString = origCreateElement.toString.bind(origCreateElement)
     document.createElement = proxyCreateElement
 
     // Process media elements from first.js
