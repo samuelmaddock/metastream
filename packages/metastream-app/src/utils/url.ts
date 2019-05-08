@@ -1,3 +1,5 @@
+import { isFirefox } from './browser'
+
 type QueryParams = { [key: string]: any }
 
 const esc = encodeURIComponent
@@ -29,6 +31,13 @@ export const isUrl = (str: string): boolean => {
   return str.startsWith('http://') || str.startsWith('https://')
 }
 
-export const openInBrowser = (href: string): void => {
-  window.open(href, '_blank', 'noopener')
+export const openInBrowser = (href: string) => {
+  if (isFirefox()) {
+    window.open(href, '_blank', 'noopener')
+  } else {
+    const a = document.createElement('a')
+    a.href = href
+    a.target = '_blank'
+    a.click()
+  }
 }
