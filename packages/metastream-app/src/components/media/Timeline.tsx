@@ -1,13 +1,12 @@
 import React, { PureComponent } from 'react'
 import cx from 'classnames'
 import { formatMs } from 'utils/time'
-import { Ticker } from 'components/Ticker'
-import { Time } from 'components/media/Time'
 import { clamp } from 'utils/math'
 import { Slider } from 'components/media/Slider'
+import { Ticker } from 'components/Ticker'
+import { Time } from 'components/media/Time'
 import { CuePointItem } from 'components/media/CuePoint'
 
-// Import after Slider to override styles
 import styles from './Timeline.css'
 
 interface IProps {

@@ -4,7 +4,6 @@ import cx from 'classnames'
 import styles from './PlaybackControls.css'
 
 import { PlaybackState, IMediaPlayerState, RepeatMode } from 'lobby/reducers/mediaPlayer'
-import { VolumeSlider } from 'components/media/VolumeSlider'
 import { connect } from 'react-redux'
 import {
   server_requestPlayPause,
@@ -12,13 +11,20 @@ import {
   server_requestSeek,
   server_requestRepeatMedia
 } from 'lobby/actions/mediaPlayer'
-import { setVolume, setMute } from 'actions/settings'
-import { Timeline } from 'components/media/Timeline'
-import { parseCuePoints, copyMediaLink, openMediaInBrowser } from 'media/utils'
-import { MoreButton } from 'components/media/MoreButton'
-import { IAppState } from 'reducers'
-import { IconButton } from 'components/common/button'
 import { hasPlaybackPermissions } from 'lobby/reducers/mediaPlayer.helpers'
+import { parseCuePoints, copyMediaLink, openMediaInBrowser } from 'media/utils'
+import { setVolume, setMute } from 'actions/settings'
+import { IAppState } from 'reducers'
+
+// Must include Slider first for CSS precedence order
+import { Slider } from 'components/media/Slider'
+Slider.name // don't strip unused import
+
+import { VolumeSlider } from 'components/media/VolumeSlider'
+import { Timeline } from 'components/media/Timeline'
+
+import { MoreButton } from 'components/media/MoreButton'
+import { IconButton } from 'components/common/button'
 import { absoluteUrl } from 'utils/appUrl'
 import { t } from 'locale'
 import { IReactReduxProps } from 'types/redux-thunk'
