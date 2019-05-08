@@ -135,11 +135,13 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     const prevWebview = this.webview
     this.webview = webview
 
+    if (prevWebview) {
+      prevWebview.removeEventListener('message', this.onIpcMessage)
+      prevWebview.removeEventListener('ready', this.reload)
+    }
     if (this.webview) {
       this.webview.addEventListener('message', this.onIpcMessage)
       this.webview.addEventListener('ready', this.reload)
-    } else if (prevWebview) {
-      prevWebview.removeEventListener('message', this.onIpcMessage)
     }
   }
 
