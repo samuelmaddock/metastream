@@ -224,10 +224,12 @@
 
         this.onPlay = this.onPlay.bind(this)
         this.onVolumeChange = this.onVolumeChange.bind(this)
+        this.onSeeked = this.onSeeked.bind(this)
         this.onWaiting = this.onWaiting.bind(this)
 
         this.media.addEventListener('play', this.onPlay, false)
         this.media.addEventListener('volumechange', this.onVolumeChange, false)
+        this.media.addEventListener('seeked', this.onSeeked, false)
       }
 
       dispatch(eventName, detail) {
@@ -295,9 +297,16 @@
       onVolumeChange() {
         const { volume } = this
         if (volume && this.media.volume !== volume) {
-          console.debug(`Volume changed internally (${this.media.volume}), reverting to ${volume}`)
+          console.debug(`[Metastream Remote] Volume changed internally (${this.media.volume}), reverting to ${volume}`)
           this.setVolume(volume)
         }
+      }
+
+      /** Prevent third-party service from restoring playback position */
+      onSeeked(event) {
+        console.debug(`[Metastream Remote] Prevent seeking`, event)
+        event.stopImmediatePropagation()
+        event.stopPropagation()
       }
 
       startWaitingListener() {
@@ -468,17 +477,6 @@
       }
 
       prevDuration = undefined
-
-      // Prevent media seeking
-      ;['seekable', 'seeked'].forEach(eventName => {
-        const handler = event => {
-          console.debug(`[Metastream Remote] Prevent '${eventName}' event`, event)
-          event.stopImmediatePropagation()
-          event.stopPropagation()
-        }
-        media.addEventListener(eventName, handler, false)
-        media.addEventListener(eventName, handler, true)
-      })
 
       // TODO: Use MutationObserver to observe if video gets removed from DOM
 
