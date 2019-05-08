@@ -416,6 +416,110 @@
     }
 
     //===========================================================================
+    // Auto-fullscreen
+    //===========================================================================
+
+    let fullscreenContainer
+    let fullscreenFrameId
+    let fullscreenStyleElement
+    let origDocumentOverflow
+
+    function getOffset(el) {
+      let x = 0
+      let y = 0
+      while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
+        x += el.offsetLeft - el.scrollLeft
+        y += el.offsetTop - el.scrollTop
+        el = el.offsetParent
+      }
+      return { top: y, left: x }
+    }
+
+    function renderFullscreen() {
+      document.body.style.overflow = 'none'
+
+      const { offsetWidth: width, offsetHeight: height } = activeMedia
+      const { left, top } = getOffset(activeMedia)
+      const { innerWidth: viewportWidth, innerHeight: viewportHeight } = window
+      const scale = viewportWidth / width
+
+      let transform, transformOrigin
+
+      // Apply transform if player is smaller than viewport
+      if (scale >= 1.05) {
+        const translateX = left
+        const translateY = viewportHeight / 2 - (top + height / 2)
+        transform = `translate(-${translateX}px, ${translateY}px) scale(${scale})`
+        transformOrigin = `${left}px ${top + height / 2}px`
+      }
+
+      fullscreenContainer.style.transformOrigin = transformOrigin
+      fullscreenContainer.style.transform = transform
+
+      fullscreenFrameId = requestAnimationFrame(renderFullscreen)
+    }
+
+    function startAutoFullscreen() {
+      console.debug('Starting autofullscreen', activeMedia)
+
+      if (!(activeMedia instanceof HTMLVideoElement)) return
+
+      origDocumentOverflow = document.body.style.overflow
+
+      // Find container we can transform
+      let container = activeMedia
+      do {
+        if (container && container.offsetWidth && container.offsetHeight) {
+          fullscreenContainer = container
+        }
+      } while ((container = container.parentNode))
+
+      // Hide all non-video elements
+      const elem = document.createElement('style')
+      elem.innerText = `
+:not(video) {
+  color: transparent !important;
+  z-index: 0;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  overflow: none !important;
+}
+
+:not(video):empty {
+  visibility: hidden !important;
+}`
+      fullscreenStyleElement = elem
+
+      // Disabled as it can hide subtitles
+      // document.head.appendChild(fullscreenStyleElement)
+
+      fullscreenFrameId = requestAnimationFrame(renderFullscreen)
+    }
+
+    function stopAutoFullscreen() {
+      console.debug('Stopping autofullscreen')
+      if (origDocumentOverflow) {
+        document.body.style.overflow = document.body.style.overflow
+        origDocumentOverflow = undefined
+      }
+      if (fullscreenFrameId) {
+        cancelAnimationFrame(fullscreenFrameId)
+        fullscreenFrameId = undefined
+      }
+      if (fullscreenStyleElement) {
+        fullscreenStyleElement.remove()
+      }
+      if (fullscreenContainer) {
+        fullscreenContainer.style.transform = undefined
+        fullscreenContainer.style.transformOrigin = undefined
+        fullscreenContainer = undefined
+      }
+    }
+
+    //===========================================================================
     // Track the active/primary media element
     //===========================================================================
 
@@ -472,6 +576,9 @@
       }
 
       prevDuration = undefined
+
+      stopAutoFullscreen()
+      startAutoFullscreen()
 
       // TODO: Use MutationObserver to observe if video gets removed from DOM
 
