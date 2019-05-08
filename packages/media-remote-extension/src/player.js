@@ -447,7 +447,7 @@
     }
 
     function renderFullscreen() {
-      document.body.style.overflow = 'none'
+      document.body.style.overflow = 'hidden'
 
       const { offsetWidth: width, offsetHeight: height } = activeMedia
       const { left, top } = getOffset(activeMedia)
