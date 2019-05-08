@@ -26,14 +26,10 @@ export default {
   disallow: '許可しない',
   disconnect: '切断する',
   disconnected: '切断しました',
-  discordPresenceDescription:
-    'Discordのプロフィールに情報を表示し、他のユーザーの参加ができるようにします。',
   dj: 'DJ',
   donate: '寄付する',
   donators: '寄付者',
   duplicate: '複製',
-  enableDiscordInvite:
-    'Discordから招待するには、設定から <1>Discord Rich Presence</1> を有効にしてください。',
   endSessionTitle: '公開セッションを終了しますか？',
   endSessionDescription: '限定公開セッションに切り替えると、すべてのユーザーが切断されます。',
   enterJoinDest: 'フレンドコード/IPアドレスを入力してください。',
@@ -45,7 +41,6 @@ export default {
   joinSession: 'セッションに参加する',
   kick: 'キックする',
   language: '言語',
-  launchDiscordInvite: '招待を送るにはDiscordを起動して、{{productName}} を再起動してください。',
   lockQueue: '再生リストを編集不可にする',
   moveToTop: '一番上に移動',
   maxUsers: '最大ユーザー数',
@@ -78,7 +73,6 @@ export default {
   requiresDJPermissions: 'DJ権限が必要です',
   requiresPortForward:
     'ダイレクト接続を使用するには、<1>{{port}}</1>の<3>ポート開放</3>が必要です。',
-  sendDiscordInvite: '自動でフレンドコードを送信するには、<0>Discordに招待を送信</0>してください。',
   sessionMode: 'セッションの種類',
   sessionModePublicDescription: '誰でも参加できます。',
   sessionModePrivateDescription: '参加の際に確認が必要です。',

@@ -27,14 +27,10 @@ export default {
   disallow: 'Disallow',
   disconnect: 'Disconnect',
   disconnected: 'Disconnected',
-  discordPresenceDescription:
-    'Share your session details in your Discord profile and allow users to request invites.',
   dj: 'DJ',
   donate: 'Donate',
   donators: 'Donators',
   duplicate: 'Duplicate',
-  enableDiscordInvite:
-    'Enable <1>Discord Rich Presence</1> from the settings menu to allow Discord invites.',
   endSessionTitle: 'End public session?',
   endSessionDescription: 'Changing to a private session will disconnect all connected users.',
   enterJoinDest: 'Enter a friend code or IP address.',
@@ -46,7 +42,6 @@ export default {
   joinSession: 'Join Session',
   kick: 'Kick',
   language: 'Language',
-  launchDiscordInvite: 'Launch Discord and restart {{productName}} to use Discord invites.',
   lockQueue: 'Lock queue',
   moveToTop: 'Move to top',
   maxUsers: 'Max users',
@@ -79,7 +74,6 @@ export default {
   requiresDJPermissions: 'Requires DJ permissions',
   requiresPortForward:
     'Requires <1>setting up port forwarding</1> of <3>{{port}}</3> to accept direct connections.',
-  sendDiscordInvite: '<0>Send Discord invites</0> to share friend codes automatically',
   sessionMode: 'Session mode',
   sessionModePublicDescription: 'Anyone is allowed to join.',
   sessionModePrivateDescription: 'Permission to join must be granted explicitly.',

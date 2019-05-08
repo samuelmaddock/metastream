@@ -26,14 +26,10 @@ export default {
   disallow: 'Visszautasít',
   disconnect: 'Kapcsolat bontása',
   disconnected: 'Kapcsolat bontva',
-  discordPresenceDescription:
-    'Munkamenet megjelenítése a Discord profilon és más felhasználók kapcsolódásának engedélyezése',
   dj: 'DJ',
   donate: 'Adományozás',
   donators: 'Adományozók',
   duplicate: 'Duplikálás',
-  enableDiscordInvite:
-    'Enable <1>Discord Rich Presence</1> from the settings menu to allow Discord invites.',
   endSessionTitle: 'Publikus munkamenet leállítása?',
   endSessionDescription:
     'Privát munkamenet engedélyezéskor, minden már kapcsolódott felhasználó munkamenete megszűnik',
@@ -45,8 +41,6 @@ export default {
   join: 'Csatlakozás',
   joinSession: 'Csatlakozás munkamenethez',
   kick: 'Kidobás',
-  launchDiscordInvite:
-    'Discord indítása és {{productName}} újraindítása, a Discord-os meghívók használatához.',
   lockQueue: 'Sor lezárása',
   moveToTop: 'Mozgatás a tetejére',
   next: 'Következő',
@@ -78,7 +72,6 @@ export default {
   requestUrlPlaceholder: '',
   requiresDJPermissions: 'A kérés DJ szerepkörhöz kötött',
   requiresPortForward: '<1>Port továbbítás</1> szükséges: <3>{{port}}</3>',
-  sendDiscordInvite: '<0>Discord meghívó küldése</0> a baráti kód automatikus megjelenítésére.',
   sessionModePublicDescription: 'Bárki csatlakozhat.',
   sessionModePrivateDescription: 'Közvetlen engedély szükséges a csatlakozáshoz.',
   sessionModeOfflineDescription: 'Senki nem engedélyezte a csatlakozást.',

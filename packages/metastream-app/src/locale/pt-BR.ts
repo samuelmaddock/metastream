@@ -24,8 +24,6 @@ export default {
   disallow: 'Negar',
   disconnect: 'Desconectar',
   disconnected: 'Desconectado',
-  discordPresenceDescription:
-    'Compartilhar os detalhes de sua sessão no seu perfil do Discord e permita que usuarios peçam convites.',
   dj: 'DJ',
   donate: 'Doar',
   donators: 'Doadores',
@@ -42,8 +40,6 @@ export default {
   joinSession: 'Entrar na sessão',
   kick: 'Expulsar',
   language: 'Idioma',
-  launchDiscordInvite:
-    'Abra o Discord e reinicie o {{productName}} para usar os convites do Discord.',
   lockQueue: 'Travar fila',
   moveToTop: 'Mover para o topo',
   maxUsers: 'Máximo de usuários',
@@ -76,8 +72,6 @@ export default {
   requiresDJPermissions: 'Requer permissão de DJ',
   requiresPortForward:
     'Requer <1>liberação de portas</1> da porta <3>{{port}}</3> para aceitar coneções diretas.',
-  sendDiscordInvite:
-    '<0>Enviar convites do Discord</0> para enviar codigos de amigo automaticamente',
   sessionMode: 'Modo de sessão',
   sessionModePublicDescription: 'Todos podem entrar.',
   sessionModePrivateDescription: 'Quem entrar precisa de permissão.',

@@ -23,15 +23,13 @@ interface IConnectedProps {
   isHost: boolean
   hostId: string
   hostName: string
-  discordPresenceEnabled: boolean
 }
 
 const mapStateToProps = (state: IAppState): IConnectedProps => {
   return {
     isHost: isHost(state),
     hostId: getHostId(state),
-    hostName: getHost(state).name,
-    discordPresenceEnabled: state.settings.discordPresence
+    hostName: getHost(state).name
   }
 }
 

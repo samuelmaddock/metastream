@@ -26,14 +26,10 @@ export default {
   disallow: 'Rechazar',
   disconnect: 'Desconectar',
   disconnected: 'Desconectado',
-  discordPresenceDescription:
-    'Compartir los detalles de su sesión en su perfil de Discord y permitir que los usuarios soliciten invitaciones.',
   dj: 'DJ',
   donate: 'Donar',
   donators: 'Donadores',
   duplicate: 'Duplicar',
-  enableDiscordInvite:
-    'Active <1>Discord Rich Presence</1> desde el menú de configuración para permitir invitaciones de Discord.',
   endSessionTitle: '¿Finalizar sesión pública?',
   endSessionDescription:
     'Cambiar a una sesión privada desconectará a todos los usuarios conectados.',
@@ -45,8 +41,6 @@ export default {
   join: 'Unirse',
   joinSession: 'Unirse a la sesión',
   kick: 'Expulsar',
-  launchDiscordInvite:
-    'Habra Discord y reinicie {{productName}} para usar invitaciones de Discord.',
   lockQueue: 'Bloquear cola',
   maxUsers: 'Máximo de usuarios',
   moveToTop: 'Mover al principio',
@@ -80,8 +74,6 @@ export default {
   requiresDJPermissions: 'Requiere permisos de DJ',
   requiresPortForward:
     'Para aceptar conexiones directas se requiere <1>enrutar los siguientes puertos</1> <3>{{port}}</3>.',
-  sendDiscordInvite:
-    '<0>Enviar invitaciones de Discord</0> para compartir código de amigo automáticamente.',
   sessionModePublicDescription: 'Cualquier usuario puede unirse.',
   sessionModePrivateDescription: 'Permiso para unirse debe ser otorgado explicitamente.',
   sessionModeOfflineDescription: 'Nadie está permitido unirse.',

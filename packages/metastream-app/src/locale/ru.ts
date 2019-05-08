@@ -26,14 +26,10 @@ export default {
   disallow: 'Запрещать',
   disconnect: 'Отключить',
   disconnected: 'Отключился',
-  discordPresenceDescription:
-    'Поделитесь информацией о сеансе в своем профиле Discord и разрешите пользователям запрашивать приглашения.',
   dj: 'DJ',
   donate: 'Донат',
   donators: 'Донатеры',
   duplicate: 'Дублировать',
-  enableDiscordInvite:
-    'Включите <1>Discord Rich Presence</ 1> в меню настроек, чтобы разрешить приглашения Discord.',
   endSessionTitle: 'Завершить публичную сессию?',
   endSessionDescription: 'Переход к закрытому сеансу отключит всех подключенных пользователей.',
   enterJoinDest: 'Введите код друга или IP-адрес.',
@@ -45,8 +41,6 @@ export default {
   joinSession: 'Присоединиться к сеансу',
   kick: 'Выкинуть',
   language: 'Язык',
-  launchDiscordInvite:
-    'Запустите Discord и перезапустите {{productName}}, чтобы использовать приглашения Discord.',
   lockQueue: 'Блокировка очереди',
   moveToTop: 'Переместить наверх',
   maxUsers: 'Максимально пользователей',
@@ -80,8 +74,6 @@ export default {
   requiresDJPermissions: 'Требуется разрешения DJ',
   requiresPortForward:
     'Требуется <1>настроить переадресацию порта</1> из <3>{{port}}</3> для принятия прямых подключений.',
-  sendDiscordInvite:
-    '<0>Отправлять приглашения Discord</0> чтобы автоматически делиться кодами с друзей',
   sessionMode: 'Режим сеанса',
   sessionModePublicDescription: 'Присоединиться может любой желающий.',
   sessionModePrivateDescription: 'Разрешение на присоединение должно быть предоставлено явно.',

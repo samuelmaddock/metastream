@@ -5,7 +5,6 @@ import { MenuHeader } from '../menu/MenuHeader'
 
 import ProfileSettings from './sections/Profile'
 import AdvancedSettings from './sections/Advanced'
-import ThirdPartySettings from './sections/ThirdParty'
 import LanguageSettings from './sections/Language'
 import { t } from 'locale'
 
@@ -35,7 +34,6 @@ export class SettingsMenu extends Component<IProps, State> {
           <ProfileSettings />
           <AdvancedSettings />
           <LanguageSettings onChange={this.invalidate} />
-          <ThirdPartySettings />
         </div>
       </LayoutMain>
     )

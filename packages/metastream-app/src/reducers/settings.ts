@@ -33,7 +33,6 @@ export interface ISettingsState {
   allowTracking: boolean
   sessionMode: SessionMode
   maxUsers?: number
-  discordPresence: boolean
   avatar?: string
   language: string
 }
@@ -43,7 +42,6 @@ const initialState: ISettingsState = {
   volume: 0.75,
   allowTracking: false,
   sessionMode: SessionMode.Private,
-  discordPresence: true,
   language: DEFAULT_LANGUAGE
 }
 
@@ -91,12 +89,6 @@ export const getLocalAvatar = (state: IAppState) => {
   const { avatar } = state.settings
   if (avatar) {
     return avatar
-  } else {
-    // Default to Discord avatar if setting has never been set
-    const defaultAvatar = avatarRegistry.getAll().find(avatar => avatar.type === 'discord')
-    if (defaultAvatar) {
-      return defaultAvatar.uri
-    }
   }
 }
 

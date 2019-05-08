@@ -27,14 +27,10 @@ export default {
   disallow: 'Verbieten',
   disconnect: 'Verbindung trennen',
   disconnected: 'Verbindung getrennt',
-  discordPresenceDescription:
-    'Teile deine Sitzungsdetails in deinem Discord Profil und erlaube es Nutzern eine Einladung anzufordern..',
   dj: 'DJ',
   donate: 'Spenden',
   donators: 'Spender',
   duplicate: 'Duplizieren',
-  enableDiscordInvite:
-    'Aktiviere <1>Discord Rich Presence</1> in den Einstellungen um Discord Einladungen zu erlauben.',
   endSessionTitle: 'Öffentliche Sitzung beenden?',
   endSessionDescription: 'Der Umstieg auf eine private Sitzung wird alle Benutzer trennen.',
   enterJoinDest: 'Gebe einen Freundescode oder eine IP Adresse ein.',
@@ -46,8 +42,6 @@ export default {
   joinSession: 'Sitzung beitreten',
   kick: 'Kicken',
   language: 'Sprache',
-  launchDiscordInvite:
-    'Starte Discord und starte {{productName}} neu um Discord Einladungen zu nutzen.',
   lockQueue: 'Warteschlange schließen',
   moveToTop: 'Nach oben',
   maxUsers: 'Nutzerlimit',
@@ -79,7 +73,6 @@ export default {
   requiresDJPermissions: 'Erfordert DJ Rechte',
   requiresPortForward:
     'Erfordert <1>das freigeben des Ports</1> <3>{{port}}</3> um direkte Verbindungen zu ermöglichen.',
-  sendDiscordInvite: '<0>Sende Discord Einladungen</0> um Freundescodes automatisch zu tauschen',
   sessionModePublicDescription: 'Jedem ist es erlaubt beizutreten.',
   sessionModePrivateDescription: 'Erlaubnis um beizutreten muss gegeben werden.',
   sessionModeOfflineDescription: 'Niemand darf beitreten.',
