@@ -224,12 +224,10 @@
 
         this.onPlay = this.onPlay.bind(this)
         this.onVolumeChange = this.onVolumeChange.bind(this)
-        this.onSeeked = this.onSeeked.bind(this)
         this.onWaiting = this.onWaiting.bind(this)
 
         this.media.addEventListener('play', this.onPlay, false)
         this.media.addEventListener('volumechange', this.onVolumeChange, false)
-        this.media.addEventListener('seeked', this.onSeeked, false)
       }
 
       dispatch(eventName, detail) {
@@ -300,13 +298,6 @@
           console.debug(`[Metastream Remote] Volume changed internally (${this.media.volume}), reverting to ${volume}`)
           this.setVolume(volume)
         }
-      }
-
-      /** Prevent third-party service from restoring playback position */
-      onSeeked(event) {
-        console.debug(`[Metastream Remote] Prevent seeking`, event)
-        event.stopImmediatePropagation()
-        event.stopPropagation()
       }
 
       startWaitingListener() {
