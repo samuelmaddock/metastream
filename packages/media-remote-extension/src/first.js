@@ -48,5 +48,7 @@
   const script = document.createElement('script')
   script.id = 'metastreaminitscript'
   script.textContent = `(${mainWorldScript}());`
-  document.documentElement.appendChild(script)
+  if (document.documentElement) {
+    document.documentElement.appendChild(script)
+  }
 })()
