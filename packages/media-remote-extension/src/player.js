@@ -203,6 +203,17 @@
         case 'set-media-volume':
           player.setVolume(action.payload)
           break
+        case 'set-interact': {
+          const interacting = action.payload
+          if (interacting) {
+            stopAutoFullscreen()
+          } else {
+            startAutoFullscreen()
+          }
+          break
+        }
+        default:
+          console.warn(`Unknown Metastream player action '${action.type}'`)
       }
     }
     window.addEventListener('message', eventMiddleware)
@@ -464,6 +475,7 @@
 
       if (!(activeMedia instanceof HTMLVideoElement)) return
 
+      document.body.scrollIntoView() // scrolls to top
       origDocumentOverflow = document.body.style.overflow
 
       // Find container we can transform
@@ -513,8 +525,8 @@
         fullscreenStyleElement.remove()
       }
       if (fullscreenContainer) {
-        fullscreenContainer.style.transform = undefined
-        fullscreenContainer.style.transformOrigin = undefined
+        fullscreenContainer.style.transform = ''
+        fullscreenContainer.style.transformOrigin = ''
         fullscreenContainer = undefined
       }
     }

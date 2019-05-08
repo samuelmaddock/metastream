@@ -284,7 +284,7 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
 
     this.setState({ interacting: true }, () => {
       document.addEventListener('keydown', this.onKeyDown, false)
-      this.dispatchMedia('interact', true)
+      this.dispatchMedia('set-interact', true)
       if (this.props.onInteractChange) {
         this.props.onInteractChange(this.state.interacting)
       }
@@ -293,7 +293,7 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
 
   exitInteractMode() {
     document.removeEventListener('keydown', this.onKeyDown, false)
-    this.dispatchMedia('interact', false)
+    this.dispatchMedia('set-interact', false)
     this.setState({ interacting: false }, () => {
       if (this.props.onInteractChange) {
         this.props.onInteractChange(this.state.interacting)
