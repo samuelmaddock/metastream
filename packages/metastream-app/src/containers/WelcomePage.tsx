@@ -58,6 +58,7 @@ class WelcomePage extends Component<Props> {
                 ;(e.target as HTMLInputElement).value = this.props.settings.username
               }
             }}
+            autoFocus
           />
           <div>
             <SwitchOption
