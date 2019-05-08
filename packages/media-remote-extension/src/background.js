@@ -18,6 +18,8 @@ const isMetastreamUrl = url =>
 const isTopFrame = details => details.frameId === TOP_FRAME
 const isDirectChild = details => details.parentFrameId === TOP_FRAME
 const isValidAction = action => typeof action === 'object' && typeof action.type === 'string'
+const sleep = delay => new Promise(resolve => setTimeout(resolve, delay))
+const isFirefox = () => navigator.userAgent.toLowerCase().includes('firefox');
 
 const escapePattern = pattern => pattern.replace(/[\\^$+?.()|[\]{}]/g, '\\$&')
 
@@ -245,26 +247,32 @@ const executeScript = (opts, attempt = 0) => {
         console.log(`executeScript error [${opts.file}]: ${chrome.runtime.lastError}`)
         if (opts.retry !== false) {
           if (attempt < 20) {
-            // TODO: can we inject this any sooner in Firefox?
-            setTimeout(() => executeScript(opts, attempt + 1), 10)
+            setTimeout(() => executeScript(opts, attempt + 1), 5)
           } else {
             console.error('Reached max attempts while injecting content script.', opts)
           }
         } else {
           console.error('Failed to inject content script', chrome.runtime.lastError, opts)
         }
+      } else {
+        console.log(`executeScript ${opts.file}`)
       }
     }
   )
 }
 
-const injectContentScripts = (details, attempt = 0) => {
+const injectContentScripts = async (details) => {
   const { tabId, frameId, url } = details
   if (url === 'about:blank') return
 
   const tabState = tabStore[tabId]
   const scriptable = tabState && tabState.scriptableFrames.has(frameId)
   if (!scriptable) return
+
+  // BUG: Firefox injects scripts prior to page loading on refresh
+  if (isFirefox()) {
+    await sleep(200)
+  }
 
   console.log(`Injecting player script tabId=${tabId}, frameId=${frameId}`)
   executeScript({ tabId, frameId, file: '/player.js' })

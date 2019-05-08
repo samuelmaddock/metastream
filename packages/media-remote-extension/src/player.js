@@ -6,10 +6,6 @@
 //
 
 ;(function() {
-  // Prevent script running twice
-  if (window.PLAYER_SETUP) return
-  window.PLAYER_SETUP = true
-
   console.debug(`Metastream player content script ${location.href}`)
 
   //=============================================================================
