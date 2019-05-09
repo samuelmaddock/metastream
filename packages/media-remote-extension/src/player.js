@@ -554,6 +554,8 @@
         } catch (e) {}
         if (isValidDuration(duration)) return duration
       }
+
+      return null
     }
 
     let prevDuration
