@@ -27,11 +27,12 @@ export class WebControls extends Component<IProps, IState> {
   state: IState = {}
 
   private get addressUrl() {
-    return this.addressInput && this.addressInput.value
+    return (this.addressInput && this.addressInput.value) || ''
   }
 
   render(): JSX.Element {
     // back, forward, location bar, play button, exit
+    const addressUrl = this.addressUrl
 
     const backBtn = (
       <IconButton
@@ -42,7 +43,8 @@ export class WebControls extends Component<IProps, IState> {
             this.webview.goBack()
           }
         }}
-        // disabled={this.webview ? this.webview.getURL() === this.props.initialUrl : true}
+        // try to prevent player iframe navigation
+        disabled={addressUrl.length === 0}
       />
     )
 
