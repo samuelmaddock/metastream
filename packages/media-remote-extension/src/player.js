@@ -431,23 +431,33 @@
       return { top: y, left: x }
     }
 
+    // Fit media within viewport
     function renderFullscreen() {
       document.body.style.overflow = 'hidden'
 
       const { offsetWidth: width, offsetHeight: height } = activeMedia
       const { left, top } = getOffset(activeMedia)
       const { innerWidth: viewportWidth, innerHeight: viewportHeight } = window
-      const scale = viewportWidth / width
 
       let transform, transformOrigin
 
-      // Apply transform if player is smaller than viewport
-      if (scale >= 1.05) {
-        const translateX = left
-        const translateY = viewportHeight / 2 - (top + height / 2)
-        transform = `translate(-${translateX}px, ${translateY}px) scale(${scale})`
-        transformOrigin = `${left}px ${top + height / 2}px`
-      }
+      // Set transform origin on video center
+      const vidCenterX = left + width / 2
+      const vidCenterY = top + height / 2
+      transformOrigin = `${vidCenterX}px ${vidCenterY}px`
+
+      // Transform video to center of viewport
+      const viewportCenterX = (viewportWidth / 2)
+      const viewportCenterY = (viewportHeight / 2)
+      const offsetX = -1 * (vidCenterX - viewportCenterX)
+      const offsetY = -1 * (vidCenterY - viewportCenterY)
+      transform = `translate(${offsetX}px, ${offsetY}px)`
+
+      // Scale to fit viewport
+      const scaleWidth = viewportWidth / width
+      const scaleHeight = viewportHeight / height
+      const scale = scaleWidth > scaleHeight ? scaleHeight : scaleWidth
+      transform += ` scale(${scale})`
 
       fullscreenContainer.style.transformOrigin = transformOrigin
       fullscreenContainer.style.transform = transform
