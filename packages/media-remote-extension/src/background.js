@@ -276,24 +276,28 @@ const injectContentScripts = async details => {
   const { tabId, frameId, url } = details
   if (url === 'about:blank') return
 
+  // Inject common webview script
+  executeScript({ tabId, frameId, file: '/webview.js' })
+
   const framePath = await getFramePath(tabId, frameId)
   const topIFrameId = framePath[1]
   const tabState = tabStore[tabId]
   const scriptable = tabState && tabState.scriptableFrames.has(topIFrameId)
-  if (!scriptable) return
+  if (scriptable) {
+    // BUG: Firefox injects scripts prior to page loading on refresh
+    if (isFirefox()) {
+      await sleep(200)
+    }
 
-  // BUG: Firefox injects scripts prior to page loading on refresh
-  if (isFirefox()) {
-    await sleep(200)
+    console.log(`Injecting player script tabId=${tabId}, frameId=${frameId}`)
+    executeScript({ tabId, frameId, file: '/player.js' })
+
+    CONTENT_SCRIPTS.forEach(script => {
+      if (!script.matches.some(matchesPattern.bind(null, url))) return
+      executeScript({ tabId, frameId, file: script.file })
+    })
   }
 
-  console.log(`Injecting player script tabId=${tabId}, frameId=${frameId}`)
-  executeScript({ tabId, frameId, file: '/player.js' })
-
-  CONTENT_SCRIPTS.forEach(script => {
-    if (!script.matches.some(matchesPattern.bind(null, url))) return
-    executeScript({ tabId, frameId, file: script.file })
-  })
 }
 
 //=============================================================================

@@ -17,7 +17,6 @@
   const eventMiddleware = event => {
     const { data: action } = event
     if (typeof action !== 'object' || typeof action.type !== 'string') return
-
     if (action.type.startsWith('metastream-')) {
       // Send to background script
       chrome.runtime.sendMessage(action)
@@ -28,22 +27,8 @@
   // Forward host events to main world
   chrome.runtime.onMessage.addListener(action => {
     if (typeof action !== 'object' || typeof action.type !== 'string') return
-
     if (action.type == 'metastream-host-event') {
       window.postMessage(action.payload, location.origin)
-      return
-    }
-
-    switch (action.type) {
-      case 'navigate':
-        history.go(Number(action.payload) || 0)
-        break
-      case 'reload':
-        location.reload(Boolean(action.payload))
-        break
-      case 'stop':
-        stop()
-        break
     }
   })
 
