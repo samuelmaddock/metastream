@@ -482,7 +482,8 @@
     }
 
     function startAutoFullscreen(target = activeMedia) {
-      if (!(target instanceof HTMLVideoElement || target instanceof HTMLIFrameElement)) return
+      const isVideo = target instanceof HTMLVideoElement
+      if (!(isVideo || target instanceof HTMLIFrameElement)) return
       console.debug('Starting autofullscreen', target)
 
       document.body.scrollIntoView() // scrolls to top
@@ -498,8 +499,9 @@
 
       // Hide all non-video elements
       const elem = document.createElement('style')
+      const visibleTagName = isVideo ? 'video' : `[src="${target.src}"]`
       elem.innerText = `
-:not(video) {
+:not(${visibleTagName}) {
   color: transparent !important;
   z-index: 0;
   background: transparent !important;
@@ -507,10 +509,9 @@
   outline: none !important;
   box-shadow: none !important;
   text-shadow: none !important;
-  overflow: none !important;
 }
 
-:not(video):empty {
+:not(${visibleTagName}):empty {
   visibility: hidden !important;
 }`
       fullscreenStyleElement = elem
