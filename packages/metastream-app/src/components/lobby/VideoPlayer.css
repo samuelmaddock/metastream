@@ -28,12 +28,13 @@
 }
 
 .interactNotice {
-  position: absolute;
-  top: var(--overlay-spacing);
-  left: 50%;
-  transform: translate(-50%, 0);
-  margin: 0 auto;
-  padding: 10px;
-  background: #222;
+  min-height: var(--app-titlebar-height);
+  padding: 4px 8px;
   color: #fff;
+  background: #c0392b;
+}
+
+.interactive {
+  border: 8px solid #c0392b;
+  border-top: none;
 }

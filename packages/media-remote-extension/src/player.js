@@ -487,7 +487,7 @@
       console.debug('Starting autofullscreen', target)
 
       document.body.scrollIntoView() // scrolls to top
-      origDocumentOverflow = document.body.style.overflow
+      origDocumentOverflow = getComputedStyle(document.body).overflow
 
       // Find container we can transform
       let container = target
@@ -534,7 +534,7 @@
       console.debug('Stopping autofullscreen')
       fullscreenElement = undefined
       if (origDocumentOverflow) {
-        document.body.style.overflow = document.body.style.overflow
+        document.body.style.overflow = origDocumentOverflow
         origDocumentOverflow = undefined
       }
       if (fullscreenFrameId) {

@@ -238,8 +238,8 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
         className={cx(styles.container, this.props.className)}
         onDoubleClick={this.enterInteractMode}
       >
-        {this.renderBrowser()}
         {this.renderInteract()}
+        {this.renderBrowser()}
       </div>
     )
   }
@@ -267,7 +267,9 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     if (!this.props.isExtensionInstalled) return
 
     return this.state.interacting ? (
-      <div className={styles.interactNotice}>Interact ON. Press Esc to cancel.</div>
+      <button className={styles.interactNotice} onClick={this.exitInteractMode}>
+        ⚠️ Interact mode enabled. Changing playback may cause you to desync. Click to exit. ⚠️
+      </button>
     ) : (
       <div className={styles.interactTrigger} onDoubleClick={this.enterInteractMode} />
     )
@@ -301,7 +303,7 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     })
   }
 
-  exitInteractMode() {
+  exitInteractMode = () => {
     document.removeEventListener('keydown', this.onKeyDown, false)
     this.dispatchMedia('set-interact', false)
     this.setState({ interacting: false }, () => {
