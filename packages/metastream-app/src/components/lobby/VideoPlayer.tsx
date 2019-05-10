@@ -161,7 +161,6 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
         break
       case 'media-fullscreen': {
         // Apply auto-fullscreen to all subframes with nested iframes
-        console.log('HELLO MEDIA_FULLSCREEN', action, args)
         const isTopSubFrame = !!args[0]
         if (!isTopSubFrame) {
           this.dispatchMedia('apply-fullscreen', action.payload.href)
