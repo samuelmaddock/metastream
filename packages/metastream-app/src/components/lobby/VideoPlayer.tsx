@@ -152,17 +152,26 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     )
   }
 
-  private onIpcMessage = (action: any) => {
+  private onIpcMessage = (action: any, ...args: any[]) => {
     console.log('Received VideoPlayer IPC message', action)
 
     switch (action.type) {
       case 'media-ready':
         this.onMediaReady(action.payload)
         break
+      case 'media-fullscreen': {
+        // Apply auto-fullscreen to all subframes with nested iframes
+        console.log('HELLO MEDIA_FULLSCREEN', action, args)
+        const isTopSubFrame = !!args[0]
+        if (!isTopSubFrame) {
+          this.dispatchMedia('apply-fullscreen', action.payload.href)
+        }
+        break
+      }
     }
   }
 
-  private onMediaReady = (info?: any) => {
+  private onMediaReady = (info?: { duration?: number; href: string }) => {
     console.debug('onMediaReady', info)
 
     this.updatePlaybackTime()
@@ -179,8 +188,8 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
       const isLongerDuration = nextDuration && (prevDuration && nextDuration > prevDuration)
 
       if (nextDuration && !isLiveMedia && (noDuration || isLongerDuration)) {
-        this.props.dispatch!(updateMedia(info))
-        this.props.dispatch!(updatePlaybackTimer())
+        this.props.dispatch(updateMedia({ duration: info!.duration! }))
+        this.props.dispatch(updatePlaybackTimer())
       }
     }
   }

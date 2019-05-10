@@ -27,8 +27,9 @@
   // Forward host events to main world
   chrome.runtime.onMessage.addListener(action => {
     if (typeof action !== 'object' || typeof action.type !== 'string') return
-    if (action.type == 'metastream-host-event') {
+    if (action.type === 'metastream-host-event') {
       window.postMessage(action.payload, location.origin)
+      return
     }
   })
 
@@ -169,9 +170,25 @@
     const eventMiddleware = event => {
       const { data: action } = event
       if (typeof action !== 'object' || typeof action.type !== 'string') return
-      if (!player) return
 
       console.debug(`[Metastream Remote] Received player event`, action)
+
+      switch (action.type) {
+        case 'apply-fullscreen': {
+          const href = action.payload
+          if (location.href !== href) {
+            const iframe = document.querySelector(`iframe[src="${href}"]`)
+            if (iframe) {
+              startAutoFullscreen(iframe)
+            }
+          } else {
+            stopAutoFullscreen()
+          }
+          return
+        }
+      }
+
+      if (!player) return
 
       switch (action.type) {
         case 'set-media-playback': {
@@ -415,6 +432,7 @@
     // Auto-fullscreen
     //===========================================================================
 
+    let fullscreenElement
     let fullscreenContainer
     let fullscreenFrameId
     let fullscreenStyleElement
@@ -435,8 +453,8 @@
     function renderFullscreen() {
       document.body.style.overflow = 'hidden'
 
-      const { offsetWidth: width, offsetHeight: height } = activeMedia
-      const { left, top } = getOffset(activeMedia)
+      const { offsetWidth: width, offsetHeight: height } = fullscreenElement
+      const { left, top } = getOffset(fullscreenElement)
       const { innerWidth: viewportWidth, innerHeight: viewportHeight } = window
 
       let transform, transformOrigin
@@ -447,8 +465,8 @@
       transformOrigin = `${vidCenterX}px ${vidCenterY}px`
 
       // Transform video to center of viewport
-      const viewportCenterX = (viewportWidth / 2)
-      const viewportCenterY = (viewportHeight / 2)
+      const viewportCenterX = viewportWidth / 2
+      const viewportCenterY = viewportHeight / 2
       const offsetX = -1 * (vidCenterX - viewportCenterX)
       const offsetY = -1 * (vidCenterY - viewportCenterY)
       transform = `translate(${offsetX}px, ${offsetY}px)`
@@ -465,16 +483,16 @@
       fullscreenFrameId = requestAnimationFrame(renderFullscreen)
     }
 
-    function startAutoFullscreen() {
-      console.debug('Starting autofullscreen', activeMedia)
+    function startAutoFullscreen(target = activeMedia) {
+      console.debug('Starting autofullscreen', target)
 
-      if (!(activeMedia instanceof HTMLVideoElement)) return
+      if (!(target instanceof HTMLVideoElement || target instanceof HTMLIFrameElement)) return
 
       document.body.scrollIntoView() // scrolls to top
       origDocumentOverflow = document.body.style.overflow
 
       // Find container we can transform
-      let container = activeMedia
+      let container = target
       do {
         if (container && container.offsetWidth && container.offsetHeight) {
           fullscreenContainer = container
@@ -503,11 +521,20 @@
       // Disabled as it can hide subtitles
       // document.head.appendChild(fullscreenStyleElement)
 
+      fullscreenElement = target
       fullscreenFrameId = requestAnimationFrame(renderFullscreen)
+
+      dispatchMediaEvent({
+        type: 'media-fullscreen',
+        payload: {
+          href: location.href
+        }
+      })
     }
 
     function stopAutoFullscreen() {
       console.debug('Stopping autofullscreen')
+      fullscreenElement = undefined
       if (origDocumentOverflow) {
         document.body.style.overflow = document.body.style.overflow
         origDocumentOverflow = undefined

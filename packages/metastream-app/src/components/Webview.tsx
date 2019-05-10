@@ -80,7 +80,10 @@ export class Webview extends Component<Props> {
         this.url = action.payload.url
       }
 
-      this.emitter.emit(action.type, action.payload)
+      // Whether the message was sent from the top subframe
+      const isTopSubFrame = framePath[framePath.length - 1] === this.frameId
+
+      this.emitter.emit(action.type, action.payload, isTopSubFrame)
     }
   }
 
