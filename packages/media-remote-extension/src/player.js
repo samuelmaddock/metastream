@@ -174,6 +174,15 @@
       console.debug(`[Metastream Remote] Received player event`, action)
 
       switch (action.type) {
+        case 'set-interact': {
+          const interacting = action.payload
+          if (interacting) {
+            stopAutoFullscreen()
+          } else {
+            startAutoFullscreen()
+          }
+          break
+        }
         case 'apply-fullscreen': {
           const href = action.payload
           if (location.href !== href) {
@@ -205,17 +214,6 @@
         case 'set-media-volume':
           player.setVolume(action.payload)
           break
-        case 'set-interact': {
-          const interacting = action.payload
-          if (interacting) {
-            stopAutoFullscreen()
-          } else {
-            startAutoFullscreen()
-          }
-          break
-        }
-        default:
-          console.warn(`Unknown Metastream player action '${action.type}'`)
       }
     }
     window.addEventListener('message', eventMiddleware)
@@ -484,9 +482,8 @@
     }
 
     function startAutoFullscreen(target = activeMedia) {
-      console.debug('Starting autofullscreen', target)
-
       if (!(target instanceof HTMLVideoElement || target instanceof HTMLIFrameElement)) return
+      console.debug('Starting autofullscreen', target)
 
       document.body.scrollIntoView() // scrolls to top
       origDocumentOverflow = document.body.style.overflow
