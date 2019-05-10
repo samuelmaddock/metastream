@@ -43,7 +43,33 @@ class _TitleBar extends Component<PrivateProps> {
           </header>
           {updateButton}
           {this.props.showBackButton && this.renderBack()}
+          {this.renderFrameButtons()}
         </div>
+      </div>
+    )
+  }
+
+  private renderFrameButtons() {
+    const isFullscreen = !!document.fullscreenElement
+
+    return (
+      <div className={styles.rightActions}>
+        <button
+          type="button"
+          className={styles.actionButton}
+          onClick={() => {
+            if (isFullscreen) {
+              try {
+                document.exitFullscreen()
+              } catch {}
+            } else {
+              document.documentElement.requestFullscreen()
+            }
+            setTimeout(() => this.forceUpdate(), 100)
+          }}
+        >
+          <Icon name={isFullscreen ? 'minimize-2' : 'maximize-2'} />
+        </button>
       </div>
     )
   }
