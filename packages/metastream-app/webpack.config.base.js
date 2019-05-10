@@ -127,6 +127,12 @@ module.exports = {
       {
         from: path.join(__dirname, 'public'),
         to: path.join(__dirname, 'dist')
+      },
+      // Write app version to file for update check
+      {
+        from: path.join(__dirname, 'package.json'),
+        to: path.join(__dirname, 'dist/version.txt'),
+        transform: () => VERSION
       }
     ])
   ]

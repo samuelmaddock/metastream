@@ -86,7 +86,7 @@ module.exports = merge.smart(baseConfig, {
 
     new GenerateSW({
       importWorkboxFrom: 'local',
-      exclude: ['CNAME', '404.html', 'robots.txt'],
+      exclude: ['CNAME', '404.html', 'robots.txt', 'version.txt'],
       clientsClaim: true,
       skipWaiting: true
     })

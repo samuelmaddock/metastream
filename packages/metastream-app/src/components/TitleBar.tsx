@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { push } from 'react-router-redux'
 import cx from 'classnames'
 
 import { PRODUCT_NAME } from 'constants/app'
@@ -10,8 +11,8 @@ import { isUpdateAvailable } from 'reducers/ui'
 import styles from './TitleBar.css'
 import { IconButton } from 'components/common/button'
 import { Icon } from './Icon'
-import { push } from 'react-router-redux'
 import { IReactReduxProps } from 'types/redux-thunk'
+import { updateService } from 'services/updater'
 
 interface IProps {
   className?: string
@@ -27,9 +28,8 @@ type PrivateProps = IProps & IConnectedProps & IReactReduxProps
 
 class _TitleBar extends Component<PrivateProps> {
   render(): JSX.Element | null {
-    // TODO: detect update to website
     const updateButton = this.props.updateAvailable && (
-      <IconButton icon="download" className={styles.updateButton} onClick={() => {}}>
+      <IconButton icon="download" className={styles.updateButton} onClick={updateService.update}>
         Update
       </IconButton>
     )
