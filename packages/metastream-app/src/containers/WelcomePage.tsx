@@ -7,7 +7,7 @@ import LayoutMain from 'components/layout/Main'
 import { MenuButton } from 'components/menu/MenuButton'
 import { t } from 'locale'
 import { SwitchOption } from '../components/settings/controls'
-import { connect, DispatchProp } from 'react-redux'
+import { connect } from 'react-redux'
 import { IAppState } from '../reducers'
 import { ISettingsState } from '../reducers/settings'
 import { TextInput } from '../components/common/input'
@@ -16,6 +16,7 @@ import { MenuHeader } from '../components/menu/MenuHeader'
 import { replace } from 'react-router-redux'
 import { setUsername, setSetting } from '../actions/settings'
 import { PRODUCT_NAME } from 'constants/app'
+import { IReactReduxProps } from '../types/redux-thunk'
 
 interface IProps extends RouteComponentProps<any> {}
 
@@ -24,15 +25,27 @@ interface IConnectedProps {
   settings: ISettingsState
 }
 
-type Props = IProps & IConnectedProps & DispatchProp<any>
+type Props = IProps & IConnectedProps & IReactReduxProps
 
 class WelcomePage extends Component<Props> {
   // Design: https://venturebeat.com/wp-content/uploads/2015/03/Slack-test-start.png
   render(): JSX.Element | null {
-    const dispatch = this.props.dispatch!
+    const { dispatch } = this.props
+
+    const submit = () => {
+      localStorage.setItem('welcomed', 'true')
+      dispatch(replace(this.props.pathname))
+    }
+
     return (
       <LayoutMain className={styles.container}>
-        <form className={styles.column}>
+        <form
+          className={styles.column}
+          onSubmit={e => {
+            e.preventDefault()
+            submit()
+          }}
+        >
           <MenuHeader text={`Welcome to ${PRODUCT_NAME}`} />
 
           <div className={styles.wip}>
@@ -69,13 +82,7 @@ class WelcomePage extends Component<Props> {
               onChange={checked => dispatch(setSetting('allowTracking', checked))}
             />
           </div>
-          <MenuButton
-            icon="check-circle"
-            onClick={() => {
-              localStorage.setItem('welcomed', 'true')
-              this.props.dispatch!(replace(this.props.pathname))
-            }}
-          >
+          <MenuButton icon="check-circle" onClick={submit}>
             {t('getStarted')}
           </MenuButton>
         </form>
