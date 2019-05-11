@@ -80,6 +80,7 @@ export class WebRTCPeerCoordinator extends PeerCoordinator {
     ).then(() => {
       if (this.sessionClient) {
         console.debug('Reconnected to signal server')
+        this.emit('error', new NetworkError(NetworkErrorCode.SignalServerReconnect))
       }
     })
   }

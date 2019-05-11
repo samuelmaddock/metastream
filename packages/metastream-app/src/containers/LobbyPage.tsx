@@ -195,15 +195,22 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
   }
 
   private onServerError = (err: NetworkError) => {
+    let content
     switch (err.errorCode) {
       case NetworkErrorCode.SignalServerDisconnect: {
-        const content = 'Disconnected from signal server, reconnecting...'
-        this.props.dispatch(addChat({ content, timestamp: Date.now() }))
+        content = '❌ Disconnected from signal server, reconnecting...'
+        break
+      }
+      case NetworkErrorCode.SignalServerReconnect: {
+        content = '✅ Reconnected to signal server.'
         break
       }
       default:
         console.error('Server error:', err)
         break
+    }
+    if (content) {
+      this.props.dispatch(addChat({ content, timestamp: Date.now() }))
     }
   }
 
