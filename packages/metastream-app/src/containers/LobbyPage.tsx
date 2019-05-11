@@ -25,6 +25,8 @@ import { t } from 'locale'
 import { SessionMode } from '../reducers/settings'
 import { resetLobby, initLobby } from '../lobby/actions/common'
 import { IReactReduxProps } from 'types/redux-thunk'
+import { NetworkError, NetworkErrorCode } from '../network/error'
+import { addChat } from '../lobby/actions/chat'
 
 interface IRouteParams {
   lobbyId: string
@@ -118,6 +120,7 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
   private onJoinLobby(server: NetServer): void {
     this.server = server
     this.server.once('close', this.disconnect)
+    this.server.on('error', this.onServerError)
 
     if (this.host || this.server.connected) {
       // Server is ready
@@ -189,6 +192,19 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
   private onLeaveScreen() {
     this.closeLobby()
     this.props.dispatch(resetLobby({ host: this.host }))
+  }
+
+  private onServerError = (err: NetworkError) => {
+    switch (err.errorCode) {
+      case NetworkErrorCode.SignalServerDisconnect: {
+        const content = 'Disconnected from signal server, reconnecting...'
+        this.props.dispatch(addChat({ content, timestamp: Date.now() }))
+        break
+      }
+      default:
+        console.error('Server error:', err)
+        break
+    }
   }
 
   componentWillMount(): void {

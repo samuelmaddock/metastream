@@ -9,6 +9,7 @@ import { PeerCoordinator } from 'network/server'
 import { RTCPeerConn } from 'network/rtc'
 import { mutualHandshake } from './authenticate'
 import { METASTREAM_SIGNAL_SERVER, METASTREAM_ICE_SERVERS } from '../../constants/network'
+import { NetworkError, NetworkErrorCode } from '../../network/error'
 
 /** Interval to ping WebSocket to keep connection open. */
 const KEEP_ALIVE_INTERVAL = 9 * 60 * 1000
@@ -22,6 +23,7 @@ export class WebRTCPeerCoordinator extends PeerCoordinator {
   private connecting = new Map<string, RTCPeerConn>()
   private sessionClient?: SignalClient
   private intervalId?: number
+  private reconnectTimeoutId?: number
 
   constructor(opts: Options) {
     super()
@@ -30,12 +32,17 @@ export class WebRTCPeerCoordinator extends PeerCoordinator {
     this.keepAlive = this.keepAlive.bind(this)
 
     if (this.host) {
-      this.createSession()
+      this.createSession().catch(this.handleError)
     } else if (opts.hostId) {
-      this.joinSession(opts.hostId)
+      this.joinSession(opts.hostId).catch(this.handleError)
     } else {
       throw new Error('Failed to initialize WebRTCPeerCoordinator')
     }
+  }
+
+  private handleError(err: NetworkError) {
+    // bubble error up to NetServer
+    this.emit('error', err)
   }
 
   private keepAlive() {
@@ -50,6 +57,16 @@ export class WebRTCPeerCoordinator extends PeerCoordinator {
       clearInterval(this.intervalId)
       this.intervalId = undefined
     }
+  }
+
+  private serverConnectionClosed = () => {
+    this.emit('error', new NetworkError(NetworkErrorCode.SignalServerDisconnect))
+
+    // TODO: backoff
+    this.reconnectTimeoutId = setTimeout(() => {
+      this.close()
+      this.createSession().catch(this.handleError)
+    }, 3000) as any
   }
 
   private getClient() {
@@ -69,8 +86,7 @@ export class WebRTCPeerCoordinator extends PeerCoordinator {
     try {
       client = await this.getClient()
     } catch {
-      // TODO: bubble error
-      return
+      throw new NetworkError(NetworkErrorCode.SignalServerConnectionFailure)
     }
 
     try {
@@ -79,11 +95,14 @@ export class WebRTCPeerCoordinator extends PeerCoordinator {
         privateKey: localUser().id.privateKey!
       })
     } catch {
-      // TODO: bubble error
-      return
+      throw new NetworkError(
+        NetworkErrorCode.SignalServerConnectionFailure,
+        'Failed to create room'
+      )
     }
 
     client.on('peer', this.authenticatePeer)
+    client.on('close', this.serverConnectionClosed)
 
     this.sessionClient = client
     this.intervalId = setInterval(this.keepAlive, KEEP_ALIVE_INTERVAL) as any
@@ -96,16 +115,14 @@ export class WebRTCPeerCoordinator extends PeerCoordinator {
     try {
       client = await this.getClient()
     } catch {
-      // TODO: bubble error
-      return
+      throw new NetworkError(NetworkErrorCode.SignalServerConnectionFailure)
     }
 
     let peer
     try {
       peer = await client.joinRoom(hostId)
     } catch {
-      // TODO: bubble error
-      return
+      throw new NetworkError(NetworkErrorCode.SignalServerConnectionFailure, 'Failed to join room')
     } finally {
       client.close()
     }
@@ -117,6 +134,7 @@ export class WebRTCPeerCoordinator extends PeerCoordinator {
   close() {
     if (this.sessionClient) {
       this.sessionClient.removeListener('peer', this.authenticatePeer)
+      this.sessionClient.removeListener('close', this.serverConnectionClosed)
       this.sessionClient.close()
       this.sessionClient = undefined
     }
@@ -124,6 +142,11 @@ export class WebRTCPeerCoordinator extends PeerCoordinator {
     if (this.intervalId) {
       clearInterval(this.intervalId)
       this.intervalId = undefined
+    }
+
+    if (this.reconnectTimeoutId) {
+      clearTimeout(this.reconnectTimeoutId)
+      this.reconnectTimeoutId = undefined
     }
 
     this.connecting.forEach(conn => conn.close())
@@ -135,9 +158,12 @@ export class WebRTCPeerCoordinator extends PeerCoordinator {
     const userPublicKey = await mutualHandshake(peer, localUser().id, peerPublicKey)
 
     if (!userPublicKey) {
-      console.error('Failed to authenticate with peer', peer.address())
+      const addr = peer.address()
       peer.destroy()
-      return
+      throw new NetworkError(
+        NetworkErrorCode.PeerAuthenticationFailure,
+        `Failed to authenticate with peer [${addr}]`
+      )
     }
 
     const userId = sodium.to_hex(userPublicKey)

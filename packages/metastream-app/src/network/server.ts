@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events'
 import NetConnection, { NetUniqueId } from './connection'
+import { NetworkErrorCode } from './error'
 
 interface INetServerEvents {
   on(eventName: 'connect', cb: (conn: NetConnection) => void): this
@@ -26,6 +27,7 @@ class NetServer extends EventEmitter implements INetServerEvents {
 
     for (let coordinator of this.coordinators) {
       coordinator.on('connection', this.connect)
+      coordinator.on('error', this.error)
     }
   }
 
@@ -67,6 +69,10 @@ class NetServer extends EventEmitter implements INetServerEvents {
     }
   }
 
+  private error = (err: NetworkErrorCode) => {
+    this.emit('error', err)
+  }
+
   getClientById(clientId: string) {
     return this.connections.get(clientId)
   }
@@ -81,6 +87,7 @@ class NetServer extends EventEmitter implements INetServerEvents {
 
     this.coordinators.forEach(coord => {
       coord.removeListener('connection', this.connect)
+      coord.removeListener('error', this.error)
       coord.close()
     })
     this.coordinators = []
