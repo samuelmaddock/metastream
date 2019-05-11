@@ -65,6 +65,7 @@
     "cheerio": "^1.0.0-rc.2",
     "classnames": "^2.2.5",
     "deep-diff": "^0.3.8",
+    "exponential-backoff": "^2.1.1",
     "history": "^4.7.2",
     "html-parse-stringify2": "^2.0.1",
     "i18next": "^12.0.0",

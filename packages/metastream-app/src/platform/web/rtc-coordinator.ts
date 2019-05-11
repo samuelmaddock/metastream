@@ -3,6 +3,7 @@ import createClient, { SignalClient } from '@metastream/signal-server/lib/client
 
 import shortid from 'shortid'
 import sodium from 'libsodium-wrappers'
+import { backOff } from 'exponential-backoff'
 
 import { NetUniqueId, localUserId, localUser } from 'network'
 import { PeerCoordinator } from 'network/server'
@@ -20,6 +21,7 @@ interface Options {
 }
 
 export class WebRTCPeerCoordinator extends PeerCoordinator {
+  private closed: boolean = false
   private connecting = new Map<string, RTCPeerConn>()
   private sessionClient?: SignalClient
   private intervalId?: number
@@ -32,7 +34,7 @@ export class WebRTCPeerCoordinator extends PeerCoordinator {
     this.keepAlive = this.keepAlive.bind(this)
 
     if (this.host) {
-      this.createSession().catch(this.handleError)
+      this.createSession().catch(this.serverConnectionClosed)
     } else if (opts.hostId) {
       this.joinSession(opts.hostId).catch(this.handleError)
     } else {
@@ -40,7 +42,7 @@ export class WebRTCPeerCoordinator extends PeerCoordinator {
     }
   }
 
-  private handleError(err: NetworkError) {
+  private handleError = (err: NetworkError) => {
     // bubble error up to NetServer
     this.emit('error', err)
   }
@@ -62,11 +64,24 @@ export class WebRTCPeerCoordinator extends PeerCoordinator {
   private serverConnectionClosed = () => {
     this.emit('error', new NetworkError(NetworkErrorCode.SignalServerDisconnect))
 
-    // TODO: backoff
-    this.reconnectTimeoutId = setTimeout(() => {
-      this.close()
-      this.createSession().catch(this.handleError)
-    }, 3000) as any
+    // attempt to reconnect
+    backOff(
+      async () => {
+        if (!this.closed) {
+          console.debug('Attempting to reconnect to signal server...')
+          this.cleanup()
+          await this.createSession()
+        }
+      },
+      {
+        delayFirstAttempt: true,
+        numOfAttempts: Number.MAX_VALUE
+      }
+    ).then(() => {
+      if (this.sessionClient) {
+        console.debug('Reconnected to signal server')
+      }
+    })
   }
 
   private getClient() {
@@ -131,7 +146,7 @@ export class WebRTCPeerCoordinator extends PeerCoordinator {
     await this.authenticatePeer(peer, hostId)
   }
 
-  close() {
+  private cleanup() {
     if (this.sessionClient) {
       this.sessionClient.removeListener('peer', this.authenticatePeer)
       this.sessionClient.removeListener('close', this.serverConnectionClosed)
@@ -151,6 +166,11 @@ export class WebRTCPeerCoordinator extends PeerCoordinator {
 
     this.connecting.forEach(conn => conn.close())
     this.connecting.clear()
+  }
+
+  close() {
+    this.closed = true
+    this.cleanup()
   }
 
   private async authenticatePeer(peer: SimplePeer.Instance, peerId?: string) {

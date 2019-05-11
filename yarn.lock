@@ -2033,6 +2033,11 @@ expand-tilde@^2.0.0, expand-tilde@^2.0.2:
   dependencies:
     homedir-polyfill "^1.0.1"
 
+exponential-backoff@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/exponential-backoff/-/exponential-backoff-2.1.1.tgz#acaec650b7dc5f52a5ca87b3cb931b025b1640ff"
+  integrity sha512-Qtd9ShD299u+xglU+eDVkjxWqDUer7c3ACIKuNlo0BJYqdPRU+x0rm86Oj9MpKPW/e+zdgvsJLISAzXxXWw7Rw==
+
 express@^4.16.3, express@^4.16.4:
   version "4.16.4"
   resolved "https://registry.yarnpkg.com/express/-/express-4.16.4.tgz#fddef61926109e24c515ea97fd2f1bdbf62df12e"

@@ -5,12 +5,12 @@ import SimplePeer, { SignalData } from 'simple-peer'
 import { Request, MessageType, RoomID, ClientID } from './types'
 import { waitEvent } from './util'
 
-interface KeyPair {
+export interface KeyPair {
   publicKey: Uint8Array
   privateKey: Uint8Array
 }
 
-interface SignalClientOptions {
+export interface SignalClientOptions {
   peerOpts?: SimplePeer.Options
 }
 
@@ -196,7 +196,7 @@ export class SignalClient extends EventEmitter {
   }
 }
 
-interface ClientOptions extends SignalClientOptions {
+export interface ClientOptions extends SignalClientOptions {
   /** Server URL */
   server: string
 }
@@ -204,8 +204,26 @@ interface ClientOptions extends SignalClientOptions {
 export default async (opts: ClientOptions) => {
   // TODO: validate keys
   await sodium.ready
+
   const ws = new WebSocket(opts.server)
   const client = new SignalClient(ws, opts)
-  await waitEvent(client, 'connect')
+
+  await new Promise<void>((resolve, reject) => {
+    const cleanup = () => {
+      client.removeListener('connect', connect)
+      client.removeListener('error', error)
+    }
+    const connect = () => {
+      cleanup()
+      resolve()
+    }
+    const error = (err: Error) => {
+      cleanup()
+      reject(err)
+    }
+    client.on('connect', connect)
+    client.on('error', error)
+  })
+
   return client
 }
