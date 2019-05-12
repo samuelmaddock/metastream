@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="referrer" content="origin" />
     <meta name="description" content="Watch streaming media with friends." />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Metastream</title>
     <link rel="manifest" href="/manifest.json" />
     <link rel="icon" type="image/png" href="/images/icon-192.png" sizes="192x192" />
@@ -26,7 +26,9 @@
         font-family: Helvetica, Arial, sans-serif;
         margin: 0;
       }
-      body, #root, .loading-screen {
+      body,
+      #root,
+      .loading-screen {
         min-height: 100vh;
       }
       .loading-screen {
@@ -38,18 +40,18 @@
         text-align: center;
         font-style: italic;
         line-height: 1.2;
-        background: rgba(0,0,0,0.33);
+        background: rgba(0, 0, 0, 0.33);
         animation: pulse 3s infinite;
       }
       @keyframes pulse {
         from {
-          background: rgba(0,0,0,0.33);
+          background: rgba(0, 0, 0, 0.33);
         }
         50% {
-          background: rgba(0,0,0,0.22);
+          background: rgba(0, 0, 0, 0.22);
         }
         to {
-          background: rgba(0,0,0,0.33);
+          background: rgba(0, 0, 0, 0.33);
         }
       }
     </style>
@@ -103,7 +105,13 @@
   <body>
     <div id="root">
       <div class="loading-screen">
-        <img src="/assets/icons/metastream-icon.svg" width="192" />
+        <img src="/assets/icons/metastream-icon.svg" width="192" alt="Loading Metastream" />
+        <noscript>
+          <p>
+            Metastream requires JavaScript.<br />
+            <a href="https://github.com/samuelmaddock/metastream" target="_blank">View source code.</a>
+          </p>
+        </noscript>
       </div>
     </div>
   </body>
