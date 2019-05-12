@@ -9,6 +9,7 @@ import { SignalData } from 'simple-peer'
 // :( https://github.com/jedisct1/libsodium/issues/672
 process.removeAllListeners('unhandledRejection')
 
+const DEBUG = process.env.NODE_ENV !== 'production'
 const DEFAULT_PORT = 27064
 
 let clientCounter: ClientID = 0
@@ -125,12 +126,12 @@ export class SignalServer extends EventEmitter {
     this.log(`connect[${id}] ${addr}`)
 
     socket.on('message', msg => {
-      this.log(`received[${id}]: ${msg.toString()}`)
+      if (DEBUG) this.log(`received[${id}]: ${msg.toString()}`)
       let req
       try {
         req = JSON.parse(msg.toString()) as Request
       } catch {
-        this.log(`invalid request [${id}]`)
+        this.log(`Client[${id}] sent invalid JSON request`)
         socket.close()
         return
       }
@@ -138,7 +139,7 @@ export class SignalServer extends EventEmitter {
       try {
         this.dispatchRequest(client, req)
       } catch (e) {
-        this.logError('Error dispatching request:', e)
+        this.logError(`Error dispatching client[${id}] request[t=${req.t}]:`, e)
         this.removeClient(client.id)
       }
     })
@@ -149,7 +150,7 @@ export class SignalServer extends EventEmitter {
     })
 
     socket.on('error', err => {
-      this.logError('WS error: ', err)
+      this.logError(`Client[${id}] WebSocket error:`, err)
     })
   }
 
@@ -171,7 +172,7 @@ export class SignalServer extends EventEmitter {
         this.brokerOffer(client, req.o, req.f || client.id, req.to)
         break
       default:
-        this.log('Unknown request', req)
+        this.log(`Client[${client.id}] sent unknown request [t=${req.t}]`)
         client.socket.close()
     }
   }
@@ -204,7 +205,10 @@ export class SignalServer extends EventEmitter {
       typeof challenge === 'string' &&
       sodium.from_base64(challenge, sodium.base64_variants.URLSAFE_NO_PADDING)
 
-    if (secret && sodium.to_hex(client.authSecret!) === sodium.to_hex(secret)) {
+    const secretHex = secret && sodium.to_hex(secret)
+    const authSecretHex = client.authSecret && sodium.to_hex(client.authSecret)
+
+    if (secret && authSecretHex === secretHex) {
       client.status = ClientStatus.Authed
 
       if (typeof client.pendingRoom === 'string') {
@@ -213,13 +217,14 @@ export class SignalServer extends EventEmitter {
         this.createRoom(client, room)
       }
     } else {
+      this.log(`Client [${client.id}] failed to solve challenge: ${authSecretHex} !== ${secretHex}`)
       client.socket.close()
     }
   }
 
   private createRoom(client: Client, id: RoomID) {
     if (!isValidRoom(id)) {
-      this.log(`invalid room id [${client.id}]`)
+      this.log(`Client[${client.id}] attempted to create invalid room ID`)
       client.socket.close()
       return
     }
@@ -233,6 +238,7 @@ export class SignalServer extends EventEmitter {
 
     // Room already exists
     if (this.rooms.has(id)) {
+      this.log(`Client[${client.id}] attempted to create existing room [${id}]`)
       client.socket.close()
       return
     }
@@ -246,25 +252,26 @@ export class SignalServer extends EventEmitter {
       t: MessageType.CreateRoomSuccess
     })
 
-    this.log(`Created room ${id} [${client.id}]`)
+    this.log(`Client[${client.id}] created room ${id}`)
     this.emit('create-room', id)
   }
 
   private joinRoom(client: Client, roomId: RoomID, offer: SignalData) {
     if (!isValidRoom(roomId)) {
-      this.log(`Client [${client.id}] attempted to connect to invalid room '${roomId}'`)
+      this.log(`Client[${client.id}] attempted to connect to invalid room '${roomId}'`)
       client.socket.close()
       return
     }
 
     if (!isValidOffer(offer)) {
-      this.log(`Client [${client.id}] send an invalid offer while joining '${roomId}'`)
+      this.log(`Client[${client.id}] sent an invalid offer while joining '${roomId}'`)
       client.socket.close()
       return
     }
 
     const room = this.rooms.get(roomId)
     if (!room) {
+      this.log(`Client[${client.id}] sent an offer to an invalid room[${roomId}]`)
       client.socket.close()
       return
     }

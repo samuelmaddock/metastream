@@ -5,6 +5,8 @@ import SimplePeer, { SignalData } from 'simple-peer'
 import { Request, MessageType, RoomID, ClientID } from './types'
 import { waitEvent } from './util'
 
+const DEBUG = process.env.NODE_ENV !== 'production'
+
 export interface KeyPair {
   publicKey: Uint8Array
   privateKey: Uint8Array
@@ -74,12 +76,11 @@ export class SignalClient extends EventEmitter {
 
   private onMessage(event: WebSocketEventMap['message']) {
     const msg = event.data
-    console.log(`[SignalClient] received: ${msg.toString()}`)
     let req
     try {
       req = JSON.parse(msg.toString()) as Request
     } catch {
-      console.log(`[SignalClient] invalid request`)
+      console.error(`[SignalClient] Invalid request`, msg)
       return
     }
 
