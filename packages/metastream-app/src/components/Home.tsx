@@ -28,7 +28,10 @@ const SocialLink = (props: { href: string; title: string; image?: string; icon?:
   </ExternalLink>
 )
 
-interface IProps extends WithNamespaces {}
+interface IProps extends WithNamespaces {
+  installable: boolean
+  install?: () => void
+}
 
 class Home extends Component<IProps> {
   render() {
@@ -62,11 +65,6 @@ class Home extends Component<IProps> {
                 <MenuButton icon="play">{t('startSession')}</MenuButton>
               </Link>
             </li>
-            {/* <li>
-              <Link to="/servers" className={styles.btn}>
-                <MenuButton icon="search">Find Session</MenuButton>
-              </Link>
-            </li> */}
             <li>
               <Link to="/join" className={styles.btn}>
                 <MenuButton icon="globe">{t('joinSession')}</MenuButton>
@@ -82,6 +80,13 @@ class Home extends Component<IProps> {
                 <MenuButton icon="heart">{t('donate')}</MenuButton>
               </ExternalLink>
             </li>
+            {this.props.installable && (
+              <li>
+                <MenuButton icon="download" onClick={this.props.install}>
+                  {t('installToDesktop')}
+                </MenuButton>
+              </li>
+            )}
           </ul>
         </section>
 
@@ -91,12 +96,6 @@ class Home extends Component<IProps> {
 
         <footer className={styles.social}>
           <div>
-            {/* <SocialLink
-            href="https://getmetastream.com/"
-            image="./assets/icons/globe.svg"
-            title="Website"
-          /> */}
-
             <SocialLink
               href="https://www.patreon.com/metastream"
               image="./assets/icons/social/patreon-wordmark.svg"
