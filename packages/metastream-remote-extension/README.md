@@ -1,3 +1,12 @@
-# Metastream Media Remote browser extension [WIP]
+# Metastream Remote extension
 
-See https://www.patreon.com/posts/update-on-25999308
+Metastream companion extension for controlling embedded media.
+
+## Features
+
+- Message passing between Metastream and embedded websites
+- Observe media embedded in websites on https://app.getmetastream.com and http://localhost:8080
+- Control playback of media (play, pause, seek, volume)
+- Fullscreen media using CSS transforms to fit the browser window
+- Provide [`<webview>`](https://electronjs.org/docs/api/webview-tag)-like API for supporting IFrame message passing
+- Enhance visuals of image and video direct links

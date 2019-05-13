@@ -1,3 +1,13 @@
-# Metastream web app [WIP]
+# Metastream web app
 
-https://www.patreon.com/posts/update-on-25999308
+Built with modern browsers in mind. Currently supports the latest versions of Chrome and Firefox.
+
+## Techstack
+
+- React
+- React Router
+- Redux
+- TypeScript
+- libsodium
+- WebRTC
+- Webpack
