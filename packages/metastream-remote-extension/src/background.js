@@ -136,7 +136,7 @@ const onHeadersReceived = details => {
   let permitted = false
 
   const isMetastreamTab = watchedTabs.has(tabId) && isDirectChild(details)
-  const isServiceWorkerRequest = tabId === -1 && frameId === -1
+  const isServiceWorkerRequest = watchedTabs.size() > 0 && tabId === -1 && frameId === -1
   const shouldModify = isMetastreamTab || isServiceWorkerRequest
 
   // TODO: HTTP 301 redirects don't get captured. Try https://reddit.com/
