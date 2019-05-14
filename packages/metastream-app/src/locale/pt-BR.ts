@@ -35,6 +35,7 @@ export default {
   friendCode: 'Codigo de amigo',
   getStarted: 'Começar',
   info: 'Informação',
+  installToDesktop: 'Instalar para o desktop',
   invite: 'Convidar',
   join: 'Entrar',
   joinSession: 'Entrar na sessão',
