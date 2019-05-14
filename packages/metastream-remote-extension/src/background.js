@@ -18,7 +18,6 @@ const isMetastreamUrl = url =>
 const isTopFrame = details => details.frameId === TOP_FRAME
 const isDirectChild = details => details.parentFrameId === TOP_FRAME
 const isValidAction = action => typeof action === 'object' && typeof action.type === 'string'
-const sleep = delay => new Promise(resolve => setTimeout(resolve, delay))
 const isFirefox = () => navigator.userAgent.toLowerCase().includes('firefox')
 
 const escapePattern = pattern => pattern.replace(/[\\^$+?.()|[\]{}]/g, '\\$&')
@@ -184,7 +183,7 @@ const onBeforeNavigate = details => {
 }
 
 // Programmatically inject content scripts into Metastream subframes
-const onCommitted = details => {
+const initScripts = details => {
   const { tabId, frameId, url } = details
   if (!watchedTabs.has(tabId)) return
 
@@ -284,12 +283,7 @@ const injectContentScripts = async details => {
   const tabState = tabStore[tabId]
   const scriptable = tabState && tabState.scriptableFrames.has(topIFrameId)
   if (scriptable) {
-    // BUG: Firefox injects scripts prior to page loading on refresh
-    if (isFirefox()) {
-      await sleep(200)
-    }
-
-    console.log(`Injecting player script tabId=${tabId}, frameId=${frameId}`)
+    console.log(`Injecting player script tabId=${tabId}, frameId=${frameId}, url=${url}`)
     executeScript({ tabId, frameId, file: '/player.js' })
 
     CONTENT_SCRIPTS.forEach(script => {
@@ -348,7 +342,11 @@ const startWatchingTab = tab => {
   const shouldAddGlobalListeners = watchedTabs.size === 1
   if (shouldAddGlobalListeners) {
     chrome.webNavigation.onBeforeNavigate.addListener(onBeforeNavigate)
-    chrome.webNavigation.onCommitted.addListener(onCommitted)
+    if (isFirefox()) {
+      chrome.webNavigation.onDOMContentLoaded.addListener(initScripts)
+    } else {
+      chrome.webNavigation.onCommitted.addListener(initScripts)
+    }
     chrome.webNavigation.onCompleted.addListener(onCompleted)
     chrome.webNavigation.onHistoryStateUpdated.addListener(onHistoryStateUpdated)
     chrome.tabs.onRemoved.addListener(onTabRemove)
@@ -380,7 +378,11 @@ const stopWatchingTab = tabId => {
   const shouldRemoveGlobalListeners = watchedTabs.size === 0
   if (shouldRemoveGlobalListeners) {
     chrome.webNavigation.onBeforeNavigate.removeListener(onBeforeNavigate)
-    chrome.webNavigation.onCommitted.removeListener(onCommitted)
+    if (isFirefox()) {
+      chrome.webNavigation.onDOMContentLoaded.removeListener(initScripts)
+    } else {
+      chrome.webNavigation.onCommitted.removeListener(initScripts)
+    }
     chrome.webNavigation.onCompleted.removeListener(onCompleted)
     chrome.webNavigation.onHistoryStateUpdated.removeListener(onHistoryStateUpdated)
     chrome.tabs.onRemoved.removeListener(onTabRemove)
