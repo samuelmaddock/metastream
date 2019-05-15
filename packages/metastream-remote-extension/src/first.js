@@ -6,16 +6,15 @@
 // Declaring the script in the manifest, as opposed to using
 // chrome.tabs.executeScript, seems to be the only way to achieve this from
 // my own testing.
-// https://bugs.chromium.org/p/chromium/issues/detail?id=377978
+// https://bugs.chromium.org/p/chromium/issues/detail?id=471801
 //
 
 ;(function() {
   const mainWorldScript = function() {
     document.getElementById('metastreaminitscript').remove()
 
-    // Only run in iframes, the same as the Metastream player frame
-    const isTopFrame = window.self === window.top
-    if (isTopFrame) return
+    // Only run in iframes, the same as Metastream webviews
+    if (window.self === window.top) return
 
     const mediaElements = (window.__metastreamMediaElements = new Set())
 
@@ -36,12 +35,15 @@
       window.__metastreamMediaElements = undefined
     }, 5e3)
 
+    // Fix for setting document.domain in sandboxed iframe
     try {
-      // Fix for setting document.domain in sandboxed iframe (twitch.tv)
-      Object.defineProperty(document, 'domain', {
-        value: document.domain,
-        writable: true
-      })
+      const { domain } = document
+      if (domain && domain.includes('twitch.tv')) {
+        Object.defineProperty(document, 'domain', {
+          value: domain,
+          writable: true
+        })
+      }
     } catch (e) {}
   }
 
