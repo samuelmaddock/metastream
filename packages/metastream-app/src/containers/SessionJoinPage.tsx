@@ -17,7 +17,7 @@ class _SessionJoinPage extends Component<PrivateProps> {
 
   private connect = (sessionId: string) => {
     console.debug(`Connecting to ${sessionId}`)
-    this.props.dispatch!(push(`/lobby/${sessionId}`))
+    this.props.dispatch!(push(`/join/${sessionId}`))
   }
 }
 

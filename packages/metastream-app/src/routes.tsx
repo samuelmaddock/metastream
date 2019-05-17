@@ -12,8 +12,8 @@ export default () => (
   <App>
     <Switch>
       <WelcomeRoute exact path="/" component={HomePage} />
-      <WelcomeRoute path="/lobby/:lobbyId" component={LobbyPage} />
-      <WelcomeRoute path="/join" component={SessionJoinPage} />
+      <WelcomeRoute exact path="/join" component={SessionJoinPage} />
+      <WelcomeRoute path="/join/:lobbyId" component={LobbyPage} />
       <WelcomeRoute path="/settings" component={SettingsPage} />
     </Switch>
   </App>
