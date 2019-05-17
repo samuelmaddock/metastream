@@ -20,7 +20,7 @@ const SocialLink = (props: { href: string; title: string; image?: string; icon?:
   <ExternalLink href={props.href} className={styles.socialLink}>
     <Tooltip title={props.title}>
       {props.image ? (
-        <img src={props.image} className={styles.socialIcon} />
+        <img src={props.image} className={styles.socialIcon} alt={props.title} />
       ) : (
         <Icon name={props.icon!} className={styles.socialIcon} />
       )}
@@ -46,7 +46,12 @@ class Home extends Component<IProps> {
           className={styles.header}
           text={
             <>
-              <img src={assetUrl('icons/metastream-icon.svg')} className={styles.logo} width="48" />
+              <img
+                src={assetUrl('icons/metastream-icon.svg')}
+                className={styles.logo}
+                width="48"
+                alt=""
+              />
               {PRODUCT_NAME}
               <div className={styles.buildInfo}>
                 <h3>

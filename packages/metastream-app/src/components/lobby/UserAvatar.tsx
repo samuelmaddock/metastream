@@ -42,8 +42,12 @@ export class UserAvatar extends Component<IProps> {
 
     const children = (
       <>
-        <img className={styles.image} src={this.state.src || assetUrl('avatars/default.svg')} />
-        {this.props.badge && <img className={styles.badge} src={this.props.badge} />}
+        <img
+          className={styles.image}
+          src={this.state.src || assetUrl('avatars/default.svg')}
+          alt=""
+        />
+        {this.props.badge && <img className={styles.badge} src={this.props.badge} alt="" />}
       </>
     )
 

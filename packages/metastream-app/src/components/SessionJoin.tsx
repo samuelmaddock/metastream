@@ -65,6 +65,7 @@ export class SessionJoin extends Component<IProps> {
               <img
                 src={assetUrl('icons/social/discord-color.svg')}
                 className={styles.discordLogo}
+                alt="Discord"
               />
             </ExternalLink>
           </p>
