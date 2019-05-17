@@ -80,6 +80,10 @@ export class Webview extends Component<Props> {
         this.url = action.payload.url
       }
 
+      if (action.type === 'activity') {
+        this.onIFrameActivity()
+      }
+
       // Whether the message was sent from the top subframe
       const isTopSubFrame = framePath[framePath.length - 1] === this.frameId
 
@@ -93,6 +97,12 @@ export class Webview extends Component<Props> {
     }
 
     this.emitter.emit('ready')
+  }
+
+  /** Notifies top frame of iframe activity */
+  private onIFrameActivity() {
+    const e = new Event('mousemove', { cancelable: false, bubbles: true })
+    document.dispatchEvent(e)
   }
 
   componentWillUnmount() {
