@@ -32,7 +32,6 @@ export default {
   duplicate: 'Дублировать',
   endSessionTitle: 'Завершить публичную сессию?',
   endSessionDescription: 'Переход к закрытому сеансу отключит всех подключенных пользователей.',
-  enterJoinDest: 'Введите код друга или IP-адрес.',
   friendCode: 'Код друга',
   getStarted: 'Начать',
   info: 'Информация',

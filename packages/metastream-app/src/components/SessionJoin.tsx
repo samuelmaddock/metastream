@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Trans } from 'react-i18next'
 import styles from './SessionJoin.css'
 import LayoutMain from 'components/layout/Main'
 import { MenuButton } from 'components/menu/MenuButton'
@@ -54,10 +55,12 @@ export class SessionJoin extends Component<IProps> {
           </form>
         </section>
         <section className={styles.discovery}>
-          <h2 className={styles.header}>Find Sessions</h2>
+          <h2 className={styles.header}>{t('findSession')}</h2>
           <p>
-            Join the <strong>#sessions</strong> channel on the {PRODUCT_NAME} Discord community to
-            find other users’ sessions. Click the Discord logo below to join.
+            <Trans i18nKey="findSessionDescription">
+              Join the <strong>#sessions</strong> channel on the {PRODUCT_NAME} Discord community to
+              find other users’ sessions. Click the Discord logo below to join.
+            </Trans>
             <ExternalLink href={DISCORD_INVITE_URL}>
               <img
                 src={assetUrl('icons/social/discord-color.svg')}

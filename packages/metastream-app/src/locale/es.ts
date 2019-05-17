@@ -33,7 +33,6 @@ export default {
   endSessionTitle: '¿Finalizar sesión pública?',
   endSessionDescription:
     'Cambiar a una sesión privada desconectará a todos los usuarios conectados.',
-  enterJoinDest: 'Ingrese un código de amigo o dirección IP.',
   friendCode: 'Código de amigo',
   getStarted: 'Empezar',
   info: 'Información',

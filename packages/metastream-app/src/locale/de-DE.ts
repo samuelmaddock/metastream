@@ -33,7 +33,6 @@ export default {
   duplicate: 'Duplizieren',
   endSessionTitle: 'Öffentliche Sitzung beenden?',
   endSessionDescription: 'Der Umstieg auf eine private Sitzung wird alle Benutzer trennen.',
-  enterJoinDest: 'Gebe einen Freundescode oder eine IP Adresse ein.',
   friendCode: 'Freundescode',
   getStarted: 'Los gehts',
   info: 'Info',
