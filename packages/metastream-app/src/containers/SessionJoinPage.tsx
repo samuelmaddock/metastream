@@ -5,6 +5,7 @@ import { RouteComponentProps } from 'react-router'
 import { SessionJoin } from '../components/SessionJoin'
 import { push } from 'react-router-redux'
 import { IReactReduxProps } from 'types/redux-thunk'
+import { formatSessionPath } from 'utils/network';
 
 interface IProps extends RouteComponentProps<void> {}
 
@@ -15,9 +16,10 @@ class _SessionJoinPage extends Component<PrivateProps> {
     return <SessionJoin connect={this.connect} />
   }
 
-  private connect = (sessionId: string) => {
-    console.debug(`Connecting to ${sessionId}`)
-    this.props.dispatch!(push(`/join/${sessionId}`))
+  private connect = (uri: string) => {
+    const path = formatSessionPath(uri)
+    console.debug(`Connecting to ${path}`)
+    this.props.dispatch(push(`/join/${path}`))
   }
 }
 

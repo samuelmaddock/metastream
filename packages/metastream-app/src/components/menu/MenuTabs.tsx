@@ -2,7 +2,7 @@ import React, { ReactNode, Component } from 'react'
 import * as cx from 'classnames'
 import { ExternalLink } from '../common/link'
 import { Changelog } from './Changelog'
-import { APP_WEBSITE } from 'constants/http'
+import { HOME_WEBSITE } from 'constants/http'
 
 import styles from './MenuTabs.css'
 import { t } from 'locale'
@@ -69,7 +69,7 @@ const WelcomeMessage: React.SFC = () => (
 )
 
 const Donators: React.SFC = () => (
-  <Fetch cacheKey="donators" href={`${APP_WEBSITE}app/donators.txt`}>
+  <Fetch cacheKey="donators" href={`${HOME_WEBSITE}/app/donators.txt`}>
     {data => <p style={{ whiteSpace: 'pre-wrap' }}>{typeof data === 'string' ? data : ''}</p>}
   </Fetch>
 )

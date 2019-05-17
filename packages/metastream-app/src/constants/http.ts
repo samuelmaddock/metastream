@@ -16,7 +16,8 @@ export const MEDIA_USER_AGENT = `${userAgent} (Googlebot)`
 const userAgentPlatform = userAgent.split(' Chrome/')[0]
 export const MEDIA_SESSION_USER_AGENT = `${userAgentPlatform} Chrome/73.0.3683.86 Safari/537.36`
 
-export const APP_WEBSITE = 'https://getmetastream.com/'
+export const HOME_WEBSITE = 'https://getmetastream.com'
+export const APP_WEBSITE = 'https://app.getmetastream.com'
 export const MEDIA_REFERRER = APP_WEBSITE
 
 export const WEBVIEW_PARTITION = 'persist:mediaplayer'
