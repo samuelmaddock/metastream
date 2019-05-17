@@ -33,12 +33,3 @@
 .column button {
   margin-top: 2rem;
 }
-
-.wip {
-  background: red;
-  font-size: 32px;
-  line-height: 1.2em;
-  padding: 1rem;
-  margin-bottom: 2rem;
-  text-align: center;
-}
