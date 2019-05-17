@@ -50,7 +50,7 @@ class Invite extends Component<PrivateProps> {
 
     return (
       <section className={styles.method}>
-        <p>Share the URL below to invite friends.</p>
+        <p>{t('shareSessionUrl')}</p>
         <ClipboardTextInput
           className={styles.idContainer}
           inputClassName={styles.idText}

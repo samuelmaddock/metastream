@@ -35,7 +35,8 @@ export default {
   endSessionDescription: 'Changing to a private session will disconnect all connected users.',
   enterJoinDest: 'Enter a Metastream session URL.',
   findSession: 'Find Session',
-  findSessionDescription: 'Join the <1>#sessions</1> channel on the Metastream Discord community to find other users’ sessions. Click the Discord logo below to join.',
+  findSessionDescription:
+    'Join the <1>#sessions</1> channel on the Metastream Discord community to find other users’ sessions. Click the Discord logo below to join.',
   friendCode: 'Friend code',
   getStarted: 'Get Started',
   info: 'Info',
@@ -85,6 +86,7 @@ export default {
   shareFriendCode: 'Share your friend code below to invite friends.',
   shareFriendCodeOther: 'Share {{name}}’s friend code below to invite friends.',
   sharePublicIP: 'Share <1>your public IP address</1> to allow friends to connect directly.',
+  shareSessionUrl: 'Share the session URL below to invite friends.',
   startSession: 'Start Session',
   thirdPartyIntegrations: 'Third-party Integrations',
   toggleDJ: 'Toggle DJ',
