@@ -71,4 +71,9 @@ export const setLocale = (locale: string) => {
   if (locale !== i18n.language) {
     i18n.changeLanguage(locale)
   }
+
+  const { documentElement } = document
+  if (documentElement.lang) {
+    documentElement.lang = locale
+  }
 }
