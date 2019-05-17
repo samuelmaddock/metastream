@@ -7,7 +7,7 @@ interface IExternalLinkProps {
 
 export const ExternalLink: React.SFC<IExternalLinkProps> = props => {
   return (
-    <a href={props.href} className={props.className} target="_blank">
+    <a href={props.href} className={props.className} target="_blank" rel="noopener">
       {props.children}
     </a>
   )
