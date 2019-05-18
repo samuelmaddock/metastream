@@ -1,6 +1,6 @@
 {
   "name": "@metastream/signal-server",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "WebRTC signaling server solution for Metastream.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",

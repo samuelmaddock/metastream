@@ -238,9 +238,8 @@ export class SignalServer extends EventEmitter {
 
     // Room already exists
     if (this.rooms.has(id)) {
-      this.log(`Client[${client.id}] attempted to create existing room [${id}]`)
-      client.socket.close()
-      return
+      this.log(`Client[${client.id}] attempted to create existing room [${id}], recreating room...`)
+      this.closeRoom(id)
     }
 
     const clients = new Set([client.id])

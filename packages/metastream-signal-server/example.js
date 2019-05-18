@@ -51,8 +51,16 @@ async function main() {
 
   await clientB.joinRoom(sodium.to_hex(keypair.publicKey))
 
+  // Overwrite client A room
+  const clientC = await createClient({
+    peerOpts,
+    server: `ws://127.0.0.1:${port}`
+  })
+  await clientC.createRoom(keypair)
+
   clientA.close()
   clientB.close()
+  clientC.close()
   server.close()
 }
 
