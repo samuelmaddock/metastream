@@ -35,16 +35,24 @@
       window.__metastreamMediaElements = undefined
     }, 5e3)
 
-    // Fix for setting document.domain in sandboxed iframe
-    try {
-      const { domain } = document
-      if (domain && domain.includes('twitch.tv')) {
-        Object.defineProperty(document, 'domain', {
-          value: domain,
-          writable: true
-        })
-      }
-    } catch (e) {}
+    const isFirefox = navigator.userAgent.toLowerCase().includes('firefox')
+    if (isFirefox) {
+      const domains = [
+        'twitch.tv',
+        'crunchyroll.com'
+      ]
+
+      // Fix for setting document.domain in sandboxed iframe
+      try {
+        const { domain } = document
+        if (domain && domains.some(d => d.includes(domain))) {
+          Object.defineProperty(document, 'domain', {
+            value: domain,
+            writable: true
+          })
+        }
+      } catch (e) {}
+    }
   }
 
   const script = document.createElement('script')

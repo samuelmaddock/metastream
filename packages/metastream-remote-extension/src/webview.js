@@ -42,4 +42,23 @@
   document.addEventListener('mousedown', onWebviewActivity, true)
   document.addEventListener('mousewheel', onWebviewActivity, true)
   document.addEventListener('keydown', onWebviewActivity, true)
+
+  const mainWorldScript = function() {
+    document.getElementById('metastreamwebviewinit').remove()
+
+    // Fix for setting document.domain in sandboxed iframe
+    try {
+      Object.defineProperty(document, 'domain', {
+        value: document.domain,
+        writable: true
+      })
+    } catch (e) {}
+  }
+
+  const script = document.createElement('script')
+  script.id = 'metastreamwebviewinit'
+  script.textContent = `(${mainWorldScript}());`
+  if (document.documentElement) {
+    document.documentElement.appendChild(script)
+  }
 })()
