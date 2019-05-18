@@ -11,6 +11,7 @@ import { RTCPeerConn } from 'network/rtc'
 import { mutualHandshake } from './authenticate'
 import { METASTREAM_SIGNAL_SERVER, METASTREAM_ICE_SERVERS } from '../../constants/network'
 import { NetworkError, NetworkErrorCode } from '../../network/error'
+import { untilDocumentVisible } from '../../utils/browser'
 
 /** Interval to ping WebSocket to keep connection open. */
 const KEEP_ALIVE_INTERVAL = 9 * 60 * 1000
@@ -63,10 +64,16 @@ export class WebRTCPeerCoordinator extends PeerCoordinator {
 
   private serverConnectionClosed = () => {
     this.emit('error', new NetworkError(NetworkErrorCode.SignalServerDisconnect))
+    this.reconnect()
+  }
 
-    // attempt to reconnect
+  private reconnect() {
     backOff(
       async () => {
+        if (document.visibilityState !== 'visible') {
+          await untilDocumentVisible()
+        }
+
         if (!this.closed) {
           console.debug('Attempting to reconnect to signal server...')
           this.cleanup()
