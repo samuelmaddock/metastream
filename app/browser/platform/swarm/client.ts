@@ -91,7 +91,7 @@ export class SwarmClient {
             }
           }
         )
-        .then(swarmServer => {
+        .then((swarmServer: any) => {
           this.swarmServer = swarmServer
         })
 

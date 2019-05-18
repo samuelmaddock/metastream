@@ -52,19 +52,15 @@ export class MenuTabs extends Component<IProps, IState> {
 const WelcomeMessage: React.SFC = () => (
   // TODO: l10n?
   <>
-    <p>Hi, thanks for trying out Metastream!</p>
-    <p>
-      This release is still in beta, so expect there to be some issues. If you come across any,
-      please{' '}
-      <ExternalLink href="https://github.com/samuelmaddock/metastream/issues">
-        submit a GitHub issue.
-      </ExternalLink>
+    <p style={{ background: 'red', color: '#ffffff', padding: '0.3rem 0.5rem' }}>
+      This software has been deprecated in favor of a new web application. Continued use of this
+      software will put your computer at risk due to possible security vulnerabilities.
+      <br />
+      <br />
+      Please check out{' '}
+      <ExternalLink href="https://app.getmetastream.com">app.getmetastream.com</ExternalLink> for
+      the new version of the application.
     </p>
-    <p>
-      If you'd like to join in on the discussion, feel free to join the Discord community using the
-      link at the bottom of the screen.
-    </p>
-    <p>💖 Sam</p>
   </>
 )
 
