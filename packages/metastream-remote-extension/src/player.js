@@ -437,18 +437,24 @@
     let origDocumentOverflow
 
     function getOffset(el) {
-      // Absolute offset from document
       let x = 0
       let y = 0
-      while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
-        x += el.offsetLeft - el.scrollLeft
-        y += el.offsetTop - el.scrollTop
-        el = el.offsetParent
+
+      // Absolute offset from document
+      let parent = el
+      while (parent && !isNaN(parent.offsetLeft) && !isNaN(parent.offsetTop)) {
+        x += parent.offsetLeft - parent.scrollLeft
+        y += parent.offsetTop - parent.scrollTop
+        parent = parent.offsetParent
       }
 
       // Transform offset
-      const { transform } = getComputedStyle(el)
-      if (transform !== 'none' && transform.startsWith('matrix(')) {
+      let transform
+      try {
+        const computedStyle = getComputedStyle(el)
+        transform = computedStyle.transform
+      } catch (e) {}
+      if (transform && transform !== 'none' && transform.startsWith('matrix(')) {
         const params = transform.substring(7, transform.length - 1).split(',')
         const left = parseFloat(params[params.length - 2]) || 0
         const top = parseFloat(params[params.length - 1]) || 0
