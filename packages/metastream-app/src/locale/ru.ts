@@ -29,7 +29,7 @@ export default {
   disconnected: 'Отключился',
   dj: 'DJ',
   donate: 'Поддержать',
-  donators: 'Донатеры',
+  donators: 'Поддерживают',
   duplicate: 'Дублировать',
   endSessionTitle: 'Завершить публичную сессию?',
   endSessionDescription: 'Переход к закрытому сеансу отключит всех подключенных пользователей.',
