@@ -5,6 +5,6 @@ export default (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD
     }
   : {
       provider: 'github',
-      repo: 'metastream',
+      repo: 'metastream-legacy-releases',
       owner: 'samuelmaddock'
     })
