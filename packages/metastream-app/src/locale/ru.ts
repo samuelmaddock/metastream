@@ -77,7 +77,7 @@ export default {
   sessionModePublicDescription: 'Присоединиться может любой желающий.',
   sessionModePrivateDescription: 'Разрешение на присоединение должно быть предоставлено явно.',
   sessionModeOfflineDescription: 'Никто не может присоединиться.',
-  settings: 'Найстройки',
+  settings: 'Настройки',
   shareFriendCode: 'Поделитесь своим кодом НИЖЕ, чтобы пригласить друзей.',
   shareFriendCodeOther: 'Поделитесь кодом {{name}} ниже, чтобы пригласить друзей.',
   sharePublicIP:
