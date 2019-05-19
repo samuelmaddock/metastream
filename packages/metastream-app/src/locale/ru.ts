@@ -70,7 +70,7 @@ export default {
   openInBrowser: 'Открыть в браузере',
   private: 'Частный',
   profile: 'Профиль',
-  public: 'публичный',
+  public: 'открытый',
   reload: 'Перезагрузить',
   remove: 'Удалить',
   repeat: 'Повторять',
