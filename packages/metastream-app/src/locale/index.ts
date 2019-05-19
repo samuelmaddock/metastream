@@ -14,12 +14,22 @@ export const DEFAULT_LANGUAGE = 'en-US'
 export const locales = [
   { label: 'English', code: 'en-US', translation: enUS, flag: '🇺🇸' },
   { label: 'Español', code: 'es-ES', translation: es, flag: '🇪🇸' },
-  { label: 'Pусский', code: 'ru', translation: ru, flag: '🇷🇺' },
+  { label: 'Pусский', code: 'ru-RU', translation: ru, flag: '🇷🇺' },
   { label: 'Português do Brasil', code: 'pt-BR', translation: ptBR, flag: '🇧🇷' },
   { label: 'Deutsch', code: 'de-DE', translation: deDE, flag: '🇩🇪' },
-  { label: '日本語', code: 'ja', translation: ja, flag: '🇯🇵' },
+  { label: '日本語', code: 'ja-JP', translation: ja, flag: '🇯🇵' },
   { label: 'Magyar', code: 'hu-HU', translation: huHU, flag: '🇭🇺' }
 ]
+
+const localeAliases: { [key: string]: string } = {
+  de: 'de-DE',
+  en: 'en-US',
+  es: 'es-ES',
+  hu: 'hu-HU',
+  ja: 'ja-JP',
+  pt: 'pt-BR',
+  ru: 'ru-RU'
+}
 
 const resources: Resource = locales.reduce(
   (obj, locale) => ({
@@ -31,7 +41,9 @@ const resources: Resource = locales.reduce(
   {}
 )
 
-resources.es = resources['es-ES']
+Object.keys(localeAliases).forEach(alias => {
+  resources[alias] = resources[localeAliases[alias]]
+})
 
 i18n.use(reactI18nextModule).init({
   debug: process.env.NODE_ENV === 'development',
@@ -56,7 +68,7 @@ export const translateEscaped: typeof t = (key, vars) => {
   })
 }
 
-export function initLocale(defaultLocale?: string) {
+export function initLocale(defaultLocale: string = navigator.language) {
   if (process.env.NODE_ENV === 'development') {
     Object.assign((window as any).app, { i18n })
   }
