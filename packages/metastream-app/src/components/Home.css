@@ -76,12 +76,20 @@
 .socialRight {
   display: flex;
   align-items: center;
+  text-align: right;
 }
 
 .credits {
   composes: blend-text from '~styles/text.css';
+  line-height: 1.2rem;
+  text-align: right;
 }
 
 .credits a {
   font-weight: bolder;
+}
+
+.contributors {
+  composes: credits;
+  font-style: italic;
 }

@@ -127,9 +127,20 @@ class Home extends Component<IProps> {
           </div>
 
           <div className={styles.socialRight}>
-            <span className={styles.credits}>
-              Created by <ExternalLink href="http://samuelmaddock.com">Sam Maddock</ExternalLink>
-            </span>
+            <div>
+              <span className={styles.credits}>
+                Created by{' '}
+                <ExternalLink href="http://samuelmaddock.com">Sam&nbsp;Maddock</ExternalLink>
+              </span>
+              <span className={styles.contributors}>
+                <br />
+                &amp;{' '}
+                <ExternalLink href="https://github.com/samuelmaddock/metastream/graphs/contributors">
+                  contributors
+                </ExternalLink>{' '}
+                ♥
+              </span>
+            </div>
           </div>
         </footer>
       </LayoutMain>
