@@ -9,6 +9,7 @@ import es from './es'
 import ru from './ru'
 import ja from './ja'
 import ar from './ar'
+import koKR from './ko-KR'
 
 export const DEFAULT_LANGUAGE = 'en-US'
 
@@ -20,7 +21,8 @@ export const locales = [
   { label: 'Deutsch', code: 'de-DE', translation: deDE, flag: '🇩🇪' },
   { label: '日本語', code: 'ja-JP', translation: ja, flag: '🇯🇵' },
   { label: 'Magyar', code: 'hu-HU', translation: huHU, flag: '🇭🇺' },
-  { label: 'العربية الفصحة', code: 'ar', translation: ar, flag: '🇦🇪' }
+  { label: 'العربية الفصحة', code: 'ar', translation: ar, flag: '🇦🇪' },
+  { label: '한국어', code: 'ko-KR', translation: koKR, flag: '🇰🇷' }
 ]
 
 const localeAliases: { [key: string]: string } = {
