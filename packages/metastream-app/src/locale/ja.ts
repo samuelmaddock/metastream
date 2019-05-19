@@ -32,10 +32,11 @@ export default {
   duplicate: '複製',
   endSessionTitle: '公開セッションを終了しますか？',
   endSessionDescription: '限定公開セッションに切り替えると、すべてのユーザーが切断されます。',
+  enterJoinDest: 'MetastreamのセッションのURLを入力してください。',
   findSession: 'セッションを探す',
   findSessionDescription:
     'Discordのコミュニティ「Metastream」の<1>#sessions</1>チャンネルで他の人のセッションを見つけることができます。 以下のロゴマークをクリックしてDiscordコミュニティ参加できます。',
-  friendCode: 'フレンドコード',
+  friendCode: 'セッションのURL',
   getStarted: '開始',
   info: '情報',
   installToDesktop: 'デスクトップ版を導入',
