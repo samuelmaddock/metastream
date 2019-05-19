@@ -43,7 +43,7 @@ export default {
   installToDesktop: 'تنزيل ل سطح المكتب ',
   invite: 'دعوة',
   join: 'إنضمام',
-  joinSession: 'إنضمام جلسة',
+  joinSession: 'إنضم لجلسة',
   kick: 'طرد',
   language: 'اللغة',
   lockQueue: 'قفل قائمة الإنتظار',
