@@ -66,6 +66,11 @@
   Custom Scrollbar
 */
 
+.scroller {
+  /** Hide scrollbar in Firefox */
+  scrollbar-width: none;
+}
+
 .scroller::-webkit-scrollbar {
   width: 12px;
 }
