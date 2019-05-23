@@ -93,7 +93,7 @@ export default {
   unlimited: 'غير محدود',
   unlockQueue: 'فتح قائمة الإنتظار',
   username: 'إسم المستخدم ',
-  users: 'المستخدم',
+  users: 'المستخدمين',
   userJoined: '<Username id="{{userId}}">{{username}}</Username> إنضم',
   userLeft: '<Username id="{{userId}}">{{username}}</Username> غادر',
   viewOnGitHub: 'عرض على GitHub',
