@@ -528,7 +528,7 @@
 
       // Hide all non-video elements
       const elem = document.createElement('style')
-      const visibleTagName = isVideo ? 'video' : `[src="${target.src}"]`
+      const visibleTagName = isVideo ? 'video' : 'iframe'
       elem.innerText = `
 :not(${visibleTagName}) {
   color: transparent !important;
