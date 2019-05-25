@@ -105,6 +105,10 @@ const CONTENT_SCRIPTS = [
   {
     matches: ['https://*.hulu.com/*'],
     file: '/scripts/hulu.js'
+  },
+  {
+    matches: ['https://www.dcuniverse.com/*'],
+    file: '/scripts/dcuniverse.js'
   }
 ]
 
