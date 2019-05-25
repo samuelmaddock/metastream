@@ -154,24 +154,25 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
 
   private onIpcMessage = (action: any, ...args: any[]) => {
     console.log('Received VideoPlayer IPC message', action)
+    const isTopSubFrame = !!args[0]
 
     switch (action.type) {
       case 'media-ready':
-        this.onMediaReady(action.payload)
+        this.onMediaReady(isTopSubFrame, action.payload)
         break
-      case 'media-fullscreen': {
-        // Apply auto-fullscreen to all subframes with nested iframes
-        const isTopSubFrame = !!args[0]
-        if (!isTopSubFrame) {
-          this.dispatchMedia('apply-fullscreen', action.payload.href)
-        }
-        break
-      }
     }
   }
 
-  private onMediaReady = (info?: { duration?: number; href: string }) => {
-    console.debug('onMediaReady', info)
+  private onMediaReady = (
+    isTopSubFrame: boolean = false,
+    payload?: { duration?: number; href: string }
+  ) => {
+    console.debug('onMediaReady', payload)
+
+    // Apply auto-fullscreen to all subframes with nested iframes
+    if (!isTopSubFrame && payload) {
+      this.dispatchMedia('apply-fullscreen', payload.href)
+    }
 
     this.updatePlaybackTime()
     this.updatePlayback(this.props.playback)
@@ -180,14 +181,15 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     const media = this.props.current
     if (this.props.host) {
       const prevDuration = media ? media.duration : null
-      const nextDuration = info && info.duration && !isNaN(info.duration) ? info.duration : null
+      const nextDuration =
+        payload && payload.duration && !isNaN(payload.duration) ? payload.duration : null
 
       const isLiveMedia = prevDuration === 0
       const noDuration = !prevDuration
       const isLongerDuration = nextDuration && (prevDuration && nextDuration > prevDuration)
 
       if (nextDuration && !isLiveMedia && (noDuration || isLongerDuration)) {
-        this.props.dispatch(updateMedia({ duration: info!.duration! }))
+        this.props.dispatch(updateMedia({ duration: payload!.duration! }))
         this.props.dispatch(updatePlaybackTimer())
       }
     }

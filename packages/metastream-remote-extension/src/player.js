@@ -184,15 +184,21 @@
           break
         }
         case 'apply-fullscreen': {
+          let target
           const href = action.payload
           if (location.href !== href) {
-            const iframe = document.querySelector(`iframe[src="${href}"]`)
+            // Find IFrame with partial or full URL match.
+            // Sometimes 'src' doesn't include the protocol so an exact match
+            // won't work.
+            const iframes = document.querySelectorAll('iframe')
+            const iframe = Array.from(iframes).find(
+              ({ src }) => src.length > 0 && href.includes(src)
+            )
             if (iframe) {
-              startAutoFullscreen(iframe)
+              target = iframe
             }
-          } else {
-            stopAutoFullscreen()
           }
+          startAutoFullscreen(target)
           return
         }
       }
@@ -504,7 +510,11 @@
       if (!(isVideo || target instanceof HTMLIFrameElement)) return
       console.debug('Starting autofullscreen', target)
 
-      document.body.scrollIntoView() // scrolls to top
+      // Prevent scroll offset
+      if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual'
+      }
+      window.scrollTo(0, 0) // reset scroll
       origDocumentOverflow = getComputedStyle(document.body).overflow
 
       // Find container we can transform
@@ -539,13 +549,6 @@
 
       fullscreenElement = target
       fullscreenFrameId = requestAnimationFrame(renderFullscreen)
-
-      dispatchMediaEvent({
-        type: 'media-fullscreen',
-        payload: {
-          href: location.href
-        }
-      })
     }
 
     function stopAutoFullscreen() {
@@ -609,7 +612,8 @@
       dispatchMediaEvent({
         type: 'media-ready',
         payload: {
-          duration: duration ? duration * SEC2MS : undefined
+          duration: duration ? duration * SEC2MS : undefined,
+          href: location.href
         }
       })
 
