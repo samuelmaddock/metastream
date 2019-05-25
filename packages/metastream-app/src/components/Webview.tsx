@@ -129,6 +129,9 @@ export class Webview extends Component<Props> {
         allow={this.featurePolicy}
         sandbox={this.sandboxPolicy}
         src={this.initialUrl}
+        // Required for Firefox until it supports allow attribute
+        allowFullScreen
+        allowTransparency
         {...untypedProps}
         {...rest}
       />
