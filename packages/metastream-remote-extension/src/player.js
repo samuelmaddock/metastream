@@ -212,9 +212,7 @@
           break
         }
         case 'seek-media':
-          setTimeout(() => {
-            player.seek(action.payload)
-          }, 1000)
+          player.seek(action.payload)
           break
         case 'set-media-volume':
           player.setVolume(action.payload)
