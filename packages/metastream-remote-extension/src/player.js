@@ -433,6 +433,7 @@
     // Auto-fullscreen
     //===========================================================================
 
+    let isFullscreen = false
     let fullscreenElement
     let fullscreenContainer
     let fullscreenFrameId
@@ -507,6 +508,9 @@
       if (!(isVideo || target instanceof HTMLIFrameElement)) return
       console.debug('Starting autofullscreen', target)
 
+      if (isFullscreen) stopAutoFullscreen()
+      isFullscreen = true
+
       // Prevent scroll offset
       if ('scrollRestoration' in history) {
         history.scrollRestoration = 'manual'
@@ -550,6 +554,7 @@
 
     function stopAutoFullscreen() {
       console.debug('Stopping autofullscreen')
+      isFullscreen = false
       fullscreenElement = undefined
       if (origDocumentOverflow) {
         document.body.style.overflow = origDocumentOverflow
@@ -633,7 +638,6 @@
 
       prevDuration = undefined
 
-      stopAutoFullscreen()
       startAutoFullscreen()
 
       // TODO: Use MutationObserver to observe if video gets removed from DOM
