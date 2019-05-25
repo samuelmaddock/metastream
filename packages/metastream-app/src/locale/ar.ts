@@ -28,7 +28,7 @@ export default {
   disconnect: 'قطع الاتصال',
   disconnected: 'انقطع الاتصال',
   dj: 'DJ',
-  donate: 'patreon الدعم على',
+  donate: 'دعم المطور',
   donators: 'المتبرعين',
   duplicate: 'تكرار',
   endSessionTitle: 'إنهاء البث العام ',
