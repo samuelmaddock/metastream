@@ -115,7 +115,8 @@ export class Webview extends Component<Props> {
 
     // TODO(samuelmaddock): Update React and types so these props can be passed in
     const untypedProps: any = {
-      referrerPolicy: 'origin'
+      referrerPolicy: 'origin',
+      allowtransparency: ''
     }
 
     return (
@@ -131,7 +132,6 @@ export class Webview extends Component<Props> {
         src={this.initialUrl}
         // Required for Firefox until it supports allow attribute
         allowFullScreen
-        allowTransparency
         {...untypedProps}
         {...rest}
       />
