@@ -152,7 +152,7 @@
 
     const mediaList = new Set()
     let player
-    let activeMedia
+    let activeMedia, activeFrame
 
     //===========================================================================
     // Communicate between main world and content script's isolated world.
@@ -184,7 +184,6 @@
           break
         }
         case 'apply-fullscreen': {
-          let target
           const href = action.payload
           if (location.href !== href) {
             // Find IFrame with partial or full URL match.
@@ -194,11 +193,9 @@
             const iframe = Array.from(iframes).find(
               ({ src }) => src.length > 0 && href.includes(src)
             )
-            if (iframe) {
-              target = iframe
-            }
+            activeFrame = iframe || undefined
           }
-          startAutoFullscreen(target)
+          startAutoFullscreen(activeFrame)
           return
         }
       }
@@ -505,7 +502,7 @@
       fullscreenFrameId = requestAnimationFrame(renderFullscreen)
     }
 
-    function startAutoFullscreen(target = activeMedia) {
+    function startAutoFullscreen(target = activeMedia || activeFrame) {
       const isVideo = target instanceof HTMLVideoElement
       if (!(isVideo || target instanceof HTMLIFrameElement)) return
       console.debug('Starting autofullscreen', target)
@@ -622,7 +619,10 @@
 
     const setActiveMedia = media => {
       activeMedia = media
+      activeFrame = undefined
+
       player = new HTMLMediaPlayer(media)
+
       console.debug('Set active media', media, media.src, media.duration)
       window.MEDIA = media
 
