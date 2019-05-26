@@ -464,30 +464,40 @@
       const { width, height, left, top } = getNormalizedRect(fullscreenElement, fullscreenContainer)
       const { innerWidth: viewportWidth, innerHeight: viewportHeight } = window
 
-      let transform, transformOrigin
+      let transform, transformOrigin, scale
 
-      // Set transform origin on video center
-      const vidCenterX = left + width / 2
-      const vidCenterY = top + height / 2
-      transformOrigin = `${vidCenterX}px ${vidCenterY}px`
+      // Approximate whether the video already fills the viewport
+      const videoFillsViewport =
+        Math.abs(width - viewportWidth) < 20 && Math.abs(height - viewportHeight) < 20
 
-      // Transform video to center of viewport
-      const viewportCenterX = viewportWidth / 2
-      const viewportCenterY = viewportHeight / 2
-      const offsetX = -1 * (vidCenterX - viewportCenterX)
-      const offsetY = -1 * (vidCenterY - viewportCenterY)
-      transform = `translate(${offsetX}px, ${offsetY}px)`
+      if (videoFillsViewport) {
+        transform = ''
+        transformOrigin = ''
+        scale = 1
+      } else {
+        // Set transform origin on video center
+        const vidCenterX = left + width / 2
+        const vidCenterY = top + height / 2
+        transformOrigin = `${vidCenterX}px ${vidCenterY}px`
 
-      // Scale to fit viewport
-      const scaleWidth = viewportWidth / width
-      const scaleHeight = viewportHeight / height
-      const scale = scaleWidth > scaleHeight ? scaleHeight : scaleWidth
-      transform += ` scale(${scale})`
+        // Transform video to center of viewport
+        const viewportCenterX = viewportWidth / 2
+        const viewportCenterY = viewportHeight / 2
+        const offsetX = -1 * (vidCenterX - viewportCenterX)
+        const offsetY = -1 * (vidCenterY - viewportCenterY)
+        transform = `translate(${offsetX}px, ${offsetY}px)`
+
+        // Scale to fit viewport
+        const scaleWidth = viewportWidth / width
+        const scaleHeight = viewportHeight / height
+        scale = scaleWidth > scaleHeight ? scaleHeight : scaleWidth
+        transform += ` scale(${scale})`
+      }
 
       fullscreenContainer.style.transformOrigin = transformOrigin
       fullscreenContainer.style.transform = transform
-
       prevScale = scale
+
       fullscreenFrameId = requestAnimationFrame(renderFullscreen)
     }
 
