@@ -442,10 +442,10 @@
     let origDocumentOverflow
     let prevScale = 1
 
-    function getNormalizedRect(el) {
+    function getNormalizedRect(el, rootEl) {
       // Get renderered offsets
       const rect = el.getBoundingClientRect()
-      const rootRect = fullscreenContainer.getBoundingClientRect()
+      const rootRect = rootEl.getBoundingClientRect()
 
       // Normalize against transform scale
       const normalize = 1 / (prevScale || 1)
@@ -461,7 +461,7 @@
     function renderFullscreen() {
       document.body.style.overflow = 'hidden'
 
-      const { width, height, left, top } = getNormalizedRect(fullscreenElement)
+      const { width, height, left, top } = getNormalizedRect(fullscreenElement, fullscreenContainer)
       const { innerWidth: viewportWidth, innerHeight: viewportHeight } = window
 
       let transform, transformOrigin
@@ -509,25 +509,37 @@
       origDocumentOverflow = getComputedStyle(document.body).overflow
 
       // Find container we can transform
-      let container = fullscreenContainer = target
+      let container = (fullscreenContainer = target)
       do {
         if (container && container.offsetWidth && container.offsetHeight) {
           fullscreenContainer = container
         }
       } while ((container = container.parentNode))
 
+      // If fullscreen container is not at the top left of the viewport, revert
+      // to document.
+      if (fullscreenContainer && fullscreenContainer.getBoundingClientRect().left > 0) {
+        fullscreenContainer = document.documentElement
+      }
+
       // Hide all non-video elements
       const elem = document.createElement('style')
       const visibleTagName = isVideo ? 'video' : 'iframe'
       elem.innerText = `
-:not(${visibleTagName}) {
+:not(${visibleTagName}),
+:not(${visibleTagName}):after,
+:not(${visibleTagName}):before {
   color: transparent !important;
   z-index: 0;
   background: transparent !important;
-  border: none !important;
+  border-color: transparent !important;
   outline: none !important;
   box-shadow: none !important;
   text-shadow: none !important;
+  mix-blend-mode: normal !important;
+  filter: none !important;
+  fill: none !important;
+  -webkit-mask: none !important;
 }
 
 :not(${visibleTagName}):empty {
