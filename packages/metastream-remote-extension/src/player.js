@@ -153,6 +153,7 @@
     const mediaList = new Set()
     let player
     let activeMedia, activeFrame
+    let isInInteractMode = false
 
     //===========================================================================
     // Communicate between main world and content script's isolated world.
@@ -175,8 +176,8 @@
 
       switch (action.type) {
         case 'set-interact': {
-          const interacting = action.payload
-          if (interacting) {
+          isInInteractMode = action.payload
+          if (isInInteractMode) {
             stopAutoFullscreen()
           } else {
             startAutoFullscreen()
@@ -442,16 +443,41 @@
     let prevScale = 1
 
     function getNormalizedRect(el) {
+      // Get renderered offsets
       const rect = el.getBoundingClientRect()
       const rootRect = fullscreenContainer.getBoundingClientRect()
-      const normalize = 1 / (prevScale || 1)
 
-      return {
-        width: rect.width * normalize,
-        height: rect.height * normalize,
-        left: (rect.left - rootRect.left) * normalize,
-        top: (rect.top - rootRect.top) * normalize
+      // Normalize against transform scale
+      const normalize = 1 / (prevScale || 1)
+      let width = rect.width * normalize
+      let height = rect.height * normalize
+      let left = (rect.left - rootRect.left) * normalize
+      let top = (rect.top - rootRect.top) * normalize
+
+      // Correct for video object-fit property
+      if (el instanceof HTMLVideoElement) {
+        const { videoWidth, videoHeight } = el
+        const videoAspectRatio = videoWidth / videoHeight
+        const elementAspectRatio = width / height
+
+        let actualWidth, actualHeight
+        if (elementAspectRatio > videoAspectRatio) {
+          // Container is wider than video
+          actualWidth = videoWidth * (height / videoHeight)
+          actualHeight = height
+        } else {
+          // Container is taller than video
+          actualWidth = videoWidth
+          actualHeight = height * (width / videoWidth)
+        }
+
+        left = left + (width - actualWidth) / 2
+        top = top + (height - actualHeight) / 2
+        width = actualWidth
+        height = actualHeight
       }
+
+      return { width, height, left, top }
     }
 
     // Fit media within viewport
@@ -491,6 +517,8 @@
     function startAutoFullscreen(target = activeMedia || activeFrame) {
       const isVideo = target instanceof HTMLVideoElement
       if (!(isVideo || target instanceof HTMLIFrameElement)) return
+      if (isInInteractMode) return
+
       console.debug('Starting autofullscreen', target)
 
       if (isFullscreen) stopAutoFullscreen()
@@ -504,7 +532,7 @@
       origDocumentOverflow = getComputedStyle(document.body).overflow
 
       // Find container we can transform
-      let container = target
+      let container = fullscreenContainer = target
       do {
         if (container && container.offsetWidth && container.offsetHeight) {
           fullscreenContainer = container
