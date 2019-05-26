@@ -439,42 +439,26 @@
     let fullscreenFrameId
     let fullscreenStyleElement
     let origDocumentOverflow
+    let prevScale = 1
 
-    function getOffset(el) {
-      let x = 0
-      let y = 0
+    function getNormalizedRect(el) {
+      const rect = el.getBoundingClientRect()
+      const rootRect = fullscreenContainer.getBoundingClientRect()
+      const normalize = 1 / (prevScale || 1)
 
-      // Absolute offset from document
-      let parent = el
-      while (parent && !isNaN(parent.offsetLeft) && !isNaN(parent.offsetTop)) {
-        x += parent.offsetLeft - parent.scrollLeft
-        y += parent.offsetTop - parent.scrollTop
-        parent = parent.offsetParent
+      return {
+        width: rect.width * normalize,
+        height: rect.height * normalize,
+        left: (rect.left - rootRect.left) * normalize,
+        top: (rect.top - rootRect.top) * normalize
       }
-
-      // Transform offset
-      let transform
-      try {
-        const computedStyle = getComputedStyle(el)
-        transform = computedStyle.transform
-      } catch (e) {}
-      if (transform && transform !== 'none' && transform.startsWith('matrix(')) {
-        const params = transform.substring(7, transform.length - 1).split(',')
-        const left = parseFloat(params[params.length - 2]) || 0
-        const top = parseFloat(params[params.length - 1]) || 0
-        x += left
-        y += top
-      }
-
-      return { top: y, left: x }
     }
 
     // Fit media within viewport
     function renderFullscreen() {
       document.body.style.overflow = 'hidden'
 
-      const { offsetWidth: width, offsetHeight: height } = fullscreenElement
-      const { left, top } = getOffset(fullscreenElement)
+      const { width, height, left, top } = getNormalizedRect(fullscreenElement)
       const { innerWidth: viewportWidth, innerHeight: viewportHeight } = window
 
       let transform, transformOrigin
@@ -500,6 +484,7 @@
       fullscreenContainer.style.transformOrigin = transformOrigin
       fullscreenContainer.style.transform = transform
 
+      prevScale = scale
       fullscreenFrameId = requestAnimationFrame(renderFullscreen)
     }
 
