@@ -454,29 +454,6 @@
       let left = (rect.left - rootRect.left) * normalize
       let top = (rect.top - rootRect.top) * normalize
 
-      // Correct for video object-fit property
-      if (el instanceof HTMLVideoElement) {
-        const { videoWidth, videoHeight } = el
-        const videoAspectRatio = videoWidth / videoHeight
-        const elementAspectRatio = width / height
-
-        let actualWidth, actualHeight
-        if (elementAspectRatio > videoAspectRatio) {
-          // Container is wider than video
-          actualWidth = videoWidth * (height / videoHeight)
-          actualHeight = height
-        } else {
-          // Container is taller than video
-          actualWidth = videoWidth
-          actualHeight = height * (width / videoWidth)
-        }
-
-        left = left + (width - actualWidth) / 2
-        top = top + (height - actualHeight) / 2
-        width = actualWidth
-        height = actualHeight
-      }
-
       return { width, height, left, top }
     }
 
