@@ -73,6 +73,7 @@ export default {
   reload: 'Reload',
   remove: 'Remove',
   repeat: 'Repeat',
+  retry: 'Retry',
   requestUrl: 'Add to session',
   requestUrlPlaceholder: '',
   requiresDJPermissions: 'Requires DJ permissions',

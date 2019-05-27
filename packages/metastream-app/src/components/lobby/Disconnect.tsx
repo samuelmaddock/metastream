@@ -9,12 +9,13 @@ import { ExternalLink } from '../common/link'
 import { Trans, withNamespaces, WithNamespaces } from 'react-i18next'
 
 interface IProps extends WithNamespaces {
-  reason: NetworkDisconnectReason
+  reason: NetworkDisconnectReason,
+  reconnect: () => void,
 }
 
 class _Disconnect extends Component<IProps> {
   render(): JSX.Element {
-    const { t, reason } = this.props
+    const { t, reason, reconnect } = this.props
     const reasonKey: any = NetworkDisconnectMessages[reason]
     const msg = t(reasonKey) || reasonKey
 
@@ -39,6 +40,7 @@ class _Disconnect extends Component<IProps> {
         <Link to="/">
           <MenuButton size="medium">{t('ok')}</MenuButton>
         </Link>
+        <MenuButton size="medium" onClick={reconnect}>{t('retry')}</MenuButton>
       </div>
     )
   }
