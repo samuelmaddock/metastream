@@ -442,6 +442,32 @@
     let origDocumentOverflow
     let prevScale = 1
 
+    // Creates styles to hide all non-video elements in the document
+    function getFocusStyles(visibleTagName) {
+      return `
+:not(${visibleTagName}),
+:not(${visibleTagName}):after,
+:not(${visibleTagName}):before {
+  color: transparent !important;
+  z-index: 0;
+  background: transparent !important;
+  border-color: transparent !important;
+  outline: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  mix-blend-mode: normal !important;
+  filter: none !important;
+  fill: none !important;
+  stroke: none !important;
+  -webkit-mask: none !important;
+  transition: none !important;
+}
+
+:not(${visibleTagName}):empty {
+  visibility: hidden !important;
+}`
+    }
+
     function getNormalizedRect(el, rootEl) {
       // Get renderered offsets
       const rect = el.getBoundingClientRect()
@@ -533,31 +559,12 @@
       }
 
       // Hide all non-video elements
-      const elem = document.createElement('style')
-      const visibleTagName = isVideo ? 'video' : 'iframe'
-      elem.innerText = `
-:not(${visibleTagName}),
-:not(${visibleTagName}):after,
-:not(${visibleTagName}):before {
-  color: transparent !important;
-  z-index: 0;
-  background: transparent !important;
-  border-color: transparent !important;
-  outline: none !important;
-  box-shadow: none !important;
-  text-shadow: none !important;
-  mix-blend-mode: normal !important;
-  filter: none !important;
-  fill: none !important;
-  -webkit-mask: none !important;
-}
-
-:not(${visibleTagName}):empty {
-  visibility: hidden !important;
-}`
-      fullscreenStyleElement = elem
-
-      // Disabled as it can hide subtitles
+      // TODO: Uncomment when there's an option to enable this. Otherwise
+      // subtitles can be hidden.
+      // const elem = document.createElement('style')
+      // const visibleTagName = isVideo ? 'video' : 'iframe'
+      // elem.innerText = getFocusStyles(visibleTagName)
+      // fullscreenStyleElement = elem
       // document.head.appendChild(fullscreenStyleElement)
 
       fullscreenElement = target
@@ -578,6 +585,7 @@
       }
       if (fullscreenStyleElement) {
         fullscreenStyleElement.remove()
+        fullscreenStyleElement = undefined
       }
       if (fullscreenContainer) {
         fullscreenContainer.style.transform = ''
