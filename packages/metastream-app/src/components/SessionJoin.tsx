@@ -29,7 +29,7 @@ export class SessionJoin extends Component<IProps> {
               <TextInput
                 theRef={el => (this.sessionInput = el)}
                 className={styles.peerId}
-                placeholder={t('friendCode')}
+                placeholder="e.g. https://app.getmetastream.com/join/abcd123…"
                 defaultValue={localStorage.getItem('prevFriendCode') || undefined}
                 spellCheck={false}
                 autoFocus
