@@ -18,16 +18,17 @@
 }
 
 .btn *:not(svg) {
-  mix-blend-mode: soft-light;
   color: black;
   vertical-align: middle;
 }
 
 .btn span {
+  mix-blend-mode: soft-light;
   text-decoration: none;
 }
 
 .btn svg {
+  mix-blend-mode: soft-light;
   margin-right: 14px;
 }
 
