@@ -34,7 +34,8 @@ const localeAliases: { [key: string]: string } = {
   hu: 'hu-HU',
   ja: 'ja-JP',
   pt: 'pt-BR',
-  ru: 'ru-RU'
+  ru: 'ru-RU',
+  fr: 'fr-FR'
 }
 
 const resources: Resource = locales.reduce(
