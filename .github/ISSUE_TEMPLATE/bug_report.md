@@ -7,6 +7,7 @@ about: Create a report to help us improve
 
 <!-- Open the main menu to find the version. -->
 - Metastream Version:
+- Browser + Version:
 - OS Version:
 
 Steps to Reproduce:
