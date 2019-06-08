@@ -9,8 +9,8 @@ import { ExternalLink } from '../common/link'
 import { Trans, withNamespaces, WithNamespaces } from 'react-i18next'
 
 interface IProps extends WithNamespaces {
-  reason: NetworkDisconnectReason,
-  reconnect: () => void,
+  reason: NetworkDisconnectReason
+  reconnect: () => void
 }
 
 class _Disconnect extends Component<IProps> {
@@ -37,10 +37,12 @@ class _Disconnect extends Component<IProps> {
             )}
           </span>
         </p>
-        <Link to="/">
-          <MenuButton size="medium">{t('ok')}</MenuButton>
-        </Link>
-        <MenuButton size="medium" onClick={reconnect}>{t('retry')}</MenuButton>
+        <div className={styles.buttonrow}>
+          <Link to="/">
+            <MenuButton size="medium">{t('ok')}</MenuButton>
+          </Link>
+          <MenuButton size="medium" onClick={reconnect}>{t('retry')}</MenuButton>
+        </div>
       </div>
     )
   }
