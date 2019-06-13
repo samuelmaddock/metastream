@@ -24,3 +24,7 @@
 .titlebar {
   composes: titlebar from '../GameLobby.css';
 }
+
+.buttonrow > *:not(:last-child) {
+  margin-right: 5px;
+}

@@ -180,6 +180,11 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
     this.disconnect(reason, true)
   }
 
+  private reconnect = () => {
+    this.setState({ disconnectReason: undefined })
+    this.setupLobby()
+  }
+
   private onLoadScreen() {
     this.host = this.props.match.params.lobbyId === localUserId()
     this.props.dispatch(initLobby({ host: this.host }))
@@ -253,7 +258,7 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
 
   render(): JSX.Element {
     if (this.state.disconnectReason) {
-      return <Disconnect reason={this.state.disconnectReason} />
+      return <Disconnect reason={this.state.disconnectReason} reconnect={this.reconnect} />
     }
 
     if (!this.host && !(this.state.connected && this.props.clientAuthorized)) {
