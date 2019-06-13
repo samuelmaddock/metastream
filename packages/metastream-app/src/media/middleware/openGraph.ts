@@ -1,5 +1,6 @@
-import { MediaThumbnailSize, IMediaMiddleware, IMediaResponse } from '../types'
+import { isUrl } from 'utils/url'
 
+import { MediaThumbnailSize, IMediaMiddleware, IMediaResponse } from '../types'
 import { parse } from './og'
 import { mergeMetadata } from '../utils'
 
@@ -33,13 +34,13 @@ function buildHTMLMetadata(url: URL, body: string): Partial<IMediaResponse> {
 
   if (useVideo && og.ogVideo) {
     const type = og.ogVideo.type
-    useVideo = type ? !BAD_VIDEO_TYPES.has(type) : true
-    if (useVideo) {
-      meta.url = og.ogVideo.url || meta.url
-    }
-    if (og.ogVideo.duration) {
-      meta.duration = og.ogVideo.duration * 1000
-    }
+    const videoUrl = og.ogVideo.url
+
+    const hasValidType = type ? !BAD_VIDEO_TYPES.has(type) : true
+    useVideo = hasValidType && videoUrl && isUrl(videoUrl)
+
+    if (useVideo) meta.url = videoUrl
+    if (og.ogVideo.duration) meta.duration = og.ogVideo.duration * 1000
   }
 
   return meta
