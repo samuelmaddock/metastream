@@ -3,6 +3,7 @@ import cx from 'classnames'
 import styles from './Slider.css'
 import { clamp } from 'utils/math'
 import { CuePointItem, CuePoint } from 'components/media/CuePoint'
+import { isFirefox } from '../../utils/browser'
 
 /** px */
 const CUE_GRAVITATE_THRESHOLD = 8
@@ -307,17 +308,16 @@ export class Slider extends Component<IProps> {
 
   private onMouseWheel = (event: MouseWheelEvent) => {
     event.preventDefault()
+    if (!this.props.onChange) return
 
-    if (this.props.onChange) {
-      const dt = event.deltaY || event.deltaX
-      const dir = dt === 0 ? 0 : dt > 0 ? -1 : 1
+    const dt = event.deltaY || event.deltaX
+    const dir = dt === 0 ? 0 : dt > 0 ? -1 : 1
 
-      // Allow smoother scrolling on finer touchpads
-      const multiplier = Math.abs(dt) / 100
+    // Allow smoother scrolling on finer touchpads
+    const multiplier = isFirefox() ? 1 / 3 : 0.01
 
-      const delta = 0.05 * multiplier
-      const value = this.props.value + delta * dir
-      this.props.onChange(value)
-    }
+    const delta = 0.05 * Math.abs(dt) * multiplier
+    const value = this.props.value + delta * dir
+    this.props.onChange(value)
   }
 }
