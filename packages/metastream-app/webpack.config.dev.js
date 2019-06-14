@@ -30,23 +30,21 @@ module.exports = merge.smart(baseConfig, {
       {
         test: /\.global\.css$/,
         use: [
-          {
-            loader: 'style-loader'
-          },
+          'style-loader',
           {
             loader: 'css-loader',
             options: {
-              sourceMap: true
+              sourceMap: true,
+              importLoaders: 1
             }
-          }
+          },
+          'postcss-loader',
         ]
       },
       {
         test: /^((?!\.global).)*\.css$/,
         use: [
-          {
-            loader: 'style-loader'
-          },
+          'style-loader',
           {
             loader: 'css-loader',
             options: {
@@ -55,7 +53,8 @@ module.exports = merge.smart(baseConfig, {
               importLoaders: 1,
               localIdentName: '[name]__[local]__[hash:base64:5]'
             }
-          }
+          },
+          'postcss-loader',
         ]
       }
     ]

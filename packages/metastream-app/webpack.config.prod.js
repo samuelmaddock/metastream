@@ -35,9 +35,11 @@ module.exports = merge.smart(baseConfig, {
           {
             loader: 'css-loader',
             options: {
-              sourceMap: true
+              sourceMap: true,
+              importLoaders: 1
             }
-          }
+          },
+          'postcss-loader'
         ]
       },
       // Pipe other styles through css modules and append to style.css
@@ -54,7 +56,8 @@ module.exports = merge.smart(baseConfig, {
               importLoaders: 1,
               localIdentName: '[name]__[local]__[hash:base64:5]'
             }
-          }
+          },
+          'postcss-loader',
         ]
       }
     ]
