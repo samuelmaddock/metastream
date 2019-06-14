@@ -80,6 +80,8 @@ interface IProps {
   debug?: React.MouseEventHandler<HTMLButtonElement>
   openBrowser: (url?: string) => void
   showInfo: Function
+  showInteract: Function
+  toggleChat: Function
 }
 
 interface IConnectedProps extends IMediaPlayerState {
@@ -210,14 +212,14 @@ class _PlaybackControls extends Component<PrivateProps> {
 
     const mediaButtons = media && (
       <>
+        <hr className={styles.menuDivider} />
+
         <ButtonListItem icon="external-link" onClick={this.openLink}>
           {t('openInBrowser')}
         </ButtonListItem>
-
         <ButtonListItem icon="clipboard" onClick={this.copyLink}>
           {t('copyLink')}
         </ButtonListItem>
-
         <ButtonListItem icon="rotate-cw" onClick={this.props.reload}>
           {t('reload')}
         </ButtonListItem>
@@ -225,7 +227,13 @@ class _PlaybackControls extends Component<PrivateProps> {
     )
 
     return (
-      <MoreButton buttonClassName={styles.button} disabled={playback === PlaybackState.Idle}>
+      <MoreButton buttonClassName={styles.button}>
+        <ButtonListItem icon="message-circle" onClick={() => this.props.toggleChat()}>
+          {t('chat')}
+        </ButtonListItem>
+        <ButtonListItem icon="mouse-pointer" onClick={() => this.props.showInteract()}>
+          {t('interact')}
+        </ButtonListItem>
         {mediaButtons}
       </MoreButton>
     )

@@ -49,6 +49,7 @@ type PrivateProps = IProps & IConnectedProps & IReactReduxProps
 
 class _GameLobby extends React.Component<PrivateProps, IState> {
   private player: VideoPlayer | null = null
+  private chat: Chat | null = null
 
   private get isPlaying() {
     return this.props.playback === PlaybackState.Playing
@@ -138,6 +139,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
         />
 
         <Chat
+          theRef={el => (this.chat = el)}
           className={styles.chat}
           messages={this.props.messages}
           sendMessage={this.sendChat}
@@ -197,6 +199,16 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
         }}
         openBrowser={this.openBrowser}
         showInfo={this.showInfo}
+        showInteract={() => {
+          if (this.player) {
+            this.player.enterInteractMode()
+          }
+        }}
+        toggleChat={() => {
+          if (this.chat) {
+            this.chat.toggle()
+          }
+        }}
       />
     )
   }

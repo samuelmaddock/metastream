@@ -11,6 +11,7 @@ import styles from './Chat.css'
 const CSS_PROP_CHAT_FADE_DELAY = '--chat-fade-delay'
 
 interface IProps {
+  theRef?: (c: Chat | null) => void
   className?: string
   messages: IMessage[]
   sendMessage: (text: string) => void
@@ -47,9 +48,17 @@ export class Chat extends PureComponent<IProps, IState> {
         `${this.props.messageFadeDelay}ms`
       )
     }
+
+    if (this.props.theRef) {
+      this.props.theRef(this)
+    }
   }
 
   componentWillUnmount(): void {
+    if (this.props.theRef) {
+      this.props.theRef(null)
+    }
+
     this.setupListeners(false)
   }
 
@@ -183,6 +192,16 @@ export class Chat extends PureComponent<IProps, IState> {
           this.form.dismiss()
         }
         break
+    }
+  }
+
+  toggle() {
+    if (!this.form) return
+
+    if (this.state.focused) {
+      this.form.dismiss()
+    } else {
+      this.form.focus()
     }
   }
 }

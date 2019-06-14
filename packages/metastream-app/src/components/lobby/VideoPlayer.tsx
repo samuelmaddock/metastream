@@ -293,7 +293,7 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     // }
   }
 
-  private enterInteractMode = () => {
+  enterInteractMode = () => {
     if (!this.props.isExtensionInstalled) return
 
     this.setState({ interacting: true }, () => {
