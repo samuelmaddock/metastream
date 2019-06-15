@@ -16,6 +16,7 @@ import { getUserName, getNumUsers } from 'lobby/reducers/users.helpers'
 import { addChat } from './chat'
 import { AppThunkAction } from 'types/redux-thunk'
 import { translateEscaped, t } from 'locale'
+import { isIP } from 'utils/network'
 
 /** Code-split media parsing due to large dependencies and it's only used by the host. */
 const getMediaParser = () => import(/* webpackChunkName: "media-parser" */ 'media')
@@ -172,7 +173,23 @@ export const sendMediaRequest = (url: string, source: string): AppThunkAction =>
     const requestCount = parseInt(localStorage.getItem('requestCount') || '0', 10) || 0
     localStorage.setItem('requestCount', `${requestCount + 1}`)
 
-    ga('event', { ec: 'session', ea: 'request_media', el: source })
+    {
+      ga('event', { ec: 'session', ea: 'request_media', el: source })
+
+      let host
+      try {
+        const urlObj = new URL(url)
+        host = urlObj.host
+        if (isIP(host)) {
+          host = 'ipaddress'
+        }
+      } catch {}
+
+      // Track request domain host (e.g. www.youtube.com)
+      if (host) {
+        ga('event', { ec: 'session', ea: 'request_host', el: host })
+      }
+    }
 
     const mediaId = await requestPromise
 
