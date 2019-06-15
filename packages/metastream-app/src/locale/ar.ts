@@ -11,7 +11,7 @@ export default {
   avatarCredit: '<0>الصورة المختارة مصممة من قبل</0> <1>{{artist}}</1>',
   cancel: 'إالغاء',
   changelog: 'سجل التغيرات',
-  chat: 'الدردشة,
+  chat: 'الدردشة',
   chatColor: 'لون الدردشة',
   chatPlaceholder: 'رسالة او URL',
   chatRevealHint: 'اضغط <1></1> لإظهار الدردشة.',
