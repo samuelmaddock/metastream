@@ -444,10 +444,11 @@
 
     // Creates styles to hide all non-video elements in the document
     function getFocusStyles(visibleTagName) {
+      // :not(:empty) used to boost specificity
       return `
-:not(${visibleTagName}),
-:not(${visibleTagName}):after,
-:not(${visibleTagName}):before {
+:not(${visibleTagName}):not(:empty),
+:not(${visibleTagName}):not(:empty):after,
+:not(${visibleTagName}):not(:empty):before {
   color: transparent !important;
   z-index: 0;
   background: transparent !important;
