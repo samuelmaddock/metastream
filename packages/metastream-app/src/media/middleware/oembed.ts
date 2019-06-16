@@ -25,8 +25,7 @@ function parseOembedUrl(json: any) {
     let src = $('iframe').attr('src')
 
     if (src) {
-      // TODO: always use https???
-      return src.startsWith('//') ? `http:${src}` : src
+      return src.startsWith('//') ? `https:${src}` : src
     }
   }
 }
