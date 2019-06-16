@@ -92,8 +92,12 @@ const parseItem = (ctx: IMediaContext, item: any): any => {
   if (media) {
     if (media.reddit_video) {
       const v = media.reddit_video
-      ctx.res.url = v.fallback_url
-      ctx.res.duration = v.duration
+
+      if (url && url.href) ctx.res.url = url.href
+
+      const duration = v.duration * 1000
+      if (duration) ctx.res.duration = duration
+
       return true
     } else if (media.oembed) {
       // Defer parse to oembed middleware
