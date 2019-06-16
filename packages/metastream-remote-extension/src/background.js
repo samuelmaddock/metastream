@@ -312,23 +312,11 @@ const startWatchingTab = tab => {
     scriptableFrames: new Set(),
 
     // Event handlers
-    onBeforeSendHeaders: onBeforeSendHeaders.bind(null),
-    onHeadersReceived: onHeadersReceived.bind(null),
-    onCompleted: onCompleted.bind(null)
+    onHeadersReceived: onHeadersReceived.bind(null)
   }
 
   tabStore[tabId] = state
 
-  chrome.webRequest.onBeforeSendHeaders.addListener(
-    state.onBeforeSendHeaders,
-    { tabId, urls: ['<all_urls>'] },
-    [
-      chrome.webRequest.OnBeforeSendHeadersOptions.BLOCKING,
-      chrome.webRequest.OnBeforeSendHeadersOptions.REQUESTHEADERS, // firefox
-      chrome.webRequest.OnBeforeSendHeadersOptions.REQUEST_HEADERS, // chromium
-      chrome.webRequest.OnBeforeSendHeadersOptions.EXTRA_HEADERS // chromium
-    ].filter(Boolean)
-  )
   chrome.webRequest.onHeadersReceived.addListener(
     state.onHeadersReceived,
     {
@@ -374,7 +362,6 @@ const stopWatchingTab = tabId => {
 
   const state = tabStore[tabId]
   if (state) {
-    chrome.webRequest.onBeforeSendHeaders.removeListener(state.onBeforeSendHeaders)
     chrome.webRequest.onHeadersReceived.removeListener(state.onHeadersReceived)
     delete tabStore[tabId]
   }
@@ -390,6 +377,7 @@ const stopWatchingTab = tabId => {
     chrome.webNavigation.onCompleted.removeListener(onCompleted)
     chrome.webNavigation.onHistoryStateUpdated.removeListener(onHistoryStateUpdated)
     chrome.tabs.onRemoved.removeListener(onTabRemove)
+    chrome.webRequest.onBeforeSendHeaders.removeListener(onBeforeSendHeaders)
   }
 
   console.log(`Metastream stopped watching tabId=${tabId}`)
