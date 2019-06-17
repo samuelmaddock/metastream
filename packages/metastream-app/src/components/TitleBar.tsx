@@ -13,6 +13,8 @@ import { IconButton } from 'components/common/button'
 import { Icon } from './Icon'
 import { IReactReduxProps } from 'types/redux-thunk'
 import { updateService } from 'services/updater'
+import { openInBrowser } from 'utils/url'
+import { t } from 'locale'
 
 interface IProps {
   className?: string
@@ -54,6 +56,16 @@ class _TitleBar extends Component<PrivateProps> {
 
     return (
       <div className={styles.rightActions}>
+        <button
+          type="button"
+          className={styles.actionButton}
+          onClick={() => {
+            openInBrowser('https://github.com/samuelmaddock/metastream/wiki/FAQ')
+          }}
+          title={t('help')}
+        >
+          <Icon name="help-circle" />
+        </button>
         <button
           type="button"
           className={styles.actionButton}

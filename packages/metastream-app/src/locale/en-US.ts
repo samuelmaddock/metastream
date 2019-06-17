@@ -40,6 +40,7 @@ export default {
     'Join the <1>#sessions</1> channel on the Metastream Discord community to find other users’ sessions. Click the Discord logo below to join.',
   friendCode: 'Friend code',
   getStarted: 'Get Started',
+  help: 'Help',
   info: 'Info',
   installToDesktop: 'Install to desktop',
   interact: 'Interact',
