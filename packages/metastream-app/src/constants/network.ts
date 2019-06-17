@@ -3,9 +3,7 @@ export const METASTREAM_SIGNAL_SERVER =
 
 const METASTREAM_STUN_SERVERS = [
   { url: 'stun:stun1.l.google.com:19302' },
-  { url: 'stun:stun2.l.google.com:19302' },
-  { url: 'stun:stun3.l.google.com:19302' },
-  { url: 'stun:stun4.l.google.com:19302' }
+  { url: 'stun:stun2.l.google.com:19302' }
 ]
 const METASTREAM_TURN_SERVER = {
   url: process.env.METASTREAM_TURN_SERVER || 'turn:turn.rtc.getmetastream.com:5349?transport=tcp',
