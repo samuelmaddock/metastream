@@ -115,7 +115,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
           }}
         />
 
-        {this.isInteracting ? null : this.renderControls()}
+        {this.renderControls()}
 
         {this.props.isChatDocked && (
           <Chat
@@ -136,18 +136,9 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
 
   private renderControls() {
     const { currentMedia: media } = this.props
-    return (
-      <section
-        className={cx(styles.controls, {
-          [styles.controlsDocked]: this.props.isChatDocked
-        })}
-      >
-        <VideoPlayer
-          theRef={el => (this.player = el)}
-          className={styles.video}
-          onInteractChange={() => this.forceUpdate()}
-        />
 
+    const controls = this.isInteracting ? null : (
+      <>
         {this.renderPlaybackControls()}
 
         <UserList
@@ -175,6 +166,22 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
         )}
 
         {this.state.modal && this.renderModal()}
+      </>
+    )
+
+    return (
+      <section
+        className={cx(styles.controls, {
+          [styles.controlsDocked]: this.props.isChatDocked
+        })}
+      >
+        <VideoPlayer
+          theRef={el => (this.player = el)}
+          className={styles.video}
+          onInteractChange={() => this.forceUpdate()}
+        />
+
+        {controls}
 
         {this.isInteracting ? null : (
           <TitleBar className={styles.titlebar} title={media && media.title} />
