@@ -13,6 +13,7 @@ import { IAppState } from '.'
 import { stripEmoji } from 'utils/string'
 import { avatarRegistry } from '../services/avatar'
 import { DEFAULT_LANGUAGE } from 'locale'
+import { ChatLocation } from '../components/chat/Location'
 
 export const enum SessionMode {
   /** Open to connections. */
@@ -35,6 +36,7 @@ export interface ISettingsState {
   maxUsers?: number
   avatar?: string
   language: string
+  chatLocation: ChatLocation
 }
 
 const initialState: ISettingsState = {
@@ -42,7 +44,8 @@ const initialState: ISettingsState = {
   volume: 0.75,
   allowTracking: false,
   sessionMode: SessionMode.Private,
-  language: DEFAULT_LANGUAGE
+  language: DEFAULT_LANGUAGE,
+  chatLocation: ChatLocation.FloatLeft
 }
 
 export const settings: Reducer<ISettingsState> = (
@@ -50,8 +53,10 @@ export const settings: Reducer<ISettingsState> = (
   action: any
 ) => {
   if (isType(action, setSetting as any)) {
-    const { key, value } = action.payload as any
-    return { ...state, [key]: value }
+    const { key, value } = action.payload as { key: keyof ISettingsState; value: any }
+    const currentValue = state[key]
+    const newValue = typeof value === 'function' ? value(currentValue) : value
+    return { ...state, [key]: newValue }
   }
 
   if (isType(action, setVolume)) {
