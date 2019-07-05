@@ -8,6 +8,7 @@ import { ChatForm } from './ChatForm'
 
 import styles from './Chat.css'
 import { IconButton } from '../common/button'
+import { t } from 'locale'
 
 const CSS_PROP_CHAT_FADE_DELAY = '--chat-fade-delay'
 
@@ -21,9 +22,6 @@ interface IProps {
 
   /** Whether to fade chat while inactive. */
   fade?: boolean
-
-  /** Whether the chat is floating.  */
-  float?: boolean
   onToggleLayout(): void
 
   messageFadeDelay?: number
@@ -117,16 +115,18 @@ export class Chat extends PureComponent<IProps, IState> {
   }
 
   render(): JSX.Element | null {
+    const fade = !!this.props.fade
+
     return (
       <div
         ref={e => (this.containerElement = e)}
         className={cx(this.props.className, styles.container, {
           [styles.focused]: this.state.focused,
-          [styles.fade]: !!this.props.fade
+          [styles.fade]: fade
         })}
       >
         <div className={styles.wrapper}>
-          <div className={styles.background} />
+          <div className={fade ? styles.fadeBackground : styles.staticBackground} />
           <div className={styles.foreground}>
             <Messages
               ref={e => {
@@ -145,9 +145,10 @@ export class Chat extends PureComponent<IProps, IState> {
               blurOnSubmit={!!this.props.fade}
             />
             <IconButton
-              icon="dock-right"
+              icon={this.props.fade ? 'dock-right' : 'undock-float'}
               className={styles.btnLayout}
               onClick={this.props.onToggleLayout}
+              title={t(this.props.fade ? 'chatDockToRight' : 'chatUndock')}
             />
           </div>
         </div>

@@ -8,7 +8,7 @@
   pointer-events: none;
 }
 
-.fade:not(.focused) .background,
+.fade:not(.focused) .fadeBackground,
 .fade:not(.focused) .messageInput {
   opacity: 0;
 }
@@ -23,14 +23,15 @@
   transition: opacity var(--overlay-anim-duration) ease-in;
 }
 
-.background {
-  composes: glass absolute-full from '~styles/layout.css';
+.fadeBackground {
+  composes: glass rounded absolute-full from '~styles/layout.css';
   composes: anim;
   z-index: 4;
 }
 
-.fade .background {
-  border-radius: var(--rounded-radius);
+.staticBackground {
+  composes: absolute-full from '~styles/layout.css';
+  background: rgba(0, 0, 0, 0.66);
 }
 
 .foreground {
@@ -156,13 +157,13 @@
 }
 
 .btnLayout {
-  position: absolute;
-  top: 0;
-  right: 0;
+  position: absolute !important;
+  top: 0.5rem;
+  right: 0.5rem;
   opacity: 0;
 }
 
 .container:hover .btnLayout {
-  opacity: 1;
-  transition: opacity var(--overlay-anim-duration) ease-in;
+  opacity: 0.8;
+  transition: opacity 80ms ease-in-out;
 }

@@ -14,6 +14,7 @@
   --overlay-z-index: 10;
   --playback-overlay-z-index: 9;
   --overlay-anim-duration: 160ms;
+  --chat-docked-width: 340px;
 }
 
 .overlay {
@@ -63,7 +64,19 @@
   right: 0;
 }
 
-.chat {
+.controls {
+  position: absolute;
+  right: 0;
+  left: 0;
+  top: 0;
+  bottom: 0;
+}
+
+.controlsDocked {
+  right: var(--chat-docked-width);
+}
+
+.chatFloat {
   position: absolute;
   z-index: var(--overlay-z-index);
   left: var(--overlay-spacing);
@@ -71,7 +84,18 @@
   width: 450px;
 
   --num-chat-lines: 6;
-  height: calc(40px + 20px * var(--num-chat-lines));
+  --chat-line-height: 20px;
+  --chat-input-height: 40px;
+  height: calc(var(--chat-input-height) + var(--chat-line-height) * var(--num-chat-lines));
+}
+
+.chatDocked {
+  position: absolute;
+  z-index: var(--overlay-z-index);
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: var(--chat-docked-width);
 }
 
 .users,

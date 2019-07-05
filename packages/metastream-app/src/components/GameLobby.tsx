@@ -26,6 +26,8 @@ import { LobbyModal } from '../reducers/ui'
 import { setLobbyModal } from '../actions/ui'
 import { getNumUsers } from '../lobby/reducers/users.helpers'
 import { IReactReduxProps } from 'types/redux-thunk'
+import { ChatLocation } from './chat/Location'
+import { setSetting } from '../actions/settings'
 
 interface IProps {
   host: boolean
@@ -43,9 +45,19 @@ interface IConnectedProps {
   playback: PlaybackState
   modal?: LobbyModal
   isMultiplayer: boolean
+  isChatDocked: boolean
 }
 
-type PrivateProps = IProps & IConnectedProps & IReactReduxProps
+interface DispatchProps {
+  registerMediaShortcuts(): void
+  unregisterMediaShortcuts(): void
+  sendMediaRequest(text: string): void
+  addChat(text: string): void
+  closeLobbyModal(): void
+  toggleChatLayout(): void
+}
+
+type PrivateProps = IProps & IConnectedProps & IReactReduxProps & DispatchProps
 
 class _GameLobby extends React.Component<PrivateProps, IState> {
   private player: VideoPlayer | null = null
@@ -71,11 +83,11 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
   state: IState = { inactive: false }
 
   componentDidMount() {
-    this.props.dispatch!(registerMediaShortcuts())
+    this.props.registerMediaShortcuts()
   }
 
   componentWillUnmount() {
-    this.props.dispatch!(unregisterMediaShortcuts())
+    this.props.unregisterMediaShortcuts()
   }
 
   componentWillUpdate(nextProps: PrivateProps) {
@@ -85,7 +97,6 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
   }
 
   render(): JSX.Element {
-    const { currentMedia: media } = this.props
     return (
       <div
         className={cx(styles.container, {
@@ -104,18 +115,19 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
           }}
         />
 
-        <VideoPlayer
-          theRef={el => (this.player = el)}
-          className={styles.video}
-          onInteractChange={() => this.forceUpdate()}
-        />
-
         {this.isInteracting ? null : this.renderControls()}
-        {this.isInteracting ? null : (
-          <TitleBar className={styles.titlebar} title={media && media.title} />
-        )}
 
-        {this.state.modal && this.renderModal()}
+        {this.props.isChatDocked && (
+          <Chat
+            theRef={el => (this.chat = el)}
+            className={styles.chatDocked}
+            messages={this.props.messages}
+            sendMessage={this.sendChat}
+            disabled={!!this.state.modal}
+            showHint={this.props.isMultiplayer}
+            onToggleLayout={this.props.toggleChatLayout}
+          />
+        )}
 
         {this.isInactive && <div className={styles.inactiveOverlay} />}
       </div>
@@ -123,8 +135,19 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
   }
 
   private renderControls() {
+    const { currentMedia: media } = this.props
     return (
-      <section className={styles.controls}>
+      <section
+        className={cx(styles.controls, {
+          [styles.controlsDocked]: this.props.isChatDocked
+        })}
+      >
+        <VideoPlayer
+          theRef={el => (this.player = el)}
+          className={styles.video}
+          onInteractChange={() => this.forceUpdate()}
+        />
+
         {this.renderPlaybackControls()}
 
         <UserList
@@ -138,14 +161,24 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
           onShowInfo={this.showInfo}
         />
 
-        <Chat
-          theRef={el => (this.chat = el)}
-          className={styles.chat}
-          messages={this.props.messages}
-          sendMessage={this.sendChat}
-          disabled={!!this.state.modal}
-          showHint={this.props.isMultiplayer}
-        />
+        {!this.props.isChatDocked && (
+          <Chat
+            theRef={el => (this.chat = el)}
+            className={styles.chatFloat}
+            messages={this.props.messages}
+            sendMessage={this.sendChat}
+            disabled={!!this.state.modal}
+            showHint={this.props.isMultiplayer}
+            onToggleLayout={this.props.toggleChatLayout}
+            fade
+          />
+        )}
+
+        {this.state.modal && this.renderModal()}
+
+        {this.isInteracting ? null : (
+          <TitleBar className={styles.titlebar} title={media && media.title} />
+        )}
       </section>
     )
   }
@@ -215,9 +248,9 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
 
   private sendChat = (text: string): void => {
     if (isUrl(text)) {
-      this.props.dispatch!(sendMediaRequest(text, 'chat'))
+      this.props.sendMediaRequest(text)
     } else {
-      this.props.dispatch!(server_addChat(text))
+      this.props.addChat(text)
     }
   }
 
@@ -237,19 +270,34 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
     this.setState({ modal: undefined })
 
     if (this.props.modal) {
-      this.props.dispatch!(setLobbyModal())
+      this.props.closeLobbyModal()
     }
   }
 }
 
-export const GameLobby = connect(
+export const GameLobby = (connect(
   (state: IAppState): IConnectedProps => {
     return {
       currentMedia: getCurrentMedia(state),
       messages: state.chat.messages,
       playback: getPlaybackState(state),
       modal: state.ui.lobbyModal,
-      isMultiplayer: getNumUsers(state) > 1
+      isMultiplayer: getNumUsers(state) > 1,
+      isChatDocked: state.settings.chatLocation === ChatLocation.DockRight
     }
-  }
-)(_GameLobby) as React.ComponentClass<IProps>
+  },
+  (dispatch: Function): DispatchProps => ({
+    registerMediaShortcuts: () => dispatch(registerMediaShortcuts()),
+    unregisterMediaShortcuts: () => dispatch(unregisterMediaShortcuts()),
+    sendMediaRequest: (text: string) => dispatch(sendMediaRequest(text, 'chat')),
+    addChat: (text: string) => dispatch(server_addChat(text)),
+    closeLobbyModal: () => dispatch(setLobbyModal()),
+    toggleChatLayout() {
+      dispatch(
+        setSetting('chatLocation', location =>
+          location === ChatLocation.DockRight ? ChatLocation.FloatLeft : ChatLocation.DockRight
+        )
+      )
+    }
+  })
+)(_GameLobby) as any) as React.ComponentClass<IProps>
