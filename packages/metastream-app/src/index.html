@@ -43,6 +43,14 @@
         background: rgba(0, 0, 0, 0.33);
         animation: pulse 3s infinite;
       }
+      .launcherror {
+        white-space: pre;
+        text-align: left;
+        background: rgba(0,0,0,0.11);
+        padding: 1rem;
+        margin-top: 1rem;
+        font-size: 0.8rem;
+      }
       @keyframes pulse {
         from {
           background: rgba(0, 0, 0, 0.33);
@@ -84,22 +92,33 @@
     </script>
     <script type="text/javascript">
       ;(function() {
-        function warnBrowserSupport() {
-          var load = document.querySelector('.loading-screen')
+        function warnBrowserSupport(error) {
+          var load = document.querySelector('.loading-screen');
           if (load) {
             load.innerText = [
               'An error occured while launching Metastream.',
               'Currently supported browsers include Chrome and Firefox.',
               'Contact: hello@getmetastream.com'
-            ].join('\n')
+            ].join('\n');
+
+            var el = document.createElement('div');
+            el.className = 'launcherror';
+            el.innerText = error;
+            load.appendChild(el);
           }
         }
 
-        window.onerror = function() {
-          warnBrowserSupport()
-          window.onerror = null
-        }
-      })()
+        window.onerror = function(msg, url, lineNo, columnNo, error) {
+          var errorMessage = [
+            msg,
+            url + ':' + lineNo + ':' + columnNo,
+            JSON.stringify(error)
+          ].join('\n');
+          warnBrowserSupport(errorMessage);
+          window.onerror = null;
+          console.error(error);
+        };
+      })();
     </script>
   </head>
   <body>
