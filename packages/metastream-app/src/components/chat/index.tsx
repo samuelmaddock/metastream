@@ -18,7 +18,7 @@ interface IProps {
   messages: IMessage[]
   sendMessage(text: string): void
   disabled?: boolean
-  showHint: boolean
+  showHint?: boolean
 
   /** Whether to fade chat while inactive. */
   fade?: boolean
@@ -142,7 +142,7 @@ export class Chat extends PureComponent<IProps, IState> {
               send={this.onSend}
               onFocus={this.onFocus}
               onBlur={this.onBlur}
-              showHint={this.props.showHint}
+              showHint={!!this.props.showHint}
               blurOnSubmit={!!this.props.fade}
             />
             <IconButton

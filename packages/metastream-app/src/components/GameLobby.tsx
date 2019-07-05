@@ -124,7 +124,6 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
             messages={this.props.messages}
             sendMessage={this.sendChat}
             disabled={!!this.state.modal}
-            showHint={this.props.isMultiplayer}
             onToggleLayout={this.props.toggleChatLayout}
           />
         )}
