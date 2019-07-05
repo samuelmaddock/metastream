@@ -7,6 +7,7 @@ import { Key } from './Key'
 
 interface IProps {
   showHint: boolean
+  blurOnSubmit: boolean
   send: (text: string) => void
   onFocus?: () => void
   onBlur?: () => void
@@ -33,7 +34,7 @@ export class ChatForm extends PureComponent<IProps, IState> {
     const target = event.currentTarget
 
     switch (event.key) {
-      case 'Enter':
+      case 'Enter': {
         event.nativeEvent.stopImmediatePropagation()
         event.preventDefault()
 
@@ -43,8 +44,12 @@ export class ChatForm extends PureComponent<IProps, IState> {
           target.value = ''
         }
 
-        this.dismiss()
+        if (this.props.blurOnSubmit) {
+          this.dismiss()
+        }
+
         break
+      }
     }
   }
 

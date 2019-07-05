@@ -4,12 +4,12 @@
   display: block;
 }
 
-.container:not(.focused) {
+.fade:not(.focused) {
   pointer-events: none;
 }
 
-.container:not(.focused) .background,
-.container:not(.focused) .messageInput {
+.fade:not(.focused) .background,
+.fade:not(.focused) .messageInput {
   opacity: 0;
 }
 
@@ -24,9 +24,13 @@
 }
 
 .background {
-  composes: glass rounded absolute-full from '~styles/layout.css';
+  composes: glass absolute-full from '~styles/layout.css';
   composes: anim;
   z-index: 4;
+}
+
+.fade .background {
+  border-radius: var(--rounded-radius);
 }
 
 .foreground {
@@ -70,13 +74,16 @@
   padding: 2px 8px;
   word-break: break-word;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.8);
+}
+
+.fade .message {
   animation: var(--chat-fade-duration) ease-in var(--chat-fade-delay);
   animation-name: fadeout;
   /* Maintain transparency after animation finishes */
   animation-fill-mode: forwards;
 }
 
-.container.focused .message {
+.fade.focused .message {
   /* Reveal chat on focus */
   opacity: 1 !important;
   animation-fill-mode: none;
@@ -125,13 +132,16 @@
 
 .messageInput {
   composes: anim;
-  composes: rounded-bottom from '~styles/layout.css';
   width: 100%;
   height: 40px;
   padding: 8px var(--horizontal-padding);
   border: none;
   outline: none;
   background: rgba(0, 0, 0, 0.11);
+}
+
+.fade .messageInput {
+  border-radius: 0 0 var(--rounded-radius) var(--rounded-radius);
 }
 
 .messageInput::-webkit-input-placeholder {
@@ -143,4 +153,16 @@
   padding: 0 var(--horizontal-padding);
   font-style: italic;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.8);
+}
+
+.btnLayout {
+  position: absolute;
+  top: 0;
+  right: 0;
+  opacity: 0;
+}
+
+.container:hover .btnLayout {
+  opacity: 1;
+  transition: opacity var(--overlay-anim-duration) ease-in;
 }

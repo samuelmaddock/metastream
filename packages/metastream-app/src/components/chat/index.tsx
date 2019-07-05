@@ -7,6 +7,7 @@ import { Messages } from './Messages'
 import { ChatForm } from './ChatForm'
 
 import styles from './Chat.css'
+import { IconButton } from '../common/button'
 
 const CSS_PROP_CHAT_FADE_DELAY = '--chat-fade-delay'
 
@@ -14,9 +15,17 @@ interface IProps {
   theRef?: (c: Chat | null) => void
   className?: string
   messages: IMessage[]
-  sendMessage: (text: string) => void
+  sendMessage(text: string): void
   disabled?: boolean
   showHint: boolean
+
+  /** Whether to fade chat while inactive. */
+  fade?: boolean
+
+  /** Whether the chat is floating.  */
+  float?: boolean
+  onToggleLayout(): void
+
   messageFadeDelay?: number
 }
 
@@ -85,13 +94,14 @@ export class Chat extends PureComponent<IProps, IState> {
     const cutoff = numMessages - minMessages - 1
     const chatFadeDelay = this.props.messageFadeDelay!
 
-    const filteredMessages = this.state.focused
-      ? messages
-      : messages.filter((msg, idx) => {
-          if (idx > cutoff) return true
-          const dt = Date.now() - msg.timestamp
-          return dt <= chatFadeDelay
-        })
+    const filteredMessages =
+      this.state.focused || !this.props.fade
+        ? messages
+        : messages.filter((msg, idx) => {
+            if (idx > cutoff) return true
+            const dt = Date.now() - msg.timestamp
+            return dt <= chatFadeDelay
+          })
 
     this.setState({ filteredMessages })
   }
@@ -111,7 +121,8 @@ export class Chat extends PureComponent<IProps, IState> {
       <div
         ref={e => (this.containerElement = e)}
         className={cx(this.props.className, styles.container, {
-          [styles.focused]: this.state.focused
+          [styles.focused]: this.state.focused,
+          [styles.fade]: !!this.props.fade
         })}
       >
         <div className={styles.wrapper}>
@@ -131,6 +142,12 @@ export class Chat extends PureComponent<IProps, IState> {
               onFocus={this.onFocus}
               onBlur={this.onBlur}
               showHint={this.props.showHint}
+              blurOnSubmit={!!this.props.fade}
+            />
+            <IconButton
+              icon="dock-right"
+              className={styles.btnLayout}
+              onClick={this.props.onToggleLayout}
             />
           </div>
         </div>
