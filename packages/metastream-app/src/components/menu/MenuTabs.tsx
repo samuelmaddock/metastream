@@ -61,8 +61,15 @@ const WelcomeMessage: React.SFC = () => (
       </ExternalLink>
     </p>
     <p>
-      If you'd like to join in on the discussion, feel free to join the Discord community using the
-      link at the bottom of the screen.
+      If you&rsquo;d like to join in on the discussion, feel free to join the Discord community
+      using the link at the bottom of the screen.
+    </p>
+    <p>
+      And if you&rsquo;re coming from Rabbit,{' '}
+      <ExternalLink href="https://github.com/samuelmaddock/metastream/wiki/FAQ">
+        check out the FAQ
+      </ExternalLink>{' '}
+      to learn how Metastream differs.
     </p>
     <p>💖 Sam</p>
   </>
