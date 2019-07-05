@@ -46,6 +46,7 @@ export class Chat extends PureComponent<IProps, IState> {
   }
 
   componentDidMount(): void {
+    this.filterMessages(this.props.messages)
     this.setupListeners(!this.props.disabled)
     this.scrollToBottom()
 

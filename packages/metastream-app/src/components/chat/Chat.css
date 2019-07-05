@@ -161,9 +161,13 @@
   top: 0.5rem;
   right: 0.5rem;
   opacity: 0;
+  transition: opacity var(--overlay-anim-duration) ease-in;
+}
+
+.fade.focused .btnLayout {
+  opacity: 0.22;
 }
 
 .container:hover .btnLayout {
   opacity: 0.8;
-  transition: opacity 80ms ease-in-out;
 }
