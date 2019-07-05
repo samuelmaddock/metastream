@@ -28,6 +28,7 @@ export class Webview extends Component<Props> {
     return [
       'midi',
       'fullscreen',
+      'geolocation',
       'picture-in-picture',
       'encrypted-media',
       'autoplay'
