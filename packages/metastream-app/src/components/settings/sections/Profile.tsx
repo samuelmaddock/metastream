@@ -75,7 +75,7 @@ class ProfileSettings extends Component<Props> {
           )}
         </div>
 
-        <label htmlFor="profile_username">{t('username')}</label>
+        <label htmlFor="profile_username">{t('displayName')}</label>
         <TextInput
           id="profile_username"
           theRef={e => (this.usernameInput = e)}

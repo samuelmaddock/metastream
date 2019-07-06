@@ -14,7 +14,7 @@ export default {
   chatPlaceholder: 'メッセージ/URL',
   chatRevealHint: '<1></1> でチャット画面が開きます',
   chatNewMessage: '新しいメッセージが送信されました！',
-  chooseUsername: 'ユーザーネームを選んでください',
+  chooseDisplayName: 'ユーザーネームを選んでください',
   connecting: '接続中',
   continue: '続ける',
   copy: 'コピー',

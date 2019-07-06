@@ -48,7 +48,7 @@ class WelcomePage extends Component<Props> {
         >
           <MenuHeader text={`Welcome to ${PRODUCT_NAME}`} />
 
-          <label htmlFor="profile_username">{t('chooseUsername')}</label>
+          <label htmlFor="profile_username">{t('chooseDisplayName')}</label>
           <TextInput
             id="profile_username"
             autoComplete="username"

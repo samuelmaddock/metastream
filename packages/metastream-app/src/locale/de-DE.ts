@@ -15,7 +15,7 @@ export default {
   chatPlaceholder: 'Nachricht oder URL',
   chatRevealHint: 'Drücke <1></1> um den Chat zu öffnen.',
   chatNewMessage: 'Eine neue Nachricht wurde gepostet!',
-  chooseUsername: 'Wähle deinen Benutzernamen',
+  chooseDisplayName: 'Wähle deinen Benutzernamen',
   connecting: 'Verbinden',
   continue: 'Weiter',
   copy: 'Kopieren',
@@ -62,8 +62,7 @@ export default {
   noticeMediaError: 'Es gab ein Problem die URL {{url}} anzufragen',
   noticeNowPlaying:
     'Aktuelle Wiedergabe: <Media id="{{mediaId}}">{{mediaTitle}}</Media> vorgeschlagen von <Username id="{{userId}}">{{username}}</Username>.',
-  noticeUserRequestJoin:
-    '<Username id="{{userId}}">{{username}}</Username> möchte beitreten.',
+  noticeUserRequestJoin: '<Username id="{{userId}}">{{username}}</Username> möchte beitreten.',
   offline: 'Offline',
   ok: 'OK',
   openInBrowser: 'Im Browser öffnen',
@@ -85,7 +84,8 @@ export default {
   settings: 'Einstellungen',
   shareFriendCode: 'Teile den unten stehenden Freundescode mit deinen Freunden.',
   shareFriendCodeOther: 'Teile {{name}}’s unten stehenden Freundescode mit deinen Freunden.',
-  sharePublicIP: 'Teile <1>deine öffentliche IP-Adresse</1> um es Freunden zu erlauben direkt beizutreten.',
+  sharePublicIP:
+    'Teile <1>deine öffentliche IP-Adresse</1> um es Freunden zu erlauben direkt beizutreten.',
   shareSessionUrl: 'Teile die Sitzungs-URL um Freunde einzuladen.',
   startSession: 'Sitzung starten',
   thirdPartyIntegrations: 'Drittentwickler Integrationen',

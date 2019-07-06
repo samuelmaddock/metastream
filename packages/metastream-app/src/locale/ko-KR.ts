@@ -14,7 +14,7 @@ export default {
   chatPlaceholder: '메시지 또는 주소',
   chatRevealHint: '<1></1>를 눌러 대화를 표시합니다.',
   chatNewMessage: '새로운 메시지가 등록되었습니다!',
-  chooseUsername: '사용자 이름을 선택하세요',
+  chooseDisplayName: '사용자 이름을 선택하세요',
   connecting: '연결 중',
   continue: '계속',
   copy: '복사',
@@ -35,7 +35,7 @@ export default {
   enterJoinDest: 'Metastream 세션 URL을 입렵하세요.',
   findSession: '세션 찾기',
   findSessionDescription:
-	'Metastream Discord 커뮤니티에서 <1>#sessions</1> 채널에 참여하여 다른 유저의 세션을 찾으세요. 아래의 Discord 로고를 클릭하여 참여합니다.',
+    'Metastream Discord 커뮤니티에서 <1>#sessions</1> 채널에 참여하여 다른 유저의 세션을 찾으세요. 아래의 Discord 로고를 클릭하여 참여합니다.',
   friendCode: '친구 코드',
   getStarted: '시작하기',
   info: '정보',

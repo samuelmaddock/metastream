@@ -14,7 +14,7 @@ export default {
   chatColor: 'Color de chat',
   chatPlaceholder: 'Mensaje o URL',
   chatRevealHint: 'Presione <1></1> para revelar chat.',
-  chooseUsername: 'Elija su nombre de usuario',
+  chooseDisplayName: 'Elija su nombre de usuario',
   connecting: 'Conectando',
   continue: 'Continuar',
   copy: 'Copiar',

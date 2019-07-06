@@ -15,7 +15,7 @@ export default {
   chatPlaceholder: 'Сообщение или URL',
   chatRevealHint: 'Нажмите <1></1>, чтобы открыть чат.',
   chatNewMessage: 'Новое сообщение!',
-  chooseUsername: 'Выберите ваше имя пользователя',
+  chooseDisplayName: 'Выберите ваше имя пользователя',
   connecting: 'Подключение',
   continue: 'Продолжить',
   copy: 'Копировать',
@@ -86,7 +86,8 @@ export default {
   settings: 'Настройки',
   shareFriendCode: 'Поделитесь своим кодом НИЖЕ, чтобы пригласить друзей.',
   shareFriendCodeOther: 'Поделитесь кодом {{name}} ниже, чтобы пригласить друзей.',
-  sharePublicIP: 'Поделитесь <1>ваш публичный IP-адрес</1>, чтобы позволить друзьям подключаться напрямую.',
+  sharePublicIP:
+    'Поделитесь <1>ваш публичный IP-адрес</1>, чтобы позволить друзьям подключаться напрямую.',
   startSession: 'Начать сеанс',
   thirdPartyIntegrations: 'Стороннюю',
   toggleDJ: 'Переключить DJ',

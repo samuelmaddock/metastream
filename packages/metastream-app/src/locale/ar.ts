@@ -18,7 +18,7 @@ export default {
   chatRevealHint: 'اضغط <1></1> لإظهار الدردشة.',
   chatNewMessage: 'رسالة جديدة تم نشرها!',
   chatUndock: 'إعادة الدردشة لمكانها',
-  chooseUsername: 'إختر إسمك',
+  chooseDisplayName: 'إختر إسمك',
   connecting: 'جارً التوصيل',
   continue: 'متابعة',
   copy: 'نسخ',
@@ -38,8 +38,7 @@ export default {
   endSessionDescription: 'التغيير إلى بث خاص سوف يقطع الارسال لكل المستخدمين ',
   enterJoinDest: 'أدخل URL البث',
   findSession: 'إيجاد بث',
-  findSessionDescription:
-    'للإنضمام لبث عام يرجى الإنضمام لنا على Discord <1>#sessions</1>',
+  findSessionDescription: 'للإنضمام لبث عام يرجى الإنضمام لنا على Discord <1>#sessions</1>',
   friendCode: 'كود الصديق',
   getStarted: 'البدء',
   info: 'معلومات',
@@ -66,8 +65,7 @@ export default {
   noticeMediaError: 'حدث خطأ أثناء الطلب {{url}}',
   noticeNowPlaying:
     'الآن يتم عرض  <Media id="{{mediaId}}">{{mediaTitle}}</Media> طلبت من <Username id="{{userId}}">{{username}}</Username>.',
-  noticeUserRequestJoin:
-    '<Username id="{{userId}}">{{username}}</Username> يتطلب موافقة للإنضمام',
+  noticeUserRequestJoin: '<Username id="{{userId}}">{{username}}</Username> يتطلب موافقة للإنضمام',
   offline: 'غير متصل على الانترنت',
   ok: 'OK',
   openInBrowser: 'فتح في المتصفح ',
@@ -80,8 +78,7 @@ export default {
   requestUrl: 'إضافة للبث',
   requestUrlPlaceholder: '',
   requiresDJPermissions: 'يتطلب صلاحيات ال DJ',
-  requiresPortForward:
-    'يتطلب <1> إعداد ميناء شحن </1> من <3>{{port}}</3> لقبول الإتصال المباشر',
+  requiresPortForward: 'يتطلب <1> إعداد ميناء شحن </1> من <3>{{port}}</3> لقبول الإتصال المباشر',
   sessionMode: 'وضع البث',
   sessionModePublicDescription: 'يسمح لأي شخص بالإنضمام',
   sessionModePrivateDescription: 'يتطلب موافقة لللإنضمام.',

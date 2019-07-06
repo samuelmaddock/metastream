@@ -13,7 +13,7 @@ export default {
   changelog: 'Registro de Alterações',
   chatColor: 'Cor no bate-papo',
   chatPlaceholder: 'Mensagem ou link',
-  chooseUsername: 'Escolha o seu nick',
+  chooseDisplayName: 'Escolha o seu nick',
   connecting: 'Conectando',
   continue: 'Continuar',
   copy: 'Copiar',

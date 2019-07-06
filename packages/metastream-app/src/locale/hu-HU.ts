@@ -14,7 +14,7 @@ export default {
   chatColor: 'Chat szín',
   chatPlaceholder: 'Üzenet URL',
   chatRevealHint: 'Nyomd meg a <1></1> gombot a chat megjelenítéséhez.',
-  chooseUsername: 'Válassz felhasználónevet',
+  chooseDisplayName: 'Válassz felhasználónevet',
   connecting: 'Kapcsolódás',
   continue: 'Folytatás',
   copy: 'Másolás',
