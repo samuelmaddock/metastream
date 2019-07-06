@@ -15,6 +15,33 @@ import { IReactReduxProps } from 'types/redux-thunk'
 import { Webview } from 'components/Webview'
 import { ExtensionInstall } from './ExtensionInstall'
 
+type MediaReadyPayload = {
+  duration?: number
+  href: string
+}
+
+const processMediaDuration = (payload?: MediaReadyPayload) => {
+  if (!payload) return null
+
+  let duration = payload.duration && !isNaN(payload.duration) ? payload.duration : null
+  if (!duration) return null
+
+  let shouldPadDuration = false
+
+  const { href } = payload
+  if (href.includes('hulu.com')) {
+    // Hulu includes rating warning at the start which causes video to skip
+    // before it should. #132
+    shouldPadDuration = true
+  }
+
+  if (shouldPadDuration) {
+    duration += 5e3
+  }
+
+  return duration
+}
+
 interface IProps {
   className?: string
   theRef?: (c: _VideoPlayer | null) => void
@@ -163,10 +190,7 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     }
   }
 
-  private onMediaReady = (
-    isTopSubFrame: boolean = false,
-    payload?: { duration?: number; href: string }
-  ) => {
+  private onMediaReady = (isTopSubFrame: boolean = false, payload?: MediaReadyPayload) => {
     console.debug('onMediaReady', payload)
 
     // Apply auto-fullscreen to all subframes with nested iframes
@@ -181,15 +205,14 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     const media = this.props.current
     if (this.props.host) {
       const prevDuration = media ? media.duration : null
-      const nextDuration =
-        payload && payload.duration && !isNaN(payload.duration) ? payload.duration : null
+      const nextDuration = processMediaDuration(payload)
 
       const isLiveMedia = prevDuration === 0
       const noDuration = !prevDuration
       const isLongerDuration = nextDuration && (prevDuration && nextDuration > prevDuration)
 
       if (nextDuration && !isLiveMedia && (noDuration || isLongerDuration)) {
-        this.props.dispatch(updateMedia({ duration: payload!.duration! }))
+        this.props.dispatch(updateMedia({ duration: nextDuration }))
         this.props.dispatch(updatePlaybackTimer())
       }
     }
