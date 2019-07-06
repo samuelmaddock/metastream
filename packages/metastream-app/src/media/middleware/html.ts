@@ -11,12 +11,24 @@ const mware: IMediaMiddleware = {
   async resolve(ctx, next) {
     const { url } = ctx.req
 
-    const [text, response] = await fetchText(url.href, {
-      headers: {
-        'user-agent': MEDIA_USER_AGENT,
-        host: url.host
-      }
-    })
+    // Skip if HEAD request fails to avoid fetching huge blobs of data
+    if (ctx.state.httpHeadFailed) {
+      return next()
+    }
+
+    let text
+
+    try {
+      const result = await fetchText(url.href, {
+        headers: {
+          'user-agent': MEDIA_USER_AGENT,
+          host: url.host
+        }
+      })
+      text = result[0]
+    } catch {
+      return next()
+    }
 
     ctx.state.body = text
     const $ = (ctx.state.$ = load(text))

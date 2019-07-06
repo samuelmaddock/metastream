@@ -76,6 +76,9 @@ export interface IMediaContext {
     /** Preloaded oEmbed json */
     oEmbedJson?: string
 
+    /** Whether HTTP HEAD request failed to fetch */
+    httpHeadFailed?: boolean
+
     [key: string]: any
   }
 }

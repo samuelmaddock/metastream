@@ -17,13 +17,20 @@ const mware: IMediaMiddleware = {
     const { url } = ctx.req
 
     // Request HEAD response to check MIME type
-    const response = await fetchResponse(url.href, {
-      method: 'HEAD',
-      headers: {
-        'user-agent': MEDIA_USER_AGENT,
-        referer: url.href // prevent hotlink blocking
-      }
-    })
+    let response
+
+    try {
+      response = await fetchResponse(url.href, {
+        method: 'HEAD',
+        headers: {
+          'user-agent': MEDIA_USER_AGENT,
+          referer: url.href // prevent hotlink blocking
+        }
+      })
+    } catch {
+      ctx.state.httpHeadFailed = true
+      return next()
+    }
 
     const code = response.status || 200
     // if (code >= 400) {

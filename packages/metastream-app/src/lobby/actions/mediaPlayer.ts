@@ -240,7 +240,7 @@ const requestMedia = (url: string): RpcThunk<Promise<string | null>> => async (
     id: shortid(),
     type: res.type,
     url: res.url,
-    title: res.title || res.url,
+    title: res.title || url,
     duration: res.duration,
     description: res.description,
     imageUrl: res.thumbnails && res.thumbnails[MediaThumbnailSize.Default],
