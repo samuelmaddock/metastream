@@ -14,6 +14,7 @@ import { isEqual } from 'lodash-es'
 import { IReactReduxProps } from 'types/redux-thunk'
 import { Webview } from 'components/Webview'
 import { ExtensionInstall } from './ExtensionInstall'
+import { Icon } from '../Icon'
 
 type MediaReadyPayload = {
   duration?: number
@@ -293,7 +294,8 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
 
     return this.state.interacting ? (
       <button className={styles.interactNotice} onClick={this.exitInteractMode}>
-        ⚠️ Interact mode enabled. Changing playback may cause you to desync. Click to exit. ⚠️
+        ⚠️ Interact mode enabled. Changes will only affect your local web browser. ⚠️
+        <Icon name="x" pointerEvents="none" className={styles.btnExitInteract} />
       </button>
     ) : (
       <div className={styles.interactTrigger} onDoubleClick={this.enterInteractMode} />

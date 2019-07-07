@@ -1,4 +1,5 @@
 .container {
+  --interact-border: 8px;
   width: 100%;
   height: 100%;
   display: flex;
@@ -29,12 +30,18 @@
 
 .interactNotice {
   min-height: var(--app-titlebar-height);
-  padding: 4px 8px;
+  padding: 4px var(--interact-border);
   color: #fff;
   background: #c0392b;
+  position: relative;
+}
+
+.btnExitInteract {
+  composes: absolute-vertical-center from '~styles/layout.css';
+  right: calc(var(--interact-border) / 2);
 }
 
 .interactive {
-  border: 8px solid #c0392b;
+  border: var(--interact-border) solid #c0392b;
   border-top: none;
 }

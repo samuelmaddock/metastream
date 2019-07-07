@@ -40,6 +40,12 @@
   right: 0;
 }
 
+.absolute-vertical-center {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
 .fill {
   width: 100%;
   height: 100%;
