@@ -44,7 +44,6 @@ interface IConnectedProps {
   messages: IMessage[]
   playback: PlaybackState
   modal?: LobbyModal
-  isMultiplayer: boolean
   isChatDocked: boolean
 }
 
@@ -158,8 +157,8 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
             messages={this.props.messages}
             sendMessage={this.sendChat}
             disabled={!!this.state.modal}
-            showHint={this.props.isMultiplayer}
             onToggleLayout={this.props.toggleChatLayout}
+            showHint
             fade
           />
         )}
@@ -288,7 +287,6 @@ export const GameLobby = (connect(
       messages: state.chat.messages,
       playback: getPlaybackState(state),
       modal: state.ui.lobbyModal,
-      isMultiplayer: getNumUsers(state) > 1,
       isChatDocked: state.settings.chatLocation === ChatLocation.DockRight
     }
   },
