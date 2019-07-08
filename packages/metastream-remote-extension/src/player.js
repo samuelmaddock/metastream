@@ -238,6 +238,7 @@
         this.media = media
 
         this.onPlay = this.onPlay.bind(this)
+        this.onPlayError = this.onPlayError.bind(this)
         this.onVolumeChange = this.onVolumeChange.bind(this)
         this.onWaiting = this.onWaiting.bind(this)
 
@@ -254,7 +255,7 @@
       play() {
         if (this.dispatch('metastreamplay')) return
         this.startWaitingListener()
-        return this.media.play()
+        return this.media.play().catch(this.onPlayError)
       }
       pause() {
         if (this.dispatch('metastreampause')) return
@@ -303,6 +304,16 @@
       onPlay() {
         if (typeof this.volume === 'number') {
           this.setVolume(this.volume)
+        }
+      }
+
+      onPlayError(err) {
+        dispatchMediaEvent({ type: 'media-autoplay-error', payload: { error: err.name } })
+
+        if (err.name === 'NotAllowedError') {
+          // Attempt muted autoplay
+          this.setVolume(0)
+          this.media.play().catch(noop)
         }
       }
 

@@ -15,6 +15,7 @@ import { IReactReduxProps } from 'types/redux-thunk'
 import { Webview } from 'components/Webview'
 import { ExtensionInstall } from './ExtensionInstall'
 import { Icon } from '../Icon'
+import { addChat } from '../../lobby/actions/chat'
 
 type MediaReadyPayload = {
   duration?: number
@@ -188,6 +189,9 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
       case 'media-ready':
         this.onMediaReady(isTopSubFrame, action.payload)
         break
+      case 'media-autoplay-error':
+        this.onAutoplayError(action.payload.error)
+        break
     }
   }
 
@@ -217,6 +221,21 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
         this.props.dispatch(updatePlaybackTimer())
       }
     }
+  }
+
+  private onAutoplayError = (error: string) => {
+    if (error !== 'NotAllowedError') return
+
+    const hasShownNotice = Boolean(sessionStorage.getItem('autoplayNotice'))
+    if (hasShownNotice) return
+
+    const content =
+      '⚠️ Autoplay permissions are blocked. Enable autoplay in your browser for a smoother playback experience. Reload the video if it doesn’t start.'
+    this.props.dispatch(addChat({ content, timestamp: Date.now() }))
+
+    try {
+      sessionStorage.setItem('autoplayNotice', '1')
+    } catch {}
   }
 
   private updatePlaybackTime = () => {
