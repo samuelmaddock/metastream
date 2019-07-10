@@ -145,23 +145,32 @@ export class WebControls extends Component<IProps, IState> {
     )
   }
 
+  private onNavigation = (e: { url: string }) => this.updateURL(e.url)
+  private setStartedLoading = () => this.setState({ loading: true })
+  private setStoppedLoading = () => this.setState({ loading: false })
+
   setWebview(webview: Webview | null) {
-    this.webview = webview
+    if (webview) {
+      webview.addEventListener('will-navigate', this.onNavigation)
+      webview.addEventListener('did-navigate', this.onNavigation)
+      webview.addEventListener('did-navigate-in-page', this.onNavigation)
 
-    if (this.webview) {
-      const updateUrl = (e: { url: string }) => this.updateURL(e.url)
-      this.webview.addEventListener('will-navigate', updateUrl)
-      this.webview.addEventListener('did-navigate', updateUrl)
-      this.webview.addEventListener('did-navigate-in-page', updateUrl)
+      webview.addEventListener('will-navigate', this.setStartedLoading)
+      webview.addEventListener('did-navigate', this.setStoppedLoading)
+      webview.addEventListener('did-navigate-in-page', this.setStoppedLoading)
+      webview.addEventListener('did-stop-loading', this.setStoppedLoading)
+    } else if (this.webview) {
+      this.webview.removeEventListener('will-navigate', this.onNavigation)
+      this.webview.removeEventListener('did-navigate', this.onNavigation)
+      this.webview.removeEventListener('did-navigate-in-page', this.onNavigation)
 
-      const setLoading = (loading: boolean) => this.setState({ loading })
-      this.webview.addEventListener('will-navigate', setLoading.bind(null, true))
-      this.webview.addEventListener('did-navigate', setLoading.bind(null, false))
-      this.webview.addEventListener('did-navigate-in-page', setLoading.bind(null, false))
-      this.webview.addEventListener('did-stop-loading', setLoading.bind(null, false))
-    } else {
-      // TODO
+      this.webview.removeEventListener('will-navigate', this.setStartedLoading)
+      this.webview.removeEventListener('did-navigate', this.setStoppedLoading)
+      this.webview.removeEventListener('did-navigate-in-page', this.setStoppedLoading)
+      this.webview.removeEventListener('did-stop-loading', this.setStoppedLoading)
     }
+
+    this.webview = webview
   }
 
   focusURL() {
