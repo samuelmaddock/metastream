@@ -182,6 +182,7 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
   }
 
   private onIpcMessage = (action: any, ...args: any[]) => {
+    if (typeof action !== 'object' || typeof action.payload !== 'object') return
     console.log('Received VideoPlayer IPC message', action)
     const isTopSubFrame = !!args[0]
 
