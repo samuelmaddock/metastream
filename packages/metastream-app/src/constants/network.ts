@@ -1,3 +1,13 @@
+/**
+ * Network version the client is currently using. This must match when
+ * connecting to other clients. Will result in a VersionMismatch error
+ * otherwise.
+ *
+ * This should be incremented each time a developer updates the design
+ * of networked data structures.
+ */
+export const METASTREAM_NETWORK_VERSION = 1
+
 export const METASTREAM_SIGNAL_SERVER =
   process.env.METASTREAM_SIGNAL_SERVER || 'wss://signal.rtc.getmetastream.com'
 

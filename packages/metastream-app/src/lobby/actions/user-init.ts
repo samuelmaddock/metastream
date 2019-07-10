@@ -12,10 +12,9 @@ import {
 } from 'reducers/settings'
 import { USERNAME_MAX_LEN, COLOR_LEN } from 'constants/settings'
 import { getMaxUsers, ConnectionStatus } from '../reducers/session'
-import { NetworkDisconnectReason } from 'constants/network'
+import { NetworkDisconnectReason, METASTREAM_NETWORK_VERSION } from 'constants/network'
 import { setAuthorized, setConnectionStatus, setDisconnectReason } from './session'
 import { updateServerClockSkew } from './mediaPlayer'
-import { VERSION } from 'constants/app'
 import { NetConnection, NetServer } from '../../network'
 import { addChat } from './chat'
 import { actionCreator } from 'utils/redux'
@@ -27,7 +26,7 @@ import { translateEscaped } from 'locale'
 type ClientInitRequest = {
   name: string
   color: string
-  version: string
+  version: number
   avatar?: string
   secret?: string
 }
@@ -55,7 +54,7 @@ export const initialize = (server: NetServer): AppThunkAction => {
     try {
       response = await dispatch(
         server_initClient({
-          version: VERSION,
+          version: METASTREAM_NETWORK_VERSION,
           name: getLocalUsername(state),
           color: getLocalColor(state),
           avatar: state.settings.avatar,
@@ -75,8 +74,12 @@ export const initialize = (server: NetServer): AppThunkAction => {
   }
 }
 
-const validateClientInfo = (info: ClientInitRequest, id: string, state: IAppState) => {
-  if (VERSION !== info.version) {
+const validateClientInfo = (
+  info: ClientInitRequest,
+  id: string,
+  state: IAppState
+): NetworkDisconnectReason | true => {
+  if (info.version !== METASTREAM_NETWORK_VERSION) {
     console.debug(`Client '${info.version}'[${id}] kicked for version mismatch (${info.version})`)
     return NetworkDisconnectReason.VersionMismatch
   }
@@ -141,10 +144,16 @@ const initClient = (info: ClientInitRequest): RpcThunk<ClientInitResponse | void
   console.debug(`Received client info for ${id}`, info)
 
   let reason
+  let validOrReason
 
-  const validOrReason = validateClientInfo(info, id, state)
+  try {
+    validOrReason = validateClientInfo(info, id, state)
+  } catch {
+    validOrReason = NetworkDisconnectReason.InvalidClientInfo
+  }
+
   if (validOrReason !== true) {
-    reason = validOrReason
+    reason = validOrReason as NetworkDisconnectReason
   } else if (getNumUsers(state) >= getMaxUsers(state)) {
     reason = NetworkDisconnectReason.Full
   }
