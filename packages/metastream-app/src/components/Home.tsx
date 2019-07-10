@@ -41,7 +41,7 @@ class Home extends Component<IProps> {
     const gitv = `${process.env.GIT_BRANCH}@${process.env.GIT_COMMIT}`
 
     return (
-      <LayoutMain className={styles.container}>
+      <LayoutMain className={styles.container} showBackButton={false}>
         <MenuHeader
           className={styles.header}
           text={

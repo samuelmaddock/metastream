@@ -19,16 +19,20 @@ import { t } from 'locale'
 interface IProps {
   className?: string
   title?: string
+  showBackButton?: boolean
 }
 
 interface IConnectedProps {
   updateAvailable?: boolean
-  showBackButton: boolean
 }
 
 type PrivateProps = IProps & IConnectedProps & IReactReduxProps
 
 class _TitleBar extends Component<PrivateProps> {
+  static defaultProps = {
+    showBackButton: true
+  }
+
   render(): JSX.Element | null {
     const updateButton = this.props.updateAvailable && (
       <IconButton icon="download" className={styles.updateButton} onClick={updateService.update}>
@@ -103,10 +107,8 @@ class _TitleBar extends Component<PrivateProps> {
 
 export const TitleBar = connect(
   (state: IAppState): IConnectedProps => {
-    const { location } = state.router
     return {
-      updateAvailable: isUpdateAvailable(state),
-      showBackButton: location ? location.pathname !== '/' : true
+      updateAvailable: isUpdateAvailable(state)
     }
   }
-)(_TitleBar) as React.ComponentClass<IProps>
+)(_TitleBar)

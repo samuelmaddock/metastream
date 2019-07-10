@@ -167,6 +167,10 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
       </>
     )
 
+    // Hide back button when modal is open to avoid confusing the back button
+    // as the way to close the modal
+    const showBackButton = !this.state.modal
+
     return (
       <section
         className={cx(styles.controls, {
@@ -182,7 +186,11 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
         {controls}
 
         {this.isInteracting ? null : (
-          <TitleBar className={styles.titlebar} title={media && media.title} />
+          <TitleBar
+            className={styles.titlebar}
+            title={media && media.title}
+            showBackButton={showBackButton}
+          />
         )}
       </section>
     )
