@@ -12,4 +12,7 @@
 
 .content {
   flex: 1 0 auto;
+  margin: 1rem 1.5rem 1.5rem 1.5rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 0.5rem;
 }
