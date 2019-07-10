@@ -14,17 +14,23 @@
       flex-direction: column;
     }
 
+    strong {
+      color: var(--color-highlight);
+    }
+
     .link {
       text-decoration: underline;
     }
 
     .grid-container {
+      --grid-width: 750px;
+
       display: grid;
       grid-gap: 30px;
       grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
       grid-auto-flow: dense;
 
-      width: 750px;
+      width: var(--grid-width);
       max-width: 100%;
     }
 
@@ -43,13 +49,20 @@
 
       font-size: 24px;
       text-align: center;
+
+      transition: color 120ms ease-out, background-color 120ms ease-out;
     }
 
-    .text {
+    .social-link:hover {
+      background: var(--color-highlight);
+      color: #fff;
+    }
+
+    .text-container {
       flex: 1;
       display: flex;
       align-items: center;
-      max-width: 600px;
+      max-width: var(--grid-width);
       text-align: center;
       font-size: 18px;
     }
@@ -57,7 +70,11 @@
 </head>
 
 <body>
-  <p class="text">Find any website URL to add to the session.</p>
+  <section class="text-container">
+    <p>
+      <strong>Browse</strong> the web, <strong>find media</strong> you want to share, then <strong>add it to the session.</strong>
+    </p>
+  </section>
   <div class="grid-container">
     <a href="https://www.youtube.com/" class="social-link" rel="noopener">YouTube</a>
     <a href="https://www.twitch.tv/" class="social-link" rel="noopener">Twitch</a>
@@ -68,7 +85,7 @@
     <a href="https://www.reddit.com/" class="social-link" rel="noopener">Reddit</a>
     <a href="https://www.google.com/" class="social-link" rel="noopener">Google</a>
   </div>
-  <div class="text">
+  <div class="text-container">
     <p>
       Having trouble with a website?
       <br>Please
