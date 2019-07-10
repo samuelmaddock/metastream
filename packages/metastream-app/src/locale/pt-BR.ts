@@ -28,7 +28,7 @@ export default {
   donate: 'Doar',
   donators: 'Doadores',
   duplicate: 'Duplicar',
-  endSessionTitle: 'Encerrar sessão publica?',
+  endSessionTitle: 'Encerrar sessão?',
   endSessionDescription:
     'Mudar para uma sessão privada irá desconectar todos os usarios conectados.',
   friendCode: 'Codigo de amigo',

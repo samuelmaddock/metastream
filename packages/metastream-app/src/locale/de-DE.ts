@@ -31,7 +31,7 @@ export default {
   donate: 'Spenden',
   donators: 'Spender',
   duplicate: 'Duplizieren',
-  endSessionTitle: 'Öffentliche Sitzung beenden?',
+  endSessionTitle: 'Sitzung beenden?',
   endSessionDescription: 'Der Umstieg auf eine private Sitzung wird alle Benutzer trennen.',
   enterJoinDest: 'Metastream Sitzungs-URL eingeben.',
   findSession: 'Sitzung finden',

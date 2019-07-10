@@ -31,7 +31,7 @@ export default {
   donate: 'Поддержать',
   donators: 'Поддерживают',
   duplicate: 'Дублировать',
-  endSessionTitle: 'Завершить публичную сессию?',
+  endSessionTitle: 'Завершить сессию?',
   endSessionDescription: 'Переход к закрытому сеансу отключит всех подключенных пользователей.',
   enterJoinDest: 'Введите URL-адрес сеанса Metastream',
   findSession: 'Найти сеанс',

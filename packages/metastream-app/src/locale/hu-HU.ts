@@ -30,7 +30,7 @@ export default {
   donate: 'Adományozás',
   donators: 'Adományozók',
   duplicate: 'Duplikálás',
-  endSessionTitle: 'Publikus munkamenet leállítása?',
+  endSessionTitle: 'Munkamenet leállítása?',
   endSessionDescription:
     'Privát munkamenet engedélyezéskor, minden már kapcsolódott felhasználó munkamenete megszűnik',
   friendCode: 'Baráti kód',

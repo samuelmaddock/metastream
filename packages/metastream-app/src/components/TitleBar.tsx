@@ -20,6 +20,7 @@ interface IProps {
   className?: string
   title?: string
   showBackButton?: boolean
+  onBack?: (close: Function) => void
 }
 
 interface IConnectedProps {
@@ -91,12 +92,15 @@ class _TitleBar extends Component<PrivateProps> {
   }
 
   private renderBack() {
+    const onBack = this.props.onBack
+    const defaultOnBack = () => this.props.dispatch(push('/'))
+
     return (
       <div className={styles.leftActions}>
         <button
           type="button"
           className={styles.actionButton}
-          onClick={() => this.props.dispatch!(push('/'))}
+          onClick={onBack ? () => onBack(defaultOnBack) : defaultOnBack}
         >
           <Icon name="arrow-left" />
         </button>

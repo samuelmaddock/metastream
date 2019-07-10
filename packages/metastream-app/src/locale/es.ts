@@ -30,7 +30,7 @@ export default {
   donate: 'Donar',
   donators: 'Donadores',
   duplicate: 'Duplicar',
-  endSessionTitle: '¿Finalizar sesión pública?',
+  endSessionTitle: '¿Finalizar sesión?',
   endSessionDescription:
     'Cambiar a una sesión privada desconectará a todos los usuarios conectados.',
   friendCode: 'Código de amigo',

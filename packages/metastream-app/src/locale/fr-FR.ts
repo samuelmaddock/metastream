@@ -34,7 +34,7 @@ export default {
   donate: 'Contribuer',
   donators: 'Donateurs',
   duplicate: 'Dupliquer',
-  endSessionTitle: 'Terminer la session publique ?',
+  endSessionTitle: 'Terminer la session ?',
   endSessionDescription:
     'Passer à une session privée déconnectera tous les utilisateurs connectés.',
   enterJoinDest: 'Entrez l’URL de la session Metastream.',

@@ -45,6 +45,7 @@ interface IConnectedProps {
   playback: PlaybackState
   modal?: LobbyModal
   isChatDocked: boolean
+  isMultiplayer: boolean
 }
 
 interface DispatchProps {
@@ -190,6 +191,13 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
             className={styles.titlebar}
             title={media && media.title}
             showBackButton={showBackButton}
+            onBack={goBack => {
+              if (this.props.host && this.props.isMultiplayer) {
+                this.openModal(LobbyModal.EndSession, { onConfirm: goBack })
+              } else {
+                goBack()
+              }
+            }}
           />
         )}
       </section>
@@ -197,8 +205,10 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
   }
 
   private renderModal() {
+    let modalChildren
+
     switch (this.state.modal!) {
-      case LobbyModal.Browser:
+      case LobbyModal.Browser: {
         return (
           <WebBrowser
             className={styles.modal}
@@ -206,26 +216,35 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
             {...this.state.modalProps}
           />
         )
-      case LobbyModal.Invite:
-        return (
-          <Modal className={styles.modal} onClose={this.closeModal}>
-            <Modals.Invite />
-          </Modal>
-        )
-      case LobbyModal.MediaInfo:
+      }
+      case LobbyModal.Invite: {
+        modalChildren = <Modals.Invite />
+        break
+      }
+      case LobbyModal.MediaInfo: {
         const media =
           (this.state.modalProps && this.state.modalProps.media) || this.props.currentMedia
-        return (
-          <Modal className={styles.modal} onClose={this.closeModal}>
-            <Modals.MediaInfo media={media} onClose={this.closeModal} />
-          </Modal>
-        )
-      case LobbyModal.SessionSettings:
-        return (
-          <Modal className={styles.modal} onClose={this.closeModal}>
-            <Modals.SessionSettings />
-          </Modal>
-        )
+        modalChildren = <Modals.MediaInfo media={media} onClose={this.closeModal} />
+        break
+      }
+      case LobbyModal.SessionSettings: {
+        modalChildren = <Modals.SessionSettings />
+        break
+      }
+      case LobbyModal.EndSession: {
+        modalChildren = <Modals.EndSession onCancel={this.closeModal} {...this.state.modalProps} />
+        break
+      }
+      default:
+        console.warn(`Unknown lobby modal '${this.state.modal}'`)
+    }
+
+    if (modalChildren) {
+      return (
+        <Modal className={styles.modal} onClose={this.closeModal}>
+          {modalChildren}
+        </Modal>
+      )
     }
   }
 
@@ -275,8 +294,8 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
     this.setState({ modal: LobbyModal.MediaInfo, modalProps: { media } })
   }
 
-  private openModal = (modal: LobbyModal) => {
-    this.setState({ modal })
+  private openModal = (modal: LobbyModal, modalProps?: any) => {
+    this.setState({ modal, modalProps })
   }
 
   private closeModal = () => {
@@ -295,7 +314,8 @@ export const GameLobby = (connect(
       messages: state.chat.messages,
       playback: getPlaybackState(state),
       modal: state.ui.lobbyModal,
-      isChatDocked: state.settings.chatLocation === ChatLocation.DockRight
+      isChatDocked: state.settings.chatLocation === ChatLocation.DockRight,
+      isMultiplayer: getNumUsers(state) > 1
     }
   },
   (dispatch: Function): DispatchProps => ({
