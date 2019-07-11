@@ -75,7 +75,7 @@
     "iso8601-duration": "^1.1.1",
     "length-prefixed-stream": "^1.6.0",
     "libsodium-wrappers": "^0.7.3",
-    "lodash-es": "^4.17.11",
+    "lodash-es": "^4.17.14",
     "marked": "^0.6.2",
     "qs": "6.5.1",
     "react": "^16.0.0",
