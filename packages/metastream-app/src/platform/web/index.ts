@@ -8,6 +8,7 @@ import { isP2PHash, isIP, isUrlDomain } from 'utils/network'
 import { PeerCoordinator } from 'network/server'
 import { initIdentity } from './identity'
 import { WebRTCPeerCoordinator } from './rtc-coordinator'
+import { NETWORK_TIMEOUT } from 'constants/network'
 
 type HexId = string
 
@@ -50,7 +51,7 @@ export class WebPlatform {
     })
 
     try {
-      await waitEvent(coordinator, 'connection')
+      await waitEvent(coordinator, 'connection', NETWORK_TIMEOUT)
     } catch {
       if (this.server) {
         this.server.close()

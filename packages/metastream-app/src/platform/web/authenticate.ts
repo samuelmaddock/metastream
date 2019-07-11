@@ -8,6 +8,8 @@ import * as crypto from './crypto'
 
 const SUCCESS = sodium.from_string('success')
 
+const PACKET_TIMEOUT = 10e3
+
 /** Performs mutual authentication with the remote peer. */
 export async function mutualHandshake(socket: Duplex, keyPair: KeyPair, serverPublicKey?: Key) {
   let sharedKey: Key | undefined
@@ -41,7 +43,7 @@ export async function mutualHandshake(socket: Duplex, keyPair: KeyPair, serverPu
     const encryptedPublicKey = crypto.seal(keyPair.publicKey, serverPublicKey)
     socket.write(encryptedPublicKey)
 
-    const [encChallenge] = await waitEvent(socket, 'data')
+    const [encChallenge] = await waitEvent(socket, 'data', PACKET_TIMEOUT)
     createSharedKey(serverPublicKey)
 
     const challenge = decrypt(encChallenge)
@@ -51,7 +53,7 @@ export async function mutualHandshake(socket: Duplex, keyPair: KeyPair, serverPu
 
     socket.write(encrypt(challenge))
 
-    const [encResult] = await waitEvent(socket, 'data')
+    const [encResult] = await waitEvent(socket, 'data', PACKET_TIMEOUT)
     const result = decrypt(encResult)
     if (!result) {
       throw new Error('Failed to decrypt result')
@@ -62,7 +64,7 @@ export async function mutualHandshake(socket: Duplex, keyPair: KeyPair, serverPu
     }
   } else {
     // SERVER
-    const [encryptedPublicKey] = await waitEvent(socket, 'data')
+    const [encryptedPublicKey] = await waitEvent(socket, 'data', PACKET_TIMEOUT)
     const peerPublicKey = crypto.unseal(encryptedPublicKey, keyPair.publicKey, keyPair.privateKey)
     if (!peerPublicKey) {
       throw new Error(`Failed to decrypt peer's public key`)
@@ -77,7 +79,7 @@ export async function mutualHandshake(socket: Duplex, keyPair: KeyPair, serverPu
     const challenge = crypto.nonce()
     socket.write(encrypt(challenge))
 
-    const [encChallengeResponse] = await waitEvent(socket, 'data')
+    const [encChallengeResponse] = await waitEvent(socket, 'data', PACKET_TIMEOUT)
     const challengeResponse = decrypt(encChallengeResponse)
     if (challengeResponse && crypto.equal(challengeResponse, challenge)) {
       socket.write(encrypt(SUCCESS))
