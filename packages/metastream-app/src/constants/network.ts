@@ -37,7 +37,8 @@ export const enum NetworkDisconnectReason {
   InvalidClientInfo,
   VersionMismatch,
   Full,
-  Kicked
+  Kicked,
+  MultiTab
 }
 
 export const NetworkDisconnectMessages = {
@@ -46,7 +47,8 @@ export const NetworkDisconnectMessages = {
   [NetworkDisconnectReason.InvalidClientInfo]: 'networkDisconnectInvalidClientInfo',
   [NetworkDisconnectReason.VersionMismatch]: `networkDisconnectVersionMismatch`,
   [NetworkDisconnectReason.Full]: 'networkDisconnectFull',
-  [NetworkDisconnectReason.Kicked]: 'networkDisconnectKicked'
+  [NetworkDisconnectReason.Kicked]: 'networkDisconnectKicked',
+  [NetworkDisconnectReason.MultiTab]: 'networkDisconnectMultiTab'
 }
 
 export const NetworkDisconnectLabels = {
@@ -55,5 +57,6 @@ export const NetworkDisconnectLabels = {
   [NetworkDisconnectReason.InvalidClientInfo]: 'invalid-client-info',
   [NetworkDisconnectReason.VersionMismatch]: `version-mismatch`,
   [NetworkDisconnectReason.Full]: 'full',
-  [NetworkDisconnectReason.Kicked]: 'kicked'
+  [NetworkDisconnectReason.Kicked]: 'kicked',
+  [NetworkDisconnectReason.MultiTab]: 'multi-tab'
 }

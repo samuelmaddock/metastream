@@ -27,6 +27,7 @@ import { resetLobby, initLobby } from '../lobby/actions/common'
 import { IReactReduxProps } from 'types/redux-thunk'
 import { NetworkError, NetworkErrorCode } from '../network/error'
 import { addChat } from '../lobby/actions/chat'
+import { MultiTabObserver } from '../utils/multitab'
 
 interface IRouteParams {
   lobbyId: string
@@ -66,6 +67,7 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
   private mounted: boolean = false
   private server?: NetServer
   private host: boolean
+  private tabObserver?: MultiTabObserver
 
   private get supportsNetworking() {
     return this.props.sessionMode !== SessionMode.Offline
@@ -81,10 +83,27 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
     this.host = props.match.params.lobbyId === localUserId()
   }
 
+  private async checkIsMultiTab() {
+    if (!this.tabObserver) {
+      this.tabObserver = new MultiTabObserver()
+    }
+
+    const isMultiTab = await this.tabObserver.getIsMultiTab()
+    if (isMultiTab) {
+      this.disconnect(NetworkDisconnectReason.MultiTab)
+      return true
+    }
+
+    return false
+  }
+
   private async setupLobby(): Promise<void> {
     let successPromise
 
     if (this.host) {
+      const isMultiTab = await this.checkIsMultiTab()
+      if (isMultiTab) return
+
       successPromise = PlatformService.createLobby({
         p2p: true,
         websocket: true
@@ -111,6 +130,11 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
     if (this.server) {
       this.server.removeListener('close', this.disconnect)
       this.server = undefined
+    }
+
+    if (this.tabObserver) {
+      this.tabObserver.destroy()
+      this.tabObserver = undefined
     }
 
     PlatformService.leaveLobby(this.lobbyId)
@@ -152,7 +176,7 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
   ) => {
     this.setState({ connected: false })
 
-    if (immediate || this.host) {
+    if (immediate) {
       this.props.dispatch(push('/'))
       return
     }

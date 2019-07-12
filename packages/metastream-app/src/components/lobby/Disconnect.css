@@ -11,9 +11,12 @@
 .info {
   composes: center-vertical from '~styles/layout.css';
   composes: select-text from '~styles/text.css';
+  padding: 0 1rem;
+  max-width: 600px;
 }
 
 .info svg {
+  flex-shrink: 0;
   margin-right: 0.5rem;
 }
 

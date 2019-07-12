@@ -65,6 +65,8 @@ export default {
   networkDisconnectVersionMismatch: `Client version mismatch.`,
   networkDisconnectFull: 'Session is full.',
   networkDisconnectKicked: 'Kicked from session.',
+  networkDisconnectMultiTab:
+    'You are hosting a Metastream session from more than one browser or tab. Please close the other tabs or other browsers, then reload the page.',
   networkTroubleshootingHelp: 'See <1>Network Troubleshooting guide</1> for help.',
   noticeAddedMedia: 'Added <Media id="{{mediaId}}">{{mediaTitle}}</Media>',
   noticeMediaError: 'There was an error requesting {{url}}',
