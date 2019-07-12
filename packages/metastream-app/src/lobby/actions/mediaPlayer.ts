@@ -17,6 +17,7 @@ import { addChat } from './chat'
 import { AppThunkAction } from 'types/redux-thunk'
 import { translateEscaped, t } from 'locale'
 import { isIP } from 'utils/network'
+import { StorageKey } from '../../constants/storage'
 
 /** Code-split media parsing due to large dependencies and it's only used by the host. */
 const getMediaParser = () => import(/* webpackChunkName: "media-parser" */ 'media')
@@ -170,8 +171,8 @@ export const sendMediaRequest = (url: string, source: string): AppThunkAction =>
 
     const requestPromise = dispatch(server_requestMedia(url))
 
-    const requestCount = parseInt(localStorage.getItem('requestCount') || '0', 10) || 0
-    localStorage.setItem('requestCount', `${requestCount + 1}`)
+    const requestCount = parseInt(localStorage.getItem(StorageKey.RequestCount) || '0', 10) || 0
+    localStorage.setItem(StorageKey.RequestCount, `${requestCount + 1}`)
 
     {
       ga('event', { ec: 'session', ea: 'request_media', el: source })

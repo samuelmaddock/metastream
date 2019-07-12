@@ -1,0 +1,9 @@
+.highlightText {
+  color: var(--color-highlight);
+  font-weight: bold;
+}
+
+.mediumText {
+  font-size: 1.2rem;
+  line-height: 1.8rem;
+}

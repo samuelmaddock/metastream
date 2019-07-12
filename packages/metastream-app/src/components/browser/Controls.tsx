@@ -1,11 +1,13 @@
 import React, { Component } from 'react'
 import cx from 'classnames'
 
+import { t } from 'locale'
+import { StorageKey } from 'constants/storage'
+import { Webview } from 'components/Webview'
 import { IconButton, HighlightButton } from 'components/common/button'
+import { HighlightText, MediumText } from '../common/typography'
 
 import styles from './Controls.css'
-import { t } from 'locale'
-import { Webview } from 'components/Webview'
 
 interface IProps {
   initialUrl: string
@@ -18,16 +20,26 @@ interface IState {
   url?: string
   loading?: boolean
   canRequest?: boolean
+  showAddHint?: boolean
 }
 
 export class WebControls extends Component<IProps, IState> {
   private webview: Webview | null = null
   private addressInput: HTMLInputElement | null = null
+  private mounted: boolean = false
 
   state: IState = {}
 
   private get addressUrl() {
     return (this.addressInput && this.addressInput.value) || ''
+  }
+
+  componentDidMount() {
+    this.mounted = true
+  }
+
+  componentWillUnmount() {
+    this.mounted = false
   }
 
   render(): JSX.Element {
@@ -57,7 +69,6 @@ export class WebControls extends Component<IProps, IState> {
             this.webview.goForward()
           }
         }}
-        // disabled={this.webview ? !this.webContents.canGoForward() : true}
       />
     )
 
@@ -98,6 +109,19 @@ export class WebControls extends Component<IProps, IState> {
           onClick={this.onPlayClicked.bind(this)}
           disabled={!this.state.canRequest}
           highlight={this.state.canRequest}
+          title={
+            <MediumText>
+              When you&rsquo;re ready to share, press the{' '}
+              <HighlightText>Add To Session</HighlightText> button.
+            </MediumText>
+          }
+          tooltipProps={
+            {
+              classes: { tooltip: styles.addHintTooltip },
+              placement: 'bottom-end',
+              open: !!this.state.showAddHint
+            } as any
+          }
         >
           {t('requestUrl')}
         </HighlightButton>
@@ -217,7 +241,6 @@ export class WebControls extends Component<IProps, IState> {
         this.requestUrl(url)
       } else if (url) {
         this.loadURL(url)
-        // this.webview!.focus()
       }
     }
   }
@@ -227,6 +250,22 @@ export class WebControls extends Component<IProps, IState> {
     const canRequest = !!(url && url.length >= 1)
     if (canRequest !== this.state.canRequest) {
       this.setState({ canRequest })
+
+      if (canRequest) {
+        this.checkShowAddHint()
+      }
+    }
+  }
+
+  private checkShowAddHint() {
+    const hasRequestedMediaBefore = Boolean(localStorage.getItem(StorageKey.RequestCount))
+
+    if (!hasRequestedMediaBefore) {
+      setTimeout(() => {
+        if (this.mounted) {
+          this.setState({ showAddHint: true })
+        }
+      }, 5e3)
     }
   }
 

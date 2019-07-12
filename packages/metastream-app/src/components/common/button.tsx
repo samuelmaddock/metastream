@@ -2,12 +2,14 @@ import React from 'react'
 import * as cx from 'classnames'
 import styles from './button.css'
 import { Icon } from 'components/Icon'
-import Tooltip from '@material-ui/core/Tooltip'
+import Tooltip, { TooltipProps } from '@material-ui/core/Tooltip'
 
 export interface IIconButtonProps {
   icon: string
   iconSize?: 'small'
-  title?: string
+
+  title?: React.ReactNode
+  tooltipProps?: TooltipProps
 
   /** Disable button interaction */
   disabled?: boolean
@@ -21,9 +23,10 @@ export interface IIconButtonProps {
 const nbsp = '\u00A0'
 
 export const IconButton: React.SFC<IIconButtonProps> = ({
-  title,
   icon,
   iconSize,
+  title,
+  tooltipProps,
   children,
   ...props
 }) => {
@@ -40,7 +43,7 @@ export const IconButton: React.SFC<IIconButtonProps> = ({
       {...props}
     >
       {title ? (
-        <Tooltip title={title}>
+        <Tooltip {...tooltipProps} title={title}>
           <div className={styles.tooltip} />
         </Tooltip>
       ) : null}

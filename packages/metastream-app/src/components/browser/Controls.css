@@ -53,3 +53,10 @@
 .requestButtonContainer button {
   height: 100%;
 }
+
+.addHintTooltip {
+  background-color: white !important;
+  color: #222 !important;
+  max-width: 360px !important;
+  padding: 1rem 2rem !important;
+}
