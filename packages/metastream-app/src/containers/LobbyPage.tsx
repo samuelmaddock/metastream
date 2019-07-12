@@ -90,6 +90,10 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
 
     const isMultiTab = await this.tabObserver.getIsMultiTab()
     if (isMultiTab) {
+      // Destroy while on disconnected screen
+      this.tabObserver.destroy()
+      this.tabObserver = undefined
+
       this.disconnect(NetworkDisconnectReason.MultiTab)
       return true
     }
