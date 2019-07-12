@@ -97,7 +97,7 @@ export default {
   sharePublicIP: 'شارك <1>IP</1> للسماح لأصدقائك بالاتصال مباشرة',
   shareSessionUrl: 'شارة رابط الجلسة لدعوة أصدقائك',
   startSession: 'بدء الجلسة',
-  thirdPartyIntegrations: 'Third-party Integrations',
+  thirdPartyIntegrations: 'تكامل الجهات الخارجية',
   toggleDJ: 'منح DJ',
   unlimited: 'غير محدود',
   unlockQueue: 'فتح قائمة الانتظار',
