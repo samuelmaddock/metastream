@@ -27,8 +27,8 @@ export const METASTREAM_ICE_SERVERS = [
   METASTREAM_TURN_SERVER
 ]
 
-export const NETWORK_TIMEOUT = 15000
-export const RECONNECT_TIMEOUT = 30000
+export const NETWORK_TIMEOUT = 30e3
+export const RECONNECT_TIMEOUT = 30e3
 export const WEBSOCKET_PORT_DEFAULT = 27064
 
 export const enum NetworkDisconnectReason {
