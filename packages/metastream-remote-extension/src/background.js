@@ -14,7 +14,9 @@
 const TOP_FRAME = 0
 const HEADER_PREFIX = 'x-metastream'
 const isMetastreamUrl = url =>
-  url.startsWith('https://app.getmetastream.com') || url.startsWith('http://localhost:8080')
+  url.startsWith('https://app.getmetastream.com') ||
+  url.startsWith('http://localhost:8080') ||
+  url.startsWith('https://localhost:8080')
 const isTopFrame = details => details.frameId === TOP_FRAME
 const isDirectChild = details => details.parentFrameId === TOP_FRAME
 const isValidAction = action => typeof action === 'object' && typeof action.type === 'string'
@@ -295,7 +297,6 @@ const injectContentScripts = async details => {
       executeScript({ tabId, frameId, file: script.file })
     })
   }
-
 }
 
 //=============================================================================
