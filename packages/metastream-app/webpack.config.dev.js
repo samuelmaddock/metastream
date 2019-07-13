@@ -8,20 +8,21 @@ const { spawn, execSync } = require('child_process')
 const baseConfig = require('./webpack.config.base')
 
 const port = process.env.PORT || 8080
-const publicPath = `http://localhost:${port}`
+const protocol = process.env.USE_HTTPS ? 'https' : 'http'
+const publicPath = `${protocol}://localhost:${port}/`
 
 module.exports = merge.smart(baseConfig, {
   devtool: 'inline-source-map',
 
   entry: [
     'react-hot-loader/patch',
-    `webpack-dev-server/client?http://localhost:${port}/`,
+    `webpack-dev-server/client?${publicPath}`,
     'webpack/hot/only-dev-server',
     path.join(__dirname, 'src/index.tsx')
   ],
 
   output: {
-    publicPath: `http://localhost:${port}/`,
+    publicPath,
     libraryTarget: 'var'
   },
 
@@ -104,7 +105,11 @@ module.exports = merge.smart(baseConfig, {
       aggregateTimeout: 300,
       ignored: /node_modules/,
       poll: 100
-    }
+    },
+    https: process.env.USE_HTTPS ? {
+      key: fs.readFileSync('./localhost-key.pem'),
+      cert: fs.readFileSync('./localhost.pem'),
+    } : undefined
     // historyApiFallback: {
     //   verbose: true,
     //   disableDotRule: false

@@ -7,7 +7,8 @@
   "license": "MIT",
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack-cli --config webpack.config.prod.js",
-    "start": "cross-env NODE_ENV=development webpack-dev-server --config webpack.config.dev.js"
+    "start": "cross-env NODE_ENV=development webpack-dev-server --config webpack.config.dev.js",
+    "start:https": "cross-env NODE_ENV=development USE_HTTPS=1 webpack-dev-server --config webpack.config.dev.js"
   },
   "browserslist": "Chrome >= 73, Firefox >= 66",
   "repository": {
