@@ -1,5 +1,4 @@
 import sodium from 'libsodium-wrappers'
-import SimplePeer from 'simple-peer'
 import { NetConnection } from 'network'
 import { KeyPair, Key } from '../types'
 import { Duplex } from 'stream'

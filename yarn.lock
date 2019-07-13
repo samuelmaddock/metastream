@@ -5477,21 +5477,10 @@ simple-git@^1.85.0:
   dependencies:
     debug "^4.0.1"
 
-simple-peer@^8.1.1:
-  version "8.5.0"
-  resolved "https://registry.yarnpkg.com/simple-peer/-/simple-peer-8.5.0.tgz#23204746ec36b689798e4fd81d70210a855ef23f"
-  integrity sha512-L901ld7sqQv7c8ehThEZGIDqgBrTC1iJLlcqFlqtH3YhUb+S8uBjdQpzaJGth+NkSoWNJSsXjNyWbzaM99cMQg==
-  dependencies:
-    debug "^3.1.0"
-    get-browser-rtc "^1.0.0"
-    inherits "^2.0.1"
-    randombytes "^2.0.3"
-    readable-stream "^2.3.4"
-
-simple-peer@^9.3.0:
-  version "9.3.0"
-  resolved "https://registry.yarnpkg.com/simple-peer/-/simple-peer-9.3.0.tgz#85ecb126b23d8730f3904f199db65e84141e0f4e"
-  integrity sha512-5dLDfrRomrS2LuZUuH2aO7yTGtHFEl5Eb+8ZzqM0KC0lHcYUyJudUomP9ZY/lPUKBx2broL/Eee9bQ53yycEgQ==
+simple-peer@^9.4.0:
+  version "9.4.0"
+  resolved "https://registry.yarnpkg.com/simple-peer/-/simple-peer-9.4.0.tgz#eb82ef1181e10ec0c014a94953e2eb278f3d9025"
+  integrity sha512-8qF32uq6SSSVXoBq9g31uGqZYupwRD3Ta/QK9fV04U/IbnIS6mictLb8/kjFyLVa3JrD7QYyKrw3nvJJ+lNFDw==
   dependencies:
     debug "^4.0.1"
     get-browser-rtc "^1.0.0"

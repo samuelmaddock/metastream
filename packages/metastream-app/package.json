@@ -92,7 +92,7 @@
     "redux-persist": "^5.9.1",
     "redux-thunk": "^2.3.0",
     "shortid": "^2.2.8",
-    "simple-peer": "^8.1.1",
+    "simple-peer": "^9.4.0",
     "simple-websocket": "^7.0.2",
     "source-map-support": "^0.4.14"
   },

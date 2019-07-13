@@ -17,7 +17,7 @@
   "license": "MIT",
   "dependencies": {
     "libsodium-wrappers": "^0.7.4",
-    "simple-peer": "^9.3.0",
+    "simple-peer": "^9.4.0",
     "ws": "^6.1.2"
   },
   "devDependencies": {
