@@ -16,6 +16,7 @@ import { Webview } from 'components/Webview'
 import { ExtensionInstall } from './ExtensionInstall'
 import { Icon } from '../Icon'
 import { addChat } from '../../lobby/actions/chat'
+import { MediaSession } from './MediaSession'
 
 type MediaReadyPayload = {
   duration?: number
@@ -284,9 +285,20 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
         className={cx(styles.container, this.props.className)}
         onDoubleClick={this.enterInteractMode}
       >
+        {this.renderMediaSession()}
         {this.renderInteract()}
         {this.renderBrowser()}
       </div>
+    )
+  }
+
+  private renderMediaSession() {
+    if (!('mediaSession' in navigator)) return
+    return (
+      <MediaSession
+        playing={this.props.playback === PlaybackState.Playing}
+        muted={this.props.mute || this.props.volume === 0}
+      />
     )
   }
 

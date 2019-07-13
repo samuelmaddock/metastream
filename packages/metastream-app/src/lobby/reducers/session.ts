@@ -25,6 +25,7 @@ export interface ISessionState {
     url: string
     title: string
     thumbnail?: string
+    duration?: number
   }
   playback: PlaybackState
   startTime?: number

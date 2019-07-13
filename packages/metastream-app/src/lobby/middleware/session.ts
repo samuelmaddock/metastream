@@ -65,7 +65,8 @@ export const sessionMiddleware = (observers: SessionObserver[] = []): Middleware
           media: media && {
             url: media.requestUrl,
             title: media.title,
-            thumbnail: media.imageUrl
+            thumbnail: media.imageUrl,
+            duration: media.duration
           },
           playback,
           startTime

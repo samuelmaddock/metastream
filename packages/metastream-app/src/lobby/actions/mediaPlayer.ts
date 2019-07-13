@@ -16,8 +16,9 @@ import { getUserName, getNumUsers } from 'lobby/reducers/users.helpers'
 import { addChat } from './chat'
 import { AppThunkAction } from 'types/redux-thunk'
 import { translateEscaped, t } from 'locale'
+import { StorageKey } from 'constants/storage'
 import { isIP } from 'utils/network'
-import { StorageKey } from '../../constants/storage'
+import { clamp } from 'utils/math'
 
 /** Code-split media parsing due to large dependencies and it's only used by the host. */
 const getMediaParser = () => import(/* webpackChunkName: "media-parser" */ 'media')
@@ -299,19 +300,30 @@ const requestSeek = (time: number): RpcThunk<void> => (dispatch, getState, conte
 
   const state = getState()
   const media = getCurrentMedia(state)
+  if (!media || !media.duration) return
 
-  if (!media || !media.duration) {
-    return
-  }
-
-  if (time < 0 || time > media.duration) {
-    return
-  }
+  time = clamp(time, 0, media.duration)
+  if (isNaN(time)) return
 
   dispatch(seekMedia(time))
   dispatch(updatePlaybackTimer())
 }
 export const server_requestSeek = rpc('requestSeek', RpcRealm.Server, requestSeek)
+
+const requestSeekRelative = (relativeTime: number): RpcThunk<void> => (
+  dispatch,
+  getState,
+  context
+) => {
+  const curTime = getPlaybackTime(getState())
+  const time = curTime + relativeTime
+  requestSeek(time)(dispatch, getState, context)
+}
+export const server_requestSeekRelative = rpc(
+  'requestSeekRelative',
+  RpcRealm.Server,
+  requestSeekRelative
+)
 
 const requestDeleteMedia = (mediaId: string): RpcThunk<void> => (dispatch, getState, context) => {
   if (!hasPlaybackPermissions(getState(), context.client)) return
