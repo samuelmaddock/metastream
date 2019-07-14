@@ -60,7 +60,7 @@ export default {
   next: 'Next',
   nextUp: 'Next Up',
   networkDisconnectHostDisconnect: 'Host closed connection.',
-  networkDisconnectTimeout: 'Network timeout.',
+  networkDisconnectError: 'Network error.',
   networkDisconnectInvalidClientInfo: 'Invalid client info.',
   networkDisconnectVersionMismatch: `Client version mismatch.`,
   networkDisconnectFull: 'Session is full.',

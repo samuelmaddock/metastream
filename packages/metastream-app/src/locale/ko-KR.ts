@@ -51,7 +51,7 @@ export default {
   next: '다음',
   nextUp: '이어서',
   networkDisconnectHostDisconnect: '호스트가 연결을 종료했습니다.',
-  networkDisconnectTimeout: '네트워크 시간 초과입니다.',
+  networkDisconnectError: '네트워크 시간 초과입니다.',
   networkDisconnectInvalidClientInfo: '유효하지 않은 클라이언트 정보입니다.',
   networkDisconnectVersionMismatch: `클라이언트 버전이 일치하지 않습니다.`,
   networkDisconnectFull: '세션이 꽉 찼습니다.',

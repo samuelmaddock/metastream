@@ -52,7 +52,7 @@ export default {
   next: 'Следующий',
   nextUp: 'В очереди',
   networkDisconnectHostDisconnect: 'Хост закрыт.',
-  networkDisconnectTimeout: 'Тайм-аут сети.',
+  networkDisconnectError: 'Тайм-аут сети.',
   networkDisconnectInvalidClientInfo: 'Неверная информация о клиенте.',
   networkDisconnectVersionMismatch: `Несоответствие версии клиента.`,
   networkDisconnectFull: 'Сессия полная.',

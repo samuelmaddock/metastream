@@ -38,17 +38,19 @@ export const enum NetworkDisconnectReason {
   VersionMismatch,
   Full,
   Kicked,
-  MultiTab
+  MultiTab,
+  SessionNotFound
 }
 
 export const NetworkDisconnectMessages = {
   [NetworkDisconnectReason.HostDisconnect]: 'networkDisconnectHostDisconnect',
-  [NetworkDisconnectReason.Timeout]: 'networkDisconnectTimeout',
+  [NetworkDisconnectReason.Timeout]: 'networkDisconnectError',
   [NetworkDisconnectReason.InvalidClientInfo]: 'networkDisconnectInvalidClientInfo',
   [NetworkDisconnectReason.VersionMismatch]: `networkDisconnectVersionMismatch`,
   [NetworkDisconnectReason.Full]: 'networkDisconnectFull',
   [NetworkDisconnectReason.Kicked]: 'networkDisconnectKicked',
-  [NetworkDisconnectReason.MultiTab]: 'networkDisconnectMultiTab'
+  [NetworkDisconnectReason.MultiTab]: 'networkDisconnectMultiTab',
+  [NetworkDisconnectReason.SessionNotFound]: 'networkDisconnectSessionNotFound'
 }
 
 export const NetworkDisconnectLabels = {
@@ -58,5 +60,6 @@ export const NetworkDisconnectLabels = {
   [NetworkDisconnectReason.VersionMismatch]: `version-mismatch`,
   [NetworkDisconnectReason.Full]: 'full',
   [NetworkDisconnectReason.Kicked]: 'kicked',
-  [NetworkDisconnectReason.MultiTab]: 'multi-tab'
+  [NetworkDisconnectReason.MultiTab]: 'multi-tab',
+  [NetworkDisconnectReason.SessionNotFound]: 'session-not-found'
 }

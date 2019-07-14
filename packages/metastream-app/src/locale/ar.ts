@@ -55,7 +55,7 @@ export default {
   next: 'تالي',
   nextUp: 'االتالي',
   networkDisconnectHostDisconnect: 'المضيف أغلق الإتصال',
-  networkDisconnectTimeout: 'إنتهت مهلة الإتصال',
+  networkDisconnectError: 'إنتهت مهلة الإتصال',
   networkDisconnectInvalidClientInfo: 'معلومات العميل غير صالحة',
   networkDisconnectVersionMismatch: `إصدار العميل غير متطابق`,
   networkDisconnectFull: 'البث ممتلئ',

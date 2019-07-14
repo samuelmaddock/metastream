@@ -52,7 +52,7 @@ export default {
   next: 'Weiter',
   nextUp: 'Als nächstes',
   networkDisconnectHostDisconnect: 'Der Host hat die Verbindung geschlossen.',
-  networkDisconnectTimeout: 'Netzwerk Timeout.',
+  networkDisconnectError: 'Netzwerk Timeout.',
   networkDisconnectInvalidClientInfo: 'Ungültige Client Informationen.',
   networkDisconnectVersionMismatch: `Client Versionen stimmen nicht überein.`,
   networkDisconnectFull: 'Sitzung ist voll.',

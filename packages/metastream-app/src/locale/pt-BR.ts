@@ -46,7 +46,7 @@ export default {
   next: 'Proximo',
   nextUp: 'Proximos',
   networkDisconnectHostDisconnect: 'O host fechou a sessão',
-  networkDisconnectTimeout: 'Tempo Esgotado',
+  networkDisconnectError: 'Tempo Esgotado',
   networkDisconnectInvalidClientInfo: 'Informação de cliente invalida',
   networkDisconnectVersionMismatch: `Versões diferentes`,
   networkDisconnectFull: 'A sessão está cheia',

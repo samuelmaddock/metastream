@@ -57,7 +57,7 @@ export default {
   next: 'Suivant',
   nextUp: 'File d’attente',
   networkDisconnectHostDisconnect: 'L’hôte s’est déconnecté.',
-  networkDisconnectTimeout: 'Connexion de l’hôte perdue.',
+  networkDisconnectError: 'Connexion de l’hôte perdue.',
   networkDisconnectInvalidClientInfo: 'Information du client invalide.',
   networkDisconnectVersionMismatch: 'Version du client non prise en charge.',
   networkDisconnectFull: 'La session est complète.',

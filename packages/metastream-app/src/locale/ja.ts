@@ -51,7 +51,7 @@ export default {
   next: '次の動画',
   nextUp: '再生リスト',
   networkDisconnectHostDisconnect: 'ホスト側が接続を終了しました。',
-  networkDisconnectTimeout: 'タイムアウトしました。',
+  networkDisconnectError: 'タイムアウトしました。',
   networkDisconnectInvalidClientInfo: '本体情報が無効です。',
   networkDisconnectVersionMismatch: '本体のバージョンが合いません。',
   networkDisconnectFull: 'セッションが満員です。',

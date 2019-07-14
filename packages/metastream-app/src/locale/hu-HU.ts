@@ -45,7 +45,7 @@ export default {
   next: 'Következő',
   nextUp: 'Hátralévő',
   networkDisconnectHostDisconnect: 'A kiszolgáló lezárta a kapcsolatot.',
-  networkDisconnectTimeout: 'Hálózati időtúllépés.',
+  networkDisconnectError: 'Hálózati időtúllépés.',
   networkDisconnectInvalidClientInfo: 'Érvénytelen kliens információ.',
   networkDisconnectVersionMismatch: `Nem egyező kliens verzió.`,
   networkDisconnectFull: 'A munkamenet telítve van.',

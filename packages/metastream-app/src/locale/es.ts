@@ -46,7 +46,7 @@ export default {
   next: 'Siguiente',
   nextUp: 'Próximamente',
   networkDisconnectHostDisconnect: 'Servidor ha cerrado la conexión.',
-  networkDisconnectTimeout: 'Se ha agotado el tiempo de conexión.',
+  networkDisconnectError: 'Se ha agotado el tiempo de conexión.',
   networkDisconnectInvalidClientInfo: 'Información de cliente invalida',
   networkDisconnectVersionMismatch: `Versión de cliente diferente.`,
   networkDisconnectFull: 'La sesión está llena.',
