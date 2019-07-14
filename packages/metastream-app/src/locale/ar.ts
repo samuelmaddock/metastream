@@ -105,8 +105,8 @@ export default {
   unlockQueue: 'فتح قائمة الانتظار',
   username: 'اسم المستخدم ',
   users: 'المستخدمين',
-  userJoined: '<المستخدم id="{{userId}}">{{username}}</Username> انضم',
-  userLeft: '<المستخدمid="{{userId}}">{{username}}</Username> غادر',
+  userJoined: '<Username id="{{userId}}">{{username}}</Username> انضم',
+  userLeft: '<Username id="{{userId}}">{{username}}</Username> غادر',
   viewOnGitHub: 'عرض على GitHub',
   waitingForHost: 'انتظار حتى يسمح المضيف بالاتصال',
   welcome: 'مرحبا'
