@@ -64,7 +64,7 @@
   },
   "dependencies": {
     "@material-ui/core": "^3.9.3",
-    "@metastream/signal-server": "^1.1.0",
+    "@metastream/signal-server": "^1.1.1",
     "cheerio": "^1.0.0-rc.2",
     "classnames": "^2.2.5",
     "deep-diff": "^0.3.8",

@@ -101,6 +101,7 @@ export class WebRTCPeerCoordinator extends PeerCoordinator {
   private getClient() {
     return createClient({
       server: METASTREAM_SIGNAL_SERVER,
+      connectTimeout: NETWORK_TIMEOUT,
       peerOpts: {
         config: {
           iceServers: METASTREAM_ICE_SERVERS
@@ -123,7 +124,8 @@ export class WebRTCPeerCoordinator extends PeerCoordinator {
         publicKey: localUser().id.publicKey,
         privateKey: localUser().id.privateKey!
       })
-    } catch {
+    } catch (e) {
+      console.error(e)
       throw new NetworkError(
         NetworkErrorCode.SignalServerConnectionFailure,
         'Failed to create room'
@@ -154,6 +156,7 @@ export class WebRTCPeerCoordinator extends PeerCoordinator {
       if (e.code === SignalErrorCode.RoomNotFound) {
         throw new NetworkError(NetworkErrorCode.SignalServerSessionNotFound, 'Session not found')
       } else {
+        console.error(e)
         throw new NetworkError(
           NetworkErrorCode.SignalServerConnectionFailure,
           'Failed to join room'

@@ -117,6 +117,7 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
     try {
       await setupPromise
     } catch (e) {
+      console.error(e)
       if (!this.mounted) return
       this.onConnectionFailed(e)
       return
