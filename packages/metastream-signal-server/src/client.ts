@@ -184,6 +184,7 @@ export class SignalClient extends EventEmitter {
         throw new Error('Failed to join room')
       }
     } catch (e) {
+      peer.destroy()
       throw e
     } finally {
       connectPromises.forEach(p => p.cancel())
