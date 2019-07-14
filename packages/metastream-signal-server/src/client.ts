@@ -14,6 +14,7 @@ export interface KeyPair {
 
 export interface SignalClientOptions {
   peerOpts?: SimplePeer.Options
+  connectTimeout?: number
 }
 
 export class SignalClient extends EventEmitter {
@@ -23,11 +24,13 @@ export class SignalClient extends EventEmitter {
 
   private simplePeerOpts: SimplePeer.Options
   private connectingPeers: { [key: number]: SimplePeer.Instance | undefined } = {}
+  private connectTimeout: number
 
   constructor(private ws: WebSocket, opts: SignalClientOptions) {
     super()
 
     this.simplePeerOpts = opts.peerOpts || {}
+    this.connectTimeout = opts.connectTimeout || 15e3
 
     this.onConnect = this.onConnect.bind(this)
     this.onDisconnect = this.onDisconnect.bind(this)
@@ -119,10 +122,10 @@ export class SignalClient extends EventEmitter {
       id: sodium.to_hex(keyPair.publicKey)
     })
 
-    const [challenge] = await waitEvent(this, 'challenge')
+    const [challenge] = await waitEvent<string>(this, 'challenge')
     this.solveChallenge(keyPair, challenge)
 
-    await waitEvent(this, 'create-room-success')
+    await waitEvent<void>(this, 'create-room-success')
 
     this.on('offer', this.onOfferReceived)
     this.once('close', () => {
@@ -132,6 +135,7 @@ export class SignalClient extends EventEmitter {
 
   async joinRoom(id: RoomID) {
     const peer = this.createPeer({ initiator: true })
+    const [initialOffer] = await waitEvent<SimplePeer.SignalData>(peer, 'signal')
 
     this.send({
       t: MessageType.JoinRoom,
@@ -158,7 +162,21 @@ export class SignalClient extends EventEmitter {
     peer.on('signal', onSignal)
     this.on('offer', onOffer)
 
-    await waitEvent(this, 'peer', 15e3)
+    const peerPromise = waitEvent<SimplePeer.Instance>(this, 'peer', this.connectTimeout)
+    const errorPromise = waitEvent<void>(peer, 'error', this.connectTimeout)
+
+    try {
+      const [result] = await Promise.race([peerPromise, errorPromise])
+      if (result instanceof Error) throw result
+    } catch (e) {
+      throw e
+    } finally {
+      peerPromise.cancel()
+      errorPromise.cancel()
+      peer.removeListener('signal', onSignal)
+      this.removeListener('offer', onOffer)
+    }
+
     return peer
   }
 

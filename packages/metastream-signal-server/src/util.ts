@@ -1,25 +1,43 @@
 import { EventEmitter } from 'events'
 
-export const waitEvent = (emitter: EventEmitter, eventName: string, timeout: number = 5000): Promise<any[]> => {
-    return new Promise((resolve, reject) => {
-      let timeoutId: number | undefined
-  
-      const callback = (...args: any[]) => {
-        if (timeoutId) {
-          clearTimeout(timeoutId)
-          timeoutId = undefined
-        }
-        resolve(args)
-      }
-  
-      const timeoutCallback = () => {
-        if (timeoutId) timeoutId = undefined
-        emitter.removeListener(eventName, callback)
-        reject(`Timeout waiting for '${eventName}' response`)
-      }
-  
-      emitter.once(eventName, callback)
-      timeoutId = (setTimeout(timeoutCallback, timeout) as any) as number
-    })
+export interface CancelablePromise<T> extends Promise<T> {
+  cancel(): void
+}
+
+export const waitEvent = <T = {}>(
+  emitter: EventEmitter,
+  eventName: string,
+  timeout: number = 5000
+): CancelablePromise<T[]> => {
+  let timeoutId: any
+  let resolve: Function, reject: Function
+
+  const promise: any = new Promise<T[]>((_resolve, _reject) => {
+    resolve = _resolve
+    reject = _reject
+  })
+
+  const cleanup = () => {
+    if (timeoutId) {
+      clearTimeout(timeoutId)
+      timeoutId = undefined
+    }
+    emitter.removeListener(eventName, callback)
   }
-  
+  promise.cancel = cleanup
+
+  const callback = (...args: any[]) => {
+    cleanup()
+    resolve(args)
+  }
+
+  const timeoutCallback = () => {
+    cleanup()
+    reject(`Timeout waiting for '${eventName}' response`)
+  }
+
+  emitter.addListener(eventName, callback)
+  timeoutId = setTimeout(timeoutCallback, timeout)
+
+  return promise
+}
