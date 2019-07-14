@@ -9,17 +9,6 @@ import { PlaybackState } from 'lobby/reducers/mediaPlayer'
  * https://wicg.github.io/mediasession/
  */
 export class MediaSessionObserver implements SessionObserver {
-  constructor() {
-    if (!('mediaSession' in navigator)) return
-    const { mediaSession } = navigator
-    mediaSession.setActionHandler('play', () => {
-      console.log('play')
-    })
-    mediaSession.setActionHandler('pause', () => {
-      console.log('pause')
-    })
-  }
-
   onChange(state: ISessionState | null): void {
     // Wrap this in try/catch since the API is so new
     try {

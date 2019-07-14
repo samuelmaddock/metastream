@@ -30,8 +30,7 @@ export const mediaSessionMiddleware = (): MetastreamMiddleware | undefined => {
     }
 
     const registerMediaHandlers = () => {
-      const playPause = () =>
-        console.log('MEDIA SESSION PLAYPAUSE') || dispatch(server_requestPlayPause())
+      const playPause = () => dispatch(server_requestPlayPause())
       setActionHandler('play', playPause)
       setActionHandler('pause', playPause)
 
