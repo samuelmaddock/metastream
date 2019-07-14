@@ -13,7 +13,8 @@ export const enum MessageType {
   AuthResponse,
   CandidateOffer,
   Ping,
-  Pong
+  Pong,
+  RoomNotFound
 }
 
 export type Request =
@@ -48,3 +49,8 @@ export type Request =
     }
   | { t: MessageType.Ping }
   | { t: MessageType.Pong }
+  | { t: MessageType.RoomNotFound }
+
+export enum SignalErrorCode {
+  RoomNotFound = 'roomnotfound'
+}

@@ -258,6 +258,7 @@ export class SignalServer extends EventEmitter {
   private joinRoom(client: Client, roomId: RoomID, offer: SignalData) {
     if (!isValidRoom(roomId)) {
       this.log(`Client[${client.id}] attempted to connect to invalid room '${roomId}'`)
+      this.sendTo(client, { t: MessageType.RoomNotFound })
       client.socket.close()
       return
     }

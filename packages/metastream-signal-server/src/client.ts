@@ -2,7 +2,7 @@ import sodium from 'libsodium-wrappers'
 import { EventEmitter } from 'events'
 import SimplePeer, { SignalData } from 'simple-peer'
 
-import { Request, MessageType, RoomID, ClientID } from './types'
+import { Request, MessageType, RoomID, ClientID, SignalErrorCode } from './types'
 import { waitEvent } from './util'
 
 const DEBUG = process.env.NODE_ENV !== 'production'
@@ -45,7 +45,9 @@ export class SignalClient extends EventEmitter {
   }
 
   close() {
-    this.ws.close()
+    if (this.ws.readyState < 2) {
+      this.ws.close()
+    }
   }
 
   send(data: Request) {
@@ -97,6 +99,10 @@ export class SignalClient extends EventEmitter {
       case MessageType.CandidateOffer:
         this.emit('offer', req.o, req.f)
         break
+      case MessageType.RoomNotFound:
+        const err = new Error()
+        ;(err as any).code = SignalErrorCode.RoomNotFound
+        this.onError(err)
       default:
         break
     }
@@ -162,17 +168,24 @@ export class SignalClient extends EventEmitter {
     peer.on('signal', onSignal)
     this.on('offer', onOffer)
 
-    const peerPromise = waitEvent<SimplePeer.Instance>(this, 'peer', this.connectTimeout)
-    const errorPromise = waitEvent<void>(peer, 'error', this.connectTimeout)
+    const connectPromises = [
+      waitEvent<SimplePeer.Instance>(this, 'peer', this.connectTimeout),
+      waitEvent<Error>(peer, 'error', this.connectTimeout),
+      waitEvent<Error>(this, 'error', this.connectTimeout),
+      waitEvent<void>(this, 'close', this.connectTimeout)
+    ]
 
     try {
-      const [result] = await Promise.race([peerPromise, errorPromise])
-      if (result instanceof Error) throw result
+      const [result] = await Promise.race<any[]>(connectPromises)
+      if (result instanceof Error) {
+        throw result
+      } else if (!(result instanceof SimplePeer)) {
+        throw new Error('Failed to join room')
+      }
     } catch (e) {
       throw e
     } finally {
-      peerPromise.cancel()
-      errorPromise.cancel()
+      connectPromises.forEach(p => p.cancel())
       peer.removeListener('signal', onSignal)
       this.removeListener('offer', onOffer)
     }
