@@ -1,5 +1,6 @@
 import SimplePeer, { SimplePeerData } from 'simple-peer'
 import createClient, { SignalClient } from '@metastream/signal-server/lib/client'
+import { SignalErrorCode } from '@metastream/signal-server/lib/types'
 
 import shortid from 'shortid'
 import sodium from 'libsodium-wrappers'
@@ -9,9 +10,13 @@ import { NetUniqueId, localUserId, localUser } from 'network'
 import { PeerCoordinator } from 'network/server'
 import { RTCPeerConn } from 'network/rtc'
 import { mutualHandshake } from './authenticate'
-import { METASTREAM_SIGNAL_SERVER, METASTREAM_ICE_SERVERS } from '../../constants/network'
-import { NetworkError, NetworkErrorCode } from '../../network/error'
-import { untilDocumentVisible } from '../../utils/browser'
+import {
+  METASTREAM_SIGNAL_SERVER,
+  METASTREAM_ICE_SERVERS,
+  NETWORK_TIMEOUT
+} from 'constants/network'
+import { NetworkError, NetworkErrorCode } from 'network/error'
+import { untilDocumentVisible } from 'utils/browser'
 
 /** Interval to ping WebSocket to keep connection open. */
 const KEEP_ALIVE_INTERVAL = 9 * 60 * 1000
@@ -63,6 +68,7 @@ export class WebRTCPeerCoordinator extends PeerCoordinator {
   }
 
   private serverConnectionClosed = () => {
+    if (this.closed) return
     this.emit('error', new NetworkError(NetworkErrorCode.SignalServerDisconnect))
     this.reconnect()
   }
@@ -144,8 +150,15 @@ export class WebRTCPeerCoordinator extends PeerCoordinator {
     let peer
     try {
       peer = await client.joinRoom(hostId)
-    } catch {
-      throw new NetworkError(NetworkErrorCode.SignalServerConnectionFailure, 'Failed to join room')
+    } catch (e) {
+      if (e.code === SignalErrorCode.RoomNotFound) {
+        throw new NetworkError(NetworkErrorCode.SignalServerSessionNotFound, 'Session not found')
+      } else {
+        throw new NetworkError(
+          NetworkErrorCode.SignalServerConnectionFailure,
+          'Failed to join room'
+        )
+      }
     } finally {
       client.close()
     }
@@ -200,15 +213,5 @@ export class WebRTCPeerCoordinator extends PeerCoordinator {
 
     console.log(`Authenticated peer ${userId}`, conn)
     this.emit('connection', conn)
-
-    // this.connecting.set(userId, conn)
-    // conn.once('connect', () => {
-    //   conn.removeAllListeners()
-    //   this.connecting.delete(userId)
-    //   this.emit('connection', conn)
-    // })
-    // conn.once('close', () => {
-    //   this.connecting.delete(userId)
-    // })
   }
 }

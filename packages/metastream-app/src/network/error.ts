@@ -1,7 +1,9 @@
 export const enum NetworkErrorCode {
+  UnknownSession,
   SignalServerConnectionFailure,
   SignalServerDisconnect,
   SignalServerReconnect,
+  SignalServerSessionNotFound,
   PeerAuthenticationFailure
 }
 

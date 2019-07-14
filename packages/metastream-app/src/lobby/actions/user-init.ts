@@ -63,7 +63,7 @@ export const initialize = (server: NetServer): AppThunkAction => {
       )
     } catch (e) {
       console.error('Failed to receive client initialization response.')
-      dispatch(setDisconnectReason(NetworkDisconnectReason.Timeout))
+      dispatch(setDisconnectReason(NetworkDisconnectReason.Error))
       server.close()
       return
     }

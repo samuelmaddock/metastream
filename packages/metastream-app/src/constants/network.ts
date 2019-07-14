@@ -33,7 +33,7 @@ export const WEBSOCKET_PORT_DEFAULT = 27064
 
 export const enum NetworkDisconnectReason {
   HostDisconnect = 1,
-  Timeout,
+  Error,
   InvalidClientInfo,
   VersionMismatch,
   Full,
@@ -44,7 +44,7 @@ export const enum NetworkDisconnectReason {
 
 export const NetworkDisconnectMessages = {
   [NetworkDisconnectReason.HostDisconnect]: 'networkDisconnectHostDisconnect',
-  [NetworkDisconnectReason.Timeout]: 'networkDisconnectError',
+  [NetworkDisconnectReason.Error]: 'networkDisconnectError',
   [NetworkDisconnectReason.InvalidClientInfo]: 'networkDisconnectInvalidClientInfo',
   [NetworkDisconnectReason.VersionMismatch]: `networkDisconnectVersionMismatch`,
   [NetworkDisconnectReason.Full]: 'networkDisconnectFull',
@@ -55,7 +55,7 @@ export const NetworkDisconnectMessages = {
 
 export const NetworkDisconnectLabels = {
   [NetworkDisconnectReason.HostDisconnect]: 'host-disconnect',
-  [NetworkDisconnectReason.Timeout]: 'timeout',
+  [NetworkDisconnectReason.Error]: 'timeout',
   [NetworkDisconnectReason.InvalidClientInfo]: 'invalid-client-info',
   [NetworkDisconnectReason.VersionMismatch]: `version-mismatch`,
   [NetworkDisconnectReason.Full]: 'full',

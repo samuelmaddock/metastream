@@ -9,6 +9,7 @@ import { PeerCoordinator } from 'network/server'
 import { initIdentity } from './identity'
 import { WebRTCPeerCoordinator } from './rtc-coordinator'
 import { NETWORK_TIMEOUT } from 'constants/network'
+import { NetworkError, NetworkErrorCode } from '../../network/error'
 
 type HexId = string
 
@@ -28,7 +29,7 @@ export class WebPlatform {
     return this.server
   }
 
-  async createLobby(opts: ILobbyOptions): Promise<boolean> {
+  async createLobby(opts: ILobbyOptions): Promise<void> {
     const coordinators: PeerCoordinator[] = []
 
     if (opts.p2p) {
@@ -36,11 +37,9 @@ export class WebPlatform {
     }
 
     this.server = new NetServer({ isHost: true, coordinators })
-
-    return true
   }
 
-  private async joinP2PLobby(hash: string): Promise<boolean> {
+  private async joinP2PLobby(hash: string): Promise<void> {
     ga('event', { ec: 'session', ea: 'connect', el: 'p2p' })
 
     const coordinator = new WebRTCPeerCoordinator({ host: false, hostId: hash })
@@ -50,31 +49,30 @@ export class WebPlatform {
       coordinators: [coordinator]
     })
 
+    const promises = [
+      waitEvent(this.server, 'connect', NETWORK_TIMEOUT),
+      waitEvent(this.server, 'error', NETWORK_TIMEOUT)
+    ]
+
     try {
-      await waitEvent(coordinator, 'connection', NETWORK_TIMEOUT)
-    } catch {
+      const [result] = await Promise.race(promises)
+      if (result instanceof Error) throw result
+    } catch (e) {
+      promises.forEach(p => p.cancel())
       if (this.server) {
         this.server.close()
         this.server = undefined
       }
-      return false
+      throw e
     }
-
-    return true
   }
 
-  async joinLobby(lobbyId: string): Promise<boolean> {
-    let success
-
+  async joinLobby(lobbyId: string): Promise<void> {
     if (isP2PHash(lobbyId)) {
-      success = await this.joinP2PLobby(lobbyId)
-      // } else if (isIP(lobbyId) || isUrlDomain(lobbyId)) {
-      //   success = await this.joinWebSocketLobby(lobbyId)
+      await this.joinP2PLobby(lobbyId)
     } else {
-      success = false
+      throw new NetworkError(NetworkErrorCode.UnknownSession)
     }
-
-    return success
   }
 
   leaveLobby(id: string): boolean {

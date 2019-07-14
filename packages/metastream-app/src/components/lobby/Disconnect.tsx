@@ -29,8 +29,8 @@ class _Disconnect extends Component<IProps> {
           <Icon name="info" />
           <span>
             {msg}
-            {reason === NetworkDisconnectReason.Timeout && <>&nbsp;</>}
-            {reason === NetworkDisconnectReason.Timeout && (
+            {reason === NetworkDisconnectReason.Error && <>&nbsp;</>}
+            {reason === NetworkDisconnectReason.Error && (
               <Trans i18nKey="networkTroubleshootingHelp">
                 See <ExternalLink href="https://github.com/samuelmaddock/metastream/wiki/Network-Troubleshooting">Network Troubleshooting guide</ExternalLink> for help.
               </Trans>

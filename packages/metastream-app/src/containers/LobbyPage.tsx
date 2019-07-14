@@ -10,9 +10,7 @@ import { NetServer, localUserId } from 'network'
 import { NetActions } from 'network/actions'
 import { ReplicatedState } from 'network/types'
 import { push } from 'react-router-redux'
-import { sleep } from 'utils/async'
 import {
-  NETWORK_TIMEOUT,
   NetworkDisconnectReason,
   NetworkDisconnectMessages,
   NetworkDisconnectLabels
@@ -102,30 +100,30 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
   }
 
   private async setupLobby(): Promise<void> {
-    let successPromise
+    let setupPromise
 
     if (this.host) {
       const isMultiTab = await this.checkIsMultiTab()
       if (isMultiTab) return
 
-      successPromise = PlatformService.createLobby({
+      setupPromise = PlatformService.createLobby({
         p2p: true,
         websocket: true
       })
     } else {
-      successPromise = PlatformService.joinLobby(this.lobbyId)
+      setupPromise = PlatformService.joinLobby(this.lobbyId)
     }
 
-    // TODO: will this reject the promise that loses?
-    const result = await Promise.race([successPromise, sleep(NETWORK_TIMEOUT)])
-    const success = typeof result === 'boolean' ? result : false
+    try {
+      await setupPromise
+    } catch (e) {
+      if (!this.mounted) return
+      this.onConnectionFailed(e)
+      return
+    }
+
     if (!this.mounted) return
-
-    if (success) {
-      this.onJoinLobby(PlatformService.getServer()!)
-    } else {
-      this.onConnectionFailed()
-    }
+    this.onJoinLobby(PlatformService.getServer()!)
   }
 
   private closeLobby() {
@@ -170,8 +168,18 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
     this.setState({ connected: true })
   }
 
-  private onConnectionFailed(): void {
-    this.disconnect(NetworkDisconnectReason.Timeout)
+  private onConnectionFailed(err?: NetworkError) {
+    let reason
+    const errorCode = err ? err.errorCode : null
+    switch (errorCode) {
+      case NetworkErrorCode.UnknownSession:
+      case NetworkErrorCode.SignalServerSessionNotFound:
+        reason = NetworkDisconnectReason.SessionNotFound
+        break
+      default:
+        reason = NetworkDisconnectReason.Error
+    }
+    this.disconnect(reason)
   }
 
   private disconnect = (
