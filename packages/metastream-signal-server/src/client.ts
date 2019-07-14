@@ -99,6 +99,20 @@ export class SignalClient extends EventEmitter {
     }
   }
 
+  private createPeer(options?: SimplePeer.Options): SimplePeer.Instance {
+    const peer: any = new SimplePeer({ ...this.simplePeerOpts, ...options })
+
+    // Ignore invalid ICE candidate errors
+    // Chrome v75 and Firefox v68 have an incompatibility with trickle ICE
+    // https://github.com/feross/simple-peer/issues/503
+    peer.destroy = (err: any) => {
+      if (typeof err === 'object' && err.code === 'ERR_ADD_ICE_CANDIDATE') return
+      peer._destroy(err, () => {})
+    }
+
+    return peer
+  }
+
   async createRoom(keyPair: KeyPair) {
     this.send({
       t: MessageType.CreateRoom,
@@ -117,8 +131,7 @@ export class SignalClient extends EventEmitter {
   }
 
   async joinRoom(id: RoomID) {
-    const peer = new SimplePeer({ ...this.simplePeerOpts, initiator: true })
-    const [initialOffer] = await waitEvent(peer, 'signal')
+    const peer = this.createPeer({ initiator: true })
 
     this.send({
       t: MessageType.JoinRoom,
@@ -164,7 +177,7 @@ export class SignalClient extends EventEmitter {
     let peer = this.connectingPeers[clientId]
     if (peer) return peer
 
-    peer = new SimplePeer({ ...this.simplePeerOpts })
+    peer = this.createPeer()
     this.connectingPeers[clientId] = peer
 
     // Clear ref on disconnect
