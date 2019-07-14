@@ -272,6 +272,7 @@ export class SignalServer extends EventEmitter {
     const room = this.rooms.get(roomId)
     if (!room) {
       this.log(`Client[${client.id}] sent an offer to an invalid room[${roomId}]`)
+      this.sendTo(client, { t: MessageType.RoomNotFound })
       client.socket.close()
       return
     }

@@ -70,6 +70,7 @@ export class SignalClient extends EventEmitter {
     this.ws.removeEventListener('open', this.onConnect)
     this.ws.removeEventListener('close', this.onDisconnect)
     this.ws.removeEventListener('message', this.onMessage)
+    this.ws.removeEventListener('error', this.onError)
 
     this.emit('close')
   }
