@@ -214,7 +214,7 @@ export class WebRTCPeerCoordinator extends PeerCoordinator {
     const netId = new NetUniqueId(userPublicKey)
     const conn = new RTCPeerConn(netId, peer)
 
-    console.log(`Authenticated peer ${userId}`, conn)
+    console.debug(`Authenticated peer ${userId}`, conn)
     this.emit('connection', conn)
   }
 }

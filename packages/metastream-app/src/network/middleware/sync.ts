@@ -75,7 +75,7 @@ export const netSyncMiddleware = (): Middleware => {
       host = options.host
 
       prefilter = replicationPrefilter(options.replicated)
-      console.log('[Net] Init netSync', options)
+      console.debug('[Net] Init netSync', options)
 
       if (!server) return
 
@@ -99,7 +99,7 @@ export const netSyncMiddleware = (): Middleware => {
 
         const json = data.toString('utf-8', SYNC_HEADER.length)
         const action = JSON.parse(json)
-        console.info(`[Net] Received action #${action.type} from ${conn.id}`, action)
+        console.debug(`[Net] Received action #${action.type} from ${conn.id}`, action)
 
         switch (action.type) {
           case NetActionTypes.FULL_UPDATE:

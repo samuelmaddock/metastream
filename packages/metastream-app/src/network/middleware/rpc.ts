@@ -83,7 +83,7 @@ export const netRpcMiddleware = (): Middleware => {
     let server: NetServer | null, host: boolean
 
     const init = (options: NetMiddlewareOptions) => {
-      console.log('[RPC] Init middleware', options)
+      console.debug('[RPC] Init middleware', options)
 
       server = options.server || null
       host = options.host
@@ -116,7 +116,7 @@ export const netRpcMiddleware = (): Middleware => {
           }
         }
 
-        console.info(`[RPC] Received RPC '#${action.type}' from ${client.id}`, action)
+        console.debug(`[RPC] Received RPC '#${action.type}' from ${client.id}`, action)
 
         let returnValue
         try {
@@ -249,8 +249,6 @@ export const netRpcMiddleware = (): Middleware => {
       if (asyncResult) {
         return {
           then(resolve: Function, reject: Function) {
-            console.log('Redux RPC then invoked', ...arguments)
-
             let timeoutId = -1
 
             const cb = (...args: any[]) => {
