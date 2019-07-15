@@ -66,24 +66,29 @@ class Home extends Component<IProps> {
         <section className={styles.nav}>
           <ul>
             <li>
-              <Link to={`/join/${localUserId()}`} className={styles.btn}>
-                <MenuButton icon="play">{t('startSession')}</MenuButton>
-              </Link>
+              <MenuButton to={`/join/${localUserId()}`} className={styles.btn} icon="play">
+                {t('startSession')}
+              </MenuButton>
             </li>
             <li>
-              <Link to="/join" className={styles.btn}>
-                <MenuButton icon="globe">{t('joinSession')}</MenuButton>
-              </Link>
+              <MenuButton to="/join" className={styles.btn} icon="globe">
+                {t('joinSession')}
+              </MenuButton>
             </li>
             <li>
-              <Link to="/settings" className={styles.btn}>
-                <MenuButton icon="settings">{t('settings')}</MenuButton>
-              </Link>
+              <MenuButton to="/settings" className={styles.btn} icon="settings">
+                {t('settings')}
+              </MenuButton>
             </li>
             <li>
-              <ExternalLink href="https://www.patreon.com/metastream" className={styles.btn}>
-                <MenuButton icon="heart">{t('donate')}</MenuButton>
-              </ExternalLink>
+              <MenuButton
+                component={ExternalLink}
+                className={styles.btn}
+                href="https://www.patreon.com/metastream"
+                icon="heart"
+              >
+                {t('donate')}
+              </MenuButton>
             </li>
             {this.props.installable && (
               <li>

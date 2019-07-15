@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import styles from './Disconnect.css'
 import { TitleBar } from '../TitleBar'
 import { MenuButton } from '../menu/MenuButton'
-import { Link } from 'react-router-dom'
 import { Icon } from '../Icon'
 import { NetworkDisconnectReason, NetworkDisconnectMessages } from 'constants/network'
 import { ExternalLink } from '../common/link'
@@ -38,9 +37,7 @@ class _Disconnect extends Component<IProps> {
           </span>
         </p>
         <div className={styles.buttonrow}>
-          <Link to="/">
-            <MenuButton size="medium">{t('ok')}</MenuButton>
-          </Link>
+          <MenuButton to="/" size="medium">{t('ok')}</MenuButton>
           <MenuButton size="medium" onClick={reconnect}>{t('retry')}</MenuButton>
         </div>
       </div>
