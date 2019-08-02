@@ -1,0 +1,6 @@
+.container {
+  background: var(--app-bg-other);
+  height: 100%;
+  display: flex;
+  flex-flow: column;
+}

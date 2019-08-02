@@ -82,6 +82,7 @@ interface IProps {
   showInfo: Function
   showInteract: Function
   toggleChat: Function
+  openSettings: Function
 }
 
 interface IConnectedProps extends IMediaPlayerState {
@@ -195,6 +196,11 @@ class _PlaybackControls extends Component<PrivateProps> {
       <Button icon="info" title={t('info')} onClick={() => this.props.showInfo()} />
     )
 
+    // TODO(samuelmaddock): enable in prod when settings menu is ready
+    const settingsBtn = process.env.NODE_ENV === 'development' && (
+      <Button icon="settings" title={t('settings')} onClick={() => this.props.openSettings()} />
+    )
+
     return (
       <div className={cx(this.props.className, styles.container)}>
         {isIdle && isAddAllowed ? addMediaBtn : [playPauseBtn, nextBtn]}
@@ -202,6 +208,7 @@ class _PlaybackControls extends Component<PrivateProps> {
         {timeline}
         {volumeSlider}
         {infoBtn}
+        {settingsBtn}
         {this.renderMenu()}
       </div>
     )

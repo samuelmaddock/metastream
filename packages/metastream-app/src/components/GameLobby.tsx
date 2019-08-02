@@ -227,6 +227,10 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
         modalChildren = <Modals.EndSession onCancel={this.closeModal} {...this.state.modalProps} />
         break
       }
+      case LobbyModal.Settings: {
+        modalChildren = <Modals.Settings />
+        break
+      }
       default:
         console.warn(`Unknown lobby modal '${this.state.modal}'`)
     }
@@ -265,6 +269,9 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
           if (this.chat) {
             this.chat.toggle()
           }
+        }}
+        openSettings={() => {
+          this.openModal(LobbyModal.Settings)
         }}
       />
     )
