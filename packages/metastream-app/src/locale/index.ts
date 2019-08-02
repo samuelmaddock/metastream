@@ -11,6 +11,7 @@ import ja from './ja'
 import ar from './ar'
 import koKR from './ko-KR'
 import frFR from './fr-FR'
+import zhCN from './zh-CN'
 
 export const DEFAULT_LANGUAGE = 'en-US'
 
@@ -24,6 +25,7 @@ export const locales = [
   { label: 'Magyar', code: 'hu-HU', translation: huHU, flag: '🇭🇺' },
   { label: '日本語', code: 'ja-JP', translation: ja, flag: '🇯🇵' },
   { label: '한국어', code: 'ko-KR', translation: koKR, flag: '🇰🇷' },
+  { label: '简化字', code: 'zh-CN', translation: zhCN, flag: '🇨🇳' },
   { label: 'العربية الفصحى', code: 'ar', translation: ar, flag: '🇦🇪' }
 ]
 
