@@ -22,7 +22,6 @@ import { withNamespaces, WithNamespaces } from 'react-i18next'
 interface IProps {
   className?: string
   onInvite(): void
-  openSessionSettings(): void
 }
 
 interface IConnectedProps {
@@ -141,17 +140,15 @@ class _UserList extends Component<Props> {
 
   private renderActions() {
     const { t } = this.props
+
+    const isSoloSession = this.numUsers < 2
+    const isOffline = this.props.sessionMode === SessionMode.Offline
+    const highlight = isSoloSession && !isOffline
+
     return (
-      <>
-        {this.props.sessionMode !== SessionMode.Offline && (
-          <HighlightButton icon="mail" highlight={this.numUsers < 2} onClick={this.props.onInvite}>
-            {t('invite')}
-          </HighlightButton>
-        )}
-        {this.props.isHost && (
-          <HighlightButton icon="settings" onClick={this.props.openSessionSettings} />
-        )}
-      </>
+      <HighlightButton icon="mail" highlight={highlight} onClick={this.props.onInvite}>
+        {t('invite')}
+      </HighlightButton>
     )
   }
 

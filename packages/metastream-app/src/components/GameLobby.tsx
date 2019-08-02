@@ -140,11 +140,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
       <>
         {this.renderPlaybackControls()}
 
-        <UserList
-          className={styles.users}
-          onInvite={() => this.openModal(LobbyModal.Invite)}
-          openSessionSettings={() => this.openModal(LobbyModal.SessionSettings)}
-        />
+        <UserList className={styles.users} onInvite={() => this.openModal(LobbyModal.Invite)} />
         <MediaList
           className={styles.queue}
           onAddMedia={this.openBrowser}
@@ -225,10 +221,6 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
         const media =
           (this.state.modalProps && this.state.modalProps.media) || this.props.currentMedia
         modalChildren = <Modals.MediaInfo media={media} onClose={this.closeModal} />
-        break
-      }
-      case LobbyModal.SessionSettings: {
-        modalChildren = <Modals.SessionSettings />
         break
       }
       case LobbyModal.EndSession: {

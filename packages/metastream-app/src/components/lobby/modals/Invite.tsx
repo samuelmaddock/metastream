@@ -13,6 +13,7 @@ import { IReactReduxProps } from 'types/redux-thunk'
 import { assetUrl } from 'utils/appUrl'
 import { PRODUCT_NAME } from 'constants/app'
 import { withNamespaces, WithNamespaces, Trans } from 'react-i18next'
+import SessionSettings from './SessionSettings'
 
 interface IProps {
   className?: string
@@ -40,7 +41,7 @@ class Invite extends Component<PrivateProps> {
     return (
       <div className={cx(styles.container, this.props.className)}>
         {this.renderURL()}
-        {/* {this.renderFriendCode()} */}
+        <SessionSettings />
       </div>
     )
   }
@@ -55,26 +56,6 @@ class Invite extends Component<PrivateProps> {
           className={styles.idContainer}
           inputClassName={styles.idText}
           defaultValue={location.href}
-          disabled
-        />
-      </section>
-    )
-  }
-
-  private renderFriendCode() {
-    const { t } = this.props
-    const message = this.props.isHost
-      ? t('shareFriendCode')
-      : t('shareFriendCodeOther', { name: this.props.hostName })
-
-    return (
-      <section className={styles.method}>
-        <h2 className={styles.header}>{t('friendCode')}</h2>
-        <p>{message}</p>
-        <ClipboardTextInput
-          className={styles.idContainer}
-          inputClassName={styles.idText}
-          defaultValue={this.props.hostId}
           disabled
         />
       </section>

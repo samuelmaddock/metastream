@@ -9,7 +9,6 @@ export const enum LobbyModal {
   Browser = 'browser',
   Invite = 'invite',
   MediaInfo = 'media-info',
-  SessionSettings = 'session-settings',
   EndSession = 'end-session'
 }
 
