@@ -8,11 +8,25 @@ import LanguageSettings from './sections/Language'
 
 import { t } from 'locale'
 import SessionSettings from '../lobby/modals/SessionSettings'
+import { IReactReduxProps } from '../../types/redux-thunk'
+import { ISettingsState } from '../../reducers/settings'
+import { IAppState } from '../../reducers/index'
+import { connect } from 'react-redux'
+import { setSetting } from '../../actions/settings'
+import { SettingsProps } from './types'
 
 interface IProps {
   inSession?: boolean
   isHost?: boolean
   invalidate: () => void
+}
+
+interface IConnectedProps {
+  settings: ISettingsState
+}
+
+interface DispatchProps {
+  setSetting: typeof setSetting
 }
 
 interface State {
@@ -25,11 +39,18 @@ interface TabItem {
   children: () => React.ReactNode
 }
 
-export class SettingsMenu extends PureComponent<IProps, State> {
+type Props = IProps & IConnectedProps & DispatchProps & IReactReduxProps
+
+class _SettingsMenu extends PureComponent<Props, State> {
   state: State = {}
 
   private buildMenu(): TabItem[] {
     const { inSession, isHost } = this.props
+
+    const settingsProps: SettingsProps = {
+      settings: this.props.settings,
+      setSetting: this.props.setSetting
+    }
 
     const tabs = [
       inSession &&
@@ -41,14 +62,18 @@ export class SettingsMenu extends PureComponent<IProps, State> {
       !inSession && {
         label: t('profile'),
         value: 'profile',
-        children: () => <ProfileSettings />
+        children: () => <ProfileSettings {...settingsProps} />
       },
       {
         label: t('appearance'),
         value: 'appearance',
-        children: () => <LanguageSettings onChange={this.props.invalidate} />
+        children: () => <LanguageSettings onChange={this.props.invalidate} {...settingsProps} />
       },
-      { label: t('advanced'), value: 'advanced', children: () => <AdvancedSettings /> }
+      {
+        label: t('advanced'),
+        value: 'advanced',
+        children: () => <AdvancedSettings {...settingsProps} />
+      }
     ].filter(Boolean) as TabItem[]
 
     return tabs
@@ -85,3 +110,20 @@ export class SettingsMenu extends PureComponent<IProps, State> {
     )
   }
 }
+
+export const SettingsMenu = (connect(
+  (state: IAppState): IConnectedProps => {
+    return {
+      settings: state.settings
+    }
+  },
+  dispatch => {
+    const bindSetSetting: typeof setSetting = (key, value) => {
+      return dispatch(setSetting(key, value))
+    }
+
+    return {
+      setSetting: bindSetSetting
+    }
+  }
+)(_SettingsMenu) as any) as React.ComponentClass<IProps>

@@ -4,25 +4,20 @@ import { setSetting } from 'actions/settings'
 import { IAppState } from 'reducers'
 import { ISettingsState } from 'reducers/settings'
 import { locales, t, setLocale } from 'locale'
-import { Dropdown } from '../controls'
+import { Dropdown, SwitchOption } from '../controls'
 import styles from '../SettingsMenu.css'
 import optionsStyles from '../options.css'
-import { RouterState } from 'react-router-redux'
 import { ExternalLink } from 'components/common/link'
+import { SettingsProps } from '../types'
+import { ChatLocation } from '../../chat/Location'
 
-interface IProps {
+interface Props extends SettingsProps {
   onChange: () => void
 }
 
-interface IConnectedProps {
-  router: RouterState
-  settings: ISettingsState
-}
-
-type Props = IProps & IConnectedProps & DispatchProp<{}>
-
 class LanguageSettings extends Component<Props> {
-  render(): JSX.Element | null {
+  render() {
+    const { setSetting, settings } = this.props
     // prettier-ignore
     return (
       <section className={styles.section}>
@@ -31,7 +26,7 @@ class LanguageSettings extends Component<Props> {
           id="appearance_language"
           onChange={e => {
             const value = (e.target as HTMLSelectElement).value
-            this.props.dispatch!(setSetting('language', value))
+            setSetting('language', value)
             setLocale(value)
             this.props.onChange()
           }}
@@ -40,7 +35,7 @@ class LanguageSettings extends Component<Props> {
             <option
               key={locale.code}
               value={locale.code}
-              selected={locale.code === this.props.settings.language}
+              selected={locale.code === settings.language}
             >
               {locale.label} {locale.flag}
             </option>
@@ -49,16 +44,18 @@ class LanguageSettings extends Component<Props> {
         <p className={styles.small}>
           <span className={optionsStyles.description}>Want to contribute?</span> <ExternalLink className="link-alt" href={`https://github.com/samuelmaddock/metastream/tree/master/packages/metastream-app/src/locale#localization`}>Read localization instructions here.</ExternalLink>
         </p>
+
+        <SwitchOption
+          inputId="dock_chat"
+          title={t('chatDockToRight')}
+          checked={settings.chatLocation === ChatLocation.DockRight}
+          onChange={checked => setSetting('chatLocation', location =>
+            location === ChatLocation.DockRight ? ChatLocation.FloatLeft : ChatLocation.DockRight
+          )}
+        />
       </section>
     )
   }
 }
 
-export default connect(
-  (state: IAppState): IConnectedProps => {
-    return {
-      router: state.router,
-      settings: state.settings
-    }
-  }
-)(LanguageSettings)
+export default LanguageSettings

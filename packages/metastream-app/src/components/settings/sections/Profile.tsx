@@ -5,14 +5,15 @@ import { TextInput } from 'components/common/input'
 import { IAppState } from 'reducers'
 import { getLocalUsername, getLocalColor, getLocalAvatar } from 'reducers/settings'
 import { USERNAME_MAX_LEN } from 'constants/settings'
-import { setUsername, setColor, setSetting } from 'actions/settings'
+import { setUsername, setColor } from 'actions/settings'
 import { t } from 'locale'
 import { avatarRegistry } from '../../../services/avatar'
 import { UserAvatar } from '../../lobby/UserAvatar'
 import { ExternalLink } from 'components/common/link'
 import { Trans } from 'react-i18next'
+import { SettingsProps } from '../types'
 
-interface IProps {}
+interface IProps extends SettingsProps {}
 
 interface IConnectedProps {
   avatar?: string
@@ -48,7 +49,7 @@ class ProfileSettings extends Component<Props> {
                 avatar={avatar.src}
                 selected={avatar.uri === this.props.avatar}
                 onClick={() => {
-                  this.props.dispatch!(setSetting('avatar', avatar.uri))
+                  this.props.setSetting('avatar', avatar.uri)
                   ga('event', {
                     ec: 'settings',
                     ea: 'select_avatar',

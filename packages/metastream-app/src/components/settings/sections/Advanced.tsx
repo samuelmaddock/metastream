@@ -6,18 +6,10 @@ import { ISettingsState } from 'reducers/settings'
 import { setSetting } from 'actions/settings'
 import { SwitchOption } from '../controls'
 import { t } from 'locale'
+import { SettingsProps } from '../types'
 
-interface IProps {}
-
-interface IConnectedProps {
-  settings: ISettingsState
-}
-
-type Props = IProps & IConnectedProps & DispatchProp<{}>
-
-class AdvancedSettings extends Component<Props> {
+export default class AdvancedSettings extends Component<SettingsProps> {
   render(): JSX.Element | null {
-    const { dispatch } = this.props
     return (
       <section className={styles.section}>
         <SwitchOption
@@ -25,17 +17,9 @@ class AdvancedSettings extends Component<Props> {
           title={t('allowTracking')}
           description={t('allowTrackingDesc')}
           checked={this.props.settings.allowTracking}
-          onChange={checked => dispatch!(setSetting('allowTracking', checked))}
+          onChange={checked => this.props.setSetting('allowTracking', checked)}
         />
       </section>
     )
   }
 }
-
-export default connect(
-  (state: IAppState): IConnectedProps => {
-    return {
-      settings: state.settings
-    }
-  }
-)(AdvancedSettings) as React.ComponentClass<IProps>

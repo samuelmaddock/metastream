@@ -9,7 +9,7 @@ import { USERS_MAX, MAX_USERS_INFINITE } from 'constants/settings'
 import { t } from 'locale'
 import { HighlightButton } from '../../common/button'
 import { ISettingsState, SessionMode } from '../../../reducers/settings'
-import { setSetting } from '../../../actions/settings'
+import { setSetting } from 'actions/settings'
 
 import Button from '@material-ui/core/Button'
 import Dialog from '@material-ui/core/Dialog'

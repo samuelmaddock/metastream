@@ -6,7 +6,7 @@ import cx from 'classnames'
 interface ISwitchOptionProps {
   inputId: string
   title: string
-  description: string
+  description?: string
   checked: boolean
   onChange: (val: boolean) => void
 }
@@ -21,7 +21,7 @@ export const SwitchOption: React.SFC<ISwitchOptionProps> = props => {
         defaultChecked={props.checked}
         onChange={props.onChange}
       />
-      <div className={styles.description}>{props.description}</div>
+      {props.description && <div className={styles.description}>{props.description}</div>}
     </div>
   )
 }
