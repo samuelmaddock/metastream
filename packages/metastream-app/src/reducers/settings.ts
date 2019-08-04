@@ -1,4 +1,5 @@
 import { Reducer } from 'redux'
+import { createStructuredSelector } from 'reselect'
 import { isType } from 'utils/redux'
 import { clamp } from 'utils/math'
 import { setVolume, setMute, setUsername, setColor, setSetting } from 'actions/settings'
@@ -37,6 +38,7 @@ export interface ISettingsState {
   avatar?: string
   language: string
   chatLocation: ChatLocation
+  autoFullscreen: boolean
 }
 
 const initialState: ISettingsState = {
@@ -45,7 +47,8 @@ const initialState: ISettingsState = {
   allowTracking: false,
   sessionMode: SessionMode.Private,
   language: DEFAULT_LANGUAGE,
-  chatLocation: ChatLocation.FloatLeft
+  chatLocation: ChatLocation.FloatLeft,
+  autoFullscreen: true
 }
 
 export const settings: Reducer<ISettingsState> = (
@@ -107,3 +110,12 @@ export const resolveLocalAvatar = (state: IAppState) => {
   }
   return src
 }
+
+export interface PlayerSettings {
+  autoFullscreen: boolean
+}
+
+/** Gets a subset of settings to pass to player extension */
+export const getPlayerSettings = createStructuredSelector<IAppState, PlayerSettings>({
+  autoFullscreen: state => state.settings.autoFullscreen
+})

@@ -155,6 +155,10 @@
     let activeMedia, activeFrame
     let isInInteractMode = false
 
+    let playerSettings = {
+      autoFullscreen: true,
+    }
+
     //===========================================================================
     // Communicate between main world and content script's isolated world.
     //===========================================================================
@@ -175,6 +179,12 @@
       console.debug(`[Metastream Remote] Received player event`, action)
 
       switch (action.type) {
+        case 'set-settings': {
+          const prev = playerSettings
+          playerSettings = { ...prev, ...action.payload }
+          onSettingsChange(playerSettings, prev)
+          break
+        }
         case 'set-interact': {
           isInInteractMode = action.payload
           if (isInInteractMode) {
@@ -580,7 +590,10 @@
       // document.head.appendChild(fullscreenStyleElement)
 
       fullscreenElement = target
-      fullscreenFrameId = requestAnimationFrame(renderFullscreen)
+
+      if (playerSettings.autoFullscreen) {
+        fullscreenFrameId = requestAnimationFrame(renderFullscreen)
+      }
     }
 
     function stopAutoFullscreen() {
@@ -719,6 +732,18 @@
 
         clearTimeout(autoplayTimerId)
         autoplayTimerId = setTimeout(attemptAutoplay, AUTOPLAY_TIMEOUT)
+      }
+    }
+
+    //===========================================================================
+    // Settings
+    //===========================================================================
+
+    const onSettingsChange = (settings, prev) => {
+      if (settings.autoFullscreen && !isFullscreen) {
+        startAutoFullscreen()
+      } else if (!settings.autoFullscreen && isFullscreen) {
+        stopAutoFullscreen()
       }
     }
 

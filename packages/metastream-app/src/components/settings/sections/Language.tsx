@@ -53,6 +53,14 @@ class LanguageSettings extends Component<Props> {
             location === ChatLocation.DockRight ? ChatLocation.FloatLeft : ChatLocation.DockRight
           )}
         />
+
+        <SwitchOption
+          inputId="autofullscreen"
+          title={"Auto-fullscreen"}
+          description="Zoom to fit active video within the window frame."
+          checked={settings.autoFullscreen}
+          onChange={checked => setSetting('autoFullscreen', checked)}
+        />
       </section>
     )
   }

@@ -17,6 +17,7 @@ import { ExtensionInstall } from './ExtensionInstall'
 import { Icon } from '../Icon'
 import { addChat } from '../../lobby/actions/chat'
 import { MediaSession } from './MediaSession'
+import { getPlayerSettings, PlayerSettings } from '../../reducers/settings'
 
 type MediaReadyPayload = {
   duration?: number
@@ -56,6 +57,7 @@ interface IConnectedProps extends IMediaPlayerState {
   volume: number
   host: boolean
   isExtensionInstalled: boolean
+  playerSettings: PlayerSettings
 }
 
 interface IState {
@@ -70,7 +72,8 @@ const mapStateToProps = (state: IAppState): IConnectedProps => {
     mute: state.settings.mute,
     volume: state.settings.volume,
     host: isHost(state),
-    isExtensionInstalled: state.ui.isExtensionInstalled
+    isExtensionInstalled: state.ui.isExtensionInstalled,
+    playerSettings: getPlayerSettings(state)
   }
 }
 
@@ -128,8 +131,12 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
   }
 
   componentDidUpdate(prevProps: PrivateProps): void {
-    const { current } = this.props
+    const { current, playerSettings } = this.props
     const { current: prevMedia } = prevProps
+
+    if (playerSettings !== prevProps.playerSettings) {
+      this.dispatchMedia('set-settings', playerSettings)
+    }
 
     if (current !== prevMedia) {
       if (isEqual(current, prevMedia)) {
@@ -199,6 +206,8 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
 
   private onMediaReady = (isTopSubFrame: boolean = false, payload?: MediaReadyPayload) => {
     console.debug('onMediaReady', payload)
+
+    this.dispatchMedia('set-settings', this.props.playerSettings)
 
     // Apply auto-fullscreen to all subframes with nested iframes
     if (!isTopSubFrame && payload) {
