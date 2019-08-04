@@ -91,6 +91,7 @@
     "redux-logger": "^3.0.1",
     "redux-persist": "^5.9.1",
     "redux-thunk": "^2.3.0",
+    "reselect": "^4.0.0",
     "shortid": "^2.2.8",
     "simple-peer": "^9.4.0",
     "simple-websocket": "^7.0.2",
