@@ -36,7 +36,7 @@ export default {
   donators: 'Donators',
   duplicate: 'Duplicate',
   endSessionTitle: 'End Session?',
-  endSessionDescription: 'Changing to a private session will disconnect all connected users.',
+  endSessionDescription: 'Changing to an offline session will disconnect all connected users.',
   endSessionModalDescription: 'All users will be disconnected from the session.',
   endSessionButton: 'End Session',
   enterJoinDest: 'Enter a Metastream session URL.',
