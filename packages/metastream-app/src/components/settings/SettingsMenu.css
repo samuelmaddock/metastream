@@ -1,18 +1,51 @@
-.content {
+.container {
+  width: 100%;
+  max-width: 800px;
   height: 100%;
   display: flex;
-  flex-flow: column wrap;
+  flex-flow: row nowrap;
+  flex: 1 0 auto;
 }
 
-.section {
-  margin-bottom: 2rem;
+.container.sessionSettings {
+  margin: 0 auto;
 }
 
-.section h2 {
+.tabSidebar {
+  width: 12rem;
+}
+
+.tabItem {
+  width: 100%;
+  opacity: 0.4;
+}
+
+.tabItem button {
+  width: 100%;
+  padding: 0.5rem 0;
+  margin-bottom: 0.2rem;
+  text-align: left;
+}
+
+.selectedTab {
+  opacity: 1;
+  font-weight: bold;
+}
+
+.content {
+  width: 100%;
+  max-width: 35rem;
+}
+
+.content h2 {
   font-size: 18px;
   font-weight: bold;
   letter-spacing: 1px;
   margin-bottom: 0.8rem;
+}
+
+.section {
+  margin-bottom: 2rem;
 }
 
 .section > label {

@@ -37,6 +37,7 @@
   border-radius: 2em;
   padding: var(--tgl-padding);
   transition: all 200ms ease;
+  box-shadow: inset 0 0 5px 0px rgba(255, 255, 255, 0.2);
 }
 
 .tgl-light + .tgl-btn:after {

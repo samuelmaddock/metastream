@@ -202,6 +202,9 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
 
   private renderModal() {
     let modalChildren
+    let fillHeight
+
+    const modalProps = { isHost: this.props.host }
 
     switch (this.state.modal!) {
       case LobbyModal.Browser: {
@@ -214,7 +217,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
         )
       }
       case LobbyModal.Invite: {
-        modalChildren = <Modals.Invite />
+        modalChildren = <Modals.Invite {...modalProps} />
         break
       }
       case LobbyModal.MediaInfo: {
@@ -228,7 +231,8 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
         break
       }
       case LobbyModal.Settings: {
-        modalChildren = <Modals.Settings />
+        modalChildren = <Modals.Settings {...modalProps} />
+        fillHeight = true
         break
       }
       default:
@@ -237,7 +241,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
 
     if (modalChildren) {
       return (
-        <Modal className={styles.modal} onClose={this.closeModal}>
+        <Modal className={styles.modal} onClose={this.closeModal} fill={fillHeight}>
           {modalChildren}
         </Modal>
       )

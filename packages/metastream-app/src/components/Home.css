@@ -46,26 +46,22 @@
   justify-content: space-between;
 }
 
-.low {
-  filter: contrast(100) saturate(0);
-  mix-blend-mode: overlay;
-  opacity: 0.33;
-}
-
-.low:hover {
-  filter: invert(1);
-  mix-blend-mode: normal;
-  opacity: 1;
-}
-
 .socialLink {
   display: inline-block;
   margin-right: 20px;
 }
 
 .socialIcon {
-  composes: low;
+  filter: contrast(100) saturate(0);
+  mix-blend-mode: overlay;
+  opacity: 0.33;
   height: 48px;
+}
+
+.socialIcon:hover {
+  filter: invert(1);
+  mix-blend-mode: normal;
+  opacity: 1;
 }
 
 .btn {

@@ -39,8 +39,6 @@ class ProfileSettings extends Component<Props> {
     const hasArtist = selectedAvatar ? !!selectedAvatar.artist : false
     return (
       <section className={styles.section}>
-        <h2>{t('profile')}</h2>
-
         <label>{t('avatar')}</label>
         <div className={styles.avatarContainer}>
           <div className={styles.avatarList}>

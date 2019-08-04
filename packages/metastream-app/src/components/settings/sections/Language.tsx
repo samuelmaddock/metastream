@@ -26,9 +26,9 @@ class LanguageSettings extends Component<Props> {
     // prettier-ignore
     return (
       <section className={styles.section}>
-        <h2>{t('language')}</h2>
-
+        <label htmlFor="appearance_language">{t('language')}</label>
         <Dropdown
+          id="appearance_language"
           onChange={e => {
             const value = (e.target as HTMLSelectElement).value
             this.props.dispatch!(setSetting('language', value))

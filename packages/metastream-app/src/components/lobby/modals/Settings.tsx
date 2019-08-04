@@ -1,8 +1,9 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { SettingsMenu } from '../../settings/SettingsMenu'
+import { LobbyModalProps } from './types'
 
-export default class Settings extends Component {
-  render(): JSX.Element | null {
-    return <SettingsMenu invalidate={() => {}} />
-  }
-}
+const Settings: React.SFC<LobbyModalProps> = props => (
+  <SettingsMenu invalidate={() => {}} isHost={props.isHost} inSession />
+)
+
+export default Settings

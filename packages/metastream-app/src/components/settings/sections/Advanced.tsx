@@ -20,8 +20,6 @@ class AdvancedSettings extends Component<Props> {
     const { dispatch } = this.props
     return (
       <section className={styles.section}>
-        <h2>{t('advanced')}</h2>
-
         <SwitchOption
           inputId="advanced_tracking"
           title={t('allowTracking')}

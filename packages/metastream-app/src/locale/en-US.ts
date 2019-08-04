@@ -7,6 +7,7 @@ export default {
   allowTracking: 'Send app usage information',
   allowTrackingDesc:
     'Anonymous usage information is sent to the developer to better understand how the app is being used.',
+  appearance: 'Appearance',
   avatar: 'Avatar',
   avatarCredit: '<0>Selected avatar art by</0> <1>{{artist}}</1>',
   cancel: 'Cancel',
@@ -90,6 +91,7 @@ export default {
   requiresDJPermissions: 'Requires DJ permissions',
   requiresPortForward:
     'Requires <1>setting up port forwarding</1> of <3>{{port}}</3> to accept direct connections.',
+  session: 'Session',
   sessionMode: 'Session mode',
   sessionModePublicDescription: 'Anyone is allowed to join.',
   sessionModePrivateDescription: 'Permission to join must be granted explicitly.',

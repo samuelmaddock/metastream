@@ -14,23 +14,16 @@ import { assetUrl } from 'utils/appUrl'
 import { PRODUCT_NAME } from 'constants/app'
 import { withNamespaces, WithNamespaces, Trans } from 'react-i18next'
 import SessionSettings from './SessionSettings'
+import { LobbyModalProps } from './types'
 
-interface IProps {
+import { t } from 'locale'
+
+interface IProps extends LobbyModalProps {
   className?: string
   onClose?: () => void
 }
 
-interface IConnectedProps {
-  isHost: boolean
-}
-
-const mapStateToProps = (state: IAppState): IConnectedProps => ({
-  isHost: isHost(state)
-})
-
-type PrivateProps = IProps & IConnectedProps & IReactReduxProps & WithNamespaces
-
-class Invite extends Component<PrivateProps> {
+class Invite extends Component<IProps> {
   render(): JSX.Element {
     return (
       <div className={cx(styles.container, this.props.className)}>
@@ -41,8 +34,6 @@ class Invite extends Component<PrivateProps> {
   }
 
   private renderURL() {
-    const { t } = this.props
-
     return (
       <section className={styles.method}>
         <p>{t('shareSessionUrl')}</p>
@@ -57,4 +48,4 @@ class Invite extends Component<PrivateProps> {
   }
 }
 
-export default withNamespaces()(connect(mapStateToProps)(Invite))
+export default Invite

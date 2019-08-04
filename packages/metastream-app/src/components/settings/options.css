@@ -29,11 +29,11 @@
 }
 
 .description {
+  composes: blend-text-invert from '~styles/text.css';
   align-self: stretch;
   grid-area: c;
   font-size: 0.8rem;
   line-height: 1.25em;
-  mix-blend-mode: overlay;
 }
 
 .dropdown {

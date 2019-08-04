@@ -7,6 +7,7 @@ import { IconButton } from 'components/common/button'
 interface IProps {
   className?: string
   onClose?: () => void
+  fill?: boolean
 }
 
 export class Modal extends Component<IProps> {
@@ -32,7 +33,13 @@ export class Modal extends Component<IProps> {
     return (
       <div className={cx(styles.container, this.props.className)}>
         <IconButton icon="x" className={styles.close} onClick={this.props.onClose} />
-        <div className={styles.content}>{this.props.children}</div>
+        <div
+          className={cx(styles.content, {
+            [styles.fill]: this.props.fill
+          })}
+        >
+          {this.props.children}
+        </div>
       </div>
     )
   }
