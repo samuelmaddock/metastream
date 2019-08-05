@@ -39,6 +39,7 @@ export interface ISettingsState {
   language: string
   chatLocation: ChatLocation
   autoFullscreen: boolean
+  theaterMode: boolean
 }
 
 const initialState: ISettingsState = {
@@ -48,7 +49,8 @@ const initialState: ISettingsState = {
   sessionMode: SessionMode.Private,
   language: DEFAULT_LANGUAGE,
   chatLocation: ChatLocation.FloatLeft,
-  autoFullscreen: true
+  autoFullscreen: true,
+  theaterMode: false
 }
 
 export const settings: Reducer<ISettingsState> = (
@@ -113,9 +115,11 @@ export const resolveLocalAvatar = (state: IAppState) => {
 
 export interface PlayerSettings {
   autoFullscreen: boolean
+  theaterMode: boolean
 }
 
 /** Gets a subset of settings to pass to player extension */
 export const getPlayerSettings = createStructuredSelector<IAppState, PlayerSettings>({
-  autoFullscreen: state => state.settings.autoFullscreen
+  autoFullscreen: state => state.settings.autoFullscreen,
+  theaterMode: state => state.settings.theaterMode
 })

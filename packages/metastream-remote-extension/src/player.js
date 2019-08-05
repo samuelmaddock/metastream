@@ -459,36 +459,8 @@
     let fullscreenElement
     let fullscreenContainer
     let fullscreenFrameId
-    let fullscreenStyleElement
     let origDocumentOverflow
     let prevScale = 1
-
-    // Creates styles to hide all non-video elements in the document
-    function getFocusStyles(visibleTagName) {
-      // :not(:empty) used to boost specificity
-      return `
-:not(${visibleTagName}):not(:empty),
-:not(${visibleTagName}):not(:empty):after,
-:not(${visibleTagName}):not(:empty):before {
-  color: transparent !important;
-  z-index: 0;
-  background: transparent !important;
-  border-color: transparent !important;
-  outline: none !important;
-  box-shadow: none !important;
-  text-shadow: none !important;
-  mix-blend-mode: normal !important;
-  filter: none !important;
-  fill: none !important;
-  stroke: none !important;
-  -webkit-mask: none !important;
-  transition: none !important;
-}
-
-:not(${visibleTagName}):empty {
-  visibility: hidden !important;
-}`
-    }
 
     function getNormalizedRect(el, rootEl) {
       // Get renderered offsets
@@ -550,8 +522,7 @@
     }
 
     function startAutoFullscreen(target = activeMedia || activeFrame) {
-      const isVideo = target instanceof HTMLVideoElement
-      if (!(isVideo || target instanceof HTMLIFrameElement)) return
+      if (!(target instanceof HTMLVideoElement || target instanceof HTMLIFrameElement)) return
       if (isInInteractMode) return
 
       console.debug('Starting autofullscreen', target)
@@ -580,15 +551,6 @@
         fullscreenContainer = document.documentElement
       }
 
-      // Hide all non-video elements
-      // TODO: Uncomment when there's an option to enable this. Otherwise
-      // subtitles can be hidden.
-      // const elem = document.createElement('style')
-      // const visibleTagName = isVideo ? 'video' : 'iframe'
-      // elem.innerText = getFocusStyles(visibleTagName)
-      // fullscreenStyleElement = elem
-      // document.head.appendChild(fullscreenStyleElement)
-
       fullscreenElement = target
 
       if (playerSettings.autoFullscreen) {
@@ -608,14 +570,57 @@
         cancelAnimationFrame(fullscreenFrameId)
         fullscreenFrameId = undefined
       }
-      if (fullscreenStyleElement) {
-        fullscreenStyleElement.remove()
-        fullscreenStyleElement = undefined
-      }
       if (fullscreenContainer) {
         fullscreenContainer.style.transform = ''
         fullscreenContainer.style.transformOrigin = ''
         fullscreenContainer = undefined
+      }
+    }
+
+    //===========================================================================
+    // Theater Mode
+    //===========================================================================
+
+    let theaterModeStyle
+
+    // Creates styles to hide all non-video elements in the document
+    function getFocusStyles(visibleTagName) {
+      // :not(:empty) used to boost specificity
+      return `
+:not(${visibleTagName}):not(:empty),
+:not(${visibleTagName}):not(:empty):after,
+:not(${visibleTagName}):not(:empty):before {
+  color: transparent !important;
+  z-index: 0;
+  background: transparent !important;
+  border-color: transparent !important;
+  outline: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  mix-blend-mode: normal !important;
+  filter: none !important;
+  fill: none !important;
+  stroke: none !important;
+  -webkit-mask: none !important;
+  transition: none !important;
+}
+
+:not(${visibleTagName}):empty {
+  visibility: hidden !important;
+}`
+    }
+
+    function setTheaterMode(enable) {
+      if (enable && !theaterModeStyle) {
+        const target = activeMedia || activeFrame
+        const elem = document.createElement('style')
+        const visibleTagName = target instanceof HTMLVideoElement ? 'video' : 'iframe'
+        elem.innerText = getFocusStyles(visibleTagName)
+        theaterModeStyle = elem
+        document.head.appendChild(theaterModeStyle)
+      } else if (!enable && theaterModeStyle) {
+        theaterModeStyle.remove()
+        theaterModeStyle = undefined
       }
     }
 
@@ -745,6 +750,8 @@
       } else if (!settings.autoFullscreen && isFullscreen) {
         stopAutoFullscreen()
       }
+
+      setTheaterMode(!!settings.theaterMode)
     }
 
     //===========================================================================

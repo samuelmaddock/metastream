@@ -61,6 +61,14 @@ class LanguageSettings extends Component<Props> {
           checked={settings.autoFullscreen}
           onChange={checked => setSetting('autoFullscreen', checked)}
         />
+
+        <SwitchOption
+          inputId="theatermode"
+          title={"Theater Mode"}
+          description="Hides all non-video elements on the page."
+          checked={settings.theaterMode}
+          onChange={checked => setSetting('theaterMode', checked)}
+        />
       </section>
     )
   }
