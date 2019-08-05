@@ -17,7 +17,11 @@
 
 .video.playing {
   /* Should be lighter than #000 so text can be read */
-  background: #222;
+  background: #444;
+}
+
+.video.mediaReady {
+  background: #000;
 }
 
 .interactTrigger {

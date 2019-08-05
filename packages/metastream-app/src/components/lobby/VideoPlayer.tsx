@@ -62,6 +62,7 @@ interface IConnectedProps extends IMediaPlayerState {
 
 interface IState {
   interacting: boolean
+  mediaReady: boolean
 }
 
 const DEFAULT_URL = assetUrl('idlescreen.html')
@@ -81,9 +82,8 @@ type PrivateProps = IProps & IConnectedProps & IReactReduxProps
 
 class _VideoPlayer extends PureComponent<PrivateProps, IState> {
   private webview: Webview | null = null
-  // private webContents!: Electron.WebContents
 
-  state: IState = { interacting: false }
+  state: IState = { interacting: false, mediaReady: false }
 
   get isPlaying() {
     return this.props.playback === PlaybackState.Playing
@@ -207,6 +207,10 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
   private onMediaReady = (isTopSubFrame: boolean = false, payload?: MediaReadyPayload) => {
     console.debug('onMediaReady', payload)
 
+    if (!this.state.mediaReady) {
+      this.setState({ mediaReady: true })
+    }
+
     this.dispatchMedia('set-settings', this.props.playerSettings)
 
     // Apply auto-fullscreen to all subframes with nested iframes
@@ -272,10 +276,6 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
   private updateVolume = () => {
     const { volume, mute } = this.props
 
-    // if (mute !== this.webContents.isAudioMuted()) {
-    //   this.webContents.setAudioMuted(mute)
-    // }
-
     const newVolume = mute ? 0 : volume
     this.dispatchMedia('set-media-volume', this.scaleVolume(newVolume))
   }
@@ -322,7 +322,8 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
         src={DEFAULT_URL}
         className={cx(styles.video, {
           [styles.interactive]: this.state.interacting,
-          [styles.playing]: !!this.props.current
+          [styles.playing]: !!this.props.current,
+          [styles.mediaReady]: this.state.mediaReady
         })}
         allowScripts
       />
@@ -345,18 +346,13 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
 
   reload = () => {
     this.updatePlayback(PlaybackState.Paused)
+    this.setState({ mediaReady: false })
     if (this.webview) {
       this.webview.loadURL(this.mediaUrl, {
         httpReferrer: this.httpReferrer,
         userAgent: MEDIA_SESSION_USER_AGENT
       })
     }
-  }
-
-  debug(): void {
-    // if (this.webContents && !this.webContents.isDevToolsOpened()) {
-    //   this.webContents.openDevTools()
-    // }
   }
 
   enterInteractMode = () => {
