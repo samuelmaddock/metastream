@@ -4,7 +4,7 @@ import styles from './SettingsMenu.css'
 
 import ProfileSettings from './sections/Profile'
 import AdvancedSettings from './sections/Advanced'
-import LanguageSettings from './sections/Language'
+import AppearanceSettings from './sections/Appearance'
 
 import { t } from 'locale'
 import SessionSettings from '../lobby/modals/SessionSettings'
@@ -67,7 +67,7 @@ class _SettingsMenu extends PureComponent<Props, State> {
       {
         label: t('appearance'),
         value: 'appearance',
-        children: () => <LanguageSettings onChange={this.props.invalidate} {...settingsProps} />
+        children: () => <AppearanceSettings onChange={this.props.invalidate} {...settingsProps} />
       },
       {
         label: t('advanced'),

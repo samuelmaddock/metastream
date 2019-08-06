@@ -15,7 +15,7 @@ interface Props extends SettingsProps {
   onChange: () => void
 }
 
-class LanguageSettings extends Component<Props> {
+export default class AppearanceSettings extends Component<Props> {
   render() {
     const { setSetting, settings } = this.props
     // prettier-ignore
@@ -73,5 +73,3 @@ class LanguageSettings extends Component<Props> {
     )
   }
 }
-
-export default LanguageSettings
