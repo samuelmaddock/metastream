@@ -157,6 +157,7 @@
 
     let playerSettings = {
       autoFullscreen: true,
+      theaterMode: false
     }
 
     //===========================================================================
@@ -186,12 +187,7 @@
           break
         }
         case 'set-interact': {
-          isInInteractMode = action.payload
-          if (isInInteractMode) {
-            stopAutoFullscreen()
-          } else {
-            startAutoFullscreen()
-          }
+          setInteractMode(!!action.payload)
           break
         }
         case 'apply-fullscreen': {
@@ -231,6 +227,16 @@
       }
     }
     window.addEventListener('message', eventMiddleware)
+
+    const setInteractMode = (enable) => {
+      isInInteractMode = enable
+      if (enable) {
+        stopAutoFullscreen()
+      } else {
+        startAutoFullscreen()
+      }
+      setTheaterMode(playerSettings.theaterMode && !enable)
+    }
 
     //===========================================================================
     // HTMLMediaPlayer class for active media element.
