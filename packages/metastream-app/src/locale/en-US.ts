@@ -8,6 +8,8 @@ export default {
   allowTrackingDesc:
     'Anonymous usage information is sent to the developer to better understand how the app is being used.',
   appearance: 'Appearance',
+  autoFullscreen: 'Auto-fullscreen',
+  autoFullscreenDesc: 'Zoom to fit active video within the window frame.',
   avatar: 'Avatar',
   avatarCredit: '<0>Selected avatar art by</0> <1>{{artist}}</1>',
   cancel: 'Cancel',
@@ -102,6 +104,9 @@ export default {
   sharePublicIP: 'Share <1>your public IP address</1> to allow friends to connect directly.',
   shareSessionUrl: 'Share the session URL below to invite friends.',
   startSession: 'Start Session',
+  theaterMode: 'Theater Mode',
+  theaterModeDesc:
+    'Hide all non-video content on the webpage. Note that this might also hide soft subtitles.',
   thirdPartyIntegrations: 'Third-party Integrations',
   toggleDJ: 'Toggle DJ',
   unlimited: 'Unlimited',

@@ -56,16 +56,16 @@ export default class AppearanceSettings extends Component<Props> {
 
         <SwitchOption
           inputId="autofullscreen"
-          title={"Auto-fullscreen"}
-          description="Zoom to fit active video within the window frame."
+          title={t('autoFullscreen')}
+          description={t('autoFullscreenDesc')}
           checked={settings.autoFullscreen}
           onChange={checked => setSetting('autoFullscreen', checked)}
         />
 
         <SwitchOption
           inputId="theatermode"
-          title={"Theater Mode"}
-          description="Hides all non-video elements on the page."
+          title={t('theaterMode')}
+          description={t('theaterModeDesc')}
           checked={settings.theaterMode}
           onChange={checked => setSetting('theaterMode', checked)}
         />
