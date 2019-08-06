@@ -22,6 +22,13 @@ const isDirectChild = details => details.parentFrameId === TOP_FRAME
 const isValidAction = action => typeof action === 'object' && typeof action.type === 'string'
 const isFirefox = () => navigator.userAgent.toLowerCase().includes('firefox')
 
+const asyncTimeout = (promise, timeout = 5000) => {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), timeout))
+  ])
+}
+
 const escapePattern = pattern => pattern.replace(/[\\^$+?.()|[\]{}]/g, '\\$&')
 
 // Check whether pattern matches.
@@ -414,12 +421,17 @@ const serializeResponse = async response => {
 
 // Fetch on behalf of Metastream app, skips cross-domain security restrictions
 const request = async (tabId, requestId, url, options) => {
+  const { timeout } = options || {}
+  const controller = new AbortController()
+  const { signal } = controller
+
   let response, err
 
   try {
     console.debug(`Requesting ${url}`)
-    response = await fetch(url, options)
+    response = await asyncTimeout(fetch(url, { ...options, signal }), timeout)
   } catch (e) {
+    controller.abort()
     err = e.message
   }
 

@@ -5,6 +5,10 @@ type FetchResponse = Response & {
   headers: { [key: string]: string }
 }
 
+interface FetchOptions extends RequestInit {
+  timeout?: number
+}
+
 const transformList = new Set(['user-agent', 'referer'])
 const prefixHeaders = (headers: any) => {
   if (typeof headers === 'object') {
@@ -20,7 +24,7 @@ const prefixHeaders = (headers: any) => {
 }
 
 let fetchId = 0
-const mainFetch = (url: string, options: RequestInit = {}): Promise<FetchResponse> => {
+const mainFetch = (url: string, options: FetchOptions = {}): Promise<FetchResponse> => {
   return new Promise((resolve, reject) => {
     if (url.startsWith('//')) {
       url = `https:${url}`
