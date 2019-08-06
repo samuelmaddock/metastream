@@ -195,8 +195,7 @@ class _PlaybackControls extends Component<PrivateProps> {
       <Button icon="info" title={t('info')} onClick={() => this.props.showInfo()} />
     )
 
-    // TODO(samuelmaddock): enable in prod when settings menu is ready
-    const settingsBtn = process.env.NODE_ENV === 'development' && (
+    const settingsBtn = (
       <Button icon="settings" title={t('settings')} onClick={() => this.props.openSettings()} />
     )
 
