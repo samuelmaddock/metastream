@@ -18,3 +18,10 @@
   mix-blend-mode: overlay;
   color: white;
 }
+
+/* Provide better contrast for blend text on transparent backgrounds. */
+:global(.transparent) .blend-text,
+:global(.transparent) .blend-text-invert {
+  mix-blend-mode: normal;
+  opacity: 0.8;
+}

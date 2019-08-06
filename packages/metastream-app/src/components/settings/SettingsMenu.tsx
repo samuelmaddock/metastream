@@ -98,7 +98,12 @@ class _SettingsMenu extends PureComponent<Props, State> {
     ))
     const children = typeof selected.children === 'function' ? selected.children() : undefined
     return (
-      <div className={cx(styles.container, { [styles.sessionSettings]: this.props.inSession })}>
+      <div
+        className={cx(styles.container, {
+          [styles.sessionSettings]: this.props.inSession,
+          transparent: this.props.inSession
+        })}
+      >
         <aside className={styles.tabSidebar}>
           <ul>{tabs}</ul>
         </aside>
