@@ -18,7 +18,7 @@ export const SwitchOption: React.SFC<ISwitchOptionProps> = props => {
       <Switch
         id={props.inputId}
         className={styles.switchContainer}
-        defaultChecked={props.checked}
+        checked={props.checked}
         onChange={props.onChange}
       />
       {props.description && <div className={styles.description}>{props.description}</div>}

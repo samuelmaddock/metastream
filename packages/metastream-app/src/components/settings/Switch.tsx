@@ -5,6 +5,7 @@ import styles from './Switch.css'
 interface ISwitchProps {
   id: string
   className?: string
+  checked?: boolean
   defaultChecked?: boolean
   onChange: (val: boolean) => void
 }
@@ -15,6 +16,7 @@ export const Switch: React.SFC<ISwitchProps> = props => (
       id={props.id}
       type="checkbox"
       className={cx(styles.tgl, styles['tgl-light'])}
+      checked={props.checked}
       defaultChecked={props.defaultChecked}
       onChange={e => {
         if (e.target instanceof HTMLInputElement) {

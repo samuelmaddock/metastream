@@ -46,15 +46,6 @@ export default class AppearanceSettings extends Component<Props> {
         </p>
 
         <SwitchOption
-          inputId="dock_chat"
-          title={t('chatDockToRight')}
-          checked={settings.chatLocation === ChatLocation.DockRight}
-          onChange={checked => setSetting('chatLocation', location =>
-            location === ChatLocation.DockRight ? ChatLocation.FloatLeft : ChatLocation.DockRight
-          )}
-        />
-
-        <SwitchOption
           inputId="autofullscreen"
           title={t('autoFullscreen')}
           description={t('autoFullscreenDesc')}
@@ -68,6 +59,15 @@ export default class AppearanceSettings extends Component<Props> {
           description={t('theaterModeDesc')}
           checked={settings.theaterMode}
           onChange={checked => setSetting('theaterMode', checked)}
+        />
+
+        <SwitchOption
+          inputId="dock_chat"
+          title={t('chatDockToRight')}
+          checked={settings.chatLocation === ChatLocation.DockRight}
+          onChange={checked => setSetting('chatLocation', location =>
+            location === ChatLocation.DockRight ? ChatLocation.FloatLeft : ChatLocation.DockRight
+          )}
         />
       </section>
     )
