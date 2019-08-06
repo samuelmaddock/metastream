@@ -285,7 +285,7 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
    * https://www.dr-lex.be/info-stuff/volumecontrols.html
    */
   private scaleVolume(volume: number): number {
-    return clamp(Math.exp(6.908 * volume) / 1000, 0, 1)
+    return volume === 0 ? 0 : clamp(Math.exp(6.908 * volume) / 1000, 0, 1)
   }
 
   render(): JSX.Element | null {
