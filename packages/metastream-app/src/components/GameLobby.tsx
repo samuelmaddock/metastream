@@ -257,11 +257,6 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
             this.player.reload()
           }
         }}
-        debug={() => {
-          if (this.player) {
-            this.player.debug()
-          }
-        }}
         openBrowser={this.openBrowser}
         showInfo={this.showInfo}
         showInteract={() => {

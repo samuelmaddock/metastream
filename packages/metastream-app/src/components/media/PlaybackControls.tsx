@@ -77,7 +77,6 @@ const ButtonListItem: React.SFC<{
 interface IProps {
   className?: string
   reload?: React.MouseEventHandler<HTMLButtonElement>
-  debug?: React.MouseEventHandler<HTMLButtonElement>
   openBrowser: (url?: string) => void
   showInfo: Function
   showInteract: Function
