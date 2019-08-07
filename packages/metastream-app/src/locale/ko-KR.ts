@@ -6,7 +6,7 @@ export default {
   allow: '허용',
   allowTracking: '앱 사용 정보 보내기',
   allowTrackingDesc: '익명 사용 정보는 개발자가 앱이 어떻게 사용되는지 알기 위해 전송됩니다.',
-  appearance: 'Appearance',
+  appearance: '외관',
   autoFullscreen: '자동 전체화면',
   autoFullscreenDesc: '영상을 창 크기에 맞춰 확대/축소 합니다.',
   avatar: '아바타',
