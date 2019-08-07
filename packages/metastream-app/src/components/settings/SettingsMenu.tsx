@@ -53,17 +53,17 @@ class _SettingsMenu extends PureComponent<Props, State> {
     }
 
     const tabs = [
+      {
+        label: t('profile'),
+        value: 'profile',
+        children: () => <ProfileSettings {...settingsProps} />
+      },
       inSession &&
         isHost && {
           label: t('session'),
           value: 'session',
           children: () => <SessionSettings />
         },
-      {
-        label: t('profile'),
-        value: 'profile',
-        children: () => <ProfileSettings {...settingsProps} />
-      },
       {
         label: t('appearance'),
         value: 'appearance',
