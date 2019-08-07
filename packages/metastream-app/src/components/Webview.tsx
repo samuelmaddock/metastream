@@ -1,5 +1,14 @@
 import React, { Component } from 'react'
 import { EventEmitter } from 'events'
+import { isFirefox } from '../utils/browser'
+
+/**
+ * List of hostnames to apply service worker fix to.
+ *
+ * Chrome extensions can't intercept SWs yet so we need to
+ * remove any service workers and then reload the page.
+ */
+const swFixOrigins = new Set(['https://www.netflix.com'])
 
 interface Props {
   src?: string
@@ -17,6 +26,7 @@ export class Webview extends Component<Props> {
   private emitter = new EventEmitter()
   private iframe: HTMLIFrameElement | null = null
   private url: string = 'about:blank'
+  private didFixSW: boolean = false
 
   private get initialUrl() {
     return `about:blank?webview=${this.id}&allowScripts=${!!this.props.allowScripts}`
@@ -97,6 +107,7 @@ export class Webview extends Component<Props> {
       this.loadURL(this.props.src)
     }
 
+    this.emitter.on('will-navigate', this.willNavigate)
     this.emitter.emit('ready')
   }
 
@@ -104,6 +115,55 @@ export class Webview extends Component<Props> {
   private onIFrameActivity() {
     const e = new Event('mousemove', { cancelable: false, bubbles: true })
     document.dispatchEvent(e)
+  }
+
+  private removeServiceWorkers(origin: string) {
+    window.postMessage(
+      {
+        type: 'metastream-remove-data',
+        payload: {
+          options: { origins: [origin] },
+          dataToRemove: { serviceWorkers: true }
+        }
+      },
+      location.origin
+    )
+  }
+
+  private fixServiceWorker(url: string) {
+    // Only apply SW fix to Chromium browsers
+    if (isFirefox()) return
+
+    // Ignore request to fix after hard reload
+    if (this.didFixSW) {
+      this.didFixSW = false
+      return
+    }
+
+    let origin
+    try {
+      origin = new URL(url).origin
+    } catch {
+      return
+    }
+
+    const shouldFixSW = swFixOrigins.has(origin)
+    if (!shouldFixSW) return
+
+    this.didFixSW = true
+    this.removeServiceWorkers(origin)
+
+    // Perform full page reload after service worker has been removed
+    this.emitter.once('did-navigate', () => {
+      this.reloadIgnoringCache()
+    })
+  }
+
+  private willNavigate = ({ url }: { url: string }) => {
+    if (process.env.NODE_ENV === 'development') {
+      // TODO(samuelmaddock): only fix service worker if page fails to load after timeout
+      // this.fixServiceWorker(url)
+    }
   }
 
   componentWillUnmount() {
@@ -157,10 +217,7 @@ export class Webview extends Component<Props> {
 
   loadURL(url: string, opts: { httpReferrer?: string; userAgent?: string } = {}) {
     this.url = url
-
-    if (this.iframe) {
-      this.iframe.src = url
-    }
+    if (this.iframe) this.iframe.src = url
   }
 
   getURL() {

@@ -482,10 +482,16 @@ chrome.runtime.onMessage.addListener((action, sender, sendResponse) => {
       // TODO: exclude sending to top frame? allow sending to specific frame?
       chrome.tabs.sendMessage(tabId, action)
       break
-    case 'metastream-fetch':
+    case 'metastream-fetch': {
       const { requestId, url, options } = action.payload
       request(tabId, requestId, url, options)
       break
+    }
+    case 'metastream-remove-data': {
+      const { options, dataToRemove } = action.payload
+      chrome.browsingData.remove(options, dataToRemove)
+      break
+    }
   }
 })
 
