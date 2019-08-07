@@ -3,7 +3,13 @@ import { addUser } from 'lobby/middleware/users'
 import { RpcThunk } from 'lobby/types'
 import { multi_userJoined, client_kick } from 'lobby/actions/users'
 import { rpc, RpcRealm } from 'network/middleware/rpc'
-import { getUser, getNumUsers, isAdmin, findUserByName } from 'lobby/reducers/users.helpers'
+import {
+  getUser,
+  getNumUsers,
+  isAdmin,
+  findUserByName,
+  getUniqueName
+} from 'lobby/reducers/users.helpers'
 import {
   getLocalUsername,
   getLocalColor,
@@ -22,12 +28,21 @@ import { AppThunkAction } from 'types/redux-thunk'
 import { avatarRegistry } from '../../services/avatar'
 import { parseQuery } from 'utils/url'
 import { translateEscaped } from 'locale'
+import {
+  validateDisplayName,
+  validateColor,
+  validateAvatar,
+  getValidAvatar
+} from './user-validation'
 
-type ClientInitRequest = {
+export type ClientProfile = {
   name: string
   color: string
-  version: number
   avatar?: string
+}
+
+type ClientInitRequest = ClientProfile & {
+  version: number
   secret?: string
 }
 
@@ -91,17 +106,17 @@ const validateClientInfo = (
     return NetworkDisconnectReason.InvalidClientInfo
   }
 
-  if (!info.name || info.name.length > USERNAME_MAX_LEN) {
+  if (!validateDisplayName(info.name)) {
     console.debug(`Client ${id} kicked for name overflow (${info.name})`)
     return NetworkDisconnectReason.InvalidClientInfo
   }
 
-  if (!info.color || info.color.length !== COLOR_LEN) {
+  if (!validateColor(info.color)) {
     console.debug(`Client ${id} kicked for invalid color (${info.color})`)
     return NetworkDisconnectReason.InvalidClientInfo
   }
 
-  if (info.avatar && typeof info.avatar !== 'string') {
+  if (info.avatar && !validateAvatar(info.avatar)) {
     console.debug(`Client ${id} kicked for invalid avatar (${info.avatar})`)
     return NetworkDisconnectReason.InvalidClientInfo
   }
@@ -121,17 +136,6 @@ const clientAuthorized = (info: AuthorizeInfo): RpcThunk<void> => (dispatch, get
   dispatch(setAuthorized(true))
 }
 const client_authorized = rpc('clientAuthorized', RpcRealm.Client, clientAuthorized)
-
-/** Create new unique name with counter appended. */
-const appendNameCount = (state: IAppState, name: string) => {
-  let newName
-  let i = 0
-  do {
-    i++
-    newName = `${name} (${i})`
-  } while (!!findUserByName(state, newName))
-  return newName
-}
 
 const initClient = (info: ClientInitRequest): RpcThunk<ClientInitResponse | void> => (
   dispatch,
@@ -172,19 +176,8 @@ const initClient = (info: ClientInitRequest): RpcThunk<ClientInitResponse | void
   // Determine whether user needs explicit authorization from host to join
   const shouldAwaitAuthorization = sessionMode === SessionMode.Private ? secretMismatch : false
 
-  let name = info.name
-  const isNameTaken = !!findUserByName(state, name)
-  if (isNameTaken) {
-    name = appendNameCount(state, name)
-  }
-
-  let avatar
-
-  if (info.avatar) {
-    try {
-      avatar = avatarRegistry.resolve(info.avatar)
-    } catch {}
-  }
+  const name = getUniqueName(state, info.name)
+  const avatar = getValidAvatar(info.avatar)
 
   dispatch(
     addUser({

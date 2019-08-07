@@ -115,6 +115,8 @@ export default {
   users: 'Users',
   userJoined: '<Username id="{{userId}}">{{username}}</Username> has joined.',
   userLeft: '<Username id="{{userId}}">{{username}}</Username> has left.',
+  userNameChanged:
+    '<Username id="{{userId}}">{{prevName}}</Username> is now known as <Username id="{{userId}}">{{name}}</Username>.',
   viewOnGitHub: 'View on GitHub',
   waitingForHost: 'Waiting for host to allow connection',
   welcome: 'Welcome'

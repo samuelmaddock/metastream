@@ -12,6 +12,8 @@ import { UserAvatar } from '../../lobby/UserAvatar'
 import { ExternalLink } from 'components/common/link'
 import { Trans } from 'react-i18next'
 import { SettingsProps } from '../types'
+import { server_updateUser } from '../../../lobby/actions/users'
+import { IReactReduxProps } from '../../../types/redux-thunk'
 
 interface IProps extends SettingsProps {}
 
@@ -21,9 +23,15 @@ interface IConnectedProps {
   color: string
 }
 
-type Props = IProps & IConnectedProps & DispatchProp<{}>
+type Props = IProps & IConnectedProps & IReactReduxProps
 
-class ProfileSettings extends Component<Props> {
+interface State {
+  dirty?: boolean
+}
+
+class ProfileSettings extends Component<Props, State> {
+  state: State = {}
+
   private usernameInput: HTMLInputElement | null = null
 
   private get username() {
@@ -33,6 +41,18 @@ class ProfileSettings extends Component<Props> {
   private get selectedAvatar() {
     const { avatar } = this.props
     return avatar ? avatarRegistry.getByURI(avatar) : null
+  }
+
+  componentWillUnmount() {
+    if (this.state.dirty) {
+      this.props.dispatch(
+        server_updateUser({
+          name: this.props.username,
+          color: this.props.color,
+          avatar: this.props.avatar
+        })
+      )
+    }
   }
 
   render(): JSX.Element | null {
@@ -50,6 +70,7 @@ class ProfileSettings extends Component<Props> {
                 selected={avatar.uri === this.props.avatar}
                 onClick={() => {
                   this.props.setSetting('avatar', avatar.uri)
+                  this.setState({ dirty: true })
                   ga('event', {
                     ec: 'settings',
                     ea: 'select_avatar',
@@ -94,7 +115,10 @@ class ProfileSettings extends Component<Props> {
           type="color"
           className={styles.colorSwatch}
           defaultValue={this.props.color}
-          onChange={e => this.props.dispatch!(setColor(e.target!.value))}
+          onChange={e => {
+            this.props.dispatch(setColor(e.target!.value))
+            this.setState({ dirty: true })
+          }}
         />
       </section>
     )
@@ -106,7 +130,8 @@ class ProfileSettings extends Component<Props> {
     if (!username) return
 
     if (username !== this.props.username) {
-      this.props.dispatch!(setUsername(username))
+      this.props.dispatch(setUsername(username))
+      this.setState({ dirty: true })
     }
   }
 }

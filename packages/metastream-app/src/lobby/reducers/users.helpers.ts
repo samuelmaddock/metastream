@@ -44,3 +44,22 @@ export const findUser = (state: IAppState, filter: (user: IUser, index: number) 
 
 export const findUserByName = (state: IAppState, name: string) =>
   findUser(state, user => user.name === name)
+
+/** Create new unique name with counter appended. */
+const appendNameCount = (state: IAppState, name: string) => {
+  let newName
+  let i = 0
+  do {
+    i++
+    newName = `${name} (${i})`
+  } while (!!findUserByName(state, newName))
+  return newName
+}
+
+export const getUniqueName = (state: IAppState, name: string) => {
+  const isNameTaken = !!findUserByName(state, name)
+  if (isNameTaken) {
+    name = appendNameCount(state, name)
+  }
+  return name
+}

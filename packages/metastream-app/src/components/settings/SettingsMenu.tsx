@@ -59,7 +59,7 @@ class _SettingsMenu extends PureComponent<Props, State> {
           value: 'session',
           children: () => <SessionSettings />
         },
-      !inSession && {
+      {
         label: t('profile'),
         value: 'profile',
         children: () => <ProfileSettings {...settingsProps} />

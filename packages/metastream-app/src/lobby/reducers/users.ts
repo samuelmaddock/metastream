@@ -1,7 +1,7 @@
 import { Reducer } from 'redux'
 import { isType } from 'utils/redux'
 import { addUser, removeUser, clearUsers } from '../middleware/users'
-import { setUserRole, addUserInvite, answerUserInvite } from '../actions/users'
+import { setUserRole, addUserInvite, answerUserInvite, updateUser } from '../actions/users'
 import { clearPendingUser } from '../actions/user-init'
 import { resetLobby } from '../actions/common'
 import { ReplicatedState } from '../../network/types'
@@ -81,6 +81,20 @@ export const users: Reducer<IUsersState> = (state: IUsersState = initialState, a
     return {
       ...state,
       map: rest
+    }
+  } else if (isType(action, updateUser)) {
+    const { userId, ...rest } = action.payload
+    const userState = state.map[userId]!
+    const nextState = { ...userState }
+    if (rest.name) nextState.name = rest.name
+    if (rest.color) nextState.color = rest.color
+    if (rest.avatar) nextState.avatar = rest.avatar
+    return {
+      ...state,
+      map: {
+        ...state.map,
+        [userId]: nextState
+      }
     }
   } else if (isType(action, resetLobby)) {
     return initialState
