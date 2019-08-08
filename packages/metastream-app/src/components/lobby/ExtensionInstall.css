@@ -1,5 +1,6 @@
 .container {
   composes: fill-center from '~styles/layout.css';
+  background: var(--color-transparent-dark-50);
 }
 
 .badgeList img {

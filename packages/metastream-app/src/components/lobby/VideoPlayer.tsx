@@ -19,6 +19,7 @@ import { addChat } from '../../lobby/actions/chat'
 import { MediaSession } from './MediaSession'
 import { getPlayerSettings, PlayerSettings } from '../../reducers/settings'
 import { safeBrowse } from 'services/safeBrowse'
+import { SafeBrowsePrompt } from './SafeBrowsePrompt'
 
 type MediaReadyPayload = {
   duration?: number
@@ -64,6 +65,7 @@ interface IConnectedProps extends IMediaPlayerState {
 interface IState {
   interacting: boolean
   mediaReady: boolean
+  permitURLOnce: boolean
 }
 
 const DEFAULT_URL = assetUrl('idlescreen.html')
@@ -84,7 +86,7 @@ type PrivateProps = IProps & IConnectedProps & IReactReduxProps
 class _VideoPlayer extends PureComponent<PrivateProps, IState> {
   private webview: Webview | null = null
 
-  state: IState = { interacting: false, mediaReady: false }
+  state: IState = { interacting: false, mediaReady: false, permitURLOnce: false }
 
   get isPlaying() {
     return this.props.playback === PlaybackState.Playing
@@ -152,6 +154,7 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
         return
       } else {
         // Update URL on webview otherwise
+        if (this.state.permitURLOnce) this.setState({ permitURLOnce: false })
         this.reload()
         return
       }
@@ -317,12 +320,22 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
   }
 
   private renderBrowser() {
+    const { mediaUrl } = this
+
     if (!this.props.isExtensionInstalled) {
       return <ExtensionInstall />
     }
 
-    if (!safeBrowse.isPermittedURL(this.mediaUrl)) {
-      return 'blocked'
+    if (!this.state.permitURLOnce && !safeBrowse.isPermittedURL(mediaUrl)) {
+      return (
+        <SafeBrowsePrompt
+          url={mediaUrl}
+          onChange={() => this.forceUpdate()}
+          onPermitOnce={() => {
+            this.setState({ permitURLOnce: true })
+          }}
+        />
+      )
     }
 
     return (

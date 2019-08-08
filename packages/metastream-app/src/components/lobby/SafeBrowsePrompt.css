@@ -1,0 +1,27 @@
+.container {
+  composes: fill-center from '~styles/layout.css';
+  background: var(--color-transparent-dark-50);
+}
+
+p.emoji {
+  font-size: 3rem;
+  line-height: 3.5rem;
+}
+
+.fullUrl {
+  composes: select-text from '~styles/text.css';
+  background: var(--color-transparent-dark-30);
+  padding: 0.5rem 0.8rem;
+  word-break: break-all;
+  max-width: 50rem;
+  border-radius: 4px;
+}
+
+.disableLink {
+  display: inline-block;
+  margin-top: 1rem;
+}
+
+.container button:not(:last-child) {
+  margin-right: 0.5rem;
+}

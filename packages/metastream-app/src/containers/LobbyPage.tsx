@@ -26,6 +26,7 @@ import { IReactReduxProps } from 'types/redux-thunk'
 import { NetworkError, NetworkErrorCode } from '../network/error'
 import { addChat } from '../lobby/actions/chat'
 import { MultiTabObserver } from '../utils/multitab'
+import { safeBrowse } from '../services/safeBrowse'
 
 interface IRouteParams {
   lobbyId: string
@@ -234,6 +235,9 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
   private onLeaveScreen() {
     this.closeLobby()
     this.props.dispatch(resetLobby({ host: this.host }))
+
+    // always re-enable upon leaving session
+    safeBrowse.enable()
   }
 
   private onServerError = (err: NetworkError) => {

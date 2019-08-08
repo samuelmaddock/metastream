@@ -7,3 +7,12 @@
   font-size: 1.2rem;
   line-height: 1.8rem;
 }
+
+.dimLink {
+  opacity: 0.5;
+  text-decoration: underline;
+}
+
+.dimLink:hover {
+  text-decoration: none;
+}

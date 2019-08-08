@@ -13,3 +13,9 @@ export const MediumText = (props: React.HTMLAttributes<HTMLSpanElement>) => (
     {props.children}
   </span>
 )
+
+export const DimLink = (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
+  <a {...props} className={cx(props.className, styles.dimLink)}>
+    {props.children}
+  </a>
+)

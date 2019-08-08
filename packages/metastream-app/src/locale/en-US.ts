@@ -7,6 +7,7 @@ export default {
   allowTracking: 'Send app usage information',
   allowTrackingDesc:
     'Anonymous usage information is sent to the developer to better understand how the app is being used.',
+  always: 'Always',
   appearance: 'Appearance',
   autoFullscreen: 'Auto-fullscreen',
   autoFullscreenDesc: 'Zoom to fit active video within the window frame.',
@@ -80,6 +81,7 @@ export default {
     '<Username id="{{userId}}">{{username}}</Username> is requesting permission to join.',
   offline: 'Offline',
   ok: 'OK',
+  once: 'Once',
   openInBrowser: 'Open in browser',
   private: 'Private',
   profile: 'Profile',
@@ -93,6 +95,8 @@ export default {
   requiresDJPermissions: 'Requires DJ permissions',
   requiresPortForward:
     'Requires <1>setting up port forwarding</1> of <3>{{port}}</3> to accept direct connections.',
+  safeBrowseLoadContent: 'Load content from <1>{{host}}</1>?',
+  safeBrowseDisableForSession: 'Disable safe browse for this session',
   session: 'Session',
   sessionMode: 'Session mode',
   sessionModePublicDescription: 'Anyone is allowed to join.',

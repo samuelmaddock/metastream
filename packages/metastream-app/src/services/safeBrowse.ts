@@ -38,8 +38,8 @@ const SAFE_HOSTS = new Set([
 ])
 
 class SafeBrowse {
+  private enabled = true
   private persistentHosts!: Set<string>
-  private temporaryHosts = new Set<string>()
 
   constructor() {
     this.load()
@@ -47,7 +47,8 @@ class SafeBrowse {
   }
 
   private load() {
-    const value = localStorage.getItem(STORAGE_KEY) || ''
+    const value =
+      process.env.NODE_ENV === 'development' ? '' : localStorage.getItem(STORAGE_KEY) || ''
     const hosts = value.split(',')
     this.persistentHosts = new Set(hosts)
   }
@@ -60,14 +61,12 @@ class SafeBrowse {
   }
 
   isPermittedURL(url: string) {
-    // TODO:
-    if (process.env.NODE_ENV !== 'development') return true
+    if (!this.enabled) return true
 
     const host = getHost(url)
     if (!host) return true
 
-    const isPermitted =
-      SAFE_HOSTS.has(host) || this.persistentHosts.has(host) || this.temporaryHosts.has(host)
+    const isPermitted = SAFE_HOSTS.has(host) || this.persistentHosts.has(host)
     return isPermitted
   }
 
@@ -77,10 +76,12 @@ class SafeBrowse {
     this.persistentHosts.add(host)
   }
 
-  permitURLTemporarily(url: string) {
-    const host = getHost(url)
-    if (!host) return
-    this.temporaryHosts.add(host)
+  enable() {
+    this.enabled = true
+  }
+
+  disable() {
+    this.enabled = false
   }
 }
 
