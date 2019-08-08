@@ -13,6 +13,13 @@ export default class AdvancedSettings extends Component<SettingsProps> {
     return (
       <section className={styles.section}>
         <SwitchOption
+          inputId="safebrowse"
+          title={t('safeBrowse')}
+          description={t('safeBrowseDesc')}
+          checked={this.props.settings.safeBrowse}
+          onChange={checked => this.props.setSetting('safeBrowse', checked)}
+        />
+        <SwitchOption
           inputId="advanced_tracking"
           title={t('allowTracking')}
           description={t('allowTrackingDesc')}

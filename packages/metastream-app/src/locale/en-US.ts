@@ -95,6 +95,8 @@ export default {
   requiresDJPermissions: 'Requires DJ permissions',
   requiresPortForward:
     'Requires <1>setting up port forwarding</1> of <3>{{port}}</3> to accept direct connections.',
+  safeBrowse: 'Safe browse',
+  safeBrowseDesc: 'Prompt for approval prior to loading an unrecognized website.',
   safeBrowseLoadContent: 'Load content from <1>{{host}}</1>?',
   safeBrowseDisableForSession: 'Disable safe browse for this session',
   session: 'Session',

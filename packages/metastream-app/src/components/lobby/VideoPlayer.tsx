@@ -60,6 +60,7 @@ interface IConnectedProps extends IMediaPlayerState {
   host: boolean
   isExtensionInstalled: boolean
   playerSettings: PlayerSettings
+  safeBrowseEnabled: boolean
 }
 
 interface IState {
@@ -77,7 +78,8 @@ const mapStateToProps = (state: IAppState): IConnectedProps => {
     volume: state.settings.volume,
     host: isHost(state),
     isExtensionInstalled: state.ui.isExtensionInstalled,
-    playerSettings: getPlayerSettings(state)
+    playerSettings: getPlayerSettings(state),
+    safeBrowseEnabled: state.settings.safeBrowse
   }
 }
 
@@ -120,7 +122,12 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
   }
 
   private get canInteract() {
-    return this.props.isExtensionInstalled && safeBrowse.isPermittedURL(this.mediaUrl)
+    return (
+      this.props.isExtensionInstalled &&
+      (this.props.safeBrowseEnabled
+        ? this.state.permitURLOnce || safeBrowse.isPermittedURL(this.mediaUrl)
+        : true)
+    )
   }
 
   componentDidMount(): void {
@@ -326,7 +333,11 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
       return <ExtensionInstall />
     }
 
-    if (!this.state.permitURLOnce && !safeBrowse.isPermittedURL(mediaUrl)) {
+    if (
+      this.props.safeBrowseEnabled &&
+      !this.state.permitURLOnce &&
+      !safeBrowse.isPermittedURL(mediaUrl)
+    ) {
       return (
         <SafeBrowsePrompt
           url={mediaUrl}

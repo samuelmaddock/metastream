@@ -40,6 +40,7 @@ export interface ISettingsState {
   chatLocation: ChatLocation
   autoFullscreen: boolean
   theaterMode: boolean
+  safeBrowse: boolean
 }
 
 const initialState: ISettingsState = {
@@ -50,7 +51,8 @@ const initialState: ISettingsState = {
   language: DEFAULT_LANGUAGE,
   chatLocation: ChatLocation.FloatLeft,
   autoFullscreen: true,
-  theaterMode: false
+  theaterMode: false,
+  safeBrowse: true
 }
 
 export const settings: Reducer<ISettingsState> = (
