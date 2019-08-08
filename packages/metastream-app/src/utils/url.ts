@@ -41,3 +41,13 @@ export const openInBrowser = (href: string) => {
     a.click()
   }
 }
+
+export const getHost = (url: string) => {
+  let urlObj
+  try {
+    urlObj = new URL(url)
+  } catch {
+    return null
+  }
+  return urlObj.host
+}

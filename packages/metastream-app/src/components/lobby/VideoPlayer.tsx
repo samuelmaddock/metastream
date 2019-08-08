@@ -18,6 +18,7 @@ import { Icon } from '../Icon'
 import { addChat } from '../../lobby/actions/chat'
 import { MediaSession } from './MediaSession'
 import { getPlayerSettings, PlayerSettings } from '../../reducers/settings'
+import { safeBrowse } from 'services/safeBrowse'
 
 type MediaReadyPayload = {
   duration?: number
@@ -114,6 +115,10 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     } catch (e) {
       return mediaUrl
     }
+  }
+
+  private get canInteract() {
+    return this.props.isExtensionInstalled && safeBrowse.isPermittedURL(this.mediaUrl)
   }
 
   componentDidMount(): void {
@@ -311,9 +316,13 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     )
   }
 
-  private renderBrowser(): JSX.Element {
+  private renderBrowser() {
     if (!this.props.isExtensionInstalled) {
       return <ExtensionInstall />
+    }
+
+    if (!safeBrowse.isPermittedURL(this.mediaUrl)) {
+      return 'blocked'
     }
 
     return (
@@ -332,7 +341,7 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
 
   private renderInteract = () => {
     // Allow interacting with extension install
-    if (!this.props.isExtensionInstalled) return
+    if (!this.canInteract) return
 
     return this.state.interacting ? (
       <button className={styles.interactNotice} onClick={this.exitInteractMode}>
@@ -356,7 +365,7 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
   }
 
   enterInteractMode = () => {
-    if (!this.props.isExtensionInstalled) return
+    if (!this.canInteract) return
 
     this.setState({ interacting: true }, () => {
       document.addEventListener('keydown', this.onKeyDown, false)
