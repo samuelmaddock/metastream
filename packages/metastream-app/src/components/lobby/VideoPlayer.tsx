@@ -20,6 +20,7 @@ import { MediaSession } from './MediaSession'
 import { getPlayerSettings, PlayerSettings } from '../../reducers/settings'
 import { safeBrowse } from 'services/safeBrowse'
 import { SafeBrowsePrompt } from './SafeBrowsePrompt'
+import { localUserId } from 'network'
 
 type MediaReadyPayload = {
   duration?: number
@@ -121,13 +122,21 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     }
   }
 
+  private get isPermittedBySafeBrowse() {
+    const media = this.props.current
+
+    // Always playback self-requested media
+    if (media && media.ownerId === localUserId()) {
+      return true
+    }
+
+    return this.props.safeBrowseEnabled
+      ? this.state.permitURLOnce || safeBrowse.isPermittedURL(this.mediaUrl)
+      : true
+  }
+
   private get canInteract() {
-    return (
-      this.props.isExtensionInstalled &&
-      (this.props.safeBrowseEnabled
-        ? this.state.permitURLOnce || safeBrowse.isPermittedURL(this.mediaUrl)
-        : true)
-    )
+    return this.props.isExtensionInstalled && this.isPermittedBySafeBrowse
   }
 
   componentDidMount(): void {
@@ -333,11 +342,7 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
       return <ExtensionInstall />
     }
 
-    if (
-      this.props.safeBrowseEnabled &&
-      !this.state.permitURLOnce &&
-      !safeBrowse.isPermittedURL(mediaUrl)
-    ) {
+    if (!this.isPermittedBySafeBrowse) {
       return (
         <SafeBrowsePrompt
           url={mediaUrl}
