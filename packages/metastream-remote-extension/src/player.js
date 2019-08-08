@@ -228,7 +228,7 @@
     }
     window.addEventListener('message', eventMiddleware)
 
-    const setInteractMode = (enable) => {
+    const setInteractMode = enable => {
       isInInteractMode = enable
       if (enable) {
         stopAutoFullscreen()
@@ -475,20 +475,43 @@
 
       // Normalize against transform scale
       const normalize = 1 / (prevScale || 1)
-      let width = rect.width * normalize
-      let height = rect.height * normalize
-      let left = (rect.left - rootRect.left) * normalize
-      let top = (rect.top - rootRect.top) * normalize
+      const width = rect.width * normalize
+      const height = rect.height * normalize
+      const left = (rect.left - rootRect.left) * normalize
+      const top = (rect.top - rootRect.top) * normalize
 
       return { width, height, left, top }
+    }
+
+    // calculate rect of video contained within video element
+    function getVideoRect(video, rootEl) {
+      let { width, height, left, top } = getNormalizedRect(video, rootEl)
+      let { videoWidth, videoHeight } = video
+
+      const videoContainScale = Math.min(width / videoWidth, height / videoHeight)
+      videoWidth *= videoContainScale
+      videoHeight *= videoContainScale
+
+      const deltaWidth = width - videoWidth
+      const deltaHeight = height - videoHeight
+
+      return {
+        width: width - deltaWidth,
+        height: height - deltaHeight,
+        left: left + deltaWidth / 2,
+        top: top + deltaHeight / 2
+      }
     }
 
     // Fit media within viewport
     function renderFullscreen() {
       document.body.style.overflow = 'hidden'
 
-      const { width, height, left, top } = getNormalizedRect(fullscreenElement, fullscreenContainer)
       const { innerWidth: viewportWidth, innerHeight: viewportHeight } = window
+      const { width, height, left, top } =
+        fullscreenElement instanceof HTMLVideoElement
+          ? getVideoRect(fullscreenElement, fullscreenContainer)
+          : getNormalizedRect(fullscreenElement, fullscreenContainer)
 
       let transform, transformOrigin, scale
 
