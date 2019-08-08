@@ -798,14 +798,12 @@
 
     // Proxy document.createElement to trap media elements created in-memory
     const origCreateElement = document.createElement
-    const proxyCreateElement = function(tagName) {
-      const element = origCreateElement.call(document, tagName)
-
+    const proxyCreateElement = function() {
+      const element = origCreateElement.apply(document, arguments)
       if (element instanceof HTMLMediaElement) {
         // Wait for attributes to be set
         setTimeout(addMedia, 0, element)
       }
-
       return element
     }
     proxyCreateElement.toString = origCreateElement.toString.bind(origCreateElement)
