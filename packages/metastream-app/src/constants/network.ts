@@ -6,7 +6,7 @@
  * This should be incremented each time a developer updates the design
  * of networked data structures.
  */
-export const METASTREAM_NETWORK_VERSION = 1
+export const METASTREAM_NETWORK_VERSION = 2
 
 export const METASTREAM_SIGNAL_SERVER =
   process.env.METASTREAM_SIGNAL_SERVER || 'wss://signal.rtc.getmetastream.com'
