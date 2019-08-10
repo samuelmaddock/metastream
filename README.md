@@ -81,4 +81,4 @@ yarn build
 
 ## Legacy desktop app
 
-Metastream used to be an Electron desktop application. The latest version can be found on the [GitHub releases](https://github.com/samuelmaddock/metastream/releases) page. Please note that **the legacy app is insecure and not recommended.**
+Metastream used to be an Electron desktop application. The latest version can be found on the [GitHub releases](https://github.com/samuelmaddock/metastream/releases/tag/v0.2.7) page. Please note that **the legacy app is insecure and not recommended.**
