@@ -107,16 +107,18 @@ export const netRpcMiddleware = (): Middleware => {
       const json = JSON.parse(jsonStr) as RpcJson
 
       if (json.type === RpcMessageType.Exec) {
-        const action = {
-          type: RpcReduxActionTypes.DISPATCH,
-          payload: {
-            id: json.id,
-            name: json.name,
-            args: json.args
-          }
+        const payload = {
+          id: json.id,
+          name: json.name,
+          args: json.args
         }
 
-        console.debug(`[RPC] Received RPC '#${action.type}' from ${client.id}`, action)
+        const action = {
+          type: RpcReduxActionTypes.DISPATCH,
+          payload
+        }
+
+        console.debug(`[RPC][${client.shortId}][${json.id}] ${json.name}`, ...json.args)
 
         let returnValue
         try {

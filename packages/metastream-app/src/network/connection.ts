@@ -34,6 +34,10 @@ class NetConnection extends EventEmitter {
 
   protected authed: boolean = false
 
+  public get shortId() {
+    return this.id.toString().substring(0, 7)
+  }
+
   constructor(id: NetUniqueId, stream?: Duplex) {
     super()
 
