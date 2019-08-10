@@ -24,6 +24,7 @@ const removeResultListener = (id: number, cb: Function) => {
 }
 
 const dispatchResultListeners = (id: number, result: any) => {
+  console.debug(`[RPC][${id}] Received result`, result)
   const set = remoteResultListeners[id]
   if (set) {
     Array.from(set).forEach(cb => cb(result))
