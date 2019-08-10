@@ -13,6 +13,10 @@
   opacity: 0;
 }
 
+.fade:not(.focused) .messages {
+  user-select: none;
+}
+
 .wrapper {
   position: relative;
   height: 100%;
@@ -54,9 +58,6 @@
   flex-grow: 1;
   overflow-y: auto;
   position: relative;
-}
-
-.container.focused .messages {
   cursor: auto;
   user-select: text;
 }
