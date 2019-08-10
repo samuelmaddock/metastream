@@ -3,6 +3,7 @@ import compose from './compose'
 
 import { IMediaMiddleware, IMediaRequest, IMediaResponse, IMediaContext, MediaType } from './types'
 
+import baseMware from './middleware/base'
 import subredditMware from './middleware/subreddit'
 import youTubeMware from './middleware/youtube'
 import youTubePlaylistMware from './middleware/youtube-playlist'
@@ -19,6 +20,8 @@ import { IMediaItem } from 'lobby/reducers/mediaPlayer'
 
 // prettier-ignore
 const middlewares: IMediaMiddleware[] = [
+  baseMware,
+
   subredditMware,
   youTubePlaylistMware,
 
