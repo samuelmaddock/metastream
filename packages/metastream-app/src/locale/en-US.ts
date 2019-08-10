@@ -18,6 +18,7 @@ export default {
   chat: 'Chat',
   chatColor: 'Chat Color',
   chatDockToRight: 'Dock chat to right',
+  chatMessageFailed: 'Unable to send your message. Please try again.',
   chatPlaceholder: 'Message or URL',
   chatRevealHint: 'Press <1></1> to reveal chat.',
   chatNewMessage: 'A new message has been posted!',

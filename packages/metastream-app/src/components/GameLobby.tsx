@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import cx from 'classnames'
 
-import { server_addChat } from 'lobby/actions/chat'
+import { sendChat } from 'lobby/actions/chat'
 import { VideoPlayer } from 'components/lobby/VideoPlayer'
 import { IMediaItem, PlaybackState } from 'lobby/reducers/mediaPlayer'
 import { isUrl } from 'utils/url'
@@ -52,7 +52,7 @@ interface DispatchProps {
   registerMediaShortcuts(): void
   unregisterMediaShortcuts(): void
   sendMediaRequest(text: string): void
-  addChat(text: string): void
+  sendChat(text: string): void
   closeLobbyModal(): void
   toggleChatLayout(): void
 }
@@ -280,7 +280,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
     if (isUrl(text)) {
       this.props.sendMediaRequest(text)
     } else {
-      this.props.addChat(text)
+      this.props.sendChat(text)
     }
   }
 
@@ -320,7 +320,7 @@ export const GameLobby = (connect(
     registerMediaShortcuts: () => dispatch(registerMediaShortcuts()),
     unregisterMediaShortcuts: () => dispatch(unregisterMediaShortcuts()),
     sendMediaRequest: (text: string) => dispatch(sendMediaRequest(text, 'chat')),
-    addChat: (text: string) => dispatch(server_addChat(text)),
+    sendChat: (text: string) => dispatch(sendChat(text)),
     closeLobbyModal: () => dispatch(setLobbyModal()),
     toggleChatLayout() {
       dispatch(
