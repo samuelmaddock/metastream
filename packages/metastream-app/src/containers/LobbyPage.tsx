@@ -219,8 +219,11 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
   }
 
   private reconnect = () => {
-    this.setState({ disconnectReason: undefined })
-    this.setupLobby()
+    if (this.state.disconnectReason) {
+      this.setState({ disconnectReason: undefined })
+    }
+    this.onLeaveScreen()
+    this.onLoadScreen()
   }
 
   private onLoadScreen() {
@@ -278,8 +281,7 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
   componentDidUpdate(prevProps: PrivateProps) {
     if (this.lobbyId !== prevProps.match.params.lobbyId) {
       // Accepted Discord invites can join a session while currently hosting a session
-      this.onLeaveScreen()
-      this.onLoadScreen()
+      this.reconnect()
     } else if (this.props.sessionMode !== prevProps.sessionMode) {
       this.onSessionModeChange()
     }
