@@ -9,30 +9,43 @@ import { ChatForm } from './ChatForm'
 import styles from './Chat.css'
 import { IconButton } from '../common/button'
 import { t } from 'locale'
+import { connect } from 'react-redux'
+import { IAppState } from 'reducers/index'
+import { sendChat } from 'lobby/actions/chat'
+import { setSetting } from 'actions/settings'
+import { ChatLocation } from './Location'
 
 const CSS_PROP_CHAT_FADE_DELAY = '--chat-fade-delay'
 
-interface IProps {
-  theRef?: (c: Chat | null) => void
+interface Props {
+  theRef?: (c: ChatComponent | null) => void
   className?: string
-  messages: IMessage[]
-  sendMessage(text: string): void
   disabled?: boolean
   showHint?: boolean
 
   /** Whether to fade chat while inactive. */
   fade?: boolean
-  onToggleLayout(): void
 
   messageFadeDelay?: number
 }
 
-interface IState {
+interface ConnectedProps {
+  messages: IMessage[]
+}
+
+interface DispatchProps {
+  sendMessage(text: string): void
+  toggleChatLayout(): void
+}
+
+interface State {
   focused?: boolean
   filteredMessages: IMessage[]
 }
 
-export class Chat extends PureComponent<IProps, IState> {
+type PrivateProps = Props & ConnectedProps & DispatchProps
+
+export class ChatComponent extends PureComponent<PrivateProps, State> {
   private form: ChatForm | null = null
   private containerElement: HTMLElement | null = null
   private messagesRef: Messages | null = null
@@ -41,7 +54,7 @@ export class Chat extends PureComponent<IProps, IState> {
     messageFadeDelay: 10000
   }
 
-  state: IState = {
+  state: State = {
     filteredMessages: []
   }
 
@@ -70,13 +83,13 @@ export class Chat extends PureComponent<IProps, IState> {
     this.setupListeners(false)
   }
 
-  componentWillReceiveProps(nextProps: IProps) {
+  componentWillReceiveProps(nextProps: PrivateProps) {
     if (this.props.messages !== nextProps.messages) {
       this.filterMessages(nextProps.messages)
     }
   }
 
-  componentDidUpdate(prevProps: IProps) {
+  componentDidUpdate(prevProps: Props) {
     if (this.props.disabled !== prevProps.disabled) {
       this.setupListeners(!this.props.disabled)
 
@@ -148,7 +161,7 @@ export class Chat extends PureComponent<IProps, IState> {
             <IconButton
               icon={this.props.fade ? 'dock-right' : 'undock-float'}
               className={styles.btnLayout}
-              onClick={this.props.onToggleLayout}
+              onClick={this.props.toggleChatLayout}
               title={t(this.props.fade ? 'chatDockToRight' : 'chatUndock')}
             />
           </div>
@@ -224,3 +237,21 @@ export class Chat extends PureComponent<IProps, IState> {
     }
   }
 }
+
+export const Chat = connect(
+  (state: IAppState): ConnectedProps => {
+    return {
+      messages: state.chat.messages
+    }
+  },
+  (dispatch: Function): DispatchProps => ({
+    sendMessage: (text: string) => dispatch(sendChat(text)),
+    toggleChatLayout() {
+      dispatch(
+        setSetting('chatLocation', location =>
+          location === ChatLocation.DockRight ? ChatLocation.FloatLeft : ChatLocation.DockRight
+        )
+      )
+    }
+  })
+)(ChatComponent)

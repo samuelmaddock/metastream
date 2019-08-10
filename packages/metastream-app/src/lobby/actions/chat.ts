@@ -6,6 +6,8 @@ import { IMessage } from 'lobby/reducers/chat'
 import { CHAT_MAX_MESSAGE_LENGTH } from 'constants/chat'
 import { AppThunkAction } from 'types/redux-thunk'
 import { t } from 'locale'
+import { sendMediaRequest } from './mediaPlayer'
+import { isUrl } from 'utils/url'
 
 /** Message prior to being processed by reducer. */
 type RawMessage = Pick<IMessage, Exclude<keyof IMessage, 'id'>>
@@ -46,6 +48,11 @@ const server_addChat = rpc('rpcAddChat', RpcRealm.Server, rpcAddChat)
 
 export const sendChat = (text: string): AppThunkAction => {
   return async (dispatch, getState) => {
+    if (isUrl(text)) {
+      dispatch(sendMediaRequest(text, 'chat'))
+      return
+    }
+
     try {
       await dispatch(server_addChat(text))
     } catch {

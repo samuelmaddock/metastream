@@ -2,13 +2,9 @@ import React from 'react'
 import { connect } from 'react-redux'
 import cx from 'classnames'
 
-import { sendChat } from 'lobby/actions/chat'
 import { VideoPlayer } from 'components/lobby/VideoPlayer'
 import { IMediaItem, PlaybackState } from 'lobby/reducers/mediaPlayer'
-import { isUrl } from 'utils/url'
-import { sendMediaRequest } from 'lobby/actions/mediaPlayer'
-import { IMessage } from 'lobby/reducers/chat'
-import { Chat } from 'components/chat'
+import { Chat, ChatComponent } from 'components/chat'
 
 import styles from './GameLobby.css'
 import { getCurrentMedia, getPlaybackState } from 'lobby/reducers/mediaPlayer.helpers'
@@ -41,7 +37,6 @@ interface IState {
 
 interface IConnectedProps {
   currentMedia?: IMediaItem
-  messages: IMessage[]
   playback: PlaybackState
   modal?: LobbyModal
   isChatDocked: boolean
@@ -51,17 +46,14 @@ interface IConnectedProps {
 interface DispatchProps {
   registerMediaShortcuts(): void
   unregisterMediaShortcuts(): void
-  sendMediaRequest(text: string): void
-  sendChat(text: string): void
   closeLobbyModal(): void
-  toggleChatLayout(): void
 }
 
 type PrivateProps = IProps & IConnectedProps & IReactReduxProps & DispatchProps
 
 class _GameLobby extends React.Component<PrivateProps, IState> {
   private player: VideoPlayer | null = null
-  private chat: Chat | null = null
+  private chat: ChatComponent | null = null
 
   private get isPlaying() {
     return this.props.playback === PlaybackState.Playing
@@ -121,10 +113,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
           <Chat
             theRef={el => (this.chat = el)}
             className={styles.chatDocked}
-            messages={this.props.messages}
-            sendMessage={this.sendChat}
             disabled={!!this.state.modal}
-            onToggleLayout={this.props.toggleChatLayout}
           />
         )}
 
@@ -151,10 +140,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
           <Chat
             theRef={el => (this.chat = el)}
             className={styles.chatFloat}
-            messages={this.props.messages}
-            sendMessage={this.sendChat}
             disabled={!!this.state.modal}
-            onToggleLayout={this.props.toggleChatLayout}
             showHint
             fade
           />
@@ -276,14 +262,6 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
     )
   }
 
-  private sendChat = (text: string): void => {
-    if (isUrl(text)) {
-      this.props.sendMediaRequest(text)
-    } else {
-      this.props.sendChat(text)
-    }
-  }
-
   private openBrowser = (url?: string) => {
     this.setState({ modal: LobbyModal.Browser, modalProps: { initialUrl: url } })
   }
@@ -309,7 +287,6 @@ export const GameLobby = (connect(
   (state: IAppState): IConnectedProps => {
     return {
       currentMedia: getCurrentMedia(state),
-      messages: state.chat.messages,
       playback: getPlaybackState(state),
       modal: state.ui.lobbyModal,
       isChatDocked: state.settings.chatLocation === ChatLocation.DockRight,
@@ -319,15 +296,6 @@ export const GameLobby = (connect(
   (dispatch: Function): DispatchProps => ({
     registerMediaShortcuts: () => dispatch(registerMediaShortcuts()),
     unregisterMediaShortcuts: () => dispatch(unregisterMediaShortcuts()),
-    sendMediaRequest: (text: string) => dispatch(sendMediaRequest(text, 'chat')),
-    sendChat: (text: string) => dispatch(sendChat(text)),
-    closeLobbyModal: () => dispatch(setLobbyModal()),
-    toggleChatLayout() {
-      dispatch(
-        setSetting('chatLocation', location =>
-          location === ChatLocation.DockRight ? ChatLocation.FloatLeft : ChatLocation.DockRight
-        )
-      )
-    }
+    closeLobbyModal: () => dispatch(setLobbyModal())
   })
 )(_GameLobby) as any) as React.ComponentClass<IProps>
