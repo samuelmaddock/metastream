@@ -44,7 +44,7 @@ export const Icon = ({ name, size, pointerEvents, ...rest }: IProps) => {
 
   return (
     <svg width="24" height="24" style={style} {...rest}>
-      <use xlinkHref={path} />
+      <use href={path} />
     </svg>
   )
 }

@@ -61,6 +61,8 @@ export interface IMediaItem {
 export const enum RepeatMode {
   Off = 0,
   On,
+  One,
+  /** Number of enum constants */
   Count
 }
 
@@ -115,9 +117,12 @@ export const mediaPlayer: Reducer<IMediaPlayerState> = (
     let queue = state.queue
     const current = state.current
 
-    // recycle current media while repeat is enabled
-    if (current && state.repeatMode === RepeatMode.On) {
-      queue = [...queue, current]
+    if (current) {
+      if (state.repeatMode === RepeatMode.On) {
+        queue = [...queue, current]
+      } else if (state.repeatMode === RepeatMode.One) {
+        queue = [current, ...queue]
+      }
     }
 
     // get next item in the queue

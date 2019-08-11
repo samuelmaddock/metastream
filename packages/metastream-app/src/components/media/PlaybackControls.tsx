@@ -115,7 +115,15 @@ class _PlaybackControls extends Component<PrivateProps> {
   }
 
   render(): JSX.Element | null {
-    const { current: media, playback, startTime, pauseTime, dj, queueLocked } = this.props
+    const {
+      current: media,
+      playback,
+      startTime,
+      pauseTime,
+      dj,
+      queueLocked,
+      repeatMode
+    } = this.props
     const playbackIcon = playback === PlaybackState.Playing ? 'pause' : 'play'
 
     const isIdle = playback === PlaybackState.Idle
@@ -160,9 +168,9 @@ class _PlaybackControls extends Component<PrivateProps> {
 
     const repeatBtn = (
       <Button
-        icon="repeat"
+        icon={repeatMode === RepeatMode.One ? 'repeat-one' : 'repeat'}
         title={dj ? t('repeat') : permTitle}
-        enabled={this.props.repeatMode === RepeatMode.On}
+        enabled={repeatMode !== RepeatMode.Off}
         disabled={isIdle}
         onClick={this.repeat}
       />
