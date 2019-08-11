@@ -81,6 +81,7 @@ export class ChatForm extends PureComponent<IProps, IState> {
             </Trans>
           </div>
         )}
+        {this.props.children}
       </div>
     )
   }

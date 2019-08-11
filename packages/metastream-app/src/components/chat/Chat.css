@@ -13,6 +13,10 @@
   opacity: 0;
 }
 
+.fade:not(.focused) .form {
+  background-color: transparent;
+}
+
 .fade:not(.focused) .messages {
   user-select: none;
 }
@@ -22,14 +26,18 @@
   height: 100%;
 }
 
-.anim {
+.anim-opacity {
   opacity: 1;
   transition: opacity var(--overlay-anim-duration) ease-in;
 }
 
+.anim-bg {
+  transition: background-color var(--overlay-anim-duration) ease-in;
+}
+
 .fadeBackground {
   composes: glass rounded absolute-full from '~styles/layout.css';
-  composes: anim;
+  composes: anim-opacity;
   z-index: 4;
 }
 
@@ -77,11 +85,14 @@
   word-break: break-word;
 }
 
-.fade .message {
+.fade .message,
+.fade .typing {
   text-shadow: 1px 1px 1px var(--color-chat-text-outline),
     -1px -1px 1px var(--color-chat-text-outline), 1px -1px 1px var(--color-chat-text-outline),
     -1px 1px 1px var(--color-chat-text-outline), 0 0 2px var(--color-chat-text-outline);
+}
 
+.fade .message {
   animation: var(--chat-fade-duration) ease-in var(--chat-fade-delay);
   animation-name: fadeout;
   /* Maintain transparency after animation finishes */
@@ -130,23 +141,25 @@
 }
 
 .form {
+  composes: anim-bg;
   --horizontal-padding: 12px;
   width: 100%;
   position: relative;
-}
-
-.messageInput {
-  composes: anim;
-  width: 100%;
-  height: 40px;
-  padding: 8px var(--horizontal-padding);
-  border: none;
-  outline: none;
   background: rgba(0, 0, 0, 0.11);
 }
 
-.fade .messageInput {
+.fade .form {
   border-radius: 0 0 var(--rounded-radius) var(--rounded-radius);
+}
+
+.messageInput {
+  composes: anim-opacity;
+  width: 100%;
+  height: 2.5rem;
+  padding: 8px var(--horizontal-padding);
+  border: none;
+  outline: none;
+  background: none;
 }
 
 .messageInput::-webkit-input-placeholder {
@@ -174,4 +187,12 @@
 
 .container:hover .btnLayout {
   opacity: 0.8;
+}
+
+.typing {
+  composes: single-line from '~styles/text.css';
+  height: 1rem;
+  font-size: 0.75rem;
+  padding: 0 var(--horizontal-padding);
+  overflow: hidden;
 }

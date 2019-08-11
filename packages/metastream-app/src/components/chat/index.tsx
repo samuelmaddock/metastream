@@ -14,6 +14,7 @@ import { IAppState } from 'reducers/index'
 import { sendChat } from 'lobby/actions/chat'
 import { setSetting } from 'actions/settings'
 import { ChatLocation } from './Location'
+import { UserTyping } from './UserTyping'
 
 const CSS_PROP_CHAT_FADE_DELAY = '--chat-fade-delay'
 
@@ -157,7 +158,9 @@ export class ChatComponent extends PureComponent<PrivateProps, State> {
               onBlur={this.onBlur}
               showHint={!!this.props.showHint}
               blurOnSubmit={!!this.props.fade}
-            />
+            >
+              {process.env.NODE_ENV === 'development' && <UserTyping />}
+            </ChatForm>
             <IconButton
               icon={this.props.fade ? 'dock-right' : 'undock-float'}
               className={styles.btnLayout}
