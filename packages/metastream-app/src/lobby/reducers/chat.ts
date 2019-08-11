@@ -1,6 +1,6 @@
 import { Reducer } from 'redux'
 import { isType } from 'utils/redux'
-import { addChat } from 'lobby/actions/chat'
+import { addChat, recordTyping, clearTyping } from 'lobby/actions/chat'
 import { resetLobby } from '../actions/common'
 
 let CHAT_MESSAGE_COUNTER = 0
@@ -27,12 +27,21 @@ export interface IMessage {
   timestamp: number
 }
 
+export interface Typing {
+  userId: string
+
+  /** Unix timestamp */
+  date: number
+}
+
 export interface IChatState {
   messages: IMessage[]
+  typing: Typing[]
 }
 
 const initialState: IChatState = {
-  messages: []
+  messages: [],
+  typing: []
 }
 
 export const chat: Reducer<IChatState> = (state: IChatState = initialState, action: any) => {
@@ -46,6 +55,17 @@ export const chat: Reducer<IChatState> = (state: IChatState = initialState, acti
           id: `${++CHAT_MESSAGE_COUNTER}`
         }
       ]
+    }
+  } else if (isType(action, recordTyping)) {
+    const { userId } = action.payload
+    return {
+      ...state,
+      typing: state.typing.filter(t => t.userId !== userId).concat(action.payload)
+    }
+  } else if (isType(action, clearTyping)) {
+    return {
+      ...state,
+      typing: state.typing.filter(t => t.userId !== action.payload)
     }
   }
 

@@ -83,9 +83,9 @@
   bottom: 150px;
   width: 450px;
 
-  --num-chat-lines: 6;
-  --chat-line-height: 20px;
-  --chat-input-height: 40px;
+  --num-chat-lines: 6.85;
+  --chat-line-height: 1.25rem;
+  --chat-input-height: 2.5rem;
   height: calc(var(--chat-input-height) + var(--chat-line-height) * var(--num-chat-lines));
 }
 

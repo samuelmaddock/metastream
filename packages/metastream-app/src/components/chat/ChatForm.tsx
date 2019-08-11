@@ -11,6 +11,7 @@ interface IProps {
   send: (text: string) => void
   onFocus?: () => void
   onBlur?: () => void
+  onTyping: () => void
 }
 
 interface IState {
@@ -67,6 +68,7 @@ export class ChatForm extends PureComponent<IProps, IState> {
               placeholder={t('chatPlaceholder')}
               spellCheck={this.state.spellcheck}
               onKeyPress={this.submitText}
+              onInput={this.props.onTyping}
               maxLength={CHAT_MAX_MESSAGE_LENGTH}
               onChange={this.onInputChange}
               onFocus={this.props.onFocus}

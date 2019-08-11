@@ -2,16 +2,23 @@ import { actionCreator } from 'utils/redux'
 import { RpcThunk } from 'lobby/types'
 import { getUserName } from 'lobby/reducers/users.helpers'
 import { rpc, RpcRealm } from 'network/middleware/rpc'
-import { IMessage } from 'lobby/reducers/chat'
+import { IMessage, Typing } from 'lobby/reducers/chat'
 import { CHAT_MAX_MESSAGE_LENGTH } from 'constants/chat'
 import { AppThunkAction } from 'types/redux-thunk'
 import { t } from 'locale'
 import { sendMediaRequest } from './mediaPlayer'
 import { isUrl } from 'utils/url'
+import { localUserId } from '../../network/index'
+import { TYPING_DURATION } from '../reducers/chat.helpers'
 
 /** Message prior to being processed by reducer. */
 type RawMessage = Pick<IMessage, Exclude<keyof IMessage, 'id'>>
 export const addChat = actionCreator<RawMessage>('ADD_CHAT')
+
+export const recordTyping = actionCreator<Typing>('RECORD_TYPING')
+export const clearTyping = actionCreator<string>('CLEAR_TYPING')
+
+const userTypingTimeouts: { [userId: string]: number | undefined } = {}
 
 const broadcastChat = (text: string, userId: string | null): RpcThunk<void> => (
   dispatch,
@@ -29,6 +36,14 @@ const broadcastChat = (text: string, userId: string | null): RpcThunk<void> => (
       timestamp: Date.now()
     })
   )
+
+  // Clear user typing immediately if we received a message from them
+  const typingTimeout = userId && userTypingTimeouts[userId]
+  if (typingTimeout) {
+    clearTimeout(typingTimeout)
+    userTypingTimeouts[userId!] = undefined
+    dispatch(clearTyping(userId!))
+  }
 }
 export const multi_broadcastChat = rpc('broadcastChat', RpcRealm.Multicast, broadcastChat)
 
@@ -61,3 +76,21 @@ export const sendChat = (text: string): AppThunkAction => {
     }
   }
 }
+
+const broadcastTyping = (userId: string): RpcThunk<void> => dispatch => {
+  if (userId === localUserId()) return
+  dispatch(recordTyping({ userId, date: Date.now() }))
+
+  let timeout = userTypingTimeouts[userId]
+  if (timeout) clearTimeout(timeout)
+  userTypingTimeouts[userId] = setTimeout(() => {
+    dispatch(clearTyping(userId))
+  }, TYPING_DURATION) as any
+}
+const multi_broadcastTyping = rpc('broadcastTyping', RpcRealm.Multicast, broadcastTyping)
+
+const rpcNotifyTyping = (): RpcThunk<void> => (dispatch, getState, context) => {
+  const userId = context.client.id.toString()
+  dispatch(multi_broadcastTyping(userId))
+}
+export const server_notifyTyping = rpc('rpcNotifyTyping', RpcRealm.Server, rpcNotifyTyping)

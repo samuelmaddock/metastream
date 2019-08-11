@@ -6,24 +6,22 @@ import { IAppState } from 'reducers'
 import styles from './Chat.css'
 import { Trans } from 'react-i18next'
 import { t } from '../../locale/index'
+import { getTypingUsers } from '../../lobby/reducers/chat.helpers'
+import { IUser } from '../../lobby/reducers/users'
 
 interface Props {}
 
-type TypeEntry = {
-  name: string
-}
-
 interface IConnectedProps {
-  typing: TypeEntry[]
+  typingUsers: IUser[]
 }
 
 type PrivateProps = Props & IConnectedProps
 
-const User = ({ user }: { user: TypeEntry }) => <strong>{user.name}</strong>
+const User = ({ user }: { user: IUser }) => <strong>{user.name}</strong>
 
 const UserTypingComponent: React.SFC<PrivateProps> = props => {
-  const { typing } = props
-  const num = typing.length
+  const { typingUsers: users } = props
+  const num = users.length
 
   let children
   switch (num) {
@@ -33,22 +31,21 @@ const UserTypingComponent: React.SFC<PrivateProps> = props => {
     case 1:
       children = (
         <Trans i18nKey="chatTyping1">
-          <User user={typing[0]} /> is typing…
+          <User user={users[0]} /> is typing…
         </Trans>
       )
       break
     case 2:
       children = (
         <Trans i18nKey="chatTyping2">
-          <User user={typing[0]} /> and <User user={typing[1]} /> are typing…
+          <User user={users[0]} /> and <User user={users[1]} /> are typing…
         </Trans>
       )
       break
     case 3:
       children = (
         <Trans i18nKey="chatTyping3">
-          <User user={typing[0]} /> <User user={typing[1]} /> and <User user={typing[2]} /> are
-          typing…
+          <User user={users[0]} /> <User user={users[1]} /> and <User user={users[2]} /> are typing…
         </Trans>
       )
       break
@@ -59,18 +56,6 @@ const UserTypingComponent: React.SFC<PrivateProps> = props => {
   return <div className={styles.typing}>{children}</div>
 }
 
-const TEST = [
-  {
-    name: 'Sam'
-  },
-  {
-    name: 'Austin'
-  },
-  {
-    name: 'Hunter'
-  }
-]
-
 export const UserTyping = connect<IConnectedProps, IAppState, Props, IAppState>((state, props) => ({
-  typing: TEST
+  typingUsers: getTypingUsers(state)
 }))(UserTypingComponent)

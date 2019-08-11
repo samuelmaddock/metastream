@@ -11,10 +11,13 @@ import { IconButton } from '../common/button'
 import { t } from 'locale'
 import { connect } from 'react-redux'
 import { IAppState } from 'reducers/index'
-import { sendChat } from 'lobby/actions/chat'
+import { sendChat, server_notifyTyping } from 'lobby/actions/chat'
 import { setSetting } from 'actions/settings'
 import { ChatLocation } from './Location'
 import { UserTyping } from './UserTyping'
+import { throttle } from 'lodash-es'
+import { TYPING_DURATION } from '../../lobby/reducers/chat.helpers'
+import { Cancelable } from 'lodash'
 
 const CSS_PROP_CHAT_FADE_DELAY = '--chat-fade-delay'
 
@@ -37,6 +40,7 @@ interface ConnectedProps {
 interface DispatchProps {
   sendMessage(text: string): void
   toggleChatLayout(): void
+  notifyTyping: () => void & Cancelable
 }
 
 interface State {
@@ -156,6 +160,7 @@ export class ChatComponent extends PureComponent<PrivateProps, State> {
               send={this.onSend}
               onFocus={this.onFocus}
               onBlur={this.onBlur}
+              onTyping={this.props.notifyTyping}
               showHint={!!this.props.showHint}
               blurOnSubmit={!!this.props.fade}
             >
@@ -195,6 +200,10 @@ export class ChatComponent extends PureComponent<PrivateProps, State> {
   private onSend = (message: string) => {
     this.props.sendMessage(message)
     this.scrollToBottom()
+
+    // allow immediately sending typing notification after sending
+    const notify = (this.props.notifyTyping as any) as Cancelable
+    notify.cancel()
   }
 
   private onKeyPress = (event: KeyboardEvent): void => {
@@ -255,6 +264,9 @@ export const Chat = connect(
           location === ChatLocation.DockRight ? ChatLocation.FloatLeft : ChatLocation.DockRight
         )
       )
-    }
+    },
+    notifyTyping: throttle(() => dispatch(server_notifyTyping()), TYPING_DURATION - 500, {
+      trailing: false
+    })
   })
 )(ChatComponent)
