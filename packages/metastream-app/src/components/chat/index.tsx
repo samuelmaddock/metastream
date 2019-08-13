@@ -164,7 +164,7 @@ export class ChatComponent extends PureComponent<PrivateProps, State> {
               showHint={!!this.props.showHint}
               blurOnSubmit={!!this.props.fade}
             >
-              {process.env.NODE_ENV === 'development' && <UserTyping />}
+              <UserTyping />
             </ChatForm>
             <IconButton
               icon={this.props.fade ? 'dock-right' : 'undock-float'}
