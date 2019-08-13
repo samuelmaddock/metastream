@@ -71,7 +71,7 @@ export default {
   networkDisconnectHostDisconnect: 'Host closed connection.',
   networkDisconnectError: 'Network error.',
   networkDisconnectInvalidClientInfo: 'Invalid client info.',
-  networkDisconnectVersionMismatch: `Client version mismatch.`,
+  networkDisconnectVersionMismatch: `Client version mismatch. Your client, or the host’s, requires an update.`,
   networkDisconnectFull: 'Session is full.',
   networkDisconnectKicked: 'Kicked from session.',
   networkDisconnectMultiTab:
