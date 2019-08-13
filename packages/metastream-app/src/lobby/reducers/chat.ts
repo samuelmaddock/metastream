@@ -36,7 +36,8 @@ export interface Typing {
 
 export interface IChatState {
   messages: IMessage[]
-  typing: Typing[]
+  /** List of typing users by ID. */
+  typing: string[]
 }
 
 const initialState: IChatState = {
@@ -57,15 +58,14 @@ export const chat: Reducer<IChatState> = (state: IChatState = initialState, acti
       ]
     }
   } else if (isType(action, recordTyping)) {
-    const { userId } = action.payload
-    return {
-      ...state,
-      typing: state.typing.filter(t => t.userId !== userId).concat(action.payload)
-    }
+    const userId = action.payload
+    // add user to list of typing users if they're not already typing (FIFO)
+    const isUserAlreadyTyping = state.typing.some(typingUserId => typingUserId === userId)
+    return isUserAlreadyTyping ? state : { ...state, typing: [...state.typing, userId] }
   } else if (isType(action, clearTyping)) {
     return {
       ...state,
-      typing: state.typing.filter(t => t.userId !== action.payload)
+      typing: state.typing.filter(typingUserId => typingUserId !== action.payload)
     }
   }
 

@@ -15,7 +15,7 @@ import { TYPING_DURATION } from '../reducers/chat.helpers'
 type RawMessage = Pick<IMessage, Exclude<keyof IMessage, 'id'>>
 export const addChat = actionCreator<RawMessage>('ADD_CHAT')
 
-export const recordTyping = actionCreator<Typing>('RECORD_TYPING')
+export const recordTyping = actionCreator<string>('RECORD_TYPING')
 export const clearTyping = actionCreator<string>('CLEAR_TYPING')
 
 const userTypingTimeouts: { [userId: string]: number | undefined } = {}
@@ -79,7 +79,7 @@ export const sendChat = (text: string): AppThunkAction => {
 
 const broadcastTyping = (userId: string): RpcThunk<void> => dispatch => {
   if (userId === localUserId()) return
-  dispatch(recordTyping({ userId, date: Date.now() }))
+  dispatch(recordTyping(userId))
 
   let timeout = userTypingTimeouts[userId]
   if (timeout) clearTimeout(timeout)

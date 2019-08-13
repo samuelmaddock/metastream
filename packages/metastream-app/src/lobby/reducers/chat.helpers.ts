@@ -11,12 +11,7 @@ export const getTypingUsers = createSelector(
   (state: IAppState) => state.chat.typing,
   (state: IAppState) => state.users,
   (typings, users) => {
-    const result = typings
-      .filter(t => {
-        const dt = Math.abs(t.date - Date.now())
-        return dt < TYPING_DURATION && Boolean(users.map[t.userId])
-      })
-      .map(t => users.map[t.userId]) as IUser[]
+    const result = typings.map(userId => users.map[userId]).filter(Boolean) as IUser[]
     return result
   }
 )
