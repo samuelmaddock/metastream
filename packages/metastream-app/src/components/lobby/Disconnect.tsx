@@ -6,6 +6,7 @@ import { Icon } from '../Icon'
 import { NetworkDisconnectReason, NetworkDisconnectMessages } from 'constants/network'
 import { ExternalLink } from '../common/link'
 import { Trans, withNamespaces, WithNamespaces } from 'react-i18next'
+import { updateService } from 'services/updater'
 
 interface IProps extends WithNamespaces {
   reason: NetworkDisconnectReason
@@ -13,6 +14,12 @@ interface IProps extends WithNamespaces {
 }
 
 class _Disconnect extends Component<IProps> {
+  componentDidMount() {
+    if (this.props.reason === NetworkDisconnectReason.VersionMismatch) {
+      updateService.checkForUpdate()
+    }
+  }
+
   render(): JSX.Element {
     const { t, reason, reconnect } = this.props
     const reasonKey: any = NetworkDisconnectMessages[reason]
