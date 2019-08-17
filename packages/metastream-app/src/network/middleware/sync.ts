@@ -24,13 +24,16 @@ interface NetPayload {
   v: number
 
   /** Diff */
-  d: deepDiff.IDiff[]
+  d: deepDiff.Diff<any>[]
 }
 
 const SYNC_HEADER = 'SYNC'
 
 /** Redux subtree replication */
-const replicationPrefilter = <T>(state: ReplicatedState<T>): deepDiff.IPrefilter => (path, key) => {
+const replicationPrefilter = <T>(state: ReplicatedState<T>): deepDiff.PreFilter<T> => (
+  path,
+  key
+) => {
   let i = 0
   let tree: ReplicatedState<any> = state
 
@@ -68,7 +71,7 @@ export const netSyncMiddleware = (): Middleware => {
   return store => {
     const { dispatch, getState } = store
 
-    let server: NetServer | null, host: boolean, prefilter: deepDiff.IPrefilter
+    let server: NetServer | null, host: boolean, prefilter: deepDiff.PreFilter<any>
 
     const init = (options: NetMiddlewareOptions) => {
       server = options.server || null
@@ -133,7 +136,7 @@ export const netSyncMiddleware = (): Middleware => {
     }
 
     /** Relay state changes from Server to Clients */
-    const relay = (delta: deepDiff.IDiff[]) => {
+    const relay = (delta: deepDiff.Diff<any>[]) => {
       // Cleanup diffs to reduce bandwidth
       delta = delta.map(dt => {
         dt = { ...dt }

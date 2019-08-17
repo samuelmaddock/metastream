@@ -18,7 +18,7 @@
   "devDependencies": {
     "@types/cheerio": "^0.22.3",
     "@types/classnames": "^2.2.3",
-    "@types/deep-diff": "^0.0.31",
+    "@types/deep-diff": "^1.0.0",
     "@types/history": "^4.6.1",
     "@types/i18next": "^11.9.3",
     "@types/libsodium-wrappers": "^0.7.0",
@@ -67,7 +67,7 @@
     "@metastream/signal-server": "^1.1.1",
     "cheerio": "^1.0.0-rc.2",
     "classnames": "^2.2.5",
-    "deep-diff": "^0.3.8",
+    "deep-diff": "^1.0.2",
     "exponential-backoff": "^2.1.1",
     "history": "^4.7.2",
     "html-parse-stringify2": "^2.0.1",
