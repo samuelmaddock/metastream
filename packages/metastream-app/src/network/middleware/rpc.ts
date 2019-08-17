@@ -171,7 +171,7 @@ export const netRpcMiddleware = (): Middleware => {
       const payload: RpcJson = { type: RpcMessageType.Result, id, result }
       const json = JSON.stringify(payload)
       const buf = new Buffer(RPC_HEADER + json)
-      client.send(buf)
+      if (client.connected) client.send(buf)
     }
 
     /** Dispatch RPC on local Redux store. */
