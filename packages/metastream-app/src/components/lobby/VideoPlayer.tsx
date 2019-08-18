@@ -363,6 +363,7 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
           [styles.mediaReady]: this.state.mediaReady
         })}
         allowScripts
+        popup
       />
     )
   }

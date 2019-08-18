@@ -99,6 +99,9 @@ const watchedTabs = new Set()
 // Store for active tabs state
 const tabStore = {}
 
+// Map from popup webview ID to parent tab ID
+const popupParents = {}
+
 let lastActiveTabId
 
 //=============================================================================
@@ -201,12 +204,13 @@ const onBeforeNavigate = details => {
 // Programmatically inject content scripts into Metastream subframes
 const initScripts = details => {
   const { tabId, frameId, url } = details
-  if (!watchedTabs.has(tabId)) return
 
   if (url.startsWith('about:blank?webview')) {
     initializeWebview(details)
     return
   }
+
+  if (!watchedTabs.has(tabId)) return
 
   if (isTopFrame(details)) {
     // Listen for top frame navigating away from Metastream
@@ -250,8 +254,23 @@ const initializeWebview = details => {
 
   const { searchParams } = new URL(url)
 
+  const isPopup = searchParams.get('popup') === 'true'
   const webviewId = searchParams.get('webview')
-  sendToHost(tabId, { type: `metastream-webview-init${webviewId}`, payload: { frameId } })
+
+  let hostId
+
+  if (isPopup) {
+    const parentTabId = popupParents[webviewId]
+    if (!parentTabId) {
+      console.error(`No parent tab ID found for popup webview #${webviewId}`)
+      return
+    }
+    hostId = parentTabId
+  } else {
+    hostId = tabId
+  }
+
+  sendToHost(hostId, { type: `metastream-webview-init${webviewId}`, payload: { frameId } })
 
   const tabState = tabStore[tabId]
   const allowScripts = searchParams.get('allowScripts') === 'true'
@@ -493,6 +512,11 @@ chrome.runtime.onMessage.addListener((action, sender, sendResponse) => {
     case 'metastream-remove-data': {
       const { options, dataToRemove } = action.payload
       chrome.browsingData.remove(options, dataToRemove)
+      break
+    }
+    case 'metastream-popup-init': {
+      const { id: webviewId } = action.payload
+      popupParents[webviewId] = tabId
       break
     }
   }

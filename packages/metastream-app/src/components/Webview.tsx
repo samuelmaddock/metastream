@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import cx from 'classnames'
 import { EventEmitter } from 'events'
 import { isFirefox } from '../utils/browser'
+import { PopupWindow } from './Popup'
 import { WebviewError } from './lobby/overlays/WebviewError'
 import styles from './Webview.css'
 
@@ -22,6 +23,8 @@ interface Props {
   componentRef?: (c: Webview | null) => any
   /** Allow Metastream Remote extension to inject player scripts. */
   allowScripts?: boolean
+  /** Whether this webview should use a popup window. */
+  popup?: boolean
 }
 
 interface State {
@@ -43,7 +46,8 @@ export class Webview extends Component<Props, State> {
   private initializeTimeoutId?: number
 
   private get initialUrl() {
-    return `about:blank?webview=${this.id}&allowScripts=${!!this.props.allowScripts}`
+    // prettier-ignore
+    return `about:blank?webview=${this.id}&allowScripts=${!!this.props.allowScripts}&popup=${!!this.props.popup}`
   }
 
   /** https://developer.mozilla.org/en-US/docs/Web/HTTP/Feature_Policy */
@@ -253,6 +257,20 @@ export class Webview extends Component<Props, State> {
       allowtransparency: ''
     }
 
+    if (this.props.popup) {
+      return (
+        <PopupWindow
+          theRef={e => {
+            if (componentRef) {
+              componentRef(e ? this : null)
+            }
+          }}
+          id={this.id}
+          src={this.initialUrl}
+        />
+      )
+    }
+
     return (
       <div className={cx(className, styles.container)}>
         <iframe
@@ -295,6 +313,11 @@ export class Webview extends Component<Props, State> {
   loadURL(url: string, opts: { httpReferrer?: string; userAgent?: string } = {}) {
     this.url = url
     if (this.iframe) this.iframe.src = url
+
+    if (this.props.popup) {
+      // TODO: don't use global ref
+      ;(window as any).POPUP.location.href = url
+    }
   }
 
   getURL() {
