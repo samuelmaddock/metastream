@@ -207,10 +207,9 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
   }
 
   private dispatchMedia(type: string, payload: any) {
-    window.postMessage(
-      { type: 'metastream-host-event', payload: { type, payload } },
-      location.origin
-    )
+    if (this.webview) {
+      this.webview.dispatchRemoteEvent('metastream-host-event', { type, payload }, true)
+    }
   }
 
   private onIpcMessage = (action: any, ...args: any[]) => {

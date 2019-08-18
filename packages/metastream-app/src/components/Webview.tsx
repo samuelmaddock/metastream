@@ -37,6 +37,7 @@ export class Webview extends Component<Props, State> {
   state: State = {}
 
   private id = webviewId++
+  private tabId = -1
   private frameId = -1
   private emitter = new EventEmitter()
   private iframe: HTMLIFrameElement | null = null
@@ -88,7 +89,8 @@ export class Webview extends Component<Props, State> {
     if (typeof data !== 'object' || typeof data.type !== 'string') return
 
     if (data.type === `metastream-webview-init${this.id}`) {
-      const { frameId } = data.payload
+      const { tabId, frameId } = data.payload
+      this.tabId = tabId
       this.frameId = frameId
       this.onInitialized()
       return
@@ -98,7 +100,7 @@ export class Webview extends Component<Props, State> {
 
     // Filter out messages from non-subframe descendants
     const { framePath } = data
-    if (!Array.isArray(framePath) || framePath[1] !== this.frameId) {
+    if (!Array.isArray(framePath) || (!this.props.popup && framePath[1] !== this.frameId)) {
       return
     }
 
@@ -302,10 +304,15 @@ export class Webview extends Component<Props, State> {
     this.emitter.removeListener(eventName, listener)
   }
 
-  private dispatchRemoteEvent<T>(type: string, payload?: T): void {
-    if (!this.frameId) return
+  dispatchRemoteEvent<T>(type: string, payload?: T, allFrames: boolean = false): void {
+    if (this.tabId === -1 || this.frameId === -1) return
     window.postMessage(
-      { type: 'metastream-webview-event', payload: { type, payload }, frameId: this.frameId },
+      {
+        type: 'metastream-webview-event',
+        payload: { type, payload },
+        tabId: this.tabId,
+        frameId: allFrames ? undefined : this.frameId
+      },
       location.origin
     )
   }

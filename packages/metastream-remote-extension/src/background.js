@@ -102,6 +102,11 @@ const tabStore = {}
 // Map from popup webview ID to parent tab ID
 const popupParents = {}
 
+const popupParentTabs = {}
+
+// List of popup tab IDs
+const popupTabs = new Set()
+
 let lastActiveTabId
 
 //=============================================================================
@@ -212,7 +217,7 @@ const initScripts = details => {
 
   if (!watchedTabs.has(tabId)) return
 
-  if (isTopFrame(details)) {
+  if (isTopFrame(details) && !popupTabs.has(tabId)) {
     // Listen for top frame navigating away from Metastream
     if (!isMetastreamUrl(details.url)) {
       stopWatchingTab(tabId)
@@ -266,15 +271,21 @@ const initializeWebview = details => {
       return
     }
     hostId = parentTabId
-  } else {
+    popupTabs.add(tabId)
+    watchedTabs.add(tabId)
+    popupParentTabs[tabId] = hostId
+  } else if (watchedTabs.has(tabId)) {
     hostId = tabId
+  } else {
+    console.warn(`Ignoring webview with tabId=${tabId}, frameId=${frameId}`)
+    return
   }
 
-  sendToHost(hostId, { type: `metastream-webview-init${webviewId}`, payload: { frameId } })
+  sendToHost(hostId, { type: `metastream-webview-init${webviewId}`, payload: { tabId, frameId } })
 
-  const tabState = tabStore[tabId]
+  const tabState = tabStore[hostId]
   const allowScripts = searchParams.get('allowScripts') === 'true'
-  if (allowScripts && tabState) {
+  if (allowScripts && tabState && !isPopup) {
     tabState.scriptableFrames.add(frameId)
   }
 }
@@ -316,7 +327,8 @@ const injectContentScripts = async details => {
   const framePath = await getFramePath(tabId, frameId)
   const topIFrameId = framePath[1]
   const tabState = tabStore[tabId]
-  const scriptable = tabState && tabState.scriptableFrames.has(topIFrameId)
+  const scriptable =
+    (tabState && tabState.scriptableFrames.has(topIFrameId)) || popupTabs.has(tabId)
   if (scriptable) {
     console.log(`Injecting player script tabId=${tabId}, frameId=${frameId}, url=${url}`)
     executeScript({ tabId, frameId, file: '/player.js' })
@@ -475,7 +487,12 @@ const handleWebviewEvent = async (sender, action) => {
   const { frameId } = sender
   const { id: tabId } = sender.tab
   if (isTopFrame(sender)) {
-    sendToFrame(tabId, action.frameId, action.payload)
+    if (popupTabs.has(tabId)) {
+      const parentId = popupParentTabs[tabId]
+      sendWebviewEventToHost(parentId, frameId, action.payload)
+      return
+    }
+    sendToFrame(action.tabId || tabId, action.frameId, action.payload)
   } else {
     sendWebviewEventToHost(tabId, frameId, action.payload)
   }
