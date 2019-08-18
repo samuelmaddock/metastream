@@ -516,11 +516,6 @@ chrome.runtime.onMessage.addListener((action, sender, sendResponse) => {
     case 'metastream-webview-event':
       handleWebviewEvent(sender, action)
       break
-    case 'metastream-host-event':
-      // Forward host event to all subframes
-      // TODO: exclude sending to top frame? allow sending to specific frame?
-      chrome.tabs.sendMessage(tabId, action)
-      break
     case 'metastream-fetch': {
       const { requestId, url, options } = action.payload
       request(tabId, requestId, url, options)
