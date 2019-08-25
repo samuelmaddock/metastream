@@ -3,6 +3,13 @@ import { ISessionState } from 'lobby/reducers/session'
 import { ISettingsState } from 'reducers/settings'
 import { PlaybackState } from 'lobby/reducers/mediaPlayer'
 
+const DEFAULT_ARTWORK = [
+  { sizes: '192x192', src: '/images/icon-192.png', type: 'image/png' },
+  { sizes: '512x512', src: '/images/icon-512.png', type: 'image/png' }
+]
+
+const FALLBACK_MEDIA_IMAGE = { sizes: '1x1', src: '/images/icon-192.png', type: 'image/png' }
+
 /**
  * Observer for reflecting Metastream session info
  * to the Media Session API.
@@ -33,10 +40,20 @@ export class MediaSessionObserver implements SessionObserver {
 
       mediaSession.playbackState = playback === PlaybackState.Playing ? 'playing' : 'paused'
 
-      mediaSession.metadata = new window.MediaMetadata({
+      const metadata = {
         title: media ? media.title : 'Nothing playing',
-        artwork: media && media.thumbnail ? [{ src: media.thumbnail }] : undefined
-      })
+        artwork:
+          media && media.thumbnail
+            ? [
+                FALLBACK_MEDIA_IMAGE,
+                {
+                  src: media.thumbnail,
+                  sizes: '128x128' // placeholder since we don't know what the actual size is
+                }
+              ]
+            : DEFAULT_ARTWORK
+      }
+      mediaSession.metadata = new window.MediaMetadata(metadata)
 
       if (typeof mediaSession.setPositionState === 'function') {
         const duration = (media && media.duration) || Number.POSITIVE_INFINITY
