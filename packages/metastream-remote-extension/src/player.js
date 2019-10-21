@@ -614,11 +614,21 @@
 
     // Creates styles to hide all non-video elements in the document
     function getFocusStyles(visibleTagName) {
+      const ignoredSelectors = [
+        visibleTagName,
+        '#vilosCanvas', // crunchyroll subtitles
+        '.libassjs-canvas', // vrv subtitles
+        '.player-timedtext', // netflix
+        '.ytp-caption-segment', // youtube
+      ]
+        .map(selector => `:not(${selector})`)
+        .join('')
+
       // :not(:empty) used to boost specificity
       return `
-:not(${visibleTagName}):not(:empty),
-:not(${visibleTagName}):not(:empty):after,
-:not(${visibleTagName}):not(:empty):before {
+${ignoredSelectors}:not(:empty),
+${ignoredSelectors}:not(:empty):after,
+${ignoredSelectors}:not(:empty):before {
   color: transparent !important;
   z-index: 0;
   background: transparent !important;
@@ -630,11 +640,12 @@
   filter: none !important;
   fill: none !important;
   stroke: none !important;
+  -webkit-text-stroke: transparent !important;
   -webkit-mask: none !important;
   transition: none !important;
 }
 
-:not(${visibleTagName}):empty {
+${ignoredSelectors}:empty {
   visibility: hidden !important;
 }`
     }
