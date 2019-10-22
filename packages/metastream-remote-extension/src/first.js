@@ -16,6 +16,13 @@
     // Only run in iframes, the same as Metastream webviews
     if (window.self === window.top) return
 
+    const INIT_TIMEOUT = 5e3
+    const isFirefox = navigator.userAgent.toLowerCase().includes('firefox')
+
+    //=========================================================================
+    // document.createElement proxy
+    //=========================================================================
+
     const mediaElements = (window.__metastreamMediaElements = new Set())
 
     // Proxy document.createElement to trap media elements created in-memory
@@ -33,9 +40,37 @@
     setTimeout(() => {
       mediaElements.clear()
       window.__metastreamMediaElements = undefined
-    }, 5e3)
+    }, INIT_TIMEOUT)
 
-    const isFirefox = navigator.userAgent.toLowerCase().includes('firefox')
+    //=========================================================================
+    // navigator.mediaSession proxy (Firefox)
+    //=========================================================================
+
+    if (isFirefox) {
+      if (!navigator.mediaSession) {
+        Object.defineProperty(window.navigator, 'mediaSession', {
+          value: {},
+          enumerable: false,
+          writable: true
+        })
+      }
+
+      const { mediaSession } = navigator
+
+      // Capture action handlers for player.js proxy
+      mediaSession._handlers = {}
+
+      const _setActionHandler = mediaSession.setActionHandler
+      mediaSession.setActionHandler = function(name, handler) {
+        mediaSession._handlers[name] = handler
+        if (_setActionHandler) _setActionHandler.apply(mediaSession, arguments)
+      }
+    }
+
+    //=========================================================================
+    // document.domain fix (Firefox)
+    //=========================================================================
+
     if (isFirefox) {
       const domains = ['twitch.tv', 'crunchyroll.com']
 

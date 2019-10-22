@@ -118,10 +118,12 @@ export const resolveLocalAvatar = (state: IAppState) => {
 export interface PlayerSettings {
   autoFullscreen: boolean
   theaterMode: boolean
+  mediaSessionProxy: boolean
 }
 
 /** Gets a subset of settings to pass to player extension */
 export const getPlayerSettings = createStructuredSelector<IAppState, PlayerSettings>({
   autoFullscreen: state => state.settings.autoFullscreen,
-  theaterMode: state => state.settings.theaterMode
+  theaterMode: state => state.settings.theaterMode,
+  mediaSessionProxy: () => true
 })

@@ -157,7 +157,8 @@
 
     let playerSettings = {
       autoFullscreen: true,
-      theaterMode: false
+      theaterMode: false,
+      mediaSessionProxy: true
     }
 
     //===========================================================================
@@ -239,6 +240,61 @@
     }
 
     //===========================================================================
+    // Media Session proxy
+    //===========================================================================
+
+    const { mediaSession } = window.navigator
+
+    window.MediaMetadata =
+      window.MediaMetadata ||
+      class MediaMetadataPolyfill {
+        constructor(metadata) {
+          this._raw = metadata
+          Object.assign(this, metadata)
+        }
+      }
+
+    class MediaSessionProxy {
+      constructor() {
+        // inherit proxy fields from first.js
+        this._metadata = null
+        this._handlers = mediaSession._handlers || {}
+      }
+
+      get metadata() {
+        return this._metadata
+      }
+
+      set metadata(metadata) {
+        console.debug('MediaSession.metadata', metadata)
+        this._metadata = metadata
+      }
+
+      setActionHandler(name, handler) {
+        console.debug(`MediaSession.setActionHandler '${name}'`)
+        this._handlers[name] = handler
+      }
+
+      execActionHandler(name, ...args) {
+        if (!playerSettings.mediaSessionProxy) return false
+        if (this._handlers.hasOwnProperty(name)) {
+          console.debug(`MediaSession.execActionHandler '${name}'`, ...args)
+          this._handlers[name](...args)
+          return true
+        }
+        return false
+      }
+    }
+
+    const mediaSessionProxy = new MediaSessionProxy()
+    Object.defineProperty(window.navigator, 'mediaSession', {
+      value: mediaSessionProxy,
+      enumerable: false,
+      writable: true
+    })
+    console.debug('Overwrote navigator.mediaSession')
+
+    //===========================================================================
     // HTMLMediaPlayer class for active media element.
     //===========================================================================
 
@@ -270,11 +326,13 @@
 
       play() {
         if (this.dispatch('metastreamplay')) return
+        if (mediaSessionProxy.execActionHandler('play')) return
         this.startWaitingListener()
         return this.media.play().catch(this.onPlayError)
       }
       pause() {
         if (this.dispatch('metastreampause')) return
+        if (mediaSessionProxy.execActionHandler('pause')) return
         this.stopWaitingListener()
         this.media.pause()
       }
@@ -286,6 +344,9 @@
       }
       seek(time) {
         if (this.dispatch('metastreamseek', time)) return
+
+        if (mediaSessionProxy.execActionHandler('seekto', { seekTime: time, fastSeek: false }))
+          return
 
         // Infinity is generally used for a dynamically allocated media object
         // or live media
@@ -338,9 +399,7 @@
         const { volume } = this
         if (volume && this.media.volume !== volume) {
           console.debug(
-            `[Metastream Remote] Volume changed internally (${
-              this.media.volume
-            }), reverting to ${volume}`
+            `[Metastream Remote] Volume changed internally (${this.media.volume}), reverting to ${volume}`
           )
           this.setVolume(volume)
         }
@@ -619,7 +678,7 @@
         '#vilosCanvas', // crunchyroll subtitles
         '.libassjs-canvas', // vrv subtitles
         '.player-timedtext', // netflix
-        '.ytp-caption-segment', // youtube
+        '.ytp-caption-segment' // youtube
       ]
         .map(selector => `:not(${selector})`)
         .join('')

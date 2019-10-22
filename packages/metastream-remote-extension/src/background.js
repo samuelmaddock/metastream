@@ -108,10 +108,6 @@ const CONTENT_SCRIPTS = [
     file: '/scripts/netflix.js'
   },
   {
-    matches: ['https://*.soundcloud.com/*'],
-    file: '/scripts/soundcloud.js'
-  },
-  {
     matches: ['https://*.hulu.com/*'],
     file: '/scripts/hulu.js'
   },
