@@ -158,7 +158,8 @@
     let playerSettings = {
       autoFullscreen: true,
       theaterMode: false,
-      mediaSessionProxy: true
+      mediaSessionProxy: true,
+      syncOnBuffer: true,
     }
 
     //===========================================================================
@@ -417,6 +418,8 @@
 
       /** Force start playback on waiting */
       onWaiting() {
+        if (!playerSettings.syncOnBuffer) return
+
         if (this._awaitingStart) return
         this._awaitingStart = true
 
