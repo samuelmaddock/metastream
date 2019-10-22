@@ -58,6 +58,12 @@
   height: 48px;
 }
 
+@media (prefers-contrast: high) {
+  .socialIcon {
+    mix-blend-mode: normal;
+  }
+}
+
 .socialIcon:hover {
   filter: invert(1);
   mix-blend-mode: normal;

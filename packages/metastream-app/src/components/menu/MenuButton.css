@@ -6,7 +6,7 @@
   flex-direction: row;
   align-items: center;
 
-  background: rgba(255, 255, 255, 0.3);
+  background: var(--color-transparent-light-30);
   border-radius: 4px;
   text-decoration: none;
   text-transform: uppercase;
@@ -14,7 +14,7 @@
 }
 
 .btn:hover {
-  background-color: rgba(255, 255, 255, 0.4);
+  background-color: var(--color-transparent-light-40);
 }
 
 .btn *:not(svg) {
@@ -30,6 +30,25 @@
 .btn svg {
   mix-blend-mode: soft-light;
   margin-right: 14px;
+}
+
+@media (prefers-contrast: high) {
+  .btn {
+    background: black;
+  }
+
+  .btn:hover {
+    background-color: var(--color-transparent-dark-50);
+  }
+
+  .btn *:not(svg) {
+    color: white;
+  }
+
+  .btn span,
+  .btn svg {
+    mix-blend-mode: normal;
+  }
 }
 
 .medium {

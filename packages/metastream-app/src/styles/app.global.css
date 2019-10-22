@@ -4,17 +4,21 @@
 Variables
 */
 :root {
+  --color-transparent-dark-30: rgba(0, 0, 0, 0.3);
+  --color-transparent-dark-50: rgba(0, 0, 0, 0.5);
+  --color-transparent-dark-80: rgba(0, 0, 0, 0.8);
+  --color-transparent-light-30: rgba(255, 255, 255, 0.3);
+  --color-transparent-light-40: rgba(255, 255, 255, 0.4);
+  --color-nice-blue: #00bfff;
+
   --app-text-color: #fcfcfc;
   --app-titlebar-height: 30px;
   --app-titlebar-background-color: rgba(0, 0, 0, 0.6);
 
-  --color-nice-blue: #00bfff;
   /* --color-highlight: #f98673; */
   --color-highlight: rgb(249, 134, 115);
   --color-highlight-transparent: rgb(249, 134, 115, 0.7);
-  --color-transparent-dark-30: rgba(0, 0, 0, 0.3);
-  --color-transparent-dark-50: rgba(0, 0, 0, 0.5);
-  --color-chat-text-outline: rgba(0, 0, 0, 0.8);
+  --color-chat-text-outline: var(--color-transparent-dark-80);
 
   --app-bg-home: radial-gradient(
     circle at 10% -40%,

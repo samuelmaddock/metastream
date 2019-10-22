@@ -19,6 +19,13 @@
   color: white;
 }
 
+@media (prefers-contrast: high) {
+  .blend-text,
+  .blend-text-invert {
+    mix-blend-mode: normal;
+  }
+}
+
 /* Provide better contrast for blend text on transparent backgrounds. */
 :global(.transparent) .blend-text,
 :global(.transparent) .blend-text-invert {
