@@ -259,7 +259,7 @@
       constructor() {
         // inherit proxy fields from first.js
         this._metadata = null
-        this._handlers = mediaSession._handlers || {}
+        this._handlers = { ...mediaSession._handlers } || {}
       }
 
       get metadata() {
