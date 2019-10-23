@@ -4,6 +4,8 @@ import { IMessage } from 'lobby/reducers/chat'
 import { ChatUsername } from './Username'
 import styles from './Chat.css'
 import * as html from 'html-parse-stringify2'
+import { formatShortTimestamp } from '../../utils/time'
+import { MonospaceText } from '../common/typography'
 
 const entityMap: { [key: string]: string | undefined } = {
   '&amp;': '&',
@@ -62,9 +64,15 @@ export class Message extends PureComponent<IProps> {
     const { author } = message
 
     const broadcast = !author
+    const timestamp = formatShortTimestamp(message.timestamp)
 
     return (
       <li className={styles.message}>
+        {timestamp && (
+          <MonospaceText component="time" className={styles.timestamp} datetime={timestamp}>
+            {timestamp}
+          </MonospaceText>
+        )}
         {author && (
           <ChatUsername userId={author.id} className={styles.textPrefix}>
             {author.username}

@@ -16,3 +16,7 @@
 .dimLink:hover {
   text-decoration: none;
 }
+
+.monospaceText {
+  font-family: 'Noto Mono', monospace;
+}

@@ -118,6 +118,16 @@
   cursor: pointer;
 }
 
+.textPrefix {
+  margin-right: 0.5rem;
+}
+
+.timestamp {
+  composes: textPrefix;
+  font-size: 0.625rem;
+  color: var(--color-transparent-light-50);
+}
+
 .username {
   composes: single-line from '~styles/text.css';
   color: var(--color-nice-blue);
@@ -130,10 +140,6 @@
 .mediaTitle {
   color: var(--color-highlight);
   font-weight: bold;
-}
-
-.textPrefix {
-  margin-right: 0.5rem;
 }
 
 .broadcast {

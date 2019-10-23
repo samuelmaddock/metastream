@@ -41,3 +41,21 @@ export const formatShortMs = (ms: number): string => {
     ? `${minutes}:${seconds}`
     : `${seconds}`
 }
+
+const canFormatTime = Boolean(Intl.DateTimeFormat && Intl.DateTimeFormat.prototype.formatToParts)
+const time12Formatter: any = canFormatTime
+  ? new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: 'numeric' })
+  : null
+
+export const formatShortTimestamp = (timestamp: number) => {
+  if (!canFormatTime) return null
+  const date = new Date(timestamp)
+  const parts = time12Formatter.formatToParts(date)
+  const result = parts
+    .reduce((str: string, part: any) => {
+      if (part.type === 'dayPeriod') return str
+      return str + part.value
+    }, '')
+    .trim()
+  return result
+}

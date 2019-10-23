@@ -2,6 +2,10 @@ import React from 'react'
 import cx from 'classnames'
 import styles from './typography.css'
 
+interface TypographyProps {
+  component?: React.ElementType
+}
+
 export const HighlightText = (props: React.HTMLAttributes<HTMLSpanElement>) => (
   <span {...props} className={cx(props.className, styles.highlightText)}>
     {props.children}
@@ -19,3 +23,10 @@ export const DimLink = (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) =>
     {props.children}
   </a>
 )
+
+export const MonospaceText = ({ component, ...rest }: TypographyProps & any) =>
+  React.createElement(
+    component || 'span',
+    { ...rest, className: cx(rest.className, styles.monospaceText) },
+    rest.children
+  )
