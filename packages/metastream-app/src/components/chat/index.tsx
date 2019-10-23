@@ -35,6 +35,7 @@ interface Props {
 
 interface ConnectedProps {
   messages: IMessage[]
+  showTimestamp: boolean
 }
 
 interface DispatchProps {
@@ -152,6 +153,7 @@ export class ChatComponent extends PureComponent<PrivateProps, State> {
                 this.messagesRef = e
               }}
               messages={this.state.filteredMessages}
+              showTimestamp={this.props.showTimestamp}
             />
             <ChatForm
               ref={e => {
@@ -253,7 +255,8 @@ export class ChatComponent extends PureComponent<PrivateProps, State> {
 export const Chat = connect(
   (state: IAppState): ConnectedProps => {
     return {
-      messages: state.chat.messages
+      messages: state.chat.messages,
+      showTimestamp: state.settings.chatTimestamp
     }
   },
   (dispatch: Function): DispatchProps => ({

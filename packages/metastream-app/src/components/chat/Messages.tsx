@@ -6,6 +6,7 @@ import { t } from 'locale'
 
 interface IProps {
   messages: IMessage[]
+  showTimestamp: boolean
 }
 
 interface IState {
@@ -64,7 +65,7 @@ export class Messages extends Component<IProps, IState> {
 
   render(): JSX.Element | null {
     const messages = this.props.messages.map(message => (
-      <Message key={message.id} message={message} />
+      <Message key={message.id} message={message} showTimestamp={this.props.showTimestamp} />
     ))
 
     return (

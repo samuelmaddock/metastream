@@ -69,6 +69,14 @@ export default class AppearanceSettings extends Component<Props> {
             location === ChatLocation.DockRight ? ChatLocation.FloatLeft : ChatLocation.DockRight
           )}
         />
+
+        <SwitchOption
+          inputId="chat_timestamp"
+          title={t('chatTimestamp')}
+          description={t('chatTimestampDesc')}
+          checked={settings.chatTimestamp}
+          onChange={checked => setSetting('chatTimestamp', checked)}
+        />
       </section>
     )
   }

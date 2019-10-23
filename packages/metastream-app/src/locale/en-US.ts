@@ -22,6 +22,8 @@ export default {
   chatPlaceholder: 'Message or URL',
   chatRevealHint: 'Press <1></1> to reveal chat.',
   chatNewMessage: 'A new message has been posted!',
+  chatTimestamp: 'Chat timestamps',
+  chatTimestampDesc: 'Show timestamp next to chat messages.',
   chatUndock: 'Undock chat into floating panel',
   chatTyping1: '<0></0> is typing…',
   chatTyping2: '<0></0> and <2></2> are typing…',

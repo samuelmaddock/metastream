@@ -56,15 +56,16 @@ function renderHTMLMessage(message: string): React.ReactNode {
 
 interface IProps {
   message: IMessage
+  showTimestamp: boolean
 }
 
 export class Message extends PureComponent<IProps> {
   render(): JSX.Element | null {
-    const { message } = this.props
+    const { message, showTimestamp } = this.props
     const { author } = message
 
     const broadcast = !author
-    const timestamp = formatShortTimestamp(message.timestamp)
+    const timestamp = showTimestamp ? formatShortTimestamp(message.timestamp) : undefined
 
     return (
       <li className={styles.message}>

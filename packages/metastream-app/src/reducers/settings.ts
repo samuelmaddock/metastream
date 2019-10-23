@@ -38,6 +38,7 @@ export interface ISettingsState {
   avatar?: string
   language: string
   chatLocation: ChatLocation
+  chatTimestamp: boolean
   autoFullscreen: boolean
   theaterMode: boolean
   safeBrowse: boolean
@@ -50,6 +51,7 @@ const initialState: ISettingsState = {
   sessionMode: SessionMode.Private,
   language: DEFAULT_LANGUAGE,
   chatLocation: ChatLocation.FloatLeft,
+  chatTimestamp: false,
   autoFullscreen: true,
   theaterMode: false,
   safeBrowse: true
