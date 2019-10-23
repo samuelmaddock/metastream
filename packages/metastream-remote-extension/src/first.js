@@ -47,9 +47,16 @@
     //=========================================================================
 
     if (isFirefox) {
+      // stub out MediaSession API until Firefox supports this natively
       if (!navigator.mediaSession) {
+        const noop = () => {}
+        const mediaSessionStub = {
+          __installedByMetastreamRemote__: true,
+          setActionHandler: noop,
+          execActionHandler: noop
+        }
         Object.defineProperty(window.navigator, 'mediaSession', {
-          value: {},
+          value: mediaSessionStub,
           enumerable: false,
           writable: true
         })
