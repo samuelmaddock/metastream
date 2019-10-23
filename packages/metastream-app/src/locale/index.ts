@@ -12,6 +12,7 @@ import ar from './ar'
 import koKR from './ko-KR'
 import frFR from './fr-FR'
 import zhCN from './zh-CN'
+import trTR from './tr-TR'
 
 export const DEFAULT_LANGUAGE = 'en-US'
 
@@ -22,6 +23,7 @@ export const locales = [
   { label: 'Pусский', code: 'ru-RU', translation: ru, flag: '🇷🇺' },
   { label: 'Português do Brasil', code: 'pt-BR', translation: ptBR, flag: '🇧🇷' },
   { label: 'Deutsch', code: 'de-DE', translation: deDE, flag: '🇩🇪' },
+  { label: 'Türkçe', code: 'tr-TR', translation: trTR, flag: '🇹🇷' },
   { label: 'Magyar', code: 'hu-HU', translation: huHU, flag: '🇭🇺' },
   { label: '日本語', code: 'ja-JP', translation: ja, flag: '🇯🇵' },
   { label: '한국어', code: 'ko-KR', translation: koKR, flag: '🇰🇷' },
