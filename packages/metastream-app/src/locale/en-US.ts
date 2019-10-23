@@ -117,7 +117,7 @@ export default {
   sharePublicIP: 'Share <1>your public IP address</1> to allow friends to connect directly.',
   shareSessionUrl: 'Share the session URL below to invite friends.',
   startSession: 'Start Session',
-  theaterMode: 'Theater Mode',
+  theaterMode: 'Theater mode',
   theaterModeDesc:
     'Hide all non-video content on the webpage. Note that this might also hide soft subtitles.',
   thirdPartyIntegrations: 'Third-party Integrations',
