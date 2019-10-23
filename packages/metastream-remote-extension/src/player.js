@@ -715,10 +715,14 @@ ${ignoredSelectors}:empty {
     function setTheaterMode(enable) {
       if (enable && !theaterModeStyle) {
         const target = activeMedia || activeFrame
-        const elem = document.createElement('style')
+
+        // don't hide UI if target is audio
+        if (target instanceof HTMLAudioElement) return
+
         const visibleTagName = target instanceof HTMLVideoElement ? 'video' : 'iframe'
-        elem.innerText = getFocusStyles(visibleTagName)
-        theaterModeStyle = elem
+        const style = document.createElement('style')
+        style.innerText = getFocusStyles(visibleTagName)
+        theaterModeStyle = style
         document.head.appendChild(theaterModeStyle)
       } else if (!enable && theaterModeStyle) {
         theaterModeStyle.remove()
