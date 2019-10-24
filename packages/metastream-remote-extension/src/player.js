@@ -131,6 +131,38 @@
       }
     }
 
+    function throttle(func, wait, options) {
+      var context, args, result
+      var timeout = null
+      var previous = 0
+      if (!options) options = {}
+      var later = function() {
+        previous = options.leading === false ? 0 : Date.now()
+        timeout = null
+        result = func.apply(context, args)
+        if (!timeout) context = args = null
+      }
+      return function() {
+        var now = Date.now()
+        if (!previous && options.leading === false) previous = now
+        var remaining = wait - (now - previous)
+        context = this
+        args = arguments
+        if (remaining <= 0 || remaining > wait) {
+          if (timeout) {
+            clearTimeout(timeout)
+            timeout = null
+          }
+          previous = now
+          result = func.apply(context, args)
+          if (!timeout) context = args = null
+        } else if (!timeout && options.trailing !== false) {
+          timeout = setTimeout(later, remaining)
+        }
+        return result
+      }
+    }
+
     /** https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/readyState */
     const MediaReadyState = {
       HAVE_NOTHING: 0,
@@ -315,11 +347,26 @@
 
         this.onPlay = this.onPlay.bind(this)
         this.onPlayError = this.onPlayError.bind(this)
+        this.onPause = this.onPause.bind(this)
+        this.onEnded = this.onEnded.bind(this)
         this.onVolumeChange = this.onVolumeChange.bind(this)
+        this.onTimeUpdate = throttle(this.onTimeUpdate.bind(this), 1e3)
         this.onWaiting = this.onWaiting.bind(this)
 
         this.media.addEventListener('play', this.onPlay, false)
+        this.media.addEventListener('pause', this.onPause, false)
+        this.media.addEventListener('ended', this.onEnded, false)
         this.media.addEventListener('volumechange', this.onVolumeChange, false)
+        this.media.addEventListener('timeupdate', this.onTimeUpdate, false)
+      }
+
+      destroy() {
+        this.media.removeEventListener('play', this.onPlay, false)
+        this.media.removeEventListener('pause', this.onPause, false)
+        this.media.removeEventListener('ended', this.onEnded, false)
+        this.media.removeEventListener('volumechange', this.onVolumeChange, false)
+        this.media.removeEventListener('timeupdate', this.onTimeUpdate, false)
+        this.stopWaitingListener()
       }
 
       dispatch(eventName, detail) {
@@ -381,11 +428,13 @@
         return dt > SEEK_THRESHOLD
       }
 
-      /** Set volume as soon as playback begins */
       onPlay() {
+        // Set volume as soon as playback begins
         if (typeof this.volume === 'number') {
           this.setVolume(this.volume)
         }
+
+        this.onPlaybackChange('playing')
       }
 
       onPlayError(err) {
@@ -396,6 +445,18 @@
           this.setVolume(0)
           this.media.play().catch(noop)
         }
+      }
+
+      onPause() {
+        this.onPlaybackChange('paused')
+      }
+
+      onEnded() {
+        this.onPlaybackChange('ended')
+      }
+
+      onTimeUpdate() {
+        dispatchMediaEvent({ type: 'media-time-update', payload: this.getCurrentTime() })
       }
 
       /** Prevent third-party service from restoring cached volume */
@@ -409,13 +470,20 @@
         }
       }
 
+      onPlaybackChange(state) {
+        dispatchMediaEvent({
+          type: 'media-playback-change',
+          payload: { state: state, time: this.getCurrentTime() }
+        })
+      }
+
       startWaitingListener() {
         if (this._awaitingStart) return
         this.media.addEventListener('waiting', this.onWaiting, false)
       }
 
       stopWaitingListener() {
-        this.media.removeEventListener('waiting', this.onWaiting, false)
+        if (this._awaitingStart) this.media.removeEventListener('waiting', this.onWaiting, false)
         if (this._endWaiting) this._endWaiting()
       }
 
@@ -425,6 +493,8 @@
 
         if (this._awaitingStart) return
         this._awaitingStart = true
+
+        this.onPlaybackChange('buffering')
 
         let timeoutId = null
 
@@ -785,6 +855,7 @@ ${ignoredSelectors}:empty {
       activeMedia = media
       activeFrame = undefined
 
+      if (player) player.destroy()
       player = new HTMLMediaPlayer(media)
 
       console.debug('Set active media', media, media.src, media.duration)

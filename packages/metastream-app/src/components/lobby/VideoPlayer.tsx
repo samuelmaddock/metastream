@@ -214,8 +214,8 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
   }
 
   private onIpcMessage = (action: any, ...args: any[]) => {
-    if (typeof action !== 'object' || typeof action.payload !== 'object') return
-    console.log('Received VideoPlayer IPC message', action)
+    if (typeof action !== 'object') return
+    console.debug('VideoPlayer IPC', action)
     const isTopSubFrame = !!args[0]
 
     switch (action.type) {
@@ -225,10 +225,6 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
       case 'media-autoplay-error':
         this.onAutoplayError(action.payload.error)
         break
-      default:
-        if (process.env.NODE_ENV === 'development') {
-          console.warn(`Received unknown VideoPlayer IPC event '${action.type}'`, action)
-        }
     }
   }
 
@@ -292,7 +288,6 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     let time = getPlaybackTime2(this.props)
 
     if (typeof time === 'number') {
-      console.log('Sending seek IPC message', time)
       this.dispatchMedia('seek-media', time)
     }
   }
