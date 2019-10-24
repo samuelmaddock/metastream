@@ -225,6 +225,10 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
       case 'media-autoplay-error':
         this.onAutoplayError(action.payload.error)
         break
+      default:
+        if (process.env.NODE_ENV === 'development') {
+          console.warn(`Received unknown VideoPlayer IPC event '${action.type}'`, action)
+        }
     }
   }
 

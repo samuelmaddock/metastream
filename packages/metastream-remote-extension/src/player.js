@@ -159,7 +159,7 @@
       autoFullscreen: true,
       theaterMode: false,
       mediaSessionProxy: true,
-      syncOnBuffer: true,
+      syncOnBuffer: true
     }
 
     //===========================================================================
@@ -246,14 +246,13 @@
 
     const { mediaSession } = window.navigator
 
-    window.MediaMetadata =
-      window.MediaMetadata ||
-      class MediaMetadataPolyfill {
-        constructor(metadata) {
-          this._raw = metadata
-          Object.assign(this, metadata)
-        }
+    const MediaMetadata = window.MediaMetadata || Object.create(null)
+    window.MediaMetadata = class MetastreamMediaMetadata extends MediaMetadata {
+      constructor(metadata) {
+        super(metadata)
+        this._raw = metadata
       }
+    }
 
     class MediaSessionProxy {
       constructor() {
@@ -269,7 +268,10 @@
       set metadata(metadata) {
         console.debug('MediaSession.metadata', metadata)
         this._metadata = metadata
-        dispatchMediaEvent({ type: 'media-metadata-change', payload: metadata ? metadata._raw : undefined })
+        dispatchMediaEvent({
+          type: 'media-metadata-change',
+          payload: metadata ? metadata._raw : undefined
+        })
       }
 
       setActionHandler(name, handler) {
