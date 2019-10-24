@@ -269,6 +269,7 @@
       set metadata(metadata) {
         console.debug('MediaSession.metadata', metadata)
         this._metadata = metadata
+        dispatchMediaEvent({ type: 'media-metadata-change', payload: metadata ? metadata._raw : undefined })
       }
 
       setActionHandler(name, handler) {
