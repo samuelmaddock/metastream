@@ -20,3 +20,8 @@
 .monospaceText {
   font-family: 'Noto Mono', monospace;
 }
+
+.timestampLinkText {
+  composes: monospaceText;
+  font-size: 0.8rem;
+}

@@ -39,7 +39,7 @@ export const parseTimestampPairs = (str: string): TimestampPair[] => {
   return results as TimestampPair[]
 }
 
-export const timestampToMilliseconds = (str: string) => {
+export const timestampToMilliseconds = (str: string): number => {
   const p = str.split(':')
   let s = 0,
     m = 1

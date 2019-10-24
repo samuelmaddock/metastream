@@ -30,3 +30,19 @@ export const MonospaceText = ({ component, ...rest }: TypographyProps & any) =>
     { ...rest, className: cx(rest.className, styles.monospaceText) },
     rest.children
   )
+
+export const LinkText = ({
+  component,
+  ...rest
+}: TypographyProps & React.AnchorHTMLAttributes<HTMLAnchorElement>) =>
+  React.createElement(
+    component || 'a',
+    { ...rest, className: cx(rest.className, 'link') },
+    rest.children
+  )
+
+export const TimestampLinkText = (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
+  <span {...props} className={cx(props.className, styles.timestampLinkText, 'link')}>
+    {props.children}
+  </span>
+)
