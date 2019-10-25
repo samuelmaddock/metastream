@@ -146,7 +146,7 @@ export const netSyncMiddleware = (): Middleware => {
         return dt
       })
 
-      console.log('[Net] netSyncMiddleware delta', delta)
+      console.debug('[Net] netSyncMiddleware delta', delta)
 
       const action: NetPayload = {
         type: NetActionTypes.UPDATE,
@@ -154,7 +154,7 @@ export const netSyncMiddleware = (): Middleware => {
         d: delta
       }
 
-      console.info(`[Net] Sending update #${COMMIT_NUMBER}`, action)
+      console.debug(`[Net] Sending update #${COMMIT_NUMBER}`, action)
 
       const jsonStr = JSON.stringify(action)
       const buf = new Buffer(SYNC_HEADER + jsonStr)
