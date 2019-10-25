@@ -32,6 +32,8 @@
   }
 
   // Forward activity signal to top frame
+  // Used for determining inactivity in interactive mode and for verifying
+  // whether user triggered media state changes.
   const onWebviewActivity = throttle(event => {
     if (!event.isTrusted) return
     chrome.runtime.sendMessage({
