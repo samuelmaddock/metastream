@@ -179,6 +179,7 @@
     }
 
     const SEC2MS = 1000
+    const MS2SEC = 1 / 1000
 
     const noop = () => {}
 
@@ -349,6 +350,7 @@
         this.onPlayError = this.onPlayError.bind(this)
         this.onPause = this.onPause.bind(this)
         this.onEnded = this.onEnded.bind(this)
+        this.onSeeked = this.onSeeked.bind(this)
         this.onVolumeChange = this.onVolumeChange.bind(this)
         this.onTimeUpdate = throttle(this.onTimeUpdate.bind(this), 1e3)
         this.onWaiting = this.onWaiting.bind(this)
@@ -356,6 +358,7 @@
         this.media.addEventListener('play', this.onPlay, false)
         this.media.addEventListener('pause', this.onPause, false)
         this.media.addEventListener('ended', this.onEnded, false)
+        this.media.addEventListener('seeked', this.onSeeked, false)
         this.media.addEventListener('volumechange', this.onVolumeChange, false)
         this.media.addEventListener('timeupdate', this.onTimeUpdate, false)
       }
@@ -364,6 +367,7 @@
         this.media.removeEventListener('play', this.onPlay, false)
         this.media.removeEventListener('pause', this.onPause, false)
         this.media.removeEventListener('ended', this.onEnded, false)
+        this.media.removeEventListener('seeked', this.onSeeked, false)
         this.media.removeEventListener('volumechange', this.onVolumeChange, false)
         this.media.removeEventListener('timeupdate', this.onTimeUpdate, false)
         this.stopWaitingListener()
@@ -388,7 +392,7 @@
         this.media.pause()
       }
       getCurrentTime() {
-        return this.media.currentTime
+        return this.media.currentTime * SEC2MS
       }
       getDuration() {
         return this.media.duration
@@ -408,7 +412,7 @@
 
         // Only seek if we're off by greater than our threshold
         if (this.timeExceedsThreshold(time)) {
-          this.media.currentTime = time / 1000
+          this.media.currentTime = time * MS2SEC
         }
       }
       setVolume(volume) {
@@ -424,7 +428,7 @@
 
       /** Only seek if we're off by greater than our threshold */
       timeExceedsThreshold(time) {
-        const dt = Math.abs(time / 1000 - this.getCurrentTime()) * 1000
+        const dt = Math.abs(time - this.getCurrentTime())
         return dt > SEEK_THRESHOLD
       }
 
@@ -453,6 +457,10 @@
 
       onEnded() {
         this.onPlaybackChange('ended')
+      }
+
+      onSeeked() {
+        dispatchMediaEvent({ type: 'media-seeked', payload: this.getCurrentTime() })
       }
 
       onTimeUpdate() {
@@ -531,12 +539,12 @@
               this.media.networkState
             }][readyState=${this.media.readyState}]`
           )
-          time += ATTEMPT_INTERVAL / 1000
+          time += ATTEMPT_INTERVAL * MS2SEC
 
           const dt = Math.abs(time - startTime)
           if (dt > 1) {
             startTime = time
-            this.seek(time * 1000)
+            this.seek(time * SEC2MS)
           } else {
             this.dispatch('metastreampause') || this.media.pause()
             const playPromise = this.dispatch('metastreamplay') || this.media.play()
