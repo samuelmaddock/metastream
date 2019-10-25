@@ -192,7 +192,8 @@
       autoFullscreen: true,
       theaterMode: false,
       mediaSessionProxy: true,
-      syncOnBuffer: true
+      syncOnBuffer: true,
+      seekThreshold: 100 /** Threshold before we'll seek. */
     }
 
     //===========================================================================
@@ -335,12 +336,6 @@
     // HTMLMediaPlayer class for active media element.
     //===========================================================================
 
-    /** Interval time (ms) to detect video element. */
-    const DETECT_INTERVAL = 500
-
-    /** Threshold before we'll seek. */
-    const SEEK_THRESHOLD = 100
-
     /** Abstraction around HTML video tag. */
     class HTMLMediaPlayer {
       constructor(media) {
@@ -429,7 +424,7 @@
       /** Only seek if we're off by greater than our threshold */
       timeExceedsThreshold(time) {
         const dt = Math.abs(time - this.getCurrentTime())
-        return dt > SEEK_THRESHOLD
+        return dt > (playerSettings.seekThreshold || 0)
       }
 
       onPlay() {
