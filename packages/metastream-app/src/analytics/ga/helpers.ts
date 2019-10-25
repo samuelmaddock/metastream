@@ -32,7 +32,7 @@ export const getDefaultInitParams = (): InitParams => {
 }
 
 export const resolveParam = <T>(value: Param<T>): T =>
-  typeof value === 'function' ? value() : value
+  typeof value === 'function' ? ((value as any) as Function)() : value
 
 export const prepareItems = (items: Item[], trackId: string, time: number): Item[] =>
   items.map(item => ({ ...item, tid: trackId, qt: time - item.__timestamp }))

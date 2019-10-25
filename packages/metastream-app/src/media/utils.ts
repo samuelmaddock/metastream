@@ -76,7 +76,7 @@ export const parseHtmlDescription = (node: Cheerio): string => {
   const texts = node
     .children()
     .toArray()
-    .map((i, el) => cheerioElementToText.call(el))
+    .map((i: any, el: any) => cheerioElementToText.call(el))
     .join('')
   return texts
 }
