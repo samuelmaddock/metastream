@@ -26,20 +26,22 @@
       if (!inThrottle) {
         func.apply(context, args)
         inThrottle = true
-        setTimeout(() => inThrottle = false, limit)
+        setTimeout(() => (inThrottle = false), limit)
       }
     }
   }
 
   // Forward activity signal to top frame
   const onWebviewActivity = throttle(event => {
+    if (!event.isTrusted) return
     chrome.runtime.sendMessage({
       type: 'metastream-webview-event',
       payload: { type: 'activity', payload: event.type }
     })
-  }, 1e3)
+  }, 100)
   document.addEventListener('mousemove', onWebviewActivity, true)
   document.addEventListener('mousedown', onWebviewActivity, true)
+  document.addEventListener('mouseup', onWebviewActivity, true)
   document.addEventListener('mousewheel', onWebviewActivity, true)
   document.addEventListener('keydown', onWebviewActivity, true)
 
