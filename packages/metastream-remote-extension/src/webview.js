@@ -34,18 +34,20 @@
   // Forward activity signal to top frame
   // Used for determining inactivity in interactive mode and for verifying
   // whether user triggered media state changes.
-  const onWebviewActivity = throttle(event => {
+  const onWebviewActivity = event => {
     if (!event.isTrusted) return
     chrome.runtime.sendMessage({
       type: 'metastream-webview-event',
       payload: { type: 'activity', payload: event.type }
     })
-  }, 100)
-  document.addEventListener('mousemove', onWebviewActivity, true)
-  document.addEventListener('mousedown', onWebviewActivity, true)
-  document.addEventListener('mouseup', onWebviewActivity, true)
-  document.addEventListener('mousewheel', onWebviewActivity, true)
-  document.addEventListener('keydown', onWebviewActivity, true)
+  }
+  const onFrequentWebviewActivity = throttle(onWebviewActivity, 500)
+  const onImportantWebviewActivity = throttle(onWebviewActivity, 80)
+  document.addEventListener('mousemove', onFrequentWebviewActivity, true)
+  document.addEventListener('mousedown', onImportantWebviewActivity, true)
+  document.addEventListener('mouseup', onImportantWebviewActivity, true)
+  document.addEventListener('mousewheel', onFrequentWebviewActivity, true)
+  document.addEventListener('keydown', onImportantWebviewActivity, true)
 
   const mainWorldScript = function() {
     document.getElementById('metastreamwebviewinit').remove()
