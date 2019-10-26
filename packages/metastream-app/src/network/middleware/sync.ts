@@ -1,6 +1,5 @@
-import { Middleware, MiddlewareAPI, Action, Dispatch } from 'redux'
-import deepDiff from 'deep-diff'
-import { clone } from 'utils/object'
+import { Middleware } from 'redux'
+import * as deepDiff from 'deep-diff'
 
 import { NetServer, NetConnection } from 'network'
 import { ReplicatedState } from 'network/types'
@@ -30,7 +29,7 @@ interface NetPayload {
 const SYNC_HEADER = 'SYNC'
 
 /** Redux subtree replication */
-const replicationPrefilter = <T>(state: ReplicatedState<T>): deepDiff.PreFilter<T> => (
+export const createReplicationPrefilter = <T>(state: ReplicatedState<T>): deepDiff.PreFilter<T> => (
   path,
   key
 ) => {
@@ -65,6 +64,18 @@ const replicationPrefilter = <T>(state: ReplicatedState<T>): deepDiff.PreFilter<
   return true // ignore undefined replication path
 }
 
+/** Get tree containing only replicated state. */
+export const getReplicatedState = <T = any>(state: T, prefilter: deepDiff.PreFilter<T>) => {
+  const repState = {}
+  const diffs = deepDiff.diff(repState, state, prefilter)
+  if (diffs && diffs.length) {
+    diffs.forEach(diff => {
+      deepDiff.applyChange(repState, repState, diff)
+    })
+  }
+  return repState
+}
+
 export const netSyncMiddleware = (): Middleware => {
   let COMMIT_NUMBER = 0
 
@@ -77,7 +88,7 @@ export const netSyncMiddleware = (): Middleware => {
       server = options.server || null
       host = options.host
 
-      prefilter = replicationPrefilter(options.replicated)
+      prefilter = createReplicationPrefilter(options.replicated)
       console.debug('[Net] Init netSync', options)
 
       if (!server) return
@@ -85,7 +96,7 @@ export const netSyncMiddleware = (): Middleware => {
       if (host) {
         server.on('connect', (conn: NetConnection) => {
           conn.once('authed', () => {
-            const state = getReplicatedState()
+            const state = getReplicatedState(getState(), prefilter)
             const action = { type: NetActionTypes.FULL_UPDATE, v: COMMIT_NUMBER, state }
             const jsonStr = JSON.stringify(action)
             const buf = new Buffer(SYNC_HEADER + jsonStr)
@@ -121,18 +132,6 @@ export const netSyncMiddleware = (): Middleware => {
     const destroy = () => {
       server = null
       COMMIT_NUMBER = 0
-    }
-
-    /** Get tree containing only replicated state. */
-    const getReplicatedState = () => {
-      const state = {}
-      const diffs = deepDiff.diff(state, getState(), prefilter)
-      if (diffs && diffs.length) {
-        diffs.forEach(diff => {
-          deepDiff.applyChange(state, state, diff)
-        })
-      }
-      return state
     }
 
     /** Relay state changes from Server to Clients */
