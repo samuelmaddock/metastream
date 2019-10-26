@@ -93,6 +93,24 @@ it('parses bold text', () => {
   ])
 })
 
+it('parses italic text', () => {
+  const parseItalic = (text: string) => parseText(text, [ParseToken.ITALIC])
+  expect(parseItalic('_italic_')).toEqual([{ type: ParseToken.ITALIC, content: 'italic' }])
+  expect(parseItalic('yo _italic_ text')).toEqual([
+    { type: ParseToken.TEXT, content: 'yo ' },
+    { type: ParseToken.ITALIC, content: 'italic' },
+    { type: ParseToken.TEXT, content: ' text' }
+  ])
+  expect(parseItalic('_double_ _italic_')).toEqual([
+    { type: ParseToken.ITALIC, content: 'double' },
+    { type: ParseToken.TEXT, content: ' ' },
+    { type: ParseToken.ITALIC, content: 'italic' }
+  ])
+  expect(parseItalic('_italic with text inside_')).toEqual([
+    { type: ParseToken.ITALIC, content: 'italic with text inside' }
+  ])
+})
+
 it('parses description', () => {
   expect(parseDescription('just text')).toEqual([{ type: ParseToken.TEXT, content: 'just text' }])
   expect(parseDescription('0:00')).toEqual([{ type: ParseToken.TIMESTAMP, content: '0:00' }])

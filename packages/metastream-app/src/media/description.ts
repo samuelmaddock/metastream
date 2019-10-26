@@ -41,6 +41,21 @@ const tokenConfigs: TokenConfig[] = [
     }
   },
   {
+    type: ParseToken.ITALIC,
+    tokenize: (text: string) => {
+      let startIndex = text.search(ITALIC_REGEX)
+      if (startIndex === -1) return
+      const match = text.match(ITALIC_REGEX)!
+      const full = match[0]
+      const value = match[1] || match[2]
+      const prefixChars = full.startsWith('_') ? 0 : 1
+      const postfixChars = full.endsWith('_') ? 0 : 1
+      const endIndex = startIndex + full.length - postfixChars
+      startIndex += prefixChars
+      return { startIndex, endIndex, value }
+    }
+  },
+  {
     type: ParseToken.TIMESTAMP,
     tokenize: text => {
       let subtext = text
