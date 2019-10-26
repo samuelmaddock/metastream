@@ -1,12 +1,12 @@
 import { Middleware } from 'redux'
-import * as deepDiff from 'deep-diff'
 
 import { NetServer, NetConnection } from 'network'
-import { ReplicatedState } from 'network/types'
 import { NetMiddlewareOptions, NetActions } from 'network/actions'
 import { isType, actionCreator } from 'utils/redux'
 import { Diff } from 'reducers/deepDiff'
 import { IAppState } from 'reducers'
+import { getReplicatedState, getReplicatedDelta, ReplicatedDelta } from './sync.util'
+import { ReplicatedState } from 'network/types'
 
 export const netApplyFullUpdate = actionCreator<Partial<IAppState>>('@@net/APPLY_FULL_UPDATE')
 export const netApplyUpdate = actionCreator<Diff[]>('@@net/APPLY_UPDATE')
@@ -23,58 +23,10 @@ interface NetPayload {
   v: number
 
   /** Diff */
-  d: deepDiff.Diff<any>[]
+  d: ReplicatedDelta
 }
 
 const SYNC_HEADER = 'SYNC'
-
-/** Redux subtree replication */
-export const createReplicationPrefilter = <T>(state: ReplicatedState<T>): deepDiff.PreFilter<T> => (
-  path,
-  key
-) => {
-  let i = 0
-  let tree: ReplicatedState<any> = state
-
-  // traverse path in tree
-  while (i < path.length) {
-    const k = path[i]
-    if (tree.hasOwnProperty(k)) {
-      const result = tree[k] as boolean | ReplicatedState<T>
-      if (typeof result === 'object') {
-        tree = result
-      } else if (typeof result === 'boolean') {
-        return !result
-      }
-    } else {
-      return true // ignore undefined replication path
-    }
-    i++
-  }
-
-  if (tree && tree.hasOwnProperty(key)) {
-    const result = tree[key]!
-    if (typeof result === 'boolean') {
-      return !result
-    } else if (typeof result === 'object') {
-      return false
-    }
-  }
-
-  return true // ignore undefined replication path
-}
-
-/** Get tree containing only replicated state. */
-export const getReplicatedState = <T = any>(state: T, prefilter: deepDiff.PreFilter<T>) => {
-  const repState = {}
-  const diffs = deepDiff.diff(repState, state, prefilter)
-  if (diffs && diffs.length) {
-    diffs.forEach(diff => {
-      deepDiff.applyChange(repState, repState, diff)
-    })
-  }
-  return repState
-}
 
 export const netSyncMiddleware = (): Middleware => {
   let COMMIT_NUMBER = 0
@@ -82,13 +34,13 @@ export const netSyncMiddleware = (): Middleware => {
   return store => {
     const { dispatch, getState } = store
 
-    let server: NetServer | null, host: boolean, prefilter: deepDiff.PreFilter<any>
+    let server: NetServer | null, host: boolean, replicated: ReplicatedState<any>
 
     const init = (options: NetMiddlewareOptions) => {
       server = options.server || null
       host = options.host
+      replicated = options.replicated
 
-      prefilter = createReplicationPrefilter(options.replicated)
       console.debug('[Net] Init netSync', options)
 
       if (!server) return
@@ -96,7 +48,7 @@ export const netSyncMiddleware = (): Middleware => {
       if (host) {
         server.on('connect', (conn: NetConnection) => {
           conn.once('authed', () => {
-            const state = getReplicatedState(getState(), prefilter)
+            const state = getReplicatedState(getState(), options.replicated)
             const action = { type: NetActionTypes.FULL_UPDATE, v: COMMIT_NUMBER, state }
             const jsonStr = JSON.stringify(action)
             const buf = new Buffer(SYNC_HEADER + jsonStr)
@@ -135,16 +87,7 @@ export const netSyncMiddleware = (): Middleware => {
     }
 
     /** Relay state changes from Server to Clients */
-    const relay = (delta: deepDiff.Diff<any>[]) => {
-      // Cleanup diffs to reduce bandwidth
-      delta = delta.map(dt => {
-        dt = { ...dt }
-        if (dt.kind === 'E') {
-          delete dt.lhs
-        }
-        return dt
-      })
-
+    const relay = (delta: ReplicatedDelta) => {
       console.debug('[Net] netSyncMiddleware delta', delta)
 
       const action: NetPayload = {
@@ -177,7 +120,7 @@ export const netSyncMiddleware = (): Middleware => {
       }
 
       const state = getState()
-      const delta = deepDiff.diff(prevState, state, prefilter)
+      const delta = getReplicatedDelta(prevState, state, replicated)
 
       if (delta && delta.length > 0) {
         relay(delta)
