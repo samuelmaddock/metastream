@@ -34,7 +34,8 @@
 
 - [x] Add localization ([#5](https://github.com/samuelmaddock/metastream/issues/5))
 - [x] Improve networking reliability ([#74](https://github.com/samuelmaddock/metastream/issues/74))
-- [ ] Port Metastream from Electron to a web app ([#94](https://github.com/samuelmaddock/metastream/issues/94))
+- [x] Port Metastream from Electron to a web app ([#94](https://github.com/samuelmaddock/metastream/issues/94))
+- [ ] Improve UX and stability
 - [ ] Add favorites/bookmarks ([#21](https://github.com/samuelmaddock/metastream/issues/21))
 - [ ] Add playlists
 - [ ] Add audio mode ([#22](https://github.com/samuelmaddock/metastream/issues/22))
@@ -81,4 +82,4 @@ yarn build
 
 ## Legacy desktop app
 
-Metastream used to be an Electron desktop application. The latest version can be found on the [GitHub releases](https://github.com/samuelmaddock/metastream/releases/tag/v0.2.7) page. Please note that **the legacy app is insecure and not recommended.**
+Metastream used to be an Electron desktop application until development was stopped due to [roadblocks in acquiring a Widevine license](https://blog.samuelmaddock.com/posts/google-widevine-blocked-my-browser/). The latest version can be found on the [GitHub releases](https://github.com/samuelmaddock/metastream/releases/tag/v0.2.7) page. Please note that **the legacy app is insecure and not recommended.**
