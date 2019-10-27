@@ -37,7 +37,7 @@ function onMessage(event: MessageEvent) {
   if (typeof data !== 'object' || typeof data.type !== 'string') return
 
   switch (data.type) {
-    case 'metastream-badge-click':
+    case 'metastream-extension-request':
       if (typeof data.payload === 'object') {
         const { url, time } = data.payload
         store.dispatch(setPendingMedia({ url, time: time ? time * SEC2MS : undefined }))

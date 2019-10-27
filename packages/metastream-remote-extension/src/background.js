@@ -532,40 +532,8 @@ const getMediaTimeInTab = tabId =>
     )
   })
 
-chrome.browserAction.onClicked.addListener(async tab => {
-  const { id: tabId, url: requestUrl } = tab
-  if (tabId < 0) return
-
-  // ignore badge presses from Metastream tabs
-  if (watchedTabs.has(tabId)) return
-
-  const { protocol } = new URL(requestUrl)
-  if (protocol !== 'http:' && protocol !== 'https:') return
-
-  const currentTime = await getMediaTimeInTab(tabId)
-
-  console.log(`Opening URL in Metastream: ${requestUrl}${currentTime ? ` @ ${currentTime}` : ''}`)
-
-  const isMetastreamOpen = watchedTabs.size > 0
-  if (isMetastreamOpen) {
-    const targetTabId = watchedTabs.has(lastActiveTabId)
-      ? lastActiveTabId
-      : Array.from(watchedTabs)[0]
-    sendToHost(targetTabId, {
-      type: 'metastream-badge-click',
-      payload: { url: requestUrl, time: currentTime }
-    })
-    chrome.tabs.update(targetTabId, { active: true }) // focus tab
-  } else {
-    const url = [
-      `${METASTREAM_APP_URL}/`,
-      `?url=${encodeURIComponent(requestUrl)}`,
-      currentTime ? `&t=${currentTime}` : ''
-    ].join('')
-    chrome.tabs.create({ url })
-  }
-
-  // pause media in all non-metastream tabs
+// pause media in all non-metastream tabs
+const pauseMediaInOtherTabs = () => {
   chrome.tabs.query({ audible: true }, tabs => {
     tabs.forEach(({ id: tabId }) => {
       if (watchedTabs.has(tabId)) return
@@ -575,4 +543,85 @@ chrome.browserAction.onClicked.addListener(async tab => {
       })
     })
   })
+}
+
+const openLinkInMetastream = details => {
+  const { url: requestUrl, currentTime, source } = details
+
+  const { protocol } = new URL(requestUrl)
+  if (protocol !== 'http:' && protocol !== 'https:') return
+
+  console.log(`Opening URL in Metastream: ${requestUrl}${currentTime ? ` @ ${currentTime}` : ''}`)
+
+  const isMetastreamOpen = watchedTabs.size > 0
+  if (isMetastreamOpen) {
+    const targetTabId = watchedTabs.has(lastActiveTabId)
+      ? lastActiveTabId
+      : Array.from(watchedTabs)[0]
+    sendToHost(targetTabId, {
+      type: 'metastream-extension-request',
+      payload: { url: requestUrl, time: currentTime, source }
+    })
+    chrome.tabs.update(targetTabId, { active: true }) // focus tab
+  } else {
+    const params = new URLSearchParams()
+    params.append('url', requestUrl)
+    if (currentTime) params.append('t', currentTime)
+    if (source) params.append('source', source)
+    const url = `${METASTREAM_APP_URL}/?${params.toString()}`
+    // const url = `http://localhost:8080/#?${params.toString()}` // dev
+    chrome.tabs.create({ url })
+  }
+
+  pauseMediaInOtherTabs()
+}
+
+const openTabInMetastream = async ({ tab, source }) => {
+  const { id: tabId, url } = tab
+  if (tabId < 0) return
+
+  // ignore badge presses from Metastream tabs
+  if (watchedTabs.has(tabId)) return
+
+  const currentTime = await getMediaTimeInTab(tabId)
+  openLinkInMetastream({ url, currentTime, source })
+}
+
+chrome.browserAction.onClicked.addListener(tab =>
+  openTabInMetastream({ tab, source: 'browser-action' })
+)
+
+//=============================================================================
+// Create context menu items to add links to metastream session
+//=============================================================================
+
+const TARGET_URL_PATTERNS = ['https://*/*']
+
+chrome.contextMenus.create({
+  title: 'Open link in Metastream session',
+  contexts: ['link'],
+  targetUrlPatterns: TARGET_URL_PATTERNS,
+  onclick(info, tab) {
+    const { linkUrl: url } = info
+    if (url) openLinkInMetastream({ url, source: 'context-menu-link' })
+  }
+})
+
+chrome.contextMenus.create({
+  title: 'Open link in Metastream session',
+  contexts: ['browser_action'],
+  documentUrlPatterns: TARGET_URL_PATTERNS,
+  onclick(info, tab) {
+    openTabInMetastream({ tab, source: 'context-menu-browser-action' })
+  }
+})
+
+chrome.contextMenus.create({
+  title: 'Open video in Metastream session',
+  contexts: ['video'],
+  targetUrlPatterns: TARGET_URL_PATTERNS,
+  onclick(info, tab) {
+    const { srcUrl: url } = info
+    if (url) openLinkInMetastream({ url, source: 'context-menu-video' })
+  }
 })
