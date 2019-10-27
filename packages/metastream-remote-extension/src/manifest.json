@@ -9,7 +9,7 @@
     "128": "icon128.png"
   },
   "browser_action": {
-    "default_action": "icon48.png"
+    "default_icon": "icon48.png"
   },
   "content_scripts": [
     {
