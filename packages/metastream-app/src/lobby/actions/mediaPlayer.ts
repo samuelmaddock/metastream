@@ -27,8 +27,8 @@ export const playPauseMedia = actionCreator<number>('PLAY_PAUSE_MEDIA')
 export const repeatMedia = actionCreator<number>('REPEAT_MEDIA')
 export const seekMedia = actionCreator<number>('SEEK_MEDIA')
 export const setMedia = actionCreator<IMediaItem>('SET_MEDIA')
-export const endMedia = actionCreator<void>('END_MEDIA')
-export const queueMedia = actionCreator<IMediaItem>('QUEUE_MEDIA')
+export const endMedia = actionCreator<boolean /* force */>('END_MEDIA')
+export const queueMedia = actionCreator<{ media: IMediaItem; index?: number }>('QUEUE_MEDIA')
 export const updateMedia = actionCreator<{ duration: number }>('UPDATE_MEDIA')
 export const deleteMedia = actionCreator<string>('DELETE_MEDIA')
 export const moveToTop = actionCreator<string>('MOVE_MEDIA_TO_TOP')
@@ -48,7 +48,7 @@ export const nextMedia = (force?: boolean): AppThunkAction => {
       if (!force && media.hasMore) {
         await dispatch(advanceMedia(media))
       } else {
-        dispatch(endMedia())
+        dispatch(endMedia(force))
         dispatch(updatePlaybackTimer())
       }
     }
@@ -149,25 +149,35 @@ export const multi_announceMediaChange = rpc(
   announceMediaChange
 )
 
-const enqueueMedia = (media: IMediaItem): AppThunkAction => {
-  return (dispatch, getState) => {
+const enqueueMedia = (media: IMediaItem, index?: number): AppThunkAction => {
+  return (dispatch, getState): boolean => {
     const state = getState()
     const current = getCurrentMedia(state)
+    let queued: boolean
 
     if (current) {
-      dispatch(queueMedia(media))
+      dispatch(queueMedia({ media, index }))
+      queued = true
     } else {
       dispatch(setMedia(media))
       dispatch(updatePlaybackTimer())
       dispatch(multi_announceMediaChange(media.id))
+      queued = false
     }
+
+    return queued
   }
 }
 
-export interface ClientMediaRequestOptions {
+interface MediaRequestOptions {
   url: string
-  source: string
   time?: number
+  /** Whether the media should be played immediately rather than queued. */
+  immediate?: boolean
+}
+
+export interface ClientMediaRequestOptions extends MediaRequestOptions {
+  source: string
 }
 
 export const sendMediaRequest = (opts: ClientMediaRequestOptions): AppThunkAction => {
@@ -177,13 +187,14 @@ export const sendMediaRequest = (opts: ClientMediaRequestOptions): AppThunkActio
       return null
     }
 
-    const requestPromise = dispatch(server_requestMedia({ url: opts.url, time: opts.time }))
+    const { source, ...serverOpts } = opts
+    const requestPromise = dispatch(server_requestMedia(serverOpts))
 
     const requestCount = parseInt(localStorage.getItem(StorageKey.RequestCount) || '0', 10) || 0
     localStorage.setItem(StorageKey.RequestCount, `${requestCount + 1}`)
 
     {
-      ga('event', { ec: 'session', ea: 'request_media', el: opts.source })
+      ga('event', { ec: 'session', ea: 'request_media', el: source })
 
       let host
       try {
@@ -216,23 +227,17 @@ export const sendMediaRequest = (opts: ClientMediaRequestOptions): AppThunkActio
   }
 }
 
-interface ServerMediaRequestOptions {
-  url: string
-  time?: number
-}
-
-const requestMedia = (opts: ServerMediaRequestOptions): RpcThunk<Promise<string | null>> => async (
+const requestMedia = (opts: MediaRequestOptions): RpcThunk<Promise<string | null>> => async (
   dispatch,
   getState,
   context
 ) => {
-  const state = getState()
-  if (state.mediaPlayer.queueLocked && !hasPlaybackPermissions(state, context.client)) {
-    return null
-  }
-
   const { url } = opts
-  console.info('Media request', url, context)
+  console.info('Media request', opts, context)
+
+  const state = getState()
+  if (state.mediaPlayer.queueLocked && !hasPlaybackPermissions(state, context.client)) return null
+  if (opts.immediate && !hasPlaybackPermissions(state, context.client)) return null
 
   let res
 
@@ -270,7 +275,12 @@ const requestMedia = (opts: ServerMediaRequestOptions): RpcThunk<Promise<string 
     media.state = res.state
   }
 
-  dispatch(enqueueMedia(media))
+  if (opts.immediate) {
+    const queued = (dispatch(enqueueMedia(media, 0)) as any) as boolean
+    if (queued) dispatch(nextMedia(true))
+  } else {
+    dispatch(enqueueMedia(media))
+  }
 
   return media.id
 }

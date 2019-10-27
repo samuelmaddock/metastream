@@ -296,7 +296,11 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
     const { pendingMedia } = this.props
     if (pendingMedia) {
       this.props.clearPendingMedia()
-      this.props.sendMediaRequest({ ...pendingMedia, source: 'pending' })
+      this.props.sendMediaRequest({
+        ...pendingMedia,
+        source: 'pending',
+        immediate: this.props.host
+      })
     }
   }
 }

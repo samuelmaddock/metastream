@@ -132,9 +132,10 @@ export const mediaPlayer: Reducer<IMediaPlayerState> = (
     let next
     let queue = state.queue
     const current = state.current
+    const force = action.payload
 
     if (current) {
-      if (state.repeatMode === RepeatMode.On) {
+      if ((force && state.repeatMode !== RepeatMode.Off) || state.repeatMode === RepeatMode.On) {
         queue = [...queue, current]
       } else if (state.repeatMode === RepeatMode.One) {
         queue = [current, ...queue]
@@ -186,10 +187,13 @@ export const mediaPlayer: Reducer<IMediaPlayerState> = (
         }
     }
   } else if (isType(action, queueMedia)) {
-    return {
-      ...state,
-      queue: [...state.queue, action.payload]
-    }
+    const { media, index } = action.payload
+
+    const queue = [...state.queue]
+    const queueIndex = typeof index === 'number' ? index : queue.length
+    queue.splice(queueIndex, 0, media)
+
+    return { ...state, queue }
   } else if (isType(action, repeatMedia)) {
     return {
       ...state,
