@@ -39,8 +39,8 @@ function onMessage(event: MessageEvent) {
   switch (data.type) {
     case 'metastream-extension-request':
       if (typeof data.payload === 'object') {
-        const { url, time } = data.payload
-        store.dispatch(setPendingMedia({ url, time: time ? time * SEC2MS : undefined }))
+        const { url, time, source } = data.payload
+        store.dispatch(setPendingMedia({ url, time: time ? time * SEC2MS : undefined, source }))
       }
       break
   }

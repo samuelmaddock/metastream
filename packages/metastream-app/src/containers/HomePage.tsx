@@ -10,6 +10,7 @@ import { replace } from 'react-router-redux'
 import { localUserId } from 'network'
 import { setPendingMedia } from 'lobby/actions/mediaPlayer'
 import { SEC2MS } from 'utils/math'
+import { PendingMedia } from 'lobby/reducers/mediaPlayer'
 
 interface IProps extends RouteComponentProps<any> {}
 
@@ -20,7 +21,7 @@ interface IConnectedProps {
 
 interface DispatchProps {
   showInstallPrompt(): void
-  setPendingMedia(url: string, time?: number): void
+  setPendingMedia(media: PendingMedia): void
 }
 
 function mapStateToProps(state: IAppState): IConnectedProps {
@@ -35,8 +36,8 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
   showInstallPrompt() {
     dispatch({ type: SHOW_INSTALL_PROMPT })
   },
-  setPendingMedia(url, time) {
-    dispatch(setPendingMedia({ url, time }))
+  setPendingMedia(media: PendingMedia) {
+    dispatch(setPendingMedia(media))
     dispatch(replace({ pathname: `/join/${localUserId()}`, search: '' }))
   }
 })
@@ -50,9 +51,10 @@ class _HomePage extends Component<PrivateProps> {
 
     const url = params.get('url')
     const time = parseInt(params.get('t') || '', 10) || undefined
+    const source = params.get('source') || undefined
 
     if (url) {
-      this.props.setPendingMedia(url, time ? time * SEC2MS : undefined)
+      this.props.setPendingMedia({ url, time: time ? time * SEC2MS : undefined, source })
     }
   }
 

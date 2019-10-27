@@ -65,6 +65,7 @@ export interface IMediaItem {
 export interface PendingMedia {
   url: string
   time?: number
+  source?: string
 }
 
 export const enum RepeatMode {
