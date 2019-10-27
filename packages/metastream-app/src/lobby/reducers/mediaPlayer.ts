@@ -57,6 +57,9 @@ export interface IMediaItem {
 
   /** Whether the item should continue as the next media */
   hasMore?: boolean
+
+  /** Time to start playback at. */
+  startTime?: number
 }
 
 export interface PendingMedia {
@@ -110,16 +113,20 @@ const initialState: IMediaPlayerState = {
   serverClockSkew: 0
 }
 
+const getMediaStartTime = (media: IMediaItem) =>
+  media.startTime ? Date.now() - media.startTime : Date.now()
+
 export const mediaPlayer: Reducer<IMediaPlayerState> = (
   state: IMediaPlayerState = initialState,
   action: any
 ) => {
   if (isType(action, setMedia)) {
+    const media = action.payload
     return {
       ...state,
       playback: PlaybackState.Playing,
-      current: action.payload,
-      startTime: Date.now()
+      current: media,
+      startTime: getMediaStartTime(media)
     }
   } else if (isType(action, endMedia)) {
     let next
@@ -145,7 +152,7 @@ export const mediaPlayer: Reducer<IMediaPlayerState> = (
       ...state,
       playback: next ? PlaybackState.Playing : PlaybackState.Idle,
       current: next,
-      startTime: next ? Date.now() : undefined,
+      startTime: next ? getMediaStartTime(next) : undefined,
       queue: queue
     }
   } else if (isType(action, playPauseMedia)) {

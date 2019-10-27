@@ -9,6 +9,7 @@ import { Dispatch } from 'redux'
 import { replace } from 'react-router-redux'
 import { localUserId } from 'network'
 import { setPendingMedia } from 'lobby/actions/mediaPlayer'
+import { SEC2MS } from 'utils/math'
 
 interface IProps extends RouteComponentProps<any> {}
 
@@ -51,7 +52,7 @@ class _HomePage extends Component<PrivateProps> {
     const time = parseInt(params.get('t') || '', 10) || undefined
 
     if (url) {
-      this.props.setPendingMedia(url, time)
+      this.props.setPendingMedia(url, time ? time * SEC2MS : undefined)
     }
   }
 

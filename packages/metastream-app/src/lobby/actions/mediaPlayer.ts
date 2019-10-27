@@ -262,7 +262,8 @@ const requestMedia = (opts: ServerMediaRequestOptions): RpcThunk<Promise<string 
     requestUrl: url,
     ownerId: userId,
     ownerName: getUserName(getState(), userId),
-    hasMore: res.hasMore
+    hasMore: res.hasMore,
+    startTime: opts.time && res.duration && opts.time < res.duration ? opts.time : undefined
   }
 
   if (res.state) {

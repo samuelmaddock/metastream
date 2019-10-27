@@ -20,6 +20,7 @@ import { PlatformService } from 'platform'
 import { initAnalytics } from './analytics'
 import { initLocale } from 'locale'
 import { setPendingMedia } from 'lobby/actions/mediaPlayer'
+import { SEC2MS } from 'utils/math'
 
 let store: Store<IAppState>
 let history: History
@@ -38,7 +39,8 @@ function onMessage(event: MessageEvent) {
   switch (data.type) {
     case 'metastream-badge-click':
       if (typeof data.payload === 'object') {
-        store.dispatch(setPendingMedia(data.payload))
+        const { url, time } = data.payload
+        store.dispatch(setPendingMedia({ url, time: time ? time * SEC2MS : undefined }))
       }
       break
   }
