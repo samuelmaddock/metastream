@@ -1,6 +1,6 @@
 import { actionCreator } from 'utils/redux'
 import shortid from 'shortid'
-import { IMediaItem, PlaybackState } from 'lobby/reducers/mediaPlayer'
+import { IMediaItem, PlaybackState, PendingMedia } from 'lobby/reducers/mediaPlayer'
 import { rpc, RpcRealm } from 'network/middleware/rpc'
 import { RpcThunk } from 'lobby/types'
 import { MediaThumbnailSize } from 'media/types'
@@ -34,6 +34,7 @@ export const deleteMedia = actionCreator<string>('DELETE_MEDIA')
 export const moveToTop = actionCreator<string>('MOVE_MEDIA_TO_TOP')
 export const lockQueue = actionCreator<void>('LOCK_QUEUE')
 export const updateServerClockSkew = actionCreator<number>('UPDATE_SERVER_CLOCK_SKEW')
+export const setPendingMedia = actionCreator<PendingMedia | undefined>('SET_PENDING_MEDIA')
 
 /** Media timer until playback ends. This assumes only one media player exists at a time.*/
 let mediaTimeoutId: number | null = null

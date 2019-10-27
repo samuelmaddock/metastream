@@ -11,7 +11,8 @@ import {
   deleteMedia,
   updateServerClockSkew,
   moveToTop,
-  lockQueue
+  lockQueue,
+  setPendingMedia
 } from 'lobby/actions/mediaPlayer'
 import { MediaType } from 'media/types'
 import { ReplicatedState } from '../../network/types'
@@ -58,6 +59,11 @@ export interface IMediaItem {
   hasMore?: boolean
 }
 
+export interface PendingMedia {
+  url: string
+  time?: number
+}
+
 export const enum RepeatMode {
   Off = 0,
   On,
@@ -80,6 +86,9 @@ export interface IMediaPlayerState {
 
   /** Local session save state. */
   localSnapshot?: IMediaPlayerState
+
+  /** Media pending to be queued */
+  pendingMedia?: PendingMedia
 }
 
 export const mediaPlayerReplicatedState: ReplicatedState<IMediaPlayerState> = {
@@ -220,6 +229,11 @@ export const mediaPlayer: Reducer<IMediaPlayerState> = (
       ...state,
       queueLocked: !state.queueLocked
     }
+  } else if (isType(action, setPendingMedia)) {
+    return {
+      ...state,
+      pendingMedia: action.payload
+    }
   }
 
   // Save session snapshot on disconnect
@@ -244,8 +258,10 @@ export const mediaPlayer: Reducer<IMediaPlayerState> = (
   // Restore session snapshot
   if (isType(action, initLobby) && action.payload.host && state.localSnapshot) {
     return {
+      ...state,
       ...initialState,
       ...state.localSnapshot,
+      localSnapshot: undefined,
       serverClockSkew: initialState.serverClockSkew
     }
   }

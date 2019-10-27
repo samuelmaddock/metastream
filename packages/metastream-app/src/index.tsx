@@ -19,6 +19,7 @@ import 'styles/app.global.css'
 import { PlatformService } from 'platform'
 import { initAnalytics } from './analytics'
 import { initLocale } from 'locale'
+import { setPendingMedia } from 'lobby/actions/mediaPlayer'
 
 let store: Store<IAppState>
 let history: History
@@ -27,6 +28,19 @@ let persistor: Persistor
 function renderComplete() {
   if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
     navigator.serviceWorker.register('/service-worker.js')
+  }
+}
+
+function onMessage(event: MessageEvent) {
+  const { data } = event
+  if (typeof data !== 'object' || typeof data.type !== 'string') return
+
+  switch (data.type) {
+    case 'metastream-badge-click':
+      if (typeof data.payload === 'object') {
+        store.dispatch(setPendingMedia(data.payload))
+      }
+      break
   }
 }
 
@@ -56,6 +70,7 @@ async function init() {
   await PlatformService.ready
 
   initAnalytics(store, history)
+  window.addEventListener('message', onMessage, false)
 
   render(
     <AppContainer>
