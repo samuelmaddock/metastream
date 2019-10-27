@@ -193,7 +193,13 @@
       theaterMode: false,
       mediaSessionProxy: true,
       syncOnBuffer: true,
-      seekThreshold: 100 /** Threshold before we'll seek. */
+      seekThreshold: 100 /** Threshold before we'll seek. */,
+      theaterModeSelectors: [
+        '#vilosCanvas', // crunchyroll subtitles
+        '.libassjs-canvas', // vrv subtitles
+        '.player-timedtext', // netflix
+        '.ytp-caption-segment' // youtube
+      ]
     }
 
     //===========================================================================
@@ -751,14 +757,8 @@
     let theaterModeStyle
 
     // Creates styles to hide all non-video elements in the document
-    function getFocusStyles(visibleTagName) {
-      const ignoredSelectors = [
-        visibleTagName,
-        '#vilosCanvas', // crunchyroll subtitles
-        '.libassjs-canvas', // vrv subtitles
-        '.player-timedtext', // netflix
-        '.ytp-caption-segment' // youtube
-      ]
+    function getFocusStyles(visibleTagName, selectors) {
+      const ignoredSelectors = [visibleTagName, ...selectors]
         .map(selector => `:not(${selector})`)
         .join('')
 
@@ -797,7 +797,7 @@ ${ignoredSelectors}:empty {
 
         const visibleTagName = target instanceof HTMLVideoElement ? 'video' : 'iframe'
         const style = document.createElement('style')
-        style.innerText = getFocusStyles(visibleTagName)
+        style.innerText = getFocusStyles(visibleTagName, playerSettings.theaterModeSelectors)
         theaterModeStyle = style
         document.head.appendChild(theaterModeStyle)
       } else if (!enable && theaterModeStyle) {
