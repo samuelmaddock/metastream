@@ -23,14 +23,14 @@
     // document.createElement proxy
     //=========================================================================
 
-    const mediaElements = (window.__metastreamMediaElements = new Set())
+    window.__metastreamMediaElements = new Set()
 
     // Proxy document.createElement to trap media elements created in-memory
     const origCreateElement = document.createElement
     const proxyCreateElement = function() {
       const element = origCreateElement.apply(document, arguments)
-      if (element instanceof HTMLMediaElement) {
-        mediaElements.add(element)
+      if (window.__metastreamMediaElements && element instanceof HTMLMediaElement) {
+        window.__metastreamMediaElements.add(element)
       }
       return element
     }
@@ -38,7 +38,7 @@
     document.createElement = proxyCreateElement
 
     setTimeout(() => {
-      mediaElements.clear()
+      window.__metastreamMediaElements.clear()
       window.__metastreamMediaElements = undefined
     }, INIT_TIMEOUT)
 
@@ -52,8 +52,7 @@
         const noop = () => {}
         const mediaSessionStub = {
           __installedByMetastreamRemote__: true,
-          setActionHandler: noop,
-          execActionHandler: noop
+          setActionHandler: noop
         }
         Object.defineProperty(window.navigator, 'mediaSession', {
           value: mediaSessionStub,
@@ -70,7 +69,7 @@
       const _setActionHandler = mediaSession.setActionHandler
       mediaSession.setActionHandler = function(name, handler) {
         mediaSession._handlers[name] = handler
-        if (_setActionHandler) _setActionHandler.apply(mediaSession, arguments)
+        _setActionHandler.apply(mediaSession, arguments)
       }
     }
 
