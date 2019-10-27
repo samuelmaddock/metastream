@@ -13,8 +13,9 @@
 
 const TOP_FRAME = 0
 const HEADER_PREFIX = 'x-metastream'
+const METASTREAM_APP_URL = 'https://app.getmetastream.com'
 const isMetastreamUrl = url =>
-  url.startsWith('https://app.getmetastream.com') ||
+  url.startsWith(METASTREAM_APP_URL) ||
   url.startsWith('http://localhost:8080') ||
   url.startsWith('https://localhost:8080')
 const isTopFrame = details => details.frameId === TOP_FRAME
@@ -97,6 +98,8 @@ const watchedTabs = new Set()
 
 // Store for active tabs state
 const tabStore = {}
+
+let lastActiveTabId
 
 //=============================================================================
 // Content scripts
@@ -489,6 +492,8 @@ chrome.runtime.onMessage.addListener((action, sender, sendResponse) => {
       break
     }
   }
+
+  lastActiveTabId = tabId
 })
 
 //=============================================================================
@@ -507,3 +512,67 @@ if (appContentScript) {
     })
   })
 }
+
+//=============================================================================
+// Add URL to session on badge click
+//=============================================================================
+
+const getMediaTimeInTab = tabId =>
+  new Promise(resolve => {
+    chrome.tabs.executeScript(
+      tabId,
+      {
+        file: '/get-media-time.js',
+        allFrames: true
+      },
+      results => {
+        let time = (results.length > 0 && !isNaN(results[0]) && results[0]) || undefined
+        resolve(time)
+      }
+    )
+  })
+
+chrome.browserAction.onClicked.addListener(async tab => {
+  const { id: tabId, url: requestUrl } = tab
+  if (tabId < 0) return
+
+  // ignore badge presses from Metastream tabs
+  if (watchedTabs.has(tabId)) return
+
+  const { protocol } = new URL(requestUrl)
+  if (protocol !== 'http:' && protocol !== 'https:') return
+
+  const currentTime = await getMediaTimeInTab(tabId)
+
+  console.log(`Opening URL in Metastream: ${requestUrl}${currentTime ? ` @ ${currentTime}` : ''}`)
+
+  const isMetastreamOpen = watchedTabs.size > 0
+  if (isMetastreamOpen) {
+    const targetTabId = watchedTabs.has(lastActiveTabId)
+      ? lastActiveTabId
+      : Array.from(watchedTabs)[0]
+    sendToHost(targetTabId, {
+      type: 'metastream-badge-click',
+      payload: { url: requestUrl, time: currentTime }
+    })
+    chrome.tabs.update(targetTabId, { active: true }) // focus tab
+  } else {
+    const url = [
+      `${METASTREAM_APP_URL}/`,
+      `?url=${encodeURIComponent(requestUrl)}`,
+      currentTime ? `&t=${currentTime}` : ''
+    ].join('')
+    chrome.tabs.create({ url })
+  }
+
+  // pause media in all non-metastream tabs
+  chrome.tabs.query({ audible: true }, tabs => {
+    tabs.forEach(({ id: tabId }) => {
+      if (watchedTabs.has(tabId)) return
+      chrome.tabs.executeScript(tabId, {
+        file: '/pause-media.js',
+        allFrames: true
+      })
+    })
+  })
+})
