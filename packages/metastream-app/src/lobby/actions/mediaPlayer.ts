@@ -164,24 +164,30 @@ const enqueueMedia = (media: IMediaItem): AppThunkAction => {
   }
 }
 
-export const sendMediaRequest = (url: string, source: string): AppThunkAction => {
+export interface ClientMediaRequestOptions {
+  url: string
+  source: string
+  time?: number
+}
+
+export const sendMediaRequest = (opts: ClientMediaRequestOptions): AppThunkAction => {
   return async (dispatch, getState) => {
     let state = getState()
     if (state.mediaPlayer.queueLocked && !hasPlaybackPermissions(state)) {
       return null
     }
 
-    const requestPromise = dispatch(server_requestMedia(url))
+    const requestPromise = dispatch(server_requestMedia({ url: opts.url, time: opts.time }))
 
     const requestCount = parseInt(localStorage.getItem(StorageKey.RequestCount) || '0', 10) || 0
     localStorage.setItem(StorageKey.RequestCount, `${requestCount + 1}`)
 
     {
-      ga('event', { ec: 'session', ea: 'request_media', el: source })
+      ga('event', { ec: 'session', ea: 'request_media', el: opts.source })
 
       let host
       try {
-        const urlObj = new URL(url)
+        const urlObj = new URL(opts.url)
         host = urlObj.host
         if (isIP(host)) {
           host = 'ipaddress'
@@ -204,13 +210,18 @@ export const sendMediaRequest = (url: string, source: string): AppThunkAction =>
         dispatch(addChat({ content, html: true, timestamp: Date.now() }))
       }
     } else {
-      const content = t('noticeMediaError', { url })
+      const content = t('noticeMediaError', { url: opts.url })
       dispatch(addChat({ content, html: true, timestamp: Date.now() }))
     }
   }
 }
 
-const requestMedia = (url: string): RpcThunk<Promise<string | null>> => async (
+interface ServerMediaRequestOptions {
+  url: string
+  time?: number
+}
+
+const requestMedia = (opts: ServerMediaRequestOptions): RpcThunk<Promise<string | null>> => async (
   dispatch,
   getState,
   context
@@ -220,6 +231,7 @@ const requestMedia = (url: string): RpcThunk<Promise<string | null>> => async (
     return null
   }
 
+  const { url } = opts
   console.info('Media request', url, context)
 
   let res

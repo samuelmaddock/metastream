@@ -64,7 +64,7 @@ const server_addChat = rpc('rpcAddChat', RpcRealm.Server, rpcAddChat)
 export const sendChat = (text: string): AppThunkAction => {
   return async (dispatch, getState) => {
     if (isUrl(text)) {
-      dispatch(sendMediaRequest(text, 'chat'))
+      dispatch(sendMediaRequest({ url: text, source: 'chat' }))
       return
     }
 

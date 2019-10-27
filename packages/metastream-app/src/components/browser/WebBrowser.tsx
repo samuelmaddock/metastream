@@ -86,7 +86,7 @@ export class _WebBrowser extends Component<PrivateProps> {
           initialUrl={this.initialUrl}
           onClose={this.props.onClose}
           onRequestUrl={url => {
-            this.props.dispatch(sendMediaRequest(url, 'browser'))
+            this.props.dispatch(sendMediaRequest({ url, source: 'browser' }))
 
             if (this.props.onClose) {
               this.props.onClose()

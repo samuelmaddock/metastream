@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import cx from 'classnames'
 
 import { VideoPlayer } from 'components/lobby/VideoPlayer'
-import { IMediaItem, PlaybackState } from 'lobby/reducers/mediaPlayer'
+import { IMediaItem, PlaybackState, PendingMedia } from 'lobby/reducers/mediaPlayer'
 import { Chat, ChatComponent } from 'components/chat'
 
 import styles from './GameLobby.css'
@@ -24,6 +24,11 @@ import { getNumUsers } from '../lobby/reducers/users.helpers'
 import { IReactReduxProps } from 'types/redux-thunk'
 import { ChatLocation } from './chat/Location'
 import { setSetting } from '../actions/settings'
+import {
+  setPendingMedia,
+  sendMediaRequest,
+  ClientMediaRequestOptions
+} from 'lobby/actions/mediaPlayer'
 
 interface IProps {
   host: boolean
@@ -41,12 +46,15 @@ interface IConnectedProps {
   modal?: LobbyModal
   isChatDocked: boolean
   isMultiplayer: boolean
+  pendingMedia?: PendingMedia
 }
 
 interface DispatchProps {
   registerMediaShortcuts(): void
   unregisterMediaShortcuts(): void
   closeLobbyModal(): void
+  clearPendingMedia(): void
+  sendMediaRequest(opts: ClientMediaRequestOptions): void
 }
 
 type PrivateProps = IProps & IConnectedProps & IReactReduxProps & DispatchProps
@@ -76,16 +84,18 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
 
   componentDidMount() {
     this.props.registerMediaShortcuts()
+    this.checkPendingMedia()
   }
 
   componentWillUnmount() {
     this.props.unregisterMediaShortcuts()
   }
 
-  componentWillUpdate(nextProps: PrivateProps) {
-    if (nextProps.modal && this.props.modal !== nextProps.modal) {
-      this.setState({ modal: nextProps.modal })
+  componentDidUpdate(prevProps: PrivateProps) {
+    if (this.props.modal && this.props.modal !== prevProps.modal) {
+      this.setState({ modal: this.props.modal })
     }
+    this.checkPendingMedia()
   }
 
   render(): JSX.Element {
@@ -281,6 +291,14 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
       this.props.closeLobbyModal()
     }
   }
+
+  private checkPendingMedia() {
+    const { pendingMedia } = this.props
+    if (pendingMedia) {
+      this.props.clearPendingMedia()
+      this.props.sendMediaRequest({ ...pendingMedia, source: 'pending' })
+    }
+  }
 }
 
 export const GameLobby = (connect(
@@ -290,12 +308,17 @@ export const GameLobby = (connect(
       playback: getPlaybackState(state),
       modal: state.ui.lobbyModal,
       isChatDocked: state.settings.chatLocation === ChatLocation.DockRight,
-      isMultiplayer: getNumUsers(state) > 1
+      isMultiplayer: getNumUsers(state) > 1,
+      pendingMedia: state.mediaPlayer.pendingMedia
     }
   },
   (dispatch: Function): DispatchProps => ({
     registerMediaShortcuts: () => dispatch(registerMediaShortcuts()),
     unregisterMediaShortcuts: () => dispatch(unregisterMediaShortcuts()),
-    closeLobbyModal: () => dispatch(setLobbyModal())
+    closeLobbyModal: () => dispatch(setLobbyModal()),
+    clearPendingMedia: () => dispatch(setPendingMedia()),
+    sendMediaRequest: (opts: ClientMediaRequestOptions) => {
+      dispatch(sendMediaRequest(opts))
+    }
   })
 )(_GameLobby) as any) as React.ComponentClass<IProps>

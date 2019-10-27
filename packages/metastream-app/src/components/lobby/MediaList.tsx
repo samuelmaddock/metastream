@@ -103,7 +103,10 @@ class _MediaList extends Component<Props> {
                 label: t('duplicate'),
                 onClick: () =>
                   this.props.dispatch!(
-                    sendMediaRequest(media.requestUrl, 'media-context-menu-duplicate')
+                    sendMediaRequest({
+                      url: media.requestUrl,
+                      source: 'media-context-menu-duplicate'
+                    })
                   )
               },
               {
