@@ -38,8 +38,10 @@
     document.createElement = proxyCreateElement
 
     setTimeout(() => {
-      window.__metastreamMediaElements.clear()
-      window.__metastreamMediaElements = undefined
+      if (window.__metastreamMediaElements) {
+        window.__metastreamMediaElements.clear()
+        window.__metastreamMediaElements = undefined
+      }
     }, INIT_TIMEOUT)
 
     //=========================================================================
@@ -56,6 +58,15 @@
         }
         Object.defineProperty(window.navigator, 'mediaSession', {
           value: mediaSessionStub,
+          enumerable: false,
+          writable: true
+        })
+
+        function MediaMetadata(metadata) {
+          Object.assign(this, metadata)
+        }
+        Object.defineProperty(window, 'MediaMetadata', {
+          value: MediaMetadata,
           enumerable: false,
           writable: true
         })
