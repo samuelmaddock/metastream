@@ -70,7 +70,7 @@ export class Message extends PureComponent<IProps> {
     return (
       <li className={styles.message}>
         {timestamp && (
-          <MonospaceText component="time" className={styles.timestamp} datetime={timestamp}>
+          <MonospaceText component="time" className={styles.timestamp} dateTime={timestamp}>
             {timestamp}
           </MonospaceText>
         )}
