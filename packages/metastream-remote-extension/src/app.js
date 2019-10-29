@@ -37,6 +37,7 @@
 
   // Listen for events to forward to background script
   window.addEventListener('message', event => {
+    if (event.origin !== location.origin) return
     const { data: action } = event
     if (typeof action !== 'object' || typeof action.type !== 'string' || action.__internal) return
 

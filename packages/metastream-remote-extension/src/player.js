@@ -15,6 +15,7 @@
   // Listen for events from the main world to forward to the
   // background process
   const eventMiddleware = event => {
+    if (event.origin !== location.origin) return
     const { data: action } = event
     if (typeof action !== 'object' || typeof action.type !== 'string') return
     if (action.type.startsWith('metastream-')) {
