@@ -1,12 +1,11 @@
-import SimplePeer, { SimplePeerData } from 'simple-peer'
+import SimplePeer from 'simple-peer'
 import createClient, { SignalClient } from '@metastream/signal-server/lib/client'
 import { SignalErrorCode } from '@metastream/signal-server/lib/types'
 
-import shortid from 'shortid'
 import sodium from 'libsodium-wrappers'
 import { backOff } from 'exponential-backoff'
 
-import { NetUniqueId, localUserId, localUser } from 'network'
+import { NetUniqueId, localUser } from 'network'
 import { PeerCoordinator } from 'network/server'
 import { RTCPeerConn } from 'network/rtc'
 import { mutualHandshake } from './authenticate'
@@ -202,7 +201,7 @@ export class WebRTCPeerCoordinator extends PeerCoordinator {
     const userPublicKey = await mutualHandshake(peer, localUser().id, peerPublicKey)
 
     if (!userPublicKey) {
-      const addr = peer.address()
+      const addr = `${(peer as any).remoteAddress}:${(peer as any).remotePort}`
       peer.destroy()
       throw new NetworkError(
         NetworkErrorCode.PeerAuthenticationFailure,

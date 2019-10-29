@@ -40,7 +40,7 @@
     "@types/request": "^2.0.6",
     "@types/semver": "^5.5.0",
     "@types/shortid": "^0.0.29",
-    "@types/simple-peer": "^6.1.4",
+    "@types/simple-peer": "^6.1.6",
     "autoprefixer": "^9.6.0",
     "awesome-typescript-loader": "^5.2.1",
     "chalk": "^1.1.3",

@@ -67,10 +67,10 @@ export class RTCPeerConn extends NetConnection {
   }
 
   getIP(): string {
-    return this.peer.address().address
+    return (this.peer as any).remoteAddress
   }
 
   getPort(): string {
-    return this.peer.address().port
+    return (this.peer as any).remotePort
   }
 }
