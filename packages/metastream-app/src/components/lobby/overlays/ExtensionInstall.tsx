@@ -4,7 +4,6 @@ import cx from 'classnames'
 import styles from './ExtensionInstall.css'
 import { IReactReduxProps } from 'types/redux-thunk'
 import { checkExtensionInstall } from 'actions/ui'
-import { HighlightButton } from '../common/button'
 
 interface IProps {
   className?: string
