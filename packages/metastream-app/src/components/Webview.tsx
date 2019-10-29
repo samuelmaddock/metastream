@@ -10,6 +10,8 @@ import { isFirefox } from '../utils/browser'
  */
 const swFixOrigins = new Set(['https://www.netflix.com'])
 
+const NAVIGATION_TIMEOUT_DURATION = 2000 // TODO: increase for slow connections?
+
 interface Props {
   src?: string
   className?: string
@@ -18,15 +20,22 @@ interface Props {
   allowScripts?: boolean
 }
 
+interface State {
+  timeout?: boolean
+}
+
 let webviewId = 0
 
-export class Webview extends Component<Props> {
+export class Webview extends Component<Props, State> {
+  state: State = {}
+
   private id = webviewId++
   private frameId = -1
   private emitter = new EventEmitter()
   private iframe: HTMLIFrameElement | null = null
   private url: string = 'about:blank'
   private didFixSW: boolean = false
+  private navigateTimeoutId?: number
 
   private get initialUrl() {
     return `about:blank?webview=${this.id}&allowScripts=${!!this.props.allowScripts}`
@@ -85,21 +94,26 @@ export class Webview extends Component<Props> {
     }
 
     if (data.type === 'metastream-webview-event') {
-      const action = data.payload
-
-      if (typeof action.payload === 'object' && typeof action.payload.url === 'string') {
-        this.url = action.payload.url
-      }
-
-      if (action.type === 'activity') {
-        this.onIFrameActivity()
-      }
-
-      // Whether the message was sent from the top subframe
-      const isTopSubFrame = framePath[framePath.length - 1] === this.frameId
-
-      this.emitter.emit(action.type, action.payload, isTopSubFrame)
+      this.onWebviewMessage(data.payload, framePath)
     }
+  }
+
+  private onWebviewMessage(action: any, framePath: any) {
+    // if we receive a message from the frame, we know we were able to connect
+    this.clearNavigateTimeout()
+
+    if (typeof action.payload === 'object' && typeof action.payload.url === 'string') {
+      this.url = action.payload.url
+    }
+
+    if (action.type === 'activity') {
+      this.onIFrameActivity()
+    }
+
+    // Whether the message was sent from the top subframe
+    const isTopSubFrame = framePath[framePath.length - 1] === this.frameId
+
+    this.emitter.emit(action.type, action.payload, isTopSubFrame)
   }
 
   private onInitialized() {
@@ -108,6 +122,7 @@ export class Webview extends Component<Props> {
     }
 
     this.emitter.on('will-navigate', this.willNavigate)
+    this.emitter.on('did-navigate', this.didNavigate)
     this.emitter.emit('ready')
   }
 
@@ -159,11 +174,36 @@ export class Webview extends Component<Props> {
     })
   }
 
+  private clearNavigateTimeout() {
+    if (this.navigateTimeoutId) {
+      clearTimeout(this.navigateTimeoutId)
+      this.navigateTimeoutId = undefined
+    }
+    if (this.state.timeout) this.setState({ timeout: false })
+  }
+
+  private onNavigateTimeout = () => {
+    this.clearNavigateTimeout()
+    this.setState({ timeout: true })
+  }
+
+  private startNavigateTimeout() {
+    this.clearNavigateTimeout()
+    this.navigateTimeoutId = setTimeout(this.onNavigateTimeout, NAVIGATION_TIMEOUT_DURATION) as any
+  }
+
   private willNavigate = ({ url }: { url: string }) => {
     if (process.env.NODE_ENV === 'development') {
       // TODO(samuelmaddock): only fix service worker if page fails to load after timeout
       // this.fixServiceWorker(url)
     }
+
+    this.clearNavigateTimeout()
+    this.startNavigateTimeout()
+  }
+
+  private didNavigate = () => {
+    this.clearNavigateTimeout()
   }
 
   componentWillUnmount() {
@@ -181,21 +221,28 @@ export class Webview extends Component<Props> {
     }
 
     return (
-      <iframe
-        ref={e => {
-          this.iframe = e
-          if (componentRef) {
-            componentRef(e ? this : null)
-          }
-        }}
-        allow={this.featurePolicy}
-        sandbox={this.sandboxPolicy}
-        src={this.initialUrl}
-        // Required for Firefox until it supports allow attribute
-        allowFullScreen
-        {...untypedProps}
-        {...rest}
-      />
+      <>
+        <iframe
+          ref={e => {
+            this.iframe = e
+            if (componentRef) {
+              componentRef(e ? this : null)
+            }
+          }}
+          allow={this.featurePolicy}
+          sandbox={this.sandboxPolicy}
+          src={this.initialUrl}
+          // Required for Firefox until it supports allow attribute
+          allowFullScreen
+          {...untypedProps}
+          {...rest}
+        />
+        {this.state.timeout
+          ? {
+              /* TODO: display timeout overlay */
+            }
+          : null}
+      </>
     )
   }
 
