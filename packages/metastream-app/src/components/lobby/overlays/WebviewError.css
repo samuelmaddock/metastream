@@ -1,6 +1,6 @@
 .container {
   composes: fill-center from '~styles/layout.css';
-  background: linear-gradient(0deg, rgba(255, 0, 0, 0.5), var(--color-transparent-dark-50));
+  background: linear-gradient(0deg, rgba(222, 121, 121, 0.5), var(--color-transparent-dark-50));
   text-align: left;
   padding: 2rem;
 }

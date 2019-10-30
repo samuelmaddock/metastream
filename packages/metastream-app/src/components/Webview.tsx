@@ -13,7 +13,8 @@ import styles from './Webview.css'
  */
 const swFixOrigins = new Set(['https://www.netflix.com'])
 
-const NAVIGATION_TIMEOUT_DURATION = 2000 // TODO: increase for slow connections?
+const INITIALIZE_TIMEOUT_DURATION = 1000
+const NAVIGATION_TIMEOUT_DURATION = 2000
 
 interface Props {
   src?: string
@@ -39,6 +40,7 @@ export class Webview extends Component<Props, State> {
   private url: string = 'about:blank'
   private didFixSW: boolean = false
   private navigateTimeoutId?: number
+  private initializeTimeoutId?: number
 
   private get initialUrl() {
     return `about:blank?webview=${this.id}&allowScripts=${!!this.props.allowScripts}`
@@ -120,7 +122,30 @@ export class Webview extends Component<Props, State> {
     this.emitter.emit(action.type, action.payload, isTopSubFrame)
   }
 
+  private clearInitializeTimeout() {
+    if (this.initializeTimeoutId) {
+      clearTimeout(this.initializeTimeoutId)
+      this.initializeTimeoutId = undefined
+    }
+    if (this.state.timeout) this.setState({ timeout: false })
+  }
+
+  private onInitializeTimeout = () => {
+    this.clearInitializeTimeout()
+    this.setState({ timeout: true })
+  }
+
+  private startInitializeTimeout() {
+    this.clearInitializeTimeout()
+    this.initializeTimeoutId = setTimeout(
+      this.onInitializeTimeout,
+      INITIALIZE_TIMEOUT_DURATION
+    ) as any
+  }
+
   private onInitialized() {
+    this.clearInitializeTimeout()
+
     if (this.props.src) {
       this.loadURL(this.props.src)
     }
@@ -213,6 +238,10 @@ export class Webview extends Component<Props, State> {
   componentWillUnmount() {
     window.removeEventListener('message', this.onMessage)
     this.emitter.removeAllListeners()
+  }
+
+  componentDidMount() {
+    this.startInitializeTimeout()
   }
 
   render() {
