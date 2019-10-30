@@ -3,6 +3,19 @@
 //
 
 ;(function() {
+  const throttle = (func, limit) => {
+    let inThrottle
+    return function() {
+      const args = arguments
+      const context = this
+      if (!inThrottle) {
+        func.apply(context, args)
+        inThrottle = true
+        setTimeout(() => (inThrottle = false), limit)
+      }
+    }
+  }
+
   chrome.runtime.onMessage.addListener(action => {
     if (typeof action !== 'object' || typeof action.type !== 'string') return
     switch (action.type) {
@@ -18,18 +31,10 @@
     }
   })
 
-  const throttle = (func, limit) => {
-    let inThrottle
-    return function() {
-      const args = arguments
-      const context = this
-      if (!inThrottle) {
-        func.apply(context, args)
-        inThrottle = true
-        setTimeout(() => (inThrottle = false), limit)
-      }
-    }
-  }
+  chrome.runtime.sendMessage({
+    type: 'metastream-webview-event',
+    payload: { type: 'load-script' }
+  })
 
   // Forward activity signal to top frame
   // Used for determining inactivity in interactive mode and for verifying

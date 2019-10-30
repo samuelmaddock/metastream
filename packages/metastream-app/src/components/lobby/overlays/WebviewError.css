@@ -1,0 +1,34 @@
+.container {
+  composes: fill-center from '~styles/layout.css';
+  background: linear-gradient(0deg, rgba(255, 0, 0, 0.5), var(--color-transparent-dark-50));
+  text-align: left;
+  padding: 2rem;
+}
+
+p.emoji {
+  font-size: 3rem;
+  line-height: 3.5rem;
+}
+
+.fullUrl {
+  composes: select-text from '~styles/text.css';
+  background: var(--color-transparent-dark-30);
+  padding: 0.5rem 0.8rem;
+  margin: 0 !important;
+  word-break: break-all;
+  max-width: 50rem;
+  border-radius: 4px;
+}
+
+.list {
+  margin-top: 1rem;
+  list-style: decimal;
+}
+
+.list li {
+  margin-top: 0.5rem;
+}
+
+.list li:first-child {
+  margin-top: 0;
+}

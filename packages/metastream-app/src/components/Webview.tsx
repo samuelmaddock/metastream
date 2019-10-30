@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
+import cx from 'classnames'
 import { EventEmitter } from 'events'
 import { isFirefox } from '../utils/browser'
+import { WebviewError } from './lobby/overlays/WebviewError'
+import styles from './Webview.css'
 
 /**
  * List of hostnames to apply service worker fix to.
@@ -99,15 +102,16 @@ export class Webview extends Component<Props, State> {
   }
 
   private onWebviewMessage(action: any, framePath: any) {
-    // if we receive a message from the frame, we know we were able to connect
-    this.clearNavigateTimeout()
-
     if (typeof action.payload === 'object' && typeof action.payload.url === 'string') {
       this.url = action.payload.url
     }
 
     if (action.type === 'activity') {
       this.onIFrameActivity()
+    } else {
+      // if we receive a message from the frame, we know we were able to connect
+      // ignore 'activity' since it's delayed
+      this.clearNavigateTimeout()
     }
 
     // Whether the message was sent from the top subframe
@@ -212,7 +216,7 @@ export class Webview extends Component<Props, State> {
   }
 
   render() {
-    const { componentRef, src, allowScripts, ...rest } = this.props
+    const { componentRef, src, allowScripts, className, ...rest } = this.props
 
     // TODO(samuelmaddock): Update React and types so these props can be passed in
     const untypedProps: any = {
@@ -221,7 +225,7 @@ export class Webview extends Component<Props, State> {
     }
 
     return (
-      <>
+      <div className={cx(className, styles.container)}>
         <iframe
           ref={e => {
             this.iframe = e
@@ -234,15 +238,12 @@ export class Webview extends Component<Props, State> {
           src={this.initialUrl}
           // Required for Firefox until it supports allow attribute
           allowFullScreen
+          className={styles.webview}
           {...untypedProps}
           {...rest}
         />
-        {this.state.timeout
-          ? {
-              /* TODO: display timeout overlay */
-            }
-          : null}
-      </>
+        {this.state.timeout ? <WebviewError className={styles.error} url={this.url} /> : null}
+      </div>
     )
   }
 
