@@ -574,7 +574,19 @@
     const AUTOPLAY_TIMEOUT = 3000
     let autoplayTimerId = -1
 
-    const attemptAutoplay = () => {
+    // Popular enough player that it's worth a try
+    const playJwPlayer = () => {
+      if (typeof jwplayer === 'function') {
+        try {
+          const player = jwplayer()
+          player.play()
+          return true
+        } catch (e) {}
+      }
+    }
+
+    // Just maybe we can programmatically trigger playback with a fake click
+    const clickPlayButton = () => {
       function descRectArea(a, b) {
         const areaA = a.width * a.height
         const areaB = b.width * b.height
@@ -600,6 +612,11 @@
         console.debug('Attempting autoplay click', playButton)
         playButton.click()
       }
+    }
+
+    const attemptAutoplay = () => {
+      if (playJwPlayer()) return
+      clickPlayButton()
     }
 
     //===========================================================================
