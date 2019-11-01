@@ -64,6 +64,11 @@
         writable: true
       })
     } catch (e) {}
+
+    // Fix for sandboxed iframe detection
+    Object.defineProperty(HTMLObjectElement.prototype, 'onerror', {
+      set: () => {}
+    })
   }
 
   const script = document.createElement('script')
