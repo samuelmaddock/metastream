@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
-import { EventEmitter } from 'events'
-import { isFirefox } from '../utils/browser'
 
 interface Props {
   id: number
   src: string
   theRef: (e: true | null) => void
+  onClose: Function
 }
 
 interface State {
@@ -15,25 +14,47 @@ interface State {
 export class PopupWindow extends Component<Props, State> {
   state: State = { open: false }
 
-  private window: Window | null = null
+  static windowRef: Window | null = null
+
+  static loadURL(url: string) {
+    if (this.windowRef) {
+      this.windowRef.location.href = url
+    }
+  }
+
+  static focus() {
+    if (this.windowRef) {
+      this.windowRef.focus()
+    }
+  }
+
   private intervalId?: number
+
+  private get window() {
+    return PopupWindow.windowRef
+  }
+
+  componentWillMount() {
+    this.openWindow()
+  }
 
   componentWillUnmount() {
     if (this.window) {
       this.window.close()
-      this.window = null
+      PopupWindow.windowRef = null
     }
   }
 
   private checkClosed = () => {
     if (this.window && this.window.closed) {
       this.setState({ open: false })
-      this.window = null
+      PopupWindow.windowRef = null
 
       clearInterval(this.intervalId)
       this.intervalId = undefined
 
       this.props.theRef(null)
+      this.props.onClose()
     }
   }
 
@@ -50,8 +71,7 @@ export class PopupWindow extends Component<Props, State> {
 
     setTimeout(() => {
       const features = ['resizable', 'scrollbars=no', 'status=no', 'width=1280', 'height=720']
-      this.window = window.open(this.props.src, 'targetWindow', features.join(','))
-      ;(window as any).POPUP = this.window
+      PopupWindow.windowRef = window.open(this.props.src, 'targetWindow', features.join(','))
 
       if (this.window) {
         this.setState({ open: true })
@@ -79,18 +99,6 @@ export class PopupWindow extends Component<Props, State> {
       )
     }
 
-    return (
-      <div
-        style={{
-          width: '100%',
-          height: '100%',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}
-      >
-        <button onClick={this.openWindow}>Open popup player</button>
-      </div>
-    )
+    return null
   }
 }

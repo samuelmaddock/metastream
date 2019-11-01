@@ -21,6 +21,7 @@ import { getPlayerSettings, PlayerSettings } from '../../reducers/settings'
 import { safeBrowse } from 'services/safeBrowse'
 import { SafeBrowsePrompt } from './overlays/SafeBrowsePrompt'
 import { localUserId } from 'network'
+import { setPopupPlayer } from 'actions/ui'
 
 type MediaReadyPayload = {
   duration?: number
@@ -62,6 +63,7 @@ interface IConnectedProps extends IMediaPlayerState {
   isExtensionInstalled: boolean
   playerSettings: PlayerSettings
   safeBrowseEnabled: boolean
+  popupPlayer?: boolean
 }
 
 interface IState {
@@ -80,7 +82,8 @@ const mapStateToProps = (state: IAppState): IConnectedProps => {
     host: isHost(state),
     isExtensionInstalled: state.ui.isExtensionInstalled,
     playerSettings: getPlayerSettings(state),
-    safeBrowseEnabled: state.settings.safeBrowse
+    safeBrowseEnabled: state.settings.safeBrowse,
+    popupPlayer: state.ui.popupPlayer
   }
 }
 
@@ -362,7 +365,10 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
           [styles.mediaReady]: this.state.mediaReady
         })}
         allowScripts
-        popup
+        popup={this.props.popupPlayer}
+        onClosePopup={() => {
+          this.props.dispatch(setPopupPlayer(false))
+        }}
       />
     )
   }

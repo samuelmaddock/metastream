@@ -25,9 +25,10 @@ import { Timeline } from 'components/media/Timeline'
 
 import { MoreButton } from 'components/media/MoreButton'
 import { IconButton } from 'components/common/button'
-import { absoluteUrl } from 'utils/appUrl'
 import { t } from 'locale'
 import { IReactReduxProps } from 'types/redux-thunk'
+import { setPopupPlayer } from 'actions/ui'
+import { PopupWindow } from 'components/Popup'
 
 const Button: React.SFC<{
   className?: string
@@ -221,12 +222,23 @@ class _PlaybackControls extends Component<PrivateProps> {
   }
 
   private renderMenu() {
-    const { current: media, playback } = this.props
+    const { current: media } = this.props
 
     const mediaButtons = media && (
       <>
         <hr className={styles.menuDivider} />
 
+        {process.env.NODE_ENV === 'development' ? (
+          <ButtonListItem
+            icon="external-link"
+            onClick={() => {
+              PopupWindow.focus()
+              this.props.dispatch(setPopupPlayer(true))
+            }}
+          >
+            Open in popup
+          </ButtonListItem>
+        ) : null}
         <ButtonListItem icon="external-link" onClick={this.openLink}>
           {t('openInBrowser')}
         </ButtonListItem>

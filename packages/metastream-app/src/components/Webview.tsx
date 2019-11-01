@@ -25,6 +25,7 @@ interface Props {
   allowScripts?: boolean
   /** Whether this webview should use a popup window. */
   popup?: boolean
+  onClosePopup?: Function
 }
 
 interface State {
@@ -241,6 +242,12 @@ export class Webview extends Component<Props, State> {
     this.clearNavigateTimeout()
   }
 
+  componentWillReceiveProps(nextProps: Props) {
+    if (this.props.popup !== nextProps.popup) {
+      this.id = webviewId++
+    }
+  }
+
   componentWillUnmount() {
     window.removeEventListener('message', this.onMessage)
     this.emitter.removeAllListeners()
@@ -269,6 +276,7 @@ export class Webview extends Component<Props, State> {
           }}
           id={this.id}
           src={this.initialUrl}
+          onClose={this.props.onClosePopup!}
         />
       )
     }
@@ -320,11 +328,7 @@ export class Webview extends Component<Props, State> {
   loadURL(url: string, opts: { httpReferrer?: string; userAgent?: string } = {}) {
     this.url = url
     if (this.iframe) this.iframe.src = url
-
-    if (this.props.popup) {
-      // TODO: don't use global ref
-      ;(window as any).POPUP.location.href = url
-    }
+    else if (this.props.popup) PopupWindow.loadURL(url)
   }
 
   getURL() {
