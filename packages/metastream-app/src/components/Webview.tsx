@@ -258,7 +258,7 @@ export class Webview extends Component<Props, State> {
   }
 
   render() {
-    const { componentRef, src, allowScripts, className, ...rest } = this.props
+    const { componentRef, src, allowScripts, className, onClosePopup, ...rest } = this.props
 
     // TODO(samuelmaddock): Update React and types so these props can be passed in
     const untypedProps: any = {
@@ -276,7 +276,7 @@ export class Webview extends Component<Props, State> {
           }}
           id={this.id}
           src={this.initialUrl}
-          onClose={this.props.onClosePopup!}
+          onClose={onClosePopup!}
         />
       )
     }
