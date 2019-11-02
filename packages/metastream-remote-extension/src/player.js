@@ -584,6 +584,23 @@
         } catch (e) {}
       }
     }
+    const playVideoJS = () => {
+      if (typeof videojs === 'function') {
+        try {
+          const { players } = videojs
+          const playerIds = Object.keys(players)
+          playerIds.forEach(id => players[id].play())
+          return playerIds.length > 0
+        } catch (e) {}
+      }
+    }
+    const pressStart = () => {
+      const { start } = window
+      if (start instanceof HTMLElement) {
+        start.click()
+        return true
+      }
+    }
 
     // Just maybe we can programmatically trigger playback with a fake click
     const clickPlayButton = () => {
@@ -601,12 +618,21 @@
       const rects = videos.map(video => video.getBoundingClientRect())
       rects.sort(descRectArea)
 
+      let playButton
+
       // Assumes largest video rect is most relevant
       const rect = rects[0]
-      const playButton = document.elementFromPoint(
-        rect.x + rect.width / 2,
-        rect.y + rect.height / 2
-      )
+      if (rect.width * rect.height > 0) {
+        playButton = document.elementFromPoint(rect.x + rect.width / 2, rect.y + rect.height / 2)
+      } else {
+        // try center of frame instead
+        playButton = document.elementFromPoint(window.innerWidth / 2, window.innerHeight / 2)
+      }
+
+      // In case we land on an SVG element, keep traversing up
+      while (playButton && !(playButton instanceof HTMLElement) && playButton.parentNode) {
+        playButton = playButton.parentNode
+      }
 
       if (playButton instanceof HTMLButtonElement || playButton instanceof HTMLDivElement) {
         console.debug('Attempting autoplay click', playButton)
@@ -614,8 +640,11 @@
       }
     }
 
+    // Try different methods of initiating playback
     const attemptAutoplay = () => {
       if (playJwPlayer()) return
+      if (playVideoJS()) return
+      if (pressStart()) return
       clickPlayButton()
     }
 
