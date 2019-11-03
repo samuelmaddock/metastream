@@ -58,7 +58,7 @@ const getFramePath = async (tabId, frameId) => {
       const details = { tabId, frameId: currentFrameId }
       chrome.webNavigation.getFrame(details, details => {
         if (chrome.runtime.lastError) {
-          console.error(`Error in getFramePath: ${chrome.runtime.lastError}`)
+          console.error(`Error in getFramePath: ${chrome.runtime.lastError.message}`)
           resolve()
           return
         }
@@ -290,6 +290,7 @@ const initializeWebview = details => {
   }
 }
 
+// TODO: error injecting scripts into popup windows
 const executeScript = (opts, attempt = 0) => {
   chrome.tabs.executeScript(
     opts.tabId,
@@ -300,7 +301,7 @@ const executeScript = (opts, attempt = 0) => {
     },
     result => {
       if (chrome.runtime.lastError) {
-        console.log(`executeScript error [${opts.file}]: ${chrome.runtime.lastError}`)
+        console.log(`executeScript error [${opts.file}]: ${chrome.runtime.lastError.message}`)
         if (opts.retry !== false) {
           if (attempt < 20) {
             setTimeout(() => executeScript(opts, attempt + 1), 5)
