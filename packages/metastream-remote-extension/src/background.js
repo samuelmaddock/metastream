@@ -117,6 +117,10 @@ const CONTENT_SCRIPTS = [
   {
     matches: ['https://www.dcuniverse.com/*'],
     file: '/scripts/dcuniverse.js'
+  },
+  {
+    matches: ['https://docs.google.com/*', 'https://drive.google.com/*'],
+    file: '/scripts/googledrive.js'
   }
 ]
 
