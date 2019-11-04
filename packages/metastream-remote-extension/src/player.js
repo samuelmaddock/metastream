@@ -103,6 +103,21 @@
   }
 
   //=============================================================================
+  // Popup player enhancements
+  //=============================================================================
+
+  window.addEventListener('DOMContentLoaded', () => {
+    // only apply to top frame player, aka popup player
+    if (window.top !== window.self) return
+
+    const style = document.createElement('style')
+    style.innerHTML = `body { background: #000 !important; }`
+    if (document.head) {
+      document.head.appendChild(style)
+    }
+  })
+
+  //=============================================================================
   // Main world script - modifies media in the main browser context.
   //=============================================================================
 
@@ -805,7 +820,7 @@
 
     // Creates styles to hide all non-video elements in the document
     function getFocusStyles(visibleTagName, selectors) {
-      const ignoredSelectors = [visibleTagName, ...selectors]
+      const ignoredSelectors = [visibleTagName, 'body', ...selectors]
         .map(selector => `:not(${selector})`)
         .join('')
 
@@ -844,7 +859,7 @@ ${ignoredSelectors}:empty {
 
         const visibleTagName = target instanceof HTMLVideoElement ? 'video' : 'iframe'
         const style = document.createElement('style')
-        style.innerText = getFocusStyles(visibleTagName, playerSettings.theaterModeSelectors)
+        style.innerHTML = getFocusStyles(visibleTagName, playerSettings.theaterModeSelectors)
         theaterModeStyle = style
         document.head.appendChild(theaterModeStyle)
       } else if (!enable && theaterModeStyle) {
