@@ -32,7 +32,11 @@ class UpdateService extends EventEmitter {
     }
   }
 
-  update = () => {
+  update = async () => {
+    // unregister all service workers to clear cache
+    const registrations = await navigator.serviceWorker.getRegistrations()
+    await Promise.all(registrations.map(registration => registration.unregister()))
+
     window.location.reload(true)
   }
 }
