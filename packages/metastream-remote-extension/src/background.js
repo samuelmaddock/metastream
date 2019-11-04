@@ -487,14 +487,19 @@ const request = async (tabId, requestId, url, options) => {
 const handleWebviewEvent = async (sender, action) => {
   const { frameId } = sender
   const { id: tabId } = sender.tab
+
+  // popups always send webview events back to host app
+  if (popupTabs.has(tabId)) {
+    const parentId = popupParentTabs[tabId]
+    sendWebviewEventToHost(parentId, TOP_FRAME, action.payload)
+    return
+  }
+
   if (isTopFrame(sender)) {
-    if (popupTabs.has(tabId)) {
-      const parentId = popupParentTabs[tabId]
-      sendWebviewEventToHost(parentId, frameId, action.payload)
-    } else {
-      sendToFrame(action.tabId || tabId, action.frameId, action.payload)
-    }
+    // sent from app
+    sendToFrame(action.tabId || tabId, action.frameId, action.payload)
   } else {
+    // sent from embedded frame
     sendWebviewEventToHost(tabId, frameId, action.payload)
   }
 }

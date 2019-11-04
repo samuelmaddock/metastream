@@ -244,7 +244,8 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     this.dispatchMedia('set-settings', this.props.playerSettings)
 
     // Apply auto-fullscreen to all subframes with nested iframes
-    if (!isTopSubFrame && payload) {
+    const isValidFrameSender = !isTopSubFrame || this.props.popupPlayer
+    if (isValidFrameSender && payload) {
       this.dispatchMedia('apply-fullscreen', payload.href)
     }
 
