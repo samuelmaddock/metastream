@@ -9,6 +9,7 @@
     "build": "cross-env NODE_ENV=production webpack-cli --config webpack.config.prod.js",
     "start": "cross-env NODE_ENV=development webpack-dev-server --config webpack.config.dev.js",
     "start:https": "cross-env NODE_ENV=development USE_HTTPS=1 webpack-dev-server --config webpack.config.dev.js",
+    "start:firefox": "cross-env PORT=80 NODE_ENV=development webpack-dev-server --config webpack.config.dev.js",
     "test": "jest",
     "test:watch": "jest --watch"
   },

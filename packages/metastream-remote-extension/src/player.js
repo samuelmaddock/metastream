@@ -302,7 +302,7 @@
 
     const { mediaSession } = window.navigator
 
-    const MediaMetadata = window.MediaMetadata || Object.create(null)
+    const MediaMetadata = window.MediaMetadata || Object
     window.MediaMetadata = class MetastreamMediaMetadata extends MediaMetadata {
       constructor(metadata) {
         super(metadata)
@@ -314,7 +314,7 @@
       constructor() {
         // inherit proxy fields from first.js
         this._metadata = null
-        this._handlers = { ...mediaSession._handlers } || {}
+        this._handlers = (mediaSession && { ...mediaSession._handlers }) || {}
       }
 
       get metadata() {

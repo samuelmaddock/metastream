@@ -13,7 +13,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://app.getmetastream.com/*", "http://localhost:8080/*"],
+      "matches": ["https://app.getmetastream.com/*", "http://local.getmetastream.com/*", "http://localhost:8080/*"],
       "js": ["app.js"],
       "run_at": "document_start"
     },

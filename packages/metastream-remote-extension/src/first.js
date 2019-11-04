@@ -10,11 +10,11 @@
 //
 
 ;(function() {
+  // Only run in iframes, the same as Metastream webviews
+  if (window.self === window.top) return
+
   const mainWorldScript = function() {
     document.getElementById('metastreaminitscript').remove()
-
-    // Only run in iframes, the same as Metastream webviews
-    if (window.self === window.top) return
 
     const INIT_TIMEOUT = 5e3
     const isFirefox = navigator.userAgent.toLowerCase().includes('firefox')
@@ -65,11 +65,7 @@
         function MediaMetadata(metadata) {
           Object.assign(this, metadata)
         }
-        Object.defineProperty(window, 'MediaMetadata', {
-          value: MediaMetadata,
-          enumerable: false,
-          writable: true
-        })
+        window.MediaMetadata = MediaMetadata
       }
 
       const { mediaSession } = navigator
