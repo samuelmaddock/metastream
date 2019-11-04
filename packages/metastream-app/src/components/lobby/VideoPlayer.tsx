@@ -211,7 +211,11 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
 
   private dispatchMedia(type: string, payload: any) {
     if (this.webview) {
-      this.webview.dispatchRemoteEvent('metastream-host-event', { type, payload }, true)
+      this.webview.dispatchRemoteEvent(
+        'metastream-host-event',
+        { type, payload },
+        { allFrames: true }
+      )
     }
   }
 

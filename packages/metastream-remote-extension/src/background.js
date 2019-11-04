@@ -491,9 +491,9 @@ const handleWebviewEvent = async (sender, action) => {
     if (popupTabs.has(tabId)) {
       const parentId = popupParentTabs[tabId]
       sendWebviewEventToHost(parentId, frameId, action.payload)
-      return
+    } else {
+      sendToFrame(action.tabId || tabId, action.frameId, action.payload)
     }
-    sendToFrame(action.tabId || tabId, action.frameId, action.payload)
   } else {
     sendWebviewEventToHost(tabId, frameId, action.payload)
   }
@@ -517,6 +517,14 @@ chrome.runtime.onMessage.addListener((action, sender, sendResponse) => {
     case 'metastream-webview-event':
       handleWebviewEvent(sender, action)
       break
+    case 'metastream-host-event': {
+      // DEPRECATED: used by app v0.5.0
+      handleWebviewEvent(sender, {
+        type: 'metastream-webview-event',
+        payload: action
+      })
+      break
+    }
     case 'metastream-fetch': {
       const { requestId, url, options } = action.payload
       request(tabId, requestId, url, options)

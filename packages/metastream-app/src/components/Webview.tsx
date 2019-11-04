@@ -312,14 +312,14 @@ export class Webview extends Component<Props, State> {
     this.emitter.removeListener(eventName, listener)
   }
 
-  dispatchRemoteEvent<T>(type: string, payload?: T, allFrames: boolean = false): void {
+  dispatchRemoteEvent<T>(type: string, payload?: T, options: { allFrames?: boolean } = {}): void {
     if (this.tabId === -1 || this.frameId === -1) return
     window.postMessage(
       {
         type: 'metastream-webview-event',
         payload: { type, payload },
         tabId: this.tabId,
-        frameId: allFrames ? undefined : this.frameId
+        frameId: options.allFrames ? undefined : this.frameId
       },
       location.origin
     )
