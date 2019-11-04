@@ -99,15 +99,19 @@ const watchedTabs = new Set()
 // Store for active tabs state
 const tabStore = {}
 
+// Used to know which metastream instance to sent browser badge requests to
+let lastActiveTabId
+
 // Map from popup webview ID to parent tab ID
+// Used for popups pending initialization
 const popupParents = {}
 
+// Map from popup tab ID to parent tab ID
+// Used for routing messages between popup and parent app
 const popupParentTabs = {}
 
 // List of popup tab IDs
 const popupTabs = new Set()
-
-let lastActiveTabId
 
 //=============================================================================
 // Content scripts
