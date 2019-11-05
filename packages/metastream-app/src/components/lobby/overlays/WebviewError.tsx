@@ -15,6 +15,7 @@ class _WebviewError extends React.Component<PrivateProps> {
   render(): JSX.Element | null {
     const { url, className } = this.props
 
+    // TODO: localize
     return (
       <div className={cx(className, styles.container)}>
         <p className={styles.emoji}>😞</p>
@@ -30,6 +31,7 @@ class _WebviewError extends React.Component<PrivateProps> {
           <li>Verify internet connectivity.</li>
           <li>Test the site outside of Metastream.</li>
           <li>Reload the site.</li>
+          <li>Try using the popup player.</li>
         </ol>
       </div>
     )
