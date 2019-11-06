@@ -15,7 +15,7 @@ import styles from './Webview.css'
 const swFixOrigins = new Set(['https://www.netflix.com'])
 
 const INITIALIZE_TIMEOUT_DURATION = 1000
-const NAVIGATION_TIMEOUT_DURATION = 2000
+const NAVIGATION_TIMEOUT_DURATION = 5000
 
 interface Props {
   src?: string
