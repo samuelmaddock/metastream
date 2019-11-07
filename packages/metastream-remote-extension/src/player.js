@@ -594,7 +594,7 @@
     //===========================================================================
 
     const AUTOPLAY_TIMEOUT = 3000
-    let autoplayTimerId = -1
+    let autoplayTimerId
 
     // Popular enough player that it's worth a try
     const playJwPlayer = () => {
@@ -935,7 +935,7 @@ ${ignoredSelectors}:empty {
 
       if (autoplayTimerId) {
         clearTimeout(autoplayTimerId)
-        autoplayTimerId = -1
+        autoplayTimerId = undefined
       }
 
       prevDuration = undefined
