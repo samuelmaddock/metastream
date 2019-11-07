@@ -827,7 +827,7 @@
 
     // Creates styles to hide all non-video elements in the document
     function getFocusStyles(visibleTagName, selectors) {
-      const ignoredSelectors = [visibleTagName, 'body', ...selectors]
+      const ignoredSelectors = [visibleTagName, ...selectors]
         .map(selector => `:not(${selector})`)
         .join('')
 
