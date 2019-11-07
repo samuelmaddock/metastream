@@ -250,17 +250,24 @@
         }
         case 'apply-fullscreen': {
           const href = action.payload
-          if (location.href !== href) {
-            // Find IFrame with partial or full URL match.
-            // Sometimes 'src' doesn't include the protocol so an exact match
-            // won't work.
-            const iframes = document.querySelectorAll('iframe')
-            const iframe = Array.from(iframes).find(
-              ({ src }) => src.length > 0 && href.includes(src)
-            )
-            activeFrame = iframe || undefined
+          if (location.href === href) {
+            window.parent.postMessage({ type: 'apply-fullscreen-parent' }, '*')
+            startAutoFullscreen()
           }
+          return
+        }
+        case 'apply-fullscreen-parent': {
+          // Fullscreen parent frame of video content.
+          // Searches for iframe src sharing same domain as event origin.
+          const iframes = Array.from(document.querySelectorAll('iframe'))
+          const iframe = iframes.find(({ src }) => src.length > 0 && src.includes(event.origin))
+          activeFrame = iframe || undefined
           startAutoFullscreen(activeFrame)
+
+          const isTopFrame = window.self === window.top
+          if (!isTopFrame && activeFrame) {
+            window.parent.postMessage({ type: 'apply-fullscreen-parent' }, '*')
+          }
           return
         }
       }
