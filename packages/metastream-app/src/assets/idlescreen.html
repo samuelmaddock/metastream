@@ -1,26 +1,37 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Idlescreen</title>
+    <link rel="stylesheet" href="../../styles/app.global.css" />
+    <style>
+      html,
+      body {
+        background: transparent;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+      }
 
-<head>
-  <meta charset="utf-8">
-  <title>Idlescreen</title>
-  <style>
-    html,
-    body {
-      background: transparent;
-      width: 100%;
-      height: 100%;
-      margin: 0;
-    }
+      body {
+        color: #e1e1e1;
+        font-family: sans-serif;
+      }
 
-    body {
-      color: #e1e1e1;
-      font-family: sans-serif;
-    }
-  </style>
-</head>
+      .popup {
+        background: var(--app-bg-lobby);
+      }
+    </style>
+  </head>
 
-<body>
-</body>
-
+  <body>
+    <script>
+      ;(function() {
+        const isTopFrame = window.top === window.self
+        if (isTopFrame) {
+          document.body.classList.add('popup')
+        }
+      })()
+    </script>
+  </body>
 </html>
