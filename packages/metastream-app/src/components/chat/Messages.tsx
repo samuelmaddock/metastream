@@ -19,6 +19,7 @@ export class Messages extends Component<IProps, IState> {
   private wasAtBottom: boolean = true
   state: IState = { hasNewMessage: false }
 
+  /** Height that the scrollbar can move. */
   private get scrollBottom() {
     return this.list ? Math.trunc(this.list.scrollHeight - this.list.clientHeight) : 0
   }
@@ -45,15 +46,17 @@ export class Messages extends Component<IProps, IState> {
     }
   }
 
-  private isScrolledToBottom(): boolean {
-    return !!(this.list && Math.round(this.list.scrollTop) === Math.round(this.scrollBottom))
-  }
-
   scrollToBottom(): void {
     if (this.list) {
       this.list.scrollTop = this.scrollBottom
       this.wasAtBottom = true
     }
+  }
+
+  private isScrolledToBottom(): boolean {
+    const scrollTop = this.list ? this.list.scrollTop : 0
+    const pxFromBottom = Math.abs(scrollTop - this.scrollBottom)
+    return pxFromBottom <= 10 /* px threshold */
   }
 
   private handleScroll = (): void => {
