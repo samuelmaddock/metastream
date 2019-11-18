@@ -204,6 +204,8 @@
     let activeMedia, activeFrame
     let isInInteractMode = false
 
+    const hasActiveMedia = () => Boolean(activeMedia || activeFrame)
+
     let playerSettings = {
       autoFullscreen: true,
       theaterMode: false,
@@ -634,19 +636,32 @@
         return 0
       }
 
-      const videos = Array.from(mediaList).filter(media => media instanceof HTMLVideoElement)
-      if (videos.length === 0) return
-
-      const rects = videos.map(video => video.getBoundingClientRect())
-      rects.sort(descRectArea)
+      function elementFromCenterRect(rect) {
+        return rect.width > 0 && rect.height > 0
+          ? document.elementFromPoint(rect.x + rect.width / 2, rect.y + rect.height / 2)
+          : null
+      }
 
       let playButton
 
-      // Assumes largest video rect is most relevant
-      const rect = rects[0]
-      if (rect.width * rect.height > 0) {
-        playButton = document.elementFromPoint(rect.x + rect.width / 2, rect.y + rect.height / 2)
-      } else {
+      const videos = Array.from(mediaList).filter(media => media instanceof HTMLVideoElement)
+      if (videos.length > 0) {
+        const rects = videos.map(video => video.getBoundingClientRect())
+        rects.sort(descRectArea)
+
+        // assumes largest video rect is most relevant
+        playButton = elementFromCenterRect(rects[0])
+      }
+
+      if (!playButton) {
+        // sometimes player is accessible via global
+        const player = document.getElementById('player')
+        if (player instanceof HTMLElement) {
+          playButton = elementFromCenterRect(player.getBoundingClientRect())
+        }
+      }
+
+      if (!playButton) {
         // try center of frame instead
         playButton = document.elementFromPoint(window.innerWidth / 2, window.innerHeight / 2)
       }
@@ -664,11 +679,19 @@
 
     // Try different methods of initiating playback
     const attemptAutoplay = () => {
+      if (hasActiveMedia()) return
+      console.debug(`Attempting autoplay in ${location.origin}`)
       if (playJwPlayer()) return
       if (playVideoJS()) return
       if (pressStart()) return
       clickPlayButton()
     }
+
+    const autoplayOnLoad = () => {
+      if (autoplayTimerId) clearTimeout(autoplayTimerId)
+      autoplayTimerId = setTimeout(attemptAutoplay, AUTOPLAY_TIMEOUT)
+    }
+    window.addEventListener('load', autoplayOnLoad)
 
     //===========================================================================
     // Auto-fullscreen
