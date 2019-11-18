@@ -710,7 +710,7 @@
       const rootRect = rootEl.getBoundingClientRect()
 
       // Normalize against transform scale
-      const normalize = 1 / (prevScale || 1)
+      const normalize = 1 / prevScale
       const width = rect.width * normalize
       const height = rect.height * normalize
       const left = (rect.left - rootRect.left) * normalize
@@ -781,7 +781,7 @@
 
       fullscreenContainer.style.transformOrigin = transformOrigin
       fullscreenContainer.style.transform = transform
-      prevScale = scale
+      prevScale = (isFinite(scale) && scale) || 1
 
       fullscreenFrameId = requestAnimationFrame(renderFullscreen)
     }
@@ -790,10 +790,10 @@
       if (!(target instanceof HTMLVideoElement || target instanceof HTMLIFrameElement)) return
       if (isInInteractMode) return
 
-      console.debug('Starting autofullscreen', target)
-
       if (isFullscreen) stopAutoFullscreen()
       isFullscreen = true
+
+      console.debug('Starting autofullscreen', target)
 
       // Prevent scroll offset
       if ('scrollRestoration' in history) {
@@ -805,7 +805,7 @@
       // Find container we can transform
       let container = (fullscreenContainer = target)
       do {
-        if (container && container.offsetWidth && container.offsetHeight) {
+        if (container instanceof HTMLElement && container.offsetWidth && container.offsetHeight) {
           fullscreenContainer = container
         }
       } while ((container = container.parentNode))
