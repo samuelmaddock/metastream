@@ -44,8 +44,8 @@ export class VolumeSlider extends Component<IProps> {
     let volume
 
     if (this.slider && this.slider.state.dragging) {
-      const { dragProgress } = this.slider.state
-      volume = dragProgress!
+      const { cursorProgress } = this.slider.state
+      volume = cursorProgress!
     } else {
       volume = this.props.volume
     }

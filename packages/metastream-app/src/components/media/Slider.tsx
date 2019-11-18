@@ -17,6 +17,9 @@ interface IProps {
 
   cuePoints?: Readonly<CuePointItem>[]
 
+  /** Listen for mouse hover */
+  hover?: boolean
+
   /** Allow scrolling */
   scroll?: boolean
 
@@ -28,11 +31,14 @@ interface IProps {
   onDragStart?: () => void
   onDrag?: (value: number) => void
   onDragEnd?: () => void
+  onHoverStart?: () => void
+  onHoverEnd?: () => void
 }
 
 interface IState {
+  hovering?: boolean
   dragging?: boolean
-  dragProgress?: number
+  cursorProgress?: number
   cuePoints?: Readonly<CuePointItem>[]
   activeCuePointIndex?: number
 }
@@ -49,14 +55,25 @@ export class Slider extends Component<IProps> {
   private preventClick?: boolean
 
   componentDidMount(): void {
-    if (this.rootEl && this.props.scroll) {
-      this.rootEl.addEventListener('wheel', this.onMouseWheel, false)
+    if (this.rootEl) {
+      if (this.props.scroll) {
+        this.rootEl.addEventListener('wheel', this.onMouseWheel, false)
+      }
+      if (this.props.hover) {
+        this.rootEl.addEventListener('mouseenter', this.onHoverStart, false)
+      }
     }
   }
 
   componentWillUnmount(): void {
-    if (this.rootEl && this.props.scroll) {
-      this.rootEl.removeEventListener('wheel', this.onMouseWheel, false)
+    if (this.rootEl) {
+      if (this.props.scroll) {
+        this.rootEl.removeEventListener('wheel', this.onMouseWheel, false)
+      }
+
+      if (this.props.hover) {
+        this.rootEl.removeEventListener('mouseenter', this.onHoverStart, false)
+      }
     }
 
     if (this.state.dragging) {
@@ -112,8 +129,11 @@ export class Slider extends Component<IProps> {
   }
 
   render(): JSX.Element | null {
-    const { dragProgress } = this.state
-    const progress = typeof dragProgress === 'number' ? dragProgress : clamp(this.props.value, 0, 1)
+    const { dragging, cursorProgress } = this.state
+    const progress =
+      dragging && typeof cursorProgress === 'number'
+        ? cursorProgress
+        : clamp(this.props.value, 0, 1)
 
     const progressStyle = {
       width: `${progress * 100}%`
@@ -246,6 +266,10 @@ export class Slider extends Component<IProps> {
     return progress
   }
 
+  private clearActiveCuePoint() {
+    this.setState({ activeCuePointIndex: undefined })
+  }
+
   private onClick = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault()
 
@@ -261,38 +285,46 @@ export class Slider extends Component<IProps> {
     this.updateProgress(event)
   }
 
+  private onMouseMove = (event: MouseEvent) => {
+    const progress = this.updateProgress(event, false)
+    this.setState({ cursorProgress: progress })
+
+    if (this.state.dragging && this.props.onDrag) {
+      this.props.onDrag(progress)
+    }
+  }
+
   private onDragStart = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault()
 
     const progress = this.updateProgress(event, this.props.changeOnStart)
-    this.setState({ dragging: true, dragProgress: progress })
+    this.setState({ dragging: true, cursorProgress: progress })
 
+    if (!this.state.hovering) {
+      document.addEventListener('mousemove', this.onMouseMove, false)
+    }
     document.addEventListener('mouseup', this.onDragEnd, false)
-    document.addEventListener('mousemove', this.onDragging, false)
 
     if (this.props.onDragStart) {
       this.props.onDragStart()
     }
   }
 
-  private onDragging = (event: MouseEvent) => {
-    const progress = this.updateProgress(event, false)
-    this.setState({ dragProgress: progress })
-
-    if (this.props.onDrag) {
-      this.props.onDrag(progress)
-    }
-  }
-
   private onDragEnd = (event?: MouseEvent) => {
-    document.removeEventListener('mouseup', this.onDragEnd as any, false)
-    document.removeEventListener('mousemove', this.onDragging, false)
+    if (!this.state.hovering) {
+      document.removeEventListener('mousemove', this.onMouseMove, false)
+    }
+    document.removeEventListener('mouseup', this.onDragEnd, false)
 
-    if (this.props.onChange && typeof this.state.dragProgress === 'number') {
-      this.props.onChange(this.state.dragProgress)
+    if (this.props.onChange && typeof this.state.cursorProgress === 'number') {
+      this.props.onChange(this.state.cursorProgress)
     }
 
-    this.setState({ dragging: false, dragProgress: undefined, activeCuePointIndex: undefined })
+    this.setState({ dragging: false, cursorProgress: undefined })
+
+    if (!this.state.hovering) {
+      this.clearActiveCuePoint()
+    }
 
     if (this.props.onDragEnd) {
       this.props.onDragEnd()
@@ -319,5 +351,40 @@ export class Slider extends Component<IProps> {
     const delta = 0.05 * Math.abs(dt) * multiplier
     const value = this.props.value + delta * dir
     this.props.onChange(value)
+  }
+
+  private onHoverStart = (event: MouseEvent) => {
+    const progress = this.updateProgress(event, this.props.changeOnStart)
+    this.setState({ hovering: true, cursorProgress: progress })
+
+    if (this.rootEl) {
+      if (!this.state.dragging) {
+        document.addEventListener('mousemove', this.onMouseMove, false)
+      }
+      this.rootEl.addEventListener('mouseleave', this.onHoverEnd, false)
+    }
+
+    if (this.props.onHoverStart) {
+      this.props.onHoverStart()
+    }
+  }
+
+  private onHoverEnd = () => {
+    if (this.rootEl) {
+      if (!this.state.dragging) {
+        document.removeEventListener('mousemove', this.onMouseMove, false)
+      }
+      this.rootEl.removeEventListener('mouseleave', this.onHoverEnd, false)
+    }
+
+    this.setState({ hovering: false })
+
+    if (!this.state.dragging) {
+      this.clearActiveCuePoint()
+    }
+
+    if (this.props.onHoverEnd) {
+      this.props.onHoverEnd()
+    }
   }
 }

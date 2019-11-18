@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react'
 import cx from 'classnames'
-import { formatMs } from 'utils/time'
 import { clamp } from 'utils/math'
 import { Slider } from 'components/media/Slider'
 import { Ticker } from 'components/Ticker'
@@ -31,6 +30,7 @@ interface IState {
   time: number
   progress: number
   seeking?: boolean
+  hovering?: boolean
 }
 
 const HOUR_MS = 3600 * 1000
@@ -54,8 +54,8 @@ export class Timeline extends PureComponent<IProps, IState> {
     const { time, paused, duration } = this.props
 
     if (this.slider && this.slider.state.dragging) {
-      const { dragProgress } = this.slider.state
-      return (dragProgress || 0) * duration!
+      const { cursorProgress } = this.slider.state
+      return (cursorProgress || 0) * duration!
     }
 
     return paused ? time : Date.now() - time
@@ -98,6 +98,7 @@ export class Timeline extends PureComponent<IProps, IState> {
           progressBarClassName={styles.progressBar}
           value={this.state.progress}
           cuePoints={this.getCuePoints()}
+          hover
           onChange={progress => {
             if (onSeek) {
               onSeek(progress * (duration || 0))
@@ -109,9 +110,18 @@ export class Timeline extends PureComponent<IProps, IState> {
           onDragEnd={() => {
             this.setState({ seeking: false })
           }}
+          onHoverStart={() => {
+            this.setState({ hovering: true })
+          }}
+          onHoverEnd={() => {
+            this.setState({ hovering: false })
+          }}
         />
         <Time className={styles.time} time={duration!} leading leadingHours={exceedsHour} />
-        <Ticker onTick={this.tick} disabled={paused && !this.state.seeking} />
+        <Ticker
+          onTick={this.tick}
+          disabled={paused && !this.state.seeking && !this.state.hovering}
+        />
       </span>
     )
   }
