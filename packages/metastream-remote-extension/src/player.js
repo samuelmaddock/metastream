@@ -882,10 +882,13 @@ ${ignoredSelectors}:empty {
 
     function setTheaterMode(enable) {
       if (enable && !theaterModeStyle) {
-        const target = activeMedia || activeFrame
+        const target = activeFrame || activeMedia
 
         // don't hide UI if target is audio
         if (target instanceof HTMLAudioElement) return
+
+        // ignore if not in DOM
+        if (!target.parentNode) return
 
         const visibleTagName = target instanceof HTMLVideoElement ? 'video' : 'iframe'
         const style = document.createElement('style')
@@ -1025,7 +1028,6 @@ ${ignoredSelectors}:empty {
       } else if (!settings.autoFullscreen && isFullscreen) {
         stopAutoFullscreen()
       }
-
       setTheaterMode(!!settings.theaterMode)
     }
 
