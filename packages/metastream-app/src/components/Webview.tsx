@@ -69,11 +69,12 @@ export class Webview extends Component<Props, State> {
     // prettier-ignore
     return [
       'forms',
-      'popups',
+      // 'allowScripts' is used for the media player view. Prevent popups while not interacting.
+      this.props.allowScripts ? undefined : 'popups',
       'presentation',
       'same-origin',
       'scripts',
-    ].map(feature => `allow-${feature}`).join(' ')
+    ].filter(Boolean).map(feature => `allow-${feature}`).join(' ')
   }
 
   constructor(props: Props) {
