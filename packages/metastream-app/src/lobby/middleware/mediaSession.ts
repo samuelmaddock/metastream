@@ -37,6 +37,9 @@ export const mediaSessionMiddleware = (): MetastreamMiddleware | undefined => {
       const nextTrack = () => dispatch(server_requestNextMedia())
       setActionHandler('nexttrack', nextTrack)
 
+      const previousTrack = () => dispatch(server_requestSeek(0))
+      setActionHandler('previoustrack', previousTrack)
+
       const seekRelative = (details: any, dir: number = 1) => {
         let seekOffset = (details || {}).seekOffset || DEFAULT_SEEK_OFFSET
         seekOffset = seekOffset * dir * SEC2MS
