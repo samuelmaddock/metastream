@@ -8,7 +8,7 @@
   margin-top: 1rem;
 }
 
-.option:not(:last-child)::after {
+.option.divider:not(:last-child)::after {
   content: '';
   grid-column: 1 / 3;
   background: white;
@@ -16,11 +16,11 @@
   margin-top: 1.5rem;
 }
 
-:global(.transparent) .option:not(:last-child)::after {
+:global(.transparent) .option.divider:not(:last-child)::after {
   mix-blend-mode: normal;
 }
 
-.option:not(:only-child)::after {
+.option.divider:not(:only-child)::after {
   height: 1px;
 }
 

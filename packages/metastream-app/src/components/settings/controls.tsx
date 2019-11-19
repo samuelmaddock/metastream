@@ -9,11 +9,17 @@ interface ISwitchOptionProps {
   description?: string
   checked: boolean
   onChange: (val: boolean) => void
+  className?: string
+  divider?: boolean
 }
 
 export const SwitchOption: React.SFC<ISwitchOptionProps> = props => {
   return (
-    <div className={styles.option}>
+    <div
+      className={cx(props.className, styles.option, {
+        [styles.divider]: typeof props.divider === 'undefined' ? true : false
+      })}
+    >
       <div className={styles.title}>{props.title}</div>
       <Switch
         id={props.inputId}

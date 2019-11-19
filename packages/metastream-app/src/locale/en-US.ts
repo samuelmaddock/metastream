@@ -99,6 +99,7 @@ export default {
   retry: 'Retry',
   requestUrl: 'Add to session',
   requestUrlPlaceholder: '',
+  required: 'Required',
   requiresDJPermissions: 'Requires DJ permissions',
   requiresPortForward:
     'Requires <1>setting up port forwarding</1> of <3>{{port}}</3> to accept direct connections.',

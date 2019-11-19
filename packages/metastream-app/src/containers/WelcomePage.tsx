@@ -48,34 +48,40 @@ class WelcomePage extends Component<Props> {
         >
           <MenuHeader text={`Welcome to ${PRODUCT_NAME}`} />
 
-          <label htmlFor="profile_username">{t('chooseDisplayName')}</label>
-          <TextInput
-            id="profile_username"
-            autoComplete="username"
-            defaultValue={this.props.settings.username}
-            maxLength={USERNAME_MAX_LEN}
-            onChange={e => {
-              const username = (e.target as HTMLInputElement).value
-              if (username) {
-                dispatch(setUsername(username))
-              }
-            }}
-            onBlur={e => {
-              if (this.props.settings.username) {
-                ;(e.target as HTMLInputElement).value = this.props.settings.username
-              }
-            }}
-            autoFocus
-          />
-          <div>
-            <SwitchOption
-              inputId="advanced_tracking"
-              title={t('allowTracking')}
-              description={t('allowTrackingDesc')}
-              checked={this.props.settings.allowTracking}
-              onChange={checked => dispatch(setSetting('allowTracking', checked))}
+          <div className={styles.formControl}>
+            <label htmlFor="profile_username">{t('chooseDisplayName')}</label>
+            <TextInput
+              id="profile_username"
+              autoComplete="username"
+              placeholder={t('required')}
+              spellCheck={false}
+              defaultValue={this.props.settings.username}
+              maxLength={USERNAME_MAX_LEN}
+              onChange={e => {
+                const username = (e.target as HTMLInputElement).value
+                if (username) {
+                  dispatch(setUsername(username))
+                }
+              }}
+              onBlur={e => {
+                if (this.props.settings.username) {
+                  ;(e.target as HTMLInputElement).value = this.props.settings.username
+                }
+              }}
+              autoFocus
             />
           </div>
+
+          <SwitchOption
+            inputId="advanced_tracking"
+            title={t('allowTracking')}
+            description={t('allowTrackingDesc')}
+            checked={this.props.settings.allowTracking}
+            onChange={checked => dispatch(setSetting('allowTracking', checked))}
+            className={styles.formControl}
+            divider={false}
+          />
+
           <MenuButton icon="check-circle" onClick={submit}>
             {t('getStarted')}
           </MenuButton>
