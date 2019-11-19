@@ -264,6 +264,7 @@
           const iframes = Array.from(document.querySelectorAll('iframe'))
           const iframe = iframes.find(({ src }) => src.length > 0 && src.includes(event.origin))
           activeFrame = iframe || undefined
+          setTheaterMode(!!playerSettings.theaterMode)
           startAutoFullscreen(activeFrame)
 
           const isTopFrame = window.self === window.top
@@ -297,12 +298,12 @@
 
     const setInteractMode = enable => {
       isInInteractMode = enable
+      setTheaterMode(playerSettings.theaterMode && !enable)
       if (enable) {
         stopAutoFullscreen()
       } else {
         startAutoFullscreen()
       }
-      setTheaterMode(playerSettings.theaterMode && !enable)
     }
 
     //===========================================================================
@@ -881,24 +882,26 @@ ${ignoredSelectors}:empty {
     }
 
     function setTheaterMode(enable) {
-      if (enable && !theaterModeStyle) {
-        const target = activeFrame || activeMedia
-
-        // don't hide UI if target is audio
-        if (target instanceof HTMLAudioElement) return
-
-        // ignore if not in DOM
-        if (!target.parentNode) return
-
-        const visibleTagName = target instanceof HTMLVideoElement ? 'video' : 'iframe'
-        const style = document.createElement('style')
-        style.innerHTML = getFocusStyles(visibleTagName, playerSettings.theaterModeSelectors)
-        theaterModeStyle = style
-        document.head.appendChild(theaterModeStyle)
-      } else if (!enable && theaterModeStyle) {
+      if (theaterModeStyle) {
         theaterModeStyle.remove()
         theaterModeStyle = undefined
       }
+
+      if (!enable) return
+
+      const target = activeFrame || activeMedia
+
+      // don't hide UI if target is audio
+      if (target instanceof HTMLAudioElement) return
+
+      // don't hide UI if target not in DOM
+      if (target instanceof HTMLElement && !target.parentNode) return
+
+      const visibleTagName = target instanceof HTMLVideoElement ? 'video' : 'iframe'
+      const style = document.createElement('style')
+      style.innerHTML = getFocusStyles(visibleTagName, playerSettings.theaterModeSelectors)
+      theaterModeStyle = style
+      document.head.appendChild(theaterModeStyle)
     }
 
     //===========================================================================
@@ -1023,12 +1026,12 @@ ${ignoredSelectors}:empty {
     //===========================================================================
 
     const onSettingsChange = (settings, prev) => {
+      setTheaterMode(!!settings.theaterMode)
       if (settings.autoFullscreen && !isFullscreen) {
         startAutoFullscreen()
       } else if (!settings.autoFullscreen && isFullscreen) {
         stopAutoFullscreen()
       }
-      setTheaterMode(!!settings.theaterMode)
     }
 
     //===========================================================================
