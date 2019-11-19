@@ -259,7 +259,7 @@ export class Webview extends Component<Props, State> {
   }
 
   render() {
-    const { componentRef, src, allowScripts, className, onClosePopup, ...rest } = this.props
+    const { componentRef, src, allowScripts, className, popup, onClosePopup, ...rest } = this.props
 
     // TODO(samuelmaddock): Update React and types so these props can be passed in
     const untypedProps: any = {
@@ -267,7 +267,7 @@ export class Webview extends Component<Props, State> {
       allowtransparency: ''
     }
 
-    if (this.props.popup) {
+    if (popup) {
       return (
         <PopupWindow
           theRef={e => {
