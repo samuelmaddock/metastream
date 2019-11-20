@@ -59,4 +59,5 @@
   color: #222 !important;
   max-width: 360px !important;
   padding: 1rem 2rem !important;
+  border: 2px solid var(--color-highlight);
 }
