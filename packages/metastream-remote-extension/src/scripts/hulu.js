@@ -25,6 +25,22 @@ const clickAtProgress = (target, progress) => {
   target.dispatchEvent(clickEvent)
 }
 
+document.addEventListener('metastreamplay', e => {
+  const btn = document.querySelector('.controls__playback-button--paused')
+  if (btn) {
+    e.preventDefault()
+    btn.click()
+  }
+})
+
+document.addEventListener('metastreampause', e => {
+  const btn = document.querySelector('.controls__playback-button--playing')
+  if (btn) {
+    e.preventDefault()
+    btn.click()
+  }
+})
+
 document.addEventListener('metastreamseek', e => {
   e.preventDefault()
   const time = e.detail / 1000
