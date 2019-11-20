@@ -53,7 +53,6 @@ class WelcomePage extends Component<Props> {
             <TextInput
               id="profile_username"
               autoComplete="username"
-              placeholder={t('required')}
               spellCheck={false}
               defaultValue={this.props.settings.username}
               maxLength={USERNAME_MAX_LEN}
