@@ -98,6 +98,47 @@
         }
       } catch (e) {}
     }
+
+    //=========================================================================
+    // Inline script embed prevention fix
+    //=========================================================================
+
+    const observeScripts = () => {
+      const scriptSnippets = [
+        { code: 'window.top !== window.self', replacement: 'false' },
+        { code: 'self == top', replacement: 'true' },
+        { code: 'top.location != window.location', replacement: 'false' }
+      ]
+
+      const getAddedScripts = mutationList =>
+        mutationList.reduce((scripts, mutation) => {
+          if (mutation.type !== 'childList') return scripts
+          const inlineScripts = Array.from(mutation.addedNodes).filter(
+            node => node instanceof HTMLScriptElement && node.innerHTML.length > 0
+          )
+          return inlineScripts.length > 0 ? [...scripts, ...inlineScripts] : scripts
+        }, [])
+
+      // Modifies inline scripts to allow embedding content in iframe
+      const inlineScriptModifier = mutationsList => {
+        const scripts = getAddedScripts(mutationsList)
+        for (let script of scripts) {
+          for (let snippet of scriptSnippets) {
+            if (script.innerHTML.includes(snippet.code)) {
+              script.innerHTML = script.innerHTML.split(snippet.code).join(snippet.replacement)
+            }
+          }
+        }
+      }
+
+      const observer = new MutationObserver(inlineScriptModifier)
+      observer.observe(document.documentElement, { childList: true, subtree: true })
+
+      // Stop watching for changes after we finish loading
+      window.addEventListener('load', () => observer.disconnect())
+    }
+
+    observeScripts()
   }
 
   const script = document.createElement('script')
