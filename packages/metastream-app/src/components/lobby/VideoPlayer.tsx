@@ -174,7 +174,7 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     if (current !== prevMedia) {
       if (isEqual(current, prevMedia)) {
         // Ignore: new object, same properties
-      } else if (current && prevMedia && current.url === prevMedia.url) {
+      } else if (current && prevMedia && current.url === prevMedia.url && this.state.mediaReady) {
         // Force restart media if new media is the same URL
         this.onMediaReady()
         return
