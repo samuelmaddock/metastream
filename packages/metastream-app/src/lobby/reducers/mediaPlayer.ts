@@ -269,11 +269,15 @@ export const mediaPlayer: Reducer<IMediaPlayerState> = (
 
   // Restore session snapshot
   if (isType(action, initLobby) && action.payload.host && state.localSnapshot) {
+    const { localSnapshot } = state
     return {
       ...state,
       ...initialState,
-      ...state.localSnapshot,
+      ...localSnapshot,
       localSnapshot: undefined,
+      // #227 a bug appeared where the snapshot was restored in an idle playback state with media.
+      // here we force the state to be paused to ensure media can be skipped.
+      playback: localSnapshot.current ? PlaybackState.Paused : PlaybackState.Idle,
       serverClockSkew: initialState.serverClockSkew
     }
   }
