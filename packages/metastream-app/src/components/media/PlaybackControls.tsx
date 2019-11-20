@@ -228,7 +228,7 @@ class _PlaybackControls extends Component<PrivateProps> {
       <>
         <hr className={styles.menuDivider} />
 
-        {process.env.NODE_ENV === 'development' ? (
+        {FEATURE_POPUP_PLAYER ? (
           <ButtonListItem
             icon="external-link"
             onClick={() => {

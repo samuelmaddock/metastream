@@ -82,7 +82,8 @@ module.exports = merge.smart(baseConfig, {
      * 'staging', for example, by changing the ENV variables in the npm scripts
      */
     new webpack.DefinePlugin({
-      FEATURE_SESSION_BROWSER: JSON.stringify(false)
+      FEATURE_SESSION_BROWSER: JSON.stringify(false),
+      FEATURE_POPUP_PLAYER: JSON.stringify(true)
     })
 
     // new webpack.LoaderOptionsPlugin({

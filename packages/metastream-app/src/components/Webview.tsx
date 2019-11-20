@@ -267,7 +267,7 @@ export class Webview extends Component<Props, State> {
       allowtransparency: ''
     }
 
-    if (popup) {
+    if (FEATURE_POPUP_PLAYER && popup) {
       return (
         <PopupWindow
           theRef={e => {
