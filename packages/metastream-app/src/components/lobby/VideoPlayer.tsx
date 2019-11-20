@@ -179,8 +179,8 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
       }
     }
 
-    if (this.props.playback !== prevProps.playback) {
-      this.updatePlayback(this.props.playback)
+    if (this.props.volume !== prevProps.volume || this.props.mute !== prevProps.mute) {
+      this.updateVolume()
     }
 
     if (
@@ -190,8 +190,8 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
       this.updatePlaybackTime()
     }
 
-    if (this.props.volume !== prevProps.volume || this.props.mute !== prevProps.mute) {
-      this.updateVolume()
+    if (this.props.playback !== prevProps.playback) {
+      this.updatePlayback(this.props.playback)
     }
   }
 
@@ -249,9 +249,9 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
       this.dispatchMedia('apply-fullscreen', payload.href)
     }
 
+    this.updateVolume()
     this.updatePlaybackTime()
     this.updatePlayback(this.props.playback)
-    this.updateVolume()
 
     const media = this.props.current
     if (this.props.host) {
