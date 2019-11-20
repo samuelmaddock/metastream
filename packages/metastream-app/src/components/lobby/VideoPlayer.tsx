@@ -22,6 +22,7 @@ import { safeBrowse } from 'services/safeBrowse'
 import { SafeBrowsePrompt } from './overlays/SafeBrowsePrompt'
 import { localUserId } from 'network'
 import { setPopupPlayer } from 'actions/ui'
+import { StorageKey } from 'constants/storage'
 
 type MediaReadyPayload = {
   duration?: number
@@ -73,6 +74,7 @@ interface IState {
 }
 
 const DEFAULT_URL = assetUrl('idlescreen.html')
+const MEDIA_TIMEOUT_DURATION = 10e3
 
 const mapStateToProps = (state: IAppState): IConnectedProps => {
   return {
@@ -91,6 +93,7 @@ type PrivateProps = IProps & IConnectedProps & IReactReduxProps
 
 class _VideoPlayer extends PureComponent<PrivateProps, IState> {
   private webview: Webview | null = null
+  private mediaTimeout?: number
 
   state: IState = { interacting: false, mediaReady: false, permitURLOnce: false }
 
@@ -151,6 +154,10 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
   componentWillUnmount(): void {
     if (this.props.theRef) {
       this.props.theRef(null)
+    }
+
+    if (this.mediaTimeout) {
+      clearTimeout(this.mediaTimeout)
     }
 
     this.props.dispatch(updatePlaybackTimer())
@@ -241,6 +248,11 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
       this.setState({ mediaReady: true })
     }
 
+    if (this.mediaTimeout) {
+      clearTimeout(this.mediaTimeout)
+      this.mediaTimeout = -1
+    }
+
     this.dispatchMedia('set-settings', this.props.playerSettings)
 
     // Apply auto-fullscreen to all subframes with nested iframes
@@ -269,10 +281,19 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     }
   }
 
+  private onMediaTimeout = () => {
+    const hasInteracted = Boolean(localStorage.getItem(StorageKey.HasInteracted))
+    if (hasInteracted) return
+
+    const content =
+      '⚠️ Playback not detected. If media doesn’t autoplay, you may need to interact with the webpage by double-clicking the screen.'
+    this.props.dispatch(addChat({ content, timestamp: Date.now() }))
+  }
+
   private onAutoplayError = (error: string) => {
     if (error !== 'NotAllowedError') return
 
-    const hasShownNotice = Boolean(sessionStorage.getItem('autoplayNotice'))
+    const hasShownNotice = Boolean(sessionStorage.getItem(StorageKey.AutoplayNotice))
     if (hasShownNotice) return
 
     const content =
@@ -280,7 +301,7 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     this.props.dispatch(addChat({ content, timestamp: Date.now() }))
 
     try {
-      sessionStorage.setItem('autoplayNotice', '1')
+      sessionStorage.setItem(StorageKey.AutoplayNotice, '1')
     } catch {}
   }
 
@@ -393,8 +414,14 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
   }
 
   reload = () => {
+    // Pause media to prevent continued playback in case next media takes time to load
     this.updatePlayback(PlaybackState.Paused)
+
     this.setState({ mediaReady: false })
+
+    if (this.mediaTimeout) clearTimeout(this.mediaTimeout)
+    this.mediaTimeout = setTimeout(this.onMediaTimeout, MEDIA_TIMEOUT_DURATION) as any
+
     if (this.webview) {
       this.webview.loadURL(this.mediaUrl, {
         httpReferrer: this.httpReferrer,
@@ -413,6 +440,10 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
         this.props.onInteractChange(this.state.interacting)
       }
     })
+
+    try {
+      localStorage.setItem(StorageKey.HasInteracted, '1')
+    } catch {}
   }
 
   exitInteractMode = () => {
