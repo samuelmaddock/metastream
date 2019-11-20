@@ -213,8 +213,9 @@
       syncOnBuffer: true,
       seekThreshold: 100 /** Threshold before we'll seek. */,
       theaterModeSelectors: [
-        '#vilosCanvas', // crunchyroll subtitles
-        '.libassjs-canvas', // vrv subtitles
+        '#vilosCanvas', // crunchyroll
+        '#velocity-canvas', // crunchyroll
+        '.libassjs-canvas', // vrv
         '.player-timedtext', // netflix
         '.ytp-caption-segment' // youtube
       ]
@@ -413,9 +414,9 @@
         return this.media.play().catch(this.onPlayError)
       }
       pause() {
+        this.stopWaitingListener()
         if (this.dispatch('metastreampause')) return
         if (mediaSessionProxy.execActionHandler('pause')) return
-        this.stopWaitingListener()
         this.media.pause()
       }
       getCurrentTime() {
@@ -742,7 +743,7 @@
 
     // Fit media within viewport
     function renderFullscreen() {
-      document.body.style.overflow = 'hidden'
+      document.body.style.setProperty('overflow', 'hidden', 'important')
 
       const { innerWidth: viewportWidth, innerHeight: viewportHeight } = window
       const { width, height, left, top } =
