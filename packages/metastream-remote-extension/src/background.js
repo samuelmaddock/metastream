@@ -134,6 +134,10 @@ const CONTENT_SCRIPTS = [
   {
     matches: ['https://docs.google.com/*', 'https://drive.google.com/*'],
     file: '/scripts/googledrive.js'
+  },
+  {
+    matches: ['https://www.disneyplus.com/*'],
+    file: '/scripts/disneyplus.js'
   }
 ]
 
