@@ -186,20 +186,24 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
       }
     }
 
-    if (this.props.volume !== prevProps.volume || this.props.mute !== prevProps.mute) {
-      this.updateVolume()
-    }
+    const didVolumeUpdate =
+      this.props.volume !== prevProps.volume || this.props.mute !== prevProps.mute
 
-    if (
+    const didPlaybackUpdate = this.props.playback !== prevProps.playback
+    const didPause = didPlaybackUpdate && this.props.playback === PlaybackState.Paused
+
+    const didPlaybackTimeUpdate =
       (this.isPlaying && this.props.startTime !== prevProps.startTime) ||
       (this.isPaused && this.props.pauseTime !== prevProps.pauseTime)
-    ) {
-      this.updatePlaybackTime()
-    }
 
-    if (this.props.playback !== prevProps.playback) {
-      this.updatePlayback(this.props.playback)
-    }
+    if (didVolumeUpdate) this.updateVolume()
+
+    // Update playback time if we didn't pause
+    // Pause+seek causes issues for some video players where they trigger
+    // starting playback after seeking
+    if (didPlaybackTimeUpdate && !didPause) this.updatePlaybackTime()
+
+    if (didPlaybackUpdate) this.updatePlayback(this.props.playback)
   }
 
   private setupWebview = (webview: Webview | null): void => {
