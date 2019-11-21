@@ -286,6 +286,9 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
   }
 
   private onMediaTimeout = () => {
+    // Ignore idlescreen timeout
+    if (this.props.playback === PlaybackState.Idle) return
+
     const hasInteracted = Boolean(localStorage.getItem(StorageKey.HasInteracted))
     if (hasInteracted) return
 
