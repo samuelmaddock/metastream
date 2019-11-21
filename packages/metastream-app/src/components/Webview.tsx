@@ -118,9 +118,9 @@ export class Webview extends Component<Props, State> {
 
     if (action.type === 'activity') {
       this.onIFrameActivity()
-    } else {
-      // if we receive a message from the frame, we know we were able to connect
-      // ignore 'activity' since it's delayed
+    } else if (action.type === 'load-script') {
+      // 'load-script' runs during webview initialization so we know the page
+      // has started loading at this point
       this.clearNavigateTimeout()
     }
 
