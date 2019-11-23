@@ -26,7 +26,7 @@ interface NetPayload {
   d: ReplicatedDelta
 }
 
-const SYNC_HEADER = 'SYNC'
+const SYNC_HEADER = new Buffer('SYNC')
 
 export const netSyncMiddleware = (): Middleware => {
   let COMMIT_NUMBER = 0
@@ -59,7 +59,7 @@ export const netSyncMiddleware = (): Middleware => {
 
       // Apply diffs on connected clients
       server.on('data', (conn: NetConnection, data: Buffer) => {
-        if (data.indexOf(SYNC_HEADER) !== 0) {
+        if (!data.slice(0, SYNC_HEADER.length).equals(SYNC_HEADER)) {
           return
         }
 

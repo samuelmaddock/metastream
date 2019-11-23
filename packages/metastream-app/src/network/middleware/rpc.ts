@@ -57,7 +57,7 @@ export interface NetRpcMiddlewareOptions {
   host: boolean
 }
 
-const RPC_HEADER = 'RPC'
+const RPC_HEADER = new Buffer('RPC')
 
 const enum RpcMessageType {
   Exec,
@@ -100,7 +100,7 @@ export const netRpcMiddleware = (): Middleware => {
     }
 
     const receive = async (client: NetConnection, data: Buffer) => {
-      if (data.indexOf(RPC_HEADER) !== 0) {
+      if (!data.slice(0, RPC_HEADER.length).equals(RPC_HEADER)) {
         return
       }
 
