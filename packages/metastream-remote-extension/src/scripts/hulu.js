@@ -42,19 +42,31 @@ document.addEventListener('metastreampause', e => {
 })
 
 document.addEventListener('metastreamseek', e => {
-  e.preventDefault()
   const time = e.detail / 1000
-  const media = document.querySelector('video')
-  if (media.paused) return
-
-  const progress = Math.max(0, Math.min(time / media.duration, 1))
-
-  const controlsContainer = document.querySelector('.controls-bar-container')
-  const controlsDisplay = controlsContainer.style.display
-  controlsContainer.style.display = 'block'
+  const media = Array.from(document.querySelectorAll('video'))
+    .sort((a, b) => a.duration > b.duration)
+    .find(vid => !isNaN(vid.duration))
+  if (!media) return
+  if (media.paused) {
+    e.preventDefault()
+    return
+  }
 
   const progressBar = document.querySelector('.controls__progress-bar-total')
+  if (!progressBar) return
+
+  e.preventDefault()
+
+  const controlsContainer = document.querySelector('.controls-bar-container')
+  const controlsDisplay = controlsContainer && controlsContainer.style.display
+  if (controlsContainer) {
+    controlsContainer.style.display = 'block'
+  }
+
+  const progress = Math.max(0, Math.min(time / media.duration, 1))
   clickAtProgress(progressBar, progress)
 
-  controlsContainer.style.display = controlsDisplay
+  if (controlsContainer) {
+    controlsContainer.style.display = controlsDisplay
+  }
 })
