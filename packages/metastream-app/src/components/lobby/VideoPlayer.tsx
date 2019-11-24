@@ -167,6 +167,12 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     const { current, playerSettings } = this.props
     const { current: prevMedia } = prevProps
 
+    const didInstallExtension = this.props.isExtensionInstalled !== prevProps.isExtensionInstalled
+    if (didInstallExtension) {
+      this.reload()
+      return
+    }
+
     if (playerSettings !== prevProps.playerSettings) {
       this.dispatchMedia('set-settings', playerSettings)
     }
