@@ -30,6 +30,12 @@
 - Basic host administrative functionality (kicking peers).
 - Localization—[see info on contributing](./app/locale).
 
+#### Are you a website owner?
+Easily add watch party support to your website by redirecting the user to Metastream.
+```html
+<a href="https://app.getmetastream.com/?url=https://youtu.be/3bNITQR4Uso">Watch in Metastream</a>
+```
+
 ## Roadmap
 
 - [x] Add localization ([#5](https://github.com/samuelmaddock/metastream/issues/5))
