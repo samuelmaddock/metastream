@@ -47,6 +47,7 @@ interface IConnectedProps {
   isChatDocked: boolean
   isMultiplayer: boolean
   pendingMedia?: PendingMedia
+  isExtensionInstalled?: boolean
 }
 
 interface DispatchProps {
@@ -293,8 +294,8 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
   }
 
   private checkPendingMedia() {
-    const { pendingMedia } = this.props
-    if (pendingMedia) {
+    const { pendingMedia, isExtensionInstalled } = this.props
+    if (pendingMedia && isExtensionInstalled) {
       this.props.clearPendingMedia()
       this.props.sendMediaRequest({
         ...pendingMedia,
@@ -313,7 +314,8 @@ export const GameLobby = (connect(
       modal: state.ui.lobbyModal,
       isChatDocked: state.settings.chatLocation === ChatLocation.DockRight,
       isMultiplayer: getNumUsers(state) > 1,
-      pendingMedia: state.mediaPlayer.pendingMedia
+      pendingMedia: state.mediaPlayer.pendingMedia,
+      isExtensionInstalled: state.ui.isExtensionInstalled
     }
   },
   (dispatch: Function): DispatchProps => ({
