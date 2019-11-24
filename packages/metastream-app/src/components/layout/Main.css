@@ -14,4 +14,11 @@
   --content-spacing: 3rem;
   padding: var(--content-spacing);
   padding-top: calc(var(--app-titlebar-height) + var(--content-spacing));
+  overflow: auto;
+}
+
+@media only screen and (max-width: 840px) {
+  .content {
+    --content-spacing: 1rem;
+  }
 }

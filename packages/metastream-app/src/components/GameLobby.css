@@ -12,9 +12,20 @@
   position: relative;
   --overlay-spacing: 50px;
   --overlay-z-index: 10;
-  --playback-overlay-z-index: 9;
+  --overlay-list-max-width: none;
+  --playback-overlay-z-index: 11;
   --overlay-anim-duration: 160ms;
-  --chat-docked-width: 340px;
+  --chat-docked-width: 21rem;
+  --chat-float-bottom-spacing: 150px;
+}
+
+@media only screen and (max-width: 840px) {
+  .container {
+    --overlay-spacing: 0px;
+    --overlay-list-max-width: 42%;
+    --chat-docked-width: 15rem;
+    --chat-float-bottom-spacing: 3rem;
+  }
 }
 
 .overlay {
@@ -80,7 +91,7 @@
   position: absolute;
   z-index: var(--overlay-z-index);
   left: var(--overlay-spacing);
-  bottom: 150px;
+  bottom: var(--chat-float-bottom-spacing);
   width: 450px;
 
   --num-chat-lines: 6.85;
@@ -102,6 +113,7 @@
 .queue {
   composes: overlay;
   top: calc(var(--overlay-spacing) + var(--app-titlebar-height));
+  max-width: var(--overlay-list-max-width);
 }
 
 .users {

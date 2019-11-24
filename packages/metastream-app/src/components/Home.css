@@ -1,11 +1,26 @@
 .container {
   background: var(--app-bg-home);
-  height: 100%;
+  min-height: 100vh;
+  max-height: 100%;
   display: grid;
   grid-template:
     'header header' auto
     'nav intro' 1fr
     'footer footer' auto / auto 50%;
+}
+
+@media only screen and (max-width: 840px) {
+  .container {
+    grid-template:
+      'header header' auto
+      'nav nav' 1fr
+      'intro intro' auto
+      'footer footer' auto / auto 50%;
+  }
+
+  .social {
+    flex-direction: column;
+  }
 }
 
 .header {

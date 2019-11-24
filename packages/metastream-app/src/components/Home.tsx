@@ -53,6 +53,7 @@ class Home extends Component<IProps> {
                 alt=""
               />
               {PRODUCT_NAME}
+
               <div className={styles.buildInfo}>
                 <h3>
                   Beta {VERSION}

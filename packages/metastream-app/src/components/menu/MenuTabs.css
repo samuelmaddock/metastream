@@ -43,3 +43,9 @@
   overflow-x: hidden;
   overflow-y: auto;
 }
+
+@media only screen and (max-width: 840px) {
+  .tabList {
+    flex-direction: column;
+  }
+}
