@@ -423,7 +423,7 @@
         return this.media.currentTime * SEC2MS
       }
       getDuration() {
-        return this.media.duration
+        return getVideoDuration(this.media)
       }
       seek(time) {
         if (this.dispatch('metastreamseek', time)) return
@@ -920,7 +920,7 @@ ${ignoredSelectors}:empty {
     const getVideoDuration = mediaElement => {
       let duration
 
-      if (mediaElement) {
+      if (mediaElement instanceof HTMLMediaElement) {
         duration = mediaElement.duration
         if (isValidDuration(duration)) return duration
       }

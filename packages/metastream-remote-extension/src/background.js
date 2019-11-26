@@ -138,6 +138,10 @@ const CONTENT_SCRIPTS = [
   {
     matches: ['https://www.disneyplus.com/*'],
     file: '/scripts/disneyplus.js'
+  },
+  {
+    matches: ['https://*.twitch.tv/*'],
+    file: '/scripts/twitch.js'
   }
 ]
 
