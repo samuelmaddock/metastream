@@ -109,6 +109,9 @@ export const mediaPlayerReplicatedState: ReplicatedState<IMediaPlayerState> = {
 const initialState: IMediaPlayerState = {
   playback: PlaybackState.Idle,
   repeatMode: RepeatMode.Off,
+  startTime: undefined, // undefined to clear out old data
+  pauseTime: undefined,
+  current: undefined,
   queue: [],
   queueLocked: false,
   serverClockSkew: 0
@@ -268,17 +271,24 @@ export const mediaPlayer: Reducer<IMediaPlayerState> = (
   }
 
   // Restore session snapshot
-  if (isType(action, initLobby) && action.payload.host && state.localSnapshot) {
-    const { localSnapshot } = state
-    return {
-      ...state,
-      ...initialState,
-      ...localSnapshot,
-      localSnapshot: undefined,
-      // #227 a bug appeared where the snapshot was restored in an idle playback state with media.
-      // here we force the state to be paused to ensure media can be skipped.
-      playback: localSnapshot.current ? PlaybackState.Paused : PlaybackState.Idle,
-      serverClockSkew: initialState.serverClockSkew
+  if (isType(action, initLobby)) {
+    if (action.payload.host && state.localSnapshot) {
+      const { localSnapshot } = state
+      return {
+        ...state,
+        ...initialState,
+        ...localSnapshot,
+        localSnapshot: undefined,
+        // #227 a bug appeared where the snapshot was restored in an idle playback state with media.
+        // here we force the state to be paused to ensure media can be skipped.
+        playback: localSnapshot.current ? PlaybackState.Paused : PlaybackState.Idle,
+        serverClockSkew: initialState.serverClockSkew
+      }
+    }
+
+    if (!action.payload.host) {
+      // Clear out old state in case tab shutdown unexpectedly
+      return { ...state, ...initialState }
     }
   }
 
