@@ -1,5 +1,5 @@
 import React from 'react'
-import * as cx from 'classnames'
+import cx from 'classnames'
 import styles from './button.css'
 import { Icon } from 'components/Icon'
 import Tooltip, { TooltipProps } from '@material-ui/core/Tooltip'

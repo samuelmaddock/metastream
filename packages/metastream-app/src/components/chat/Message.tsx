@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import * as cx from 'classnames'
+import cx from 'classnames'
 import { IMessage } from 'lobby/reducers/chat'
 import { ChatUsername } from './Username'
 import styles from './Chat.css'

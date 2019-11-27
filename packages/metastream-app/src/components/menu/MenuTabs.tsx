@@ -1,5 +1,5 @@
 import React, { ReactNode, Component } from 'react'
-import * as cx from 'classnames'
+import cx from 'classnames'
 import { ExternalLink } from '../common/link'
 import { Changelog } from './Changelog'
 import { HOME_WEBSITE } from 'constants/http'

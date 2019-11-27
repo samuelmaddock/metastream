@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react'
-import * as cx from 'classnames'
+import cx from 'classnames'
 
 import styles from './MenuHeader.css'
 

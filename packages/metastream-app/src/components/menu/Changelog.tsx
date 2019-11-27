@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { VERSION } from 'constants/app'
-import * as marked from 'marked'
+import marked from 'marked'
 
 import styles from './Changelog.css'
 import { ExternalLink } from '../common/link'

@@ -1,5 +1,5 @@
 import React from 'react'
-import * as cx from 'classnames'
+import cx from 'classnames'
 import styles from './input.css'
 import { HighlightButton } from 'components/common/button'
 import { t } from 'locale'
