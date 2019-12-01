@@ -107,12 +107,12 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
       const isMultiTab = await this.checkIsMultiTab()
       if (isMultiTab) return
 
-      setupPromise = PlatformService.createLobby({
+      setupPromise = PlatformService.get().createLobby({
         p2p: true,
         websocket: true
       })
     } else {
-      setupPromise = PlatformService.joinLobby(this.lobbyId)
+      setupPromise = PlatformService.get().joinLobby(this.lobbyId)
     }
 
     try {
@@ -125,7 +125,7 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
     }
 
     if (!this.mounted) return
-    this.onJoinLobby(PlatformService.getServer()!)
+    this.onJoinLobby(PlatformService.get().getServer()!)
   }
 
   private closeLobby() {
@@ -141,7 +141,7 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
       this.tabObserver = undefined
     }
 
-    PlatformService.leaveLobby(this.lobbyId)
+    PlatformService.get().leaveLobby(this.lobbyId)
     this.props.dispatch(NetActions.disconnect({ host: this.host }))
   }
 

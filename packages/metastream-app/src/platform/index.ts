@@ -1,6 +1,6 @@
 import { WebPlatform } from 'platform/web'
 
-class _PlatformService {
+export class PlatformService {
   private static platform: WebPlatform
 
   static get() {
@@ -10,5 +10,3 @@ class _PlatformService {
     return this.platform
   }
 }
-
-export const PlatformService = _PlatformService.get()

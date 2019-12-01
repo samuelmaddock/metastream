@@ -59,20 +59,20 @@ async function init() {
   store = storeCfg.store
   persistor = storeCfg.persistor
 
+  // Setup libsodium and cryptographic identity
+  await PlatformService.get().ready
+
+  initAnalytics(store, history)
+  window.addEventListener('message', onMessage, false)
+
   // DEBUG
   if (process.env.NODE_ENV === 'development') {
     Object.assign((window as any).app, {
       history,
       store,
-      platform: PlatformService
+      platform: PlatformService.get()
     })
   }
-
-  // Setup libsodium and cryptographic identity
-  await PlatformService.ready
-
-  initAnalytics(store, history)
-  window.addEventListener('message', onMessage, false)
 
   render(
     <AppContainer>

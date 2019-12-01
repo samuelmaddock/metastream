@@ -5,7 +5,7 @@ class LocalHostConnection extends NetConnection {
   id!: NetUniqueId & { privateKey: Uint8Array }
 
   constructor() {
-    const id = PlatformService.getLocalId()
+    const id = PlatformService.get().getLocalId()
     super(id)
     this.authed = true
   }

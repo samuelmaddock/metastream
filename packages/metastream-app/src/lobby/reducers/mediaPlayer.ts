@@ -284,9 +284,7 @@ export const mediaPlayer: Reducer<IMediaPlayerState> = (
         playback: localSnapshot.current ? PlaybackState.Paused : PlaybackState.Idle,
         serverClockSkew: initialState.serverClockSkew
       }
-    }
-
-    if (!action.payload.host) {
+    } else {
       // Clear out old state in case tab shutdown unexpectedly
       return { ...state, ...initialState }
     }
