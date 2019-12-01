@@ -10,8 +10,8 @@
     "start": "cross-env NODE_ENV=development webpack-dev-server --config webpack.config.dev.js",
     "start:https": "cross-env NODE_ENV=development USE_HTTPS=1 webpack-dev-server --config webpack.config.dev.js",
     "start:firefox": "cross-env PORT=80 NODE_ENV=development webpack-dev-server --config webpack.config.dev.js",
-    "test": "jest",
-    "test:watch": "jest --watch"
+    "test": "jest --runInBand --verbose",
+    "test:watch": "jest --watch --runInBand --verbose"
   },
   "browserslist": "Chrome >= 73, Firefox >= 66",
   "repository": {
@@ -69,6 +69,7 @@
     "workbox-webpack-plugin": "^4.3.0"
   },
   "dependencies": {
+    "@babel/plugin-transform-modules-commonjs": "^7.7.4",
     "@material-ui/core": "^3.9.3",
     "@metastream/signal-server": "^1.1.1",
     "cheerio": "^1.0.0-rc.2",

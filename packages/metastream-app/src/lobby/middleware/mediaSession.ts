@@ -11,7 +11,7 @@ import { isType } from '../../utils/redux'
 import { initLobby, resetLobby } from '../actions/common'
 
 export const mediaSessionMiddleware = (): MetastreamMiddleware | undefined => {
-  if (!('mediaSession' in navigator)) return
+  if (typeof navigator === 'undefined' || !('mediaSession' in navigator)) return
 
   const DEFAULT_SEEK_OFFSET = 5 // seconds
 
