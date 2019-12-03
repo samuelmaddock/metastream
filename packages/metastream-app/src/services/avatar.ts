@@ -28,8 +28,18 @@ export interface AvatarEntry extends RawAvatarEntry {
   src: string
 }
 
+let avatarRegistry: AvatarRegistry | undefined
+
 /** Avatar registry with support for multiple sources and URL resolution. */
-class AvatarRegistry implements ArrayLike<AvatarEntry> {
+export class AvatarRegistry implements ArrayLike<AvatarEntry> {
+  static getInstance() {
+    if (!avatarRegistry) {
+      avatarRegistry = new AvatarRegistry()
+      initAppAvatars()
+    }
+    return avatarRegistry
+  }
+
   private types: Map<AvatarType['name'], AvatarType['resolver']> = new Map()
   private avatars: AvatarEntry[] = []
 
@@ -37,6 +47,8 @@ class AvatarRegistry implements ArrayLike<AvatarEntry> {
   get length() {
     return this.avatars.length
   }
+
+  private constructor() {}
 
   /** Register avatar type. */
   registerType(name: AvatarType['name'], resolver: AvatarType['resolver']): void {
@@ -88,10 +100,10 @@ class AvatarRegistry implements ArrayLike<AvatarEntry> {
   }
 }
 
-export const avatarRegistry = new AvatarRegistry()
-
 function initAppAvatars() {
-  avatarRegistry.registerType('asset', (fileName: string) => {
+  const reg = AvatarRegistry.getInstance()
+
+  reg.registerType('asset', (fileName: string) => {
     if (fileName && fileName.indexOf('..') > -1) return
     return assetUrl(`avatars/${fileName}`)
   })
@@ -99,7 +111,7 @@ function initAppAvatars() {
   const localAvatars = ['default.svg']
 
   localAvatars.forEach(fileName => {
-    avatarRegistry.register({ type: 'asset', params: [fileName] })
+    reg.register({ type: 'asset', params: [fileName] })
   })
 
   const artistAvatars = [
@@ -116,7 +128,7 @@ function initAppAvatars() {
 
   artistAvatars.forEach(artist => {
     artist.fileNames.forEach(fileName => {
-      avatarRegistry.register({
+      reg.register({
         type: 'asset',
         artist: artist.name,
         href: artist.href,
@@ -125,5 +137,3 @@ function initAppAvatars() {
     })
   })
 }
-
-initAppAvatars()

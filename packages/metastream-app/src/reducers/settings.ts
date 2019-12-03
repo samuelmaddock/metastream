@@ -12,7 +12,7 @@ import {
 } from 'constants/settings'
 import { IAppState } from '.'
 import { stripEmoji } from 'utils/string'
-import { avatarRegistry } from '../services/avatar'
+import { AvatarRegistry } from '../services/avatar'
 import { DEFAULT_LANGUAGE } from 'locale'
 import { ChatLocation } from '../components/chat/Location'
 
@@ -111,7 +111,7 @@ export const resolveLocalAvatar = (state: IAppState) => {
   let src
   if (avatar) {
     try {
-      src = avatarRegistry.resolve(avatar)
+      src = AvatarRegistry.getInstance().resolve(avatar)
     } catch {}
   }
   return src

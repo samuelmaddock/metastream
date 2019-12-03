@@ -4,8 +4,15 @@ import { sleep } from '../utils/async'
 
 const UPDATE_INTERVAL = 12 * 60 * 60 * 1000
 
-class UpdateService extends EventEmitter {
-  constructor() {
+let updateService: UpdateService
+
+export class UpdateService extends EventEmitter {
+  static getInstance() {
+    if (!updateService) updateService = new UpdateService()
+    return updateService
+  }
+
+  private constructor() {
     super()
     this.checkForUpdate = this.checkForUpdate.bind(this)
     setInterval(this.checkForUpdate, UPDATE_INTERVAL)
@@ -40,5 +47,3 @@ class UpdateService extends EventEmitter {
     window.location.reload(true)
   }
 }
-
-export const updateService = new UpdateService()

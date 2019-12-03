@@ -25,7 +25,6 @@ import { NetConnection, NetServer } from '../../network'
 import { addChat } from './chat'
 import { actionCreator } from 'utils/redux'
 import { AppThunkAction } from 'types/redux-thunk'
-import { avatarRegistry } from '../../services/avatar'
 import { parseQuery } from 'utils/url'
 import { translateEscaped } from 'locale'
 import {

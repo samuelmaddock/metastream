@@ -37,11 +37,17 @@ const SAFE_HOSTS = new Set([
   'i.imgur.com'
 ])
 
-class SafeBrowse {
+let safeBrowse: SafeBrowse | undefined
+
+export class SafeBrowse {
   private enabled = true
   private persistentHosts!: Set<string>
 
-  constructor() {
+  static getInstance() {
+    return safeBrowse || (safeBrowse = new SafeBrowse())
+  }
+
+  private constructor() {
     this.load()
     window.addEventListener('beforeunload', this.save.bind(this), false)
   }
@@ -84,5 +90,3 @@ class SafeBrowse {
     this.enabled = false
   }
 }
-
-export const safeBrowse = new SafeBrowse()

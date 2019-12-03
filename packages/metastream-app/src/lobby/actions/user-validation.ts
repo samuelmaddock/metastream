@@ -1,5 +1,5 @@
 import { USERNAME_MAX_LEN, USERNAME_MIN_LEN, COLOR_LEN } from '../../constants/settings'
-import { avatarRegistry } from '../../services/avatar'
+import { AvatarRegistry } from '../../services/avatar'
 
 export const validateDisplayName = (displayName: string): boolean =>
   typeof displayName === 'string' &&
@@ -14,6 +14,6 @@ export const validateAvatar = (avatar: string): boolean => typeof avatar === 'st
 export const getValidAvatar = (avatar?: string) => {
   if (!avatar) return
   try {
-    return avatarRegistry.resolve(avatar)
+    return AvatarRegistry.getInstance().resolve(avatar)
   } catch {}
 }

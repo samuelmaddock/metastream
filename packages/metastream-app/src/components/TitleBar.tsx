@@ -12,7 +12,7 @@ import styles from './TitleBar.css'
 import { IconButton } from 'components/common/button'
 import { Icon } from './Icon'
 import { IReactReduxProps } from 'types/redux-thunk'
-import { updateService } from 'services/updater'
+import { UpdateService } from 'services/updater'
 import { openInBrowser } from 'utils/url'
 import { t } from 'locale'
 
@@ -36,7 +36,11 @@ class _TitleBar extends Component<PrivateProps> {
 
   render(): JSX.Element | null {
     const updateButton = this.props.updateAvailable && (
-      <IconButton icon="download" className={styles.updateButton} onClick={updateService.update}>
+      <IconButton
+        icon="download"
+        className={styles.updateButton}
+        onClick={() => UpdateService.getInstance().update()}
+      >
         Update
       </IconButton>
     )

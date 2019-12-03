@@ -15,8 +15,6 @@ import {
   validateAvatar,
   getValidAvatar
 } from './user-validation'
-import { avatarRegistry } from '../../services/avatar'
-import { DEFAULT_USERNAME } from '../../constants/settings'
 import { cleanObject } from '../../utils/object'
 
 export const addUserInvite = actionCreator<IUserInvite>('ADD_USER_INVITE')

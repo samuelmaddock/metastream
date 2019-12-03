@@ -18,7 +18,7 @@ import { Icon } from '../Icon'
 import { addChat } from '../../lobby/actions/chat'
 import { MediaSession } from './MediaSession'
 import { getPlayerSettings, PlayerSettings } from '../../reducers/settings'
-import { safeBrowse } from 'services/safeBrowse'
+import { SafeBrowse } from 'services/safeBrowse'
 import { SafeBrowsePrompt } from './overlays/SafeBrowsePrompt'
 import { localUserId } from 'network'
 import { setPopupPlayer } from 'actions/ui'
@@ -137,7 +137,7 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     }
 
     return this.props.safeBrowseEnabled
-      ? this.state.permitURLOnce || safeBrowse.isPermittedURL(this.mediaUrl)
+      ? this.state.permitURLOnce || SafeBrowse.getInstance().isPermittedURL(this.mediaUrl)
       : true
   }
 

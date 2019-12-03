@@ -7,7 +7,7 @@ import { getLocalUsername, getLocalColor, getLocalAvatar } from 'reducers/settin
 import { USERNAME_MAX_LEN } from 'constants/settings'
 import { setUsername, setColor } from 'actions/settings'
 import { t } from 'locale'
-import { avatarRegistry } from '../../../services/avatar'
+import { AvatarRegistry } from '../../../services/avatar'
 import { UserAvatar } from '../../lobby/UserAvatar'
 import { ExternalLink } from 'components/common/link'
 import { Trans } from 'react-i18next'
@@ -40,7 +40,7 @@ class ProfileSettings extends Component<Props, State> {
 
   private get selectedAvatar() {
     const { avatar } = this.props
-    return avatar ? avatarRegistry.getByURI(avatar) : null
+    return avatar ? AvatarRegistry.getInstance().getByURI(avatar) : null
   }
 
   componentWillUnmount() {
@@ -63,22 +63,24 @@ class ProfileSettings extends Component<Props, State> {
         <label>{t('avatar')}</label>
         <div className={styles.avatarContainer}>
           <div className={styles.avatarList}>
-            {avatarRegistry.getAll().map((avatar, idx) => (
-              <UserAvatar
-                key={idx}
-                avatar={avatar.src}
-                selected={avatar.uri === this.props.avatar}
-                onClick={() => {
-                  this.props.setSetting('avatar', avatar.uri)
-                  this.setState({ dirty: true })
-                  ga('event', {
-                    ec: 'settings',
-                    ea: 'select_avatar',
-                    el: avatar.pii ? avatar.type : avatar.uri
-                  })
-                }}
-              />
-            ))}
+            {AvatarRegistry.getInstance()
+              .getAll()
+              .map((avatar, idx) => (
+                <UserAvatar
+                  key={idx}
+                  avatar={avatar.src}
+                  selected={avatar.uri === this.props.avatar}
+                  onClick={() => {
+                    this.props.setSetting('avatar', avatar.uri)
+                    this.setState({ dirty: true })
+                    ga('event', {
+                      ec: 'settings',
+                      ea: 'select_avatar',
+                      el: avatar.pii ? avatar.type : avatar.uri
+                    })
+                  }}
+                />
+              ))}
           </div>
           {hasArtist && (
             <div className={styles.small}>

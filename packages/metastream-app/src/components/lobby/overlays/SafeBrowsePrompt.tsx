@@ -5,7 +5,7 @@ import styles from './SafeBrowsePrompt.css'
 import { IReactReduxProps } from 'types/redux-thunk'
 import { HighlightButton } from '../../common/button'
 import { getHost } from '../../../utils/url'
-import { safeBrowse } from '../../../services/safeBrowse'
+import { SafeBrowse } from '../../../services/safeBrowse'
 import { DimLink } from '../../common/typography'
 import { Trans } from 'react-i18next'
 import { t } from 'locale'
@@ -45,7 +45,7 @@ class _SafeBrowsePrompt extends React.Component<PrivateProps> {
             size="medium"
             icon="check"
             onClick={() => {
-              safeBrowse.permitURL(url)
+              SafeBrowse.getInstance().permitURL(url)
               onChange()
             }}
           >
@@ -58,7 +58,7 @@ class _SafeBrowsePrompt extends React.Component<PrivateProps> {
             className={styles.disableLink}
             onClick={event => {
               event.preventDefault()
-              safeBrowse.disable()
+              SafeBrowse.getInstance().disable()
               onChange()
             }}
           >
