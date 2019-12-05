@@ -6,6 +6,11 @@
     <link rel="stylesheet" href="../../styles/app.global.css" />
     <link rel="stylesheet" href="../../styles/resource.global.css" />
     <style>
+      :root {
+        --color-btn: rgba(255, 255, 255, 0.22);
+        --color-btn-text: rgba(255, 255, 255, 0.88);
+      }
+
       body {
         overflow: auto;
       }
@@ -43,11 +48,12 @@
       }
 
       .button {
-        color: rgba(255, 255, 255, 0.88);
-        background: rgba(255, 255, 255, 0.11);
+        background: var(--color-btn);
+        color: var(--color-btn-text);
         transition: color 120ms ease-out, background-color 120ms ease-out;
         letter-spacing: 1px;
         border-radius: 4px;
+        backdrop-filter: blur(10px);
       }
 
       .button:hover {
@@ -101,7 +107,7 @@
         flex: 1 1 auto;
         border: none;
         color: #fff;
-        border: 1px solid rgba(255, 255, 255, 0.11);
+        border: 1px solid var(--color-btn);
         border-radius: 4px;
         border-top-right-radius: 0;
         border-bottom-right-radius: 0;
