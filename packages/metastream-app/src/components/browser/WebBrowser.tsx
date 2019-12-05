@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import cx from 'classnames'
+import shortid from 'shortid'
 
 import styles from './WebBrowser.css'
 import { WebControls } from 'components/browser/Controls'
@@ -9,7 +10,8 @@ import { assetUrl } from 'utils/appUrl'
 import { IReactReduxProps } from 'types/redux-thunk'
 import { Webview } from 'components/Webview'
 
-const DEFAULT_URL = assetUrl('homescreen.html')
+const NONCE = shortid()
+const DEFAULT_URL = `${assetUrl('homescreen.html')}?nonce=${NONCE}`
 
 interface IProps {
   className?: string
@@ -75,6 +77,14 @@ export class _WebBrowser extends Component<PrivateProps> {
     }
   }
 
+  private requestUrl = (url: string) => {
+    this.props.dispatch(sendMediaRequest({ url, source: 'browser' }))
+
+    if (this.props.onClose) {
+      this.props.onClose()
+    }
+  }
+
   render(): JSX.Element {
     return (
       <div className={cx(styles.container, this.props.className)}>
@@ -85,13 +95,7 @@ export class _WebBrowser extends Component<PrivateProps> {
           }}
           initialUrl={this.initialUrl}
           onClose={this.props.onClose}
-          onRequestUrl={url => {
-            this.props.dispatch(sendMediaRequest({ url, source: 'browser' }))
-
-            if (this.props.onClose) {
-              this.props.onClose()
-            }
-          }}
+          onRequestUrl={this.requestUrl}
         />
         {this.renderContent()}
       </div>
@@ -100,7 +104,26 @@ export class _WebBrowser extends Component<PrivateProps> {
 
   private renderContent() {
     return (
-      <Webview componentRef={this.setupWebview} src={this.initialUrl} className={styles.content} />
+      <Webview
+        componentRef={this.setupWebview}
+        src={this.initialUrl}
+        className={styles.content}
+        onMessage={event => {
+          const { data } = event
+          if (
+            typeof data !== 'object' ||
+            typeof data.type !== 'string' ||
+            typeof data.payload !== 'object'
+          ) {
+            return
+          }
+
+          const { type, payload } = data
+          if (type === 'add-to-session' && payload.nonce === NONCE) {
+            this.requestUrl(payload.url)
+          }
+        }}
+      />
     )
   }
 }

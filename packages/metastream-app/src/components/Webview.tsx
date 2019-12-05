@@ -26,6 +26,7 @@ interface Props {
   /** Whether this webview should use a popup window. */
   popup?: boolean
   onClosePopup?: Function
+  onMessage?: (event: MessageEvent) => void
 }
 
 interface State {
@@ -87,6 +88,12 @@ export class Webview extends Component<Props, State> {
   }
 
   private onMessage(event: MessageEvent) {
+    if (this.iframe && this.iframe.contentWindow === event.source) {
+      if (this.props.onMessage) {
+        this.props.onMessage(event)
+      }
+    }
+
     const { data } = event
     if (typeof data !== 'object' || typeof data.type !== 'string') return
 
@@ -259,7 +266,16 @@ export class Webview extends Component<Props, State> {
   }
 
   render() {
-    const { componentRef, src, allowScripts, className, popup, onClosePopup, ...rest } = this.props
+    const {
+      componentRef,
+      src,
+      allowScripts,
+      className,
+      popup,
+      onClosePopup,
+      onMessage,
+      ...rest
+    } = this.props
 
     // TODO(samuelmaddock): Update React and types so these props can be passed in
     const untypedProps: any = {

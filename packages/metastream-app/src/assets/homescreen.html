@@ -10,6 +10,10 @@
         overflow: auto;
       }
 
+      .top {
+        background: var(--app-bg-lobby);
+      }
+
       main {
         min-height: 100%;
         display: flex;
@@ -38,38 +42,69 @@
         max-width: 100%;
       }
 
-      .social-link {
+      .button {
         color: rgba(255, 255, 255, 0.88);
         background: rgba(255, 255, 255, 0.11);
-        text-decoration: none;
+        transition: color 120ms ease-out, background-color 120ms ease-out;
+        letter-spacing: 1px;
         border-radius: 4px;
+      }
+
+      .button:hover {
+        background: var(--color-highlight);
+        color: #fff;
+      }
+
+      .social-link {
+        text-decoration: none;
 
         display: flex;
         justify-content: center;
         align-items: center;
 
-        height: 70px;
-        padding: 12px 16px;
+        height: 4rem;
+        padding: 0.75rem 1rem;
 
-        font-size: 24px;
+        font-size: 1.5rem;
         text-align: center;
-
-        transition: color 120ms ease-out, background-color 120ms ease-out;
-      }
-
-      .social-link:hover {
-        background: var(--color-highlight);
-        color: #fff;
       }
 
       .text-container {
-        flex: 1;
+        flex: 1 0 auto;
         display: flex;
         align-items: center;
         max-width: var(--grid-width);
         text-align: center;
-        font-size: 18px;
+        font-size: 1.125rem;
         padding: 1rem 0;
+      }
+
+      .input-container {
+        display: flex;
+        margin-top: 2rem;
+      }
+
+      .input-container input,
+      .input-container button {
+        padding: 0.5rem 1rem;
+        line-height: 1.5rem;
+      }
+
+      .input-container button {
+        text-transform: uppercase;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+      }
+
+      .input-container input {
+        background: none;
+        flex: 1 1 auto;
+        border: none;
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.11);
+        border-radius: 4px;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
       }
     </style>
   </head>
@@ -82,16 +117,29 @@
           <strong>add it to the session.</strong>
         </p>
       </section>
-      <div class="grid-container">
-        <a href="https://www.youtube.com/" class="social-link" rel="noopener">YouTube</a>
-        <a href="https://www.twitch.tv/" class="social-link" rel="noopener">Twitch</a>
-        <a href="https://soundcloud.com/" class="social-link" rel="noopener">SoundCloud</a>
-        <a href="https://www.netflix.com/" class="social-link" rel="noopener">Netflix</a>
-        <a href="https://www.hulu.com/" class="social-link" rel="noopener">Hulu</a>
-        <a href="https://www.crunchyroll.com/" class="social-link" rel="noopener">Crunchyroll</a>
-        <a href="https://www.reddit.com/" class="social-link" rel="noopener">Reddit</a>
-        <a href="https://www.google.com/" class="social-link" rel="noopener">Google</a>
-      </div>
+      <section style="max-width: 100%;">
+        <div class="grid-container">
+          <a href="https://www.youtube.com/" class="button social-link" rel="noopener">YouTube</a>
+          <a href="https://www.twitch.tv/" class="button social-link" rel="noopener">Twitch</a>
+          <a href="https://soundcloud.com/" class="button social-link" rel="noopener">SoundCloud</a>
+          <a href="https://www.netflix.com/" class="button social-link" rel="noopener">Netflix</a>
+          <a href="https://www.hulu.com/" class="button social-link" rel="noopener">Hulu</a>
+          <a href="https://www.crunchyroll.com/" class="button social-link" rel="noopener"
+            >Crunchyroll</a
+          >
+          <a href="https://www.reddit.com/" class="button social-link" rel="noopener">Reddit</a>
+          <a href="https://www.google.com/" class="button social-link" rel="noopener">Google</a>
+        </div>
+        <div class="input-container">
+          <input
+            id="urlinput"
+            placeholder="Or paste any URL (e.g. https://cool.website/video/123)"
+            autocomplete="url"
+            spellcheck="false"
+          />
+          <button id="addbtn" class="button">Add to Session</button>
+        </div>
+      </section>
       <div class="text-container">
         <p>
           Having trouble with a website?
@@ -102,5 +150,38 @@
         </p>
       </div>
     </main>
+
+    <script>
+      ;(function() {
+        const isTopFrame = window.top === window.self
+        if (isTopFrame) {
+          document.body.classList.add('top')
+          return
+        }
+
+        const submitURL = () => {
+          const url = urlInput.value
+          if (url.length === 0) return
+          const nonce = new URLSearchParams(location.search).get('nonce')
+          const message = { type: 'add-to-session', payload: { url, nonce } }
+          window.top.postMessage(message)
+        }
+
+        const urlInput = document.getElementById('urlinput')
+        urlInput.addEventListener(
+          'keydown',
+          event => {
+            if (event.key === 'Enter') {
+              event.preventDefault()
+              submitURL()
+            }
+          },
+          false
+        )
+
+        const addBtn = document.getElementById('addbtn')
+        addBtn.addEventListener('click', submitURL, false)
+      })()
+    </script>
   </body>
 </html>
