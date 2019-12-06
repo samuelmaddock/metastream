@@ -37,7 +37,10 @@ class _SafeBrowsePrompt extends React.Component<PrivateProps> {
             size="medium"
             icon="check"
             highlight
-            onClick={() => this.props.onPermitOnce()}
+            onClick={() => {
+              this.props.onPermitOnce()
+              ga('event', { ec: 'session', ea: 'safe_browse', el: 'once' })
+            }}
           >
             {t('once')}
           </HighlightButton>
@@ -47,6 +50,7 @@ class _SafeBrowsePrompt extends React.Component<PrivateProps> {
             onClick={() => {
               SafeBrowse.getInstance().permitURL(url)
               onChange()
+              ga('event', { ec: 'session', ea: 'safe_browse', el: 'always' })
             }}
           >
             {t('always')}
@@ -60,6 +64,7 @@ class _SafeBrowsePrompt extends React.Component<PrivateProps> {
               event.preventDefault()
               SafeBrowse.getInstance().disable()
               onChange()
+              ga('event', { ec: 'session', ea: 'safe_browse', el: 'disable' })
             }}
           >
             {t('safeBrowseDisableForSession')}
