@@ -77,8 +77,8 @@ export class _WebBrowser extends Component<PrivateProps> {
     }
   }
 
-  private requestUrl = (url: string) => {
-    this.props.dispatch(sendMediaRequest({ url, source: 'browser' }))
+  private requestUrl = (url: string, source: string) => {
+    this.props.dispatch(sendMediaRequest({ url, source }))
 
     if (this.props.onClose) {
       this.props.onClose()
@@ -95,7 +95,7 @@ export class _WebBrowser extends Component<PrivateProps> {
           }}
           initialUrl={this.initialUrl}
           onClose={this.props.onClose}
-          onRequestUrl={this.requestUrl}
+          onRequestUrl={url => this.requestUrl(url, 'browser')}
         />
         {this.renderContent()}
       </div>
@@ -120,7 +120,7 @@ export class _WebBrowser extends Component<PrivateProps> {
 
           const { type, payload } = data
           if (type === 'add-to-session' && payload.nonce === NONCE) {
-            this.requestUrl(payload.url)
+            this.requestUrl(payload.url, 'homescreen')
           }
         }}
       />
