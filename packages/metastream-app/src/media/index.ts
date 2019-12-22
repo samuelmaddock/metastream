@@ -15,6 +15,7 @@ import oEmbedMware from './middleware/oembed'
 import autoplayMware from './middleware/autoplay'
 import microdataMware from './middleware/microdata'
 import imgurMware from './middleware/imgur'
+import preventDownloadMware from './middleware/preventDownload'
 
 import { IMediaItem } from 'lobby/reducers/mediaPlayer'
 
@@ -26,6 +27,7 @@ const middlewares: IMediaMiddleware[] = [
   youTubePlaylistMware,
 
   httpHeadMware,
+  preventDownloadMware,
   mediaMware,
   htmlMware,
 

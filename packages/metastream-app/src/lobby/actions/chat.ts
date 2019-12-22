@@ -6,10 +6,10 @@ import { IMessage, Typing } from 'lobby/reducers/chat'
 import { CHAT_MAX_MESSAGE_LENGTH } from 'constants/chat'
 import { AppThunkAction } from 'types/redux-thunk'
 import { t } from 'locale'
-import { sendMediaRequest } from './mediaPlayer'
 import { isUrl } from 'utils/url'
 import { localUserId } from '../../network/index'
 import { TYPING_DURATION } from '../reducers/chat.helpers'
+import { sendMediaRequest } from './media-request'
 
 /** Message prior to being processed by reducer. */
 type RawMessage = Pick<IMessage, Exclude<keyof IMessage, 'id'>>

@@ -3,7 +3,6 @@ import { RpcThunk } from 'lobby/types'
 import { getUserName, isAdmin, getUser, hasRole, getUniqueName } from 'lobby/reducers/users.helpers'
 import { rpc, RpcRealm } from 'network/middleware/rpc'
 import { localUserId } from 'network'
-import { addChat } from './chat'
 import { NetworkDisconnectReason } from 'constants/network'
 import { setDisconnectReason } from './session'
 import { UserRole, IUserInvite } from '../reducers/users'
@@ -16,6 +15,7 @@ import {
   getValidAvatar
 } from './user-validation'
 import { cleanObject } from '../../utils/object'
+import { addChat } from './chat'
 
 export const addUserInvite = actionCreator<IUserInvite>('ADD_USER_INVITE')
 export const answerUserInvite = actionCreator<IUserInvite & { response: string }>(

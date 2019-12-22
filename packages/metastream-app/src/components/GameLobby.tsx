@@ -23,12 +23,8 @@ import { setLobbyModal } from '../actions/ui'
 import { getNumUsers } from '../lobby/reducers/users.helpers'
 import { IReactReduxProps } from 'types/redux-thunk'
 import { ChatLocation } from './chat/Location'
-import { setSetting } from '../actions/settings'
-import {
-  setPendingMedia,
-  sendMediaRequest,
-  ClientMediaRequestOptions
-} from 'lobby/actions/mediaPlayer'
+import { setPendingMedia } from 'lobby/actions/mediaPlayer'
+import { sendMediaRequest, ClientMediaRequestOptions } from 'lobby/actions/media-request'
 
 interface IProps {
   host: boolean

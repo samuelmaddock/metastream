@@ -11,7 +11,6 @@ import {
 import {
   server_requestDeleteMedia,
   server_requestMoveToTop,
-  sendMediaRequest,
   server_requestToggleQueueLock
 } from '../../lobby/actions/mediaPlayer'
 
@@ -24,6 +23,7 @@ import { localUser } from 'network'
 import { copyMediaLink, openMediaInBrowser } from '../../media/utils'
 import { IReactReduxProps } from 'types/redux-thunk'
 import { withNamespaces, WithNamespaces } from 'react-i18next'
+import { sendMediaRequest } from 'lobby/actions/media-request'
 
 interface IProps {
   className?: string

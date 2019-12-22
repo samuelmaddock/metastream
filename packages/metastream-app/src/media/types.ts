@@ -79,6 +79,17 @@ export interface IMediaContext {
     /** Whether HTTP HEAD request failed to fetch */
     httpHeadFailed?: boolean
 
+    /** HTTP response code */
+    responseCode?: number
+
+    /** Response content type */
+    contentType?: string
+
+    /** Response content type shorthand */
+    type?: string
+
+    headResponseHeaders?: { [key: string]: string }
+
     [key: string]: any
   }
 }

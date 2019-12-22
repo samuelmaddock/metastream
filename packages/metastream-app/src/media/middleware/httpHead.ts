@@ -1,12 +1,15 @@
-import { MediaThumbnailSize, IMediaRequest, IMediaMiddleware, IMediaResponse } from '../types'
+import { IMediaMiddleware } from '../types'
 import { fetchResponse } from 'utils/http'
-import { Url } from 'url'
-import { basename } from 'path'
 import { MEDIA_USER_AGENT } from 'constants/http'
 
+const getContentTypeToken = (val?: string | string[]) => {
+  val = Array.isArray(val) ? val[0] : val
+  val = (val && val.split(';').shift()) || ''
+  return val.trim()
+}
+
 /** https://www.w3.org/Protocols/rfc1341/4_Content-Type.html */
-const getContentType = (val: string | undefined) =>
-  val ? (val.split('/').shift() || '').toLowerCase() : ''
+const getTypeToken = (val?: string) => (val ? (val.split('/').shift() || '').toLowerCase() : '')
 
 const mware: IMediaMiddleware = {
   match({ protocol }: URL) {
@@ -33,17 +36,14 @@ const mware: IMediaMiddleware = {
     }
 
     const code = response.status || 200
-    // if (code >= 400) {
-    //   return;
-    // }
 
-    let contentType = response.headers['content-type']
-    contentType = Array.isArray(contentType) ? contentType[0] : contentType
-    const type = getContentType(contentType)
+    const contentType = getContentTypeToken(response.headers['content-type'])
+    const type = getTypeToken(contentType)
 
     ctx.state.responseCode = code
     ctx.state.contentType = contentType
     ctx.state.type = type
+    ctx.state.headResponseHeaders = response.headers
 
     return next()
   }

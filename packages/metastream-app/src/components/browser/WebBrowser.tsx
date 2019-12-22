@@ -5,10 +5,10 @@ import shortid from 'shortid'
 
 import styles from './WebBrowser.css'
 import { WebControls } from 'components/browser/Controls'
-import { sendMediaRequest } from 'lobby/actions/mediaPlayer'
 import { assetUrl } from 'utils/appUrl'
 import { IReactReduxProps } from 'types/redux-thunk'
 import { Webview } from 'components/Webview'
+import { sendMediaRequest } from 'lobby/actions/media-request'
 
 const NONCE = shortid()
 const DEFAULT_URL = `${assetUrl('homescreen.html')}?nonce=${NONCE}`

@@ -1,5 +1,4 @@
 import { actionCreator } from 'utils/redux'
-import shortid from 'shortid'
 import { IMediaItem, PlaybackState, PendingMedia } from 'lobby/reducers/mediaPlayer'
 import { rpc, RpcRealm } from 'network/middleware/rpc'
 import { RpcThunk } from 'lobby/types'
@@ -12,16 +11,12 @@ import {
   hasPlaybackPermissions,
   getMediaById
 } from 'lobby/reducers/mediaPlayer.helpers'
-import { getUserName, getNumUsers } from 'lobby/reducers/users.helpers'
-import { addChat } from './chat'
+import { getNumUsers } from 'lobby/reducers/users.helpers'
 import { AppThunkAction } from 'types/redux-thunk'
-import { translateEscaped, t } from 'locale'
-import { StorageKey } from 'constants/storage'
-import { isIP } from 'utils/network'
+import { translateEscaped } from 'locale'
 import { clamp } from 'utils/math'
-
-/** Code-split media parsing due to large dependencies and it's only used by the host. */
-const getMediaParser = () => import(/* webpackChunkName: "media-parser" */ 'media')
+import { getMediaParser } from './media-common'
+import { addChat } from './chat'
 
 export const playPauseMedia = actionCreator<number>('PLAY_PAUSE_MEDIA')
 export const repeatMedia = actionCreator<number>('REPEAT_MEDIA')
@@ -149,7 +144,7 @@ export const multi_announceMediaChange = rpc(
   announceMediaChange
 )
 
-const enqueueMedia = (media: IMediaItem, index?: number): AppThunkAction => {
+export const enqueueMedia = (media: IMediaItem, index?: number): AppThunkAction => {
   return (dispatch, getState): boolean => {
     const state = getState()
     const current = getCurrentMedia(state)
@@ -168,123 +163,6 @@ const enqueueMedia = (media: IMediaItem, index?: number): AppThunkAction => {
     return queued
   }
 }
-
-interface MediaRequestOptions {
-  url: string
-  time?: number
-  /** Whether the media should be played immediately rather than queued. */
-  immediate?: boolean
-}
-
-export interface ClientMediaRequestOptions extends MediaRequestOptions {
-  source: string
-}
-
-export const sendMediaRequest = (opts: ClientMediaRequestOptions): AppThunkAction => {
-  return async (dispatch, getState) => {
-    let state = getState()
-    if (state.mediaPlayer.queueLocked && !hasPlaybackPermissions(state)) {
-      return null
-    }
-
-    const { source, ...serverOpts } = opts
-    const requestPromise = dispatch(server_requestMedia(serverOpts))
-
-    const requestCount = parseInt(localStorage.getItem(StorageKey.RequestCount) || '0', 10) || 0
-    localStorage.setItem(StorageKey.RequestCount, `${requestCount + 1}`)
-
-    {
-      ga('event', { ec: 'session', ea: 'request_media', el: source })
-
-      let host
-      try {
-        const urlObj = new URL(opts.url)
-        host = urlObj.host
-        if (isIP(host)) {
-          host = 'ipaddress'
-        }
-      } catch {}
-
-      // Track request domain host (e.g. www.youtube.com)
-      if (host) {
-        ga('event', { ec: 'session', ea: 'request_host', el: host })
-      }
-    }
-
-    const mediaId = await requestPromise
-
-    if (mediaId) {
-      state = getState()
-      const media = getMediaById(state, mediaId)
-      if (media && media !== getCurrentMedia(state)) {
-        const content = t('noticeAddedMedia', { mediaId: media.id, mediaTitle: media.title })
-        dispatch(addChat({ content, html: true, timestamp: Date.now() }))
-      }
-    } else {
-      const content = t('noticeMediaError', { url: opts.url })
-      dispatch(addChat({ content, html: true, timestamp: Date.now() }))
-    }
-  }
-}
-
-const requestMedia = (opts: MediaRequestOptions): RpcThunk<Promise<string | null>> => async (
-  dispatch,
-  getState,
-  context
-) => {
-  const { url } = opts
-  console.info('Media request', opts, context)
-
-  const state = getState()
-  if (state.mediaPlayer.queueLocked && !hasPlaybackPermissions(state, context.client)) return null
-  if (opts.immediate && !hasPlaybackPermissions(state, context.client)) return null
-
-  let res
-
-  try {
-    const mediaParser = await getMediaParser()
-    res = await mediaParser.resolveMediaUrl(url)
-  } catch (e) {
-    console.error(e)
-  }
-
-  if (!res) {
-    console.log(`Failed to fetch media for ${url}`)
-    return null
-  }
-
-  console.log('Media response', res)
-
-  const userId = context.client.id.toString()
-  const media: IMediaItem = {
-    id: shortid(),
-    type: res.type,
-    url: res.url,
-    title: res.title || url,
-    duration: res.duration,
-    description: res.description,
-    imageUrl: res.thumbnails && res.thumbnails[MediaThumbnailSize.Default],
-    requestUrl: url,
-    ownerId: userId,
-    ownerName: getUserName(getState(), userId),
-    hasMore: res.hasMore,
-    startTime: opts.time && res.duration && opts.time < res.duration ? opts.time : undefined
-  }
-
-  if (res.state) {
-    media.state = res.state
-  }
-
-  if (opts.immediate) {
-    const queued = (dispatch(enqueueMedia(media, 0)) as any) as boolean
-    if (queued) dispatch(nextMedia(true))
-  } else {
-    dispatch(enqueueMedia(media))
-  }
-
-  return media.id
-}
-const server_requestMedia = rpc('requestMedia', RpcRealm.Server, requestMedia)
 
 const requestPlayPause = (): RpcThunk<void> => (dispatch, getState, context) => {
   const state = getState()
