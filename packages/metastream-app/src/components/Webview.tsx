@@ -27,6 +27,7 @@ interface Props {
   popup?: boolean
   onClosePopup?: Function
   onMessage?: (event: MessageEvent) => void
+  backgroundImage?: string
 }
 
 interface State {
@@ -274,6 +275,7 @@ export class Webview extends Component<Props, State> {
       popup,
       onClosePopup,
       onMessage,
+      backgroundImage,
       ...rest
     } = this.props
 
@@ -294,6 +296,7 @@ export class Webview extends Component<Props, State> {
           id={this.id}
           src={this.initialUrl}
           onClose={onClosePopup!}
+          backgroundImage={backgroundImage}
         />
       )
     }

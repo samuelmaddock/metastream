@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
+import styles from './Popup.css'
 
 interface Props {
   id: number
   src: string
   theRef: (e: true | null) => void
   onClose: Function
+  backgroundImage?: string
 }
 
 interface State {
@@ -82,23 +84,20 @@ export class PopupWindow extends Component<Props, State> {
   }
 
   render() {
-    if (this.state.open) {
-      return (
-        <div
-          style={{
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            background: 'black'
-          }}
-        >
-          Playing in popup window
-        </div>
-      )
-    }
+    if (!this.state.open) return null
 
-    return null
+    const { backgroundImage } = this.props
+
+    return (
+      <div className={styles.container}>
+        {backgroundImage && (
+          <div
+            className={styles.background}
+            style={{ backgroundImage: `url(${backgroundImage})` }}
+          />
+        )}
+        <div className={styles.text}>Playing in popup window</div>
+      </div>
+    )
   }
 }

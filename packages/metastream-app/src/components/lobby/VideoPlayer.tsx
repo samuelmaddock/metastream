@@ -377,6 +377,7 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
 
   private renderBrowser() {
     const { mediaUrl } = this
+    const { current: media } = this.props
 
     if (!this.props.isExtensionInstalled) {
       return <ExtensionInstall />
@@ -408,6 +409,7 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
         onClosePopup={() => {
           this.props.dispatch(setPopupPlayer(false))
         }}
+        backgroundImage={(media && media.imageUrl) || undefined}
       />
     )
   }

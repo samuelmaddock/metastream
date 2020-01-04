@@ -1,0 +1,21 @@
+.container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: black;
+}
+
+.background {
+  composes: absolute-full from '~styles/layout.css';
+  z-index: 0;
+  background-size: cover;
+  background-position: 50% 50%;
+  filter: blur(10px) brightness(0.6);
+  transform: scale(1.05); /* hide blurred edges */
+}
+
+.text {
+  z-index: 1;
+}
