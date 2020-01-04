@@ -31,7 +31,7 @@ class _WebviewError extends React.Component<PrivateProps> {
           <li>Verify internet connectivity.</li>
           <li>Test the site outside of Metastream.</li>
           <li>Reload the site.</li>
-          {FEATURE_POPUP_PLAYER && <li>Try using the popup player.</li>}
+          {FEATURE_POPUP_PLAYER && <li>Try opening the popup player.</li>}
         </ol>
       </div>
     )
