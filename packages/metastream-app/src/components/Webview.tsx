@@ -28,6 +28,7 @@ interface Props {
   onClosePopup?: Function
   onMessage?: (event: MessageEvent) => void
   backgroundImage?: string
+  onActivity?: (eventName: string) => void
 }
 
 interface State {
@@ -126,6 +127,9 @@ export class Webview extends Component<Props, State> {
 
     if (action.type === 'activity') {
       this.onIFrameActivity()
+      if (this.props.onActivity) {
+        this.props.onActivity(action.payload)
+      }
     } else if (action.type === 'load-script') {
       // 'load-script' runs during webview initialization so we know the page
       // has started loading at this point

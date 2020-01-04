@@ -3,7 +3,12 @@ import { connect } from 'react-redux'
 import cx from 'classnames'
 import styles from './VideoPlayer.css'
 import { PlaybackState, IMediaPlayerState } from 'lobby/reducers/mediaPlayer'
-import { updateMedia, updatePlaybackTimer } from 'lobby/actions/mediaPlayer'
+import {
+  updateMedia,
+  updatePlaybackTimer,
+  server_requestPlayPause,
+  server_requestSeek
+} from 'lobby/actions/mediaPlayer'
 import { clamp } from 'utils/math'
 import { MEDIA_REFERRER, MEDIA_SESSION_USER_AGENT } from 'constants/http'
 import { assetUrl } from 'utils/appUrl'
@@ -94,6 +99,7 @@ type PrivateProps = IProps & IConnectedProps & IReactReduxProps
 class _VideoPlayer extends PureComponent<PrivateProps, IState> {
   private webview: Webview | null = null
   private mediaTimeout?: number
+  private lastActivityTime: number = 0
 
   state: IState = { interacting: false, mediaReady: false, permitURLOnce: false }
 
@@ -237,9 +243,10 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
   }
 
   private onIpcMessage = (action: any, ...args: any[]) => {
-    if (typeof action !== 'object') return
+    if (typeof action !== 'object' || action === null) return
     console.debug('VideoPlayer IPC', action)
     const isTopSubFrame = !!args[0]
+    const dt = Date.now() - this.lastActivityTime
 
     switch (action.type) {
       case 'media-ready':
@@ -248,7 +255,33 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
       case 'media-autoplay-error':
         this.onAutoplayError(action.payload.error)
         break
+      case 'media-playback-change':
+        if (dt > 1000) break
+        this.onMediaPlaybackChange(action.payload)
+        break
+      case 'media-seeked':
+        if (dt > 5000) break
+        this.onMediaSeek(action.payload)
+        break
     }
+  }
+
+  onMediaPlaybackChange(event: { state: 'playing' | 'paused'; time: number }) {
+    const time = getPlaybackTime2(this.props)
+    const dt = Math.abs(event.time - time)
+    if (dt > 100) {
+      this.props.dispatch(server_requestSeek(event.time))
+    }
+
+    if (this.isPlaying && event.state === 'paused') {
+      this.props.dispatch(server_requestPlayPause())
+    } else if (this.isPaused && event.state === 'playing') {
+      this.props.dispatch(server_requestPlayPause())
+    }
+  }
+
+  onMediaSeek(time: number) {
+    this.props.dispatch(server_requestSeek(time))
   }
 
   private onMediaReady = (isTopSubFrame: boolean = false, payload?: MediaReadyPayload) => {
@@ -410,17 +443,29 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
           this.props.dispatch(setPopupPlayer(false))
         }}
         backgroundImage={(media && media.imageUrl) || undefined}
+        onActivity={this.onActivity}
       />
     )
+  }
+
+  private onActivity = (eventName: string) => {
+    // ignore event where user isn't activating something
+    if (eventName === 'mousemove') return
+
+    this.lastActivityTime = Date.now()
   }
 
   private renderInteract = () => {
     // Allow interacting with extension install
     if (!this.canInteract) return
 
+    const msg = this.props.host
+      ? '⚠️ Interact mode enabled. Only playback changes will be synced. ⚠️'
+      : '⚠️ Interact mode enabled. Changes will only affect your local web browser. ⚠️'
+
     return this.state.interacting ? (
       <button className={styles.interactNotice} onClick={this.exitInteractMode}>
-        ⚠️ Interact mode enabled. Changes will only affect your local web browser. ⚠️
+        {msg}
         <Icon name="x" pointerEvents="none" className={styles.btnExitInteract} />
       </button>
     ) : (
