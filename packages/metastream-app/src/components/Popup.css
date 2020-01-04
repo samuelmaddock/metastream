@@ -5,6 +5,7 @@
   justify-content: center;
   align-items: center;
   background-color: black;
+  clip-path: inset(0 0); /* overflow: hidden not working for some reason */
 }
 
 .background {
