@@ -1,9 +1,13 @@
 import React, { Component } from 'react'
 import styles from './Popup.css'
+import { HighlightButton } from './common/button'
+import { t } from 'locale'
+import { Trans } from 'react-i18next'
 
 interface Props {
   id: number
   src: string
+  mediaSrc?: string
   theRef: (e: true | null) => void
   onClose: Function
   backgroundImage?: string
@@ -43,6 +47,7 @@ export class PopupWindow extends Component<Props, State> {
   componentWillUnmount() {
     if (this.window) {
       this.window.close()
+      this.checkClosed()
       PopupWindow.windowRef = null
     }
   }
@@ -83,9 +88,22 @@ export class PopupWindow extends Component<Props, State> {
     }, 0)
   }
 
-  render() {
-    if (!this.state.open) return null
+  private renderDescription() {
+    const { mediaSrc } = this.props
 
+    if (mediaSrc) {
+      try {
+        const url = new URL(mediaSrc)
+        return (
+          <Trans i18nKey="embedBlocked" values={{ host: url.host }}>
+            <strong>This website</strong> is embed blocked⁠—playback in a popup is required.
+          </Trans>
+        )
+      } catch {}
+    }
+  }
+
+  render() {
     const { backgroundImage } = this.props
 
     return (
@@ -96,7 +114,16 @@ export class PopupWindow extends Component<Props, State> {
             style={{ backgroundImage: `url(${backgroundImage})` }}
           />
         )}
-        <div className={styles.text}>Playing in popup window</div>
+        {this.state.open ? (
+          <div className={styles.text}>{t('playingInPopup')}</div>
+        ) : (
+          <div className={styles.text}>
+            <p>{this.renderDescription()}</p>
+            <HighlightButton highlight icon="external-link" size="large" onClick={this.openWindow}>
+              {t('openInPopup')}
+            </HighlightButton>
+          </div>
+        )}
       </div>
     )
   }

@@ -18,7 +18,13 @@ const INITIALIZE_TIMEOUT_DURATION = 1000
 const NAVIGATION_TIMEOUT_DURATION = 5000
 
 interface Props {
+  /** URL to assign to the webview element. */
   src?: string
+
+  /** Current media URL. */
+  // TODO: refactor to allow just using 'src' prop
+  mediaSrc?: string
+
   className?: string
   componentRef?: (c: Webview | null) => any
   /** Allow Metastream Remote extension to inject player scripts. */
@@ -280,6 +286,8 @@ export class Webview extends Component<Props, State> {
       onClosePopup,
       onMessage,
       backgroundImage,
+      onActivity,
+      mediaSrc,
       ...rest
     } = this.props
 
@@ -299,6 +307,7 @@ export class Webview extends Component<Props, State> {
           }}
           id={this.id}
           src={this.initialUrl}
+          mediaSrc={mediaSrc}
           onClose={onClosePopup!}
           backgroundImage={backgroundImage}
         />

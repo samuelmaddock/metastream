@@ -28,6 +28,7 @@ import { SafeBrowsePrompt } from './overlays/SafeBrowsePrompt'
 import { localUserId } from 'network'
 import { setPopupPlayer } from 'actions/ui'
 import { StorageKey } from 'constants/storage'
+import { EMBED_BLOCKED_DOMAIN_LIST } from 'constants/embed'
 
 type MediaReadyPayload = {
   duration?: number
@@ -147,8 +148,25 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
       : true
   }
 
-  private get canInteract() {
-    return this.props.isExtensionInstalled && this.isPermittedBySafeBrowse
+  private get canEnterInteractMode() {
+    if (!this.props.isExtensionInstalled) return false
+    if (!this.isPermittedBySafeBrowse) return false
+    if (this.shouldRenderPopup) return false
+    return true
+  }
+
+  private get canEmbed(): boolean {
+    try {
+      const url = new URL(this.mediaUrl)
+      const isEmbedBlocked = EMBED_BLOCKED_DOMAIN_LIST.has(url.host)
+      return !isEmbedBlocked
+    } catch {
+      return true
+    }
+  }
+
+  private get shouldRenderPopup(): boolean {
+    return this.props.popupPlayer || !this.canEmbed
   }
 
   componentDidMount(): void {
@@ -299,7 +317,7 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     this.dispatchMedia('set-settings', this.props.playerSettings)
 
     // Apply auto-fullscreen to all subframes with nested iframes
-    const isValidFrameSender = !isTopSubFrame || this.props.popupPlayer
+    const isValidFrameSender = !isTopSubFrame || this.shouldRenderPopup
     if (isValidFrameSender && payload) {
       this.dispatchMedia('apply-fullscreen', payload.href)
     }
@@ -432,15 +450,18 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
       <Webview
         componentRef={this.setupWebview}
         src={DEFAULT_URL}
+        mediaSrc={this.mediaUrl}
         className={cx(styles.video, {
           [styles.interactive]: this.state.interacting,
           [styles.playing]: !!this.props.current,
           [styles.mediaReady]: this.state.mediaReady
         })}
         allowScripts
-        popup={this.props.popupPlayer}
+        popup={this.shouldRenderPopup}
         onClosePopup={() => {
-          this.props.dispatch(setPopupPlayer(false))
+          if (this.props.popupPlayer) {
+            this.props.dispatch(setPopupPlayer(false))
+          }
         }}
         backgroundImage={(media && media.imageUrl) || undefined}
         onActivity={this.onActivity}
@@ -456,8 +477,7 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
   }
 
   private renderInteract = () => {
-    // Allow interacting with extension install
-    if (!this.canInteract) return
+    if (!this.canEnterInteractMode) return
 
     const msg = this.props.host
       ? '⚠️ Interact mode enabled. Only playback changes will be synced. ⚠️'
@@ -491,7 +511,7 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
   }
 
   enterInteractMode = () => {
-    if (!this.canInteract) return
+    if (!this.canEnterInteractMode) return
 
     this.setState({ interacting: true }, () => {
       document.addEventListener('keydown', this.onKeyDown, false)
