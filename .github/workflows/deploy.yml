@@ -11,38 +11,38 @@ jobs:
 
     steps:
     - name: Checkout Repo
-			uses: actions/checkout@v1
+      uses: actions/checkout@v1
 
     - name: Setup Node
       uses: actions/setup-node@v1
       with:
-				node-version: '12.x'
+        node-version: '12.x'
 
-		- name: Install dependencies
-			run: |
-				yarn install
+    - name: Install dependencies
+      run: |
+        yarn install
 
     - name: Build signal server
       working-directory: ./packages/metastream-signal-server
       run: |
-				yarn build
+        yarn build
 
-		- name: Create dotenv file
-			working-directory: ./packages/metastream-app
-			run: |
-				echo "${{ secrets.DOTENV_CONTENTS }}" >> .env
+    - name: Create dotenv file
+      working-directory: ./packages/metastream-app
+      run: |
+        echo "${{ secrets.DOTENV_CONTENTS }}" >> .env
 
     - name: Build web app
       working-directory: ./packages/metastream-app
       run: |
         yarn build
       env:
-				NODE_ENV: production
+        NODE_ENV: production
 
     - name: Deploy branch
-			uses: s0/git-publish-subdir-action@v2.0.0
-			env:
-				REPO: self
-				BRANCH: deploy-test
-				FOLDER: ./packages/metastream-app/dist
-				GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      uses: s0/git-publish-subdir-action@v2.0.0
+      env:
+        REPO: self
+        BRANCH: deploy-test
+        FOLDER: ./packages/metastream-app/dist
+        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
