@@ -75,7 +75,7 @@ module.exports = merge.smart(baseConfig, {
      */
     new webpack.DefinePlugin({
       FEATURE_SESSION_BROWSER: JSON.stringify(false),
-      FEATURE_POPUP_PLAYER: JSON.stringify(false)
+      FEATURE_POPUP_PLAYER: JSON.stringify(true)
     }),
 
     new BundleAnalyzerPlugin({
