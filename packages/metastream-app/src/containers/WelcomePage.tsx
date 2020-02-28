@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { RouteComponentProps } from 'react-router'
+import { Location } from 'history'
 
 import styles from './WelcomePage.css'
 
@@ -21,7 +22,7 @@ import { IReactReduxProps } from '../types/redux-thunk'
 interface IProps extends RouteComponentProps<any> {}
 
 interface IConnectedProps {
-  pathname: string
+  location: Location | null
   settings: ISettingsState
 }
 
@@ -33,8 +34,12 @@ class WelcomePage extends Component<Props> {
     const { dispatch } = this.props
 
     const submit = () => {
+      const { location } = this.props
+
       localStorage.setItem('welcomed', 'true')
-      dispatch(replace(this.props.pathname))
+
+      const path = `${location.pathname}${location.search}`
+      dispatch(replace(path))
     }
 
     return (
@@ -94,7 +99,7 @@ export default connect(
   (state: IAppState): IConnectedProps => {
     const { location } = state.router
     return {
-      pathname: location ? location.pathname : '/',
+      location,
       settings: state.settings
     }
   }

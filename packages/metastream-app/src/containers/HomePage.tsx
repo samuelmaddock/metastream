@@ -47,13 +47,11 @@ type PrivateProps = IProps & IConnectedProps & DispatchProps & IReactReduxProps
 class _HomePage extends Component<PrivateProps> {
   componentDidMount() {
     const params = new URLSearchParams(this.props.search)
-    if (!params) return
-
     const url = params.get('url')
-    const time = parseInt(params.get('t') || '', 10) || undefined
-    const source = params.get('source') || undefined
 
     if (url) {
+      const time = parseInt(params.get('t') || '', 10) || undefined
+      const source = params.get('source') || undefined
       this.props.setPendingMedia({ url, time: time ? time * SEC2MS : undefined, source })
     }
   }
