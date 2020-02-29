@@ -43,6 +43,6 @@ jobs:
       uses: s0/git-publish-subdir-action@v2.0.0
       env:
         REPO: self
-        BRANCH: deploy-test
+        BRANCH: gh-pages
         FOLDER: ./packages/metastream-app/dist
         GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
