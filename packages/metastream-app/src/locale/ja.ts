@@ -46,6 +46,7 @@ export default {
   donate: '寄付する',
   donators: '寄付者',
   duplicate: '複製',
+  embedBlocked: '<0>{{host}}</0> では埋め込み再生が禁止されているので、ポップアップでの再生が必要です。',
   endSessionTitle: '公開セッションを終了しますか？',
   endSessionDescription: '限定公開セッションに切り替えると、すべてのユーザーが切断されます。',
   endSessionModalDescription: 'すべてのユーザーがセッションから切断されます。',
@@ -90,6 +91,8 @@ export default {
   ok: 'OK',
   once: '一度',
   openInBrowser: 'ブラウザで開く',
+  openInPopup: 'ポップアップで表示する',	
+  playingInPopup: 'ポップアップで再生中',
   private: '限定公開',
   profile: 'プロフィール',
   public: '公開',
@@ -129,6 +132,8 @@ export default {
   users: 'ユーザー',
   userJoined: '<Username id="{{userId}}">{{username}}</Username> が参加しました。',
   userLeft: '<Username id="{{userId}}">{{username}}</Username> が退出しました。',
+  userNameChanged:	
+    '<Username id="{{userId}}">{{prevName}}</Username> が <Username id="{{userId}}">{{name}}</Username> に名前を変えました。',
   viewOnGitHub: 'GitHubで見る',
   waitingForHost: 'ホストが接続を許可するのを待機しています・・・',
   welcome: 'ようこそ'
