@@ -1,5 +1,5 @@
-export default {
-  // Credit for Hopeless#4061
+{
+  // Credit for Hopeless
   // Made with love ♥
 
   add: 'Ajouter',
@@ -9,17 +9,30 @@ export default {
   allow: 'Autoriser',
   allowTracking: `Envoyer les informations d'utilisation`,
   allowTrackingDesc: `Des informations d'utilisation anonymes sont envoyées au développeur afin de mieux comprendre comment l'application est utilisée.`,
+  always: 'Toujours',
+  appearance: 'Apparence',
+  autoFullscreen: 'Auto plein écran',  
+  autoFullscreenDesc: 'Zoom pour adapter la vidéo dans le cadre de la fenêtre.',
   avatar: 'Photo de profil',
   avatarCredit: '<0>Image sélectionnée fait par</0> <1>{{artist}}</1>',
   cancel: 'Annuler',
   changelog: 'Journal des modifications',
   chat: 'Chat',
   chatColor: 'Couleur du chat',
-  chatPlaceholder: 'Message or URL',
+  chatDockToRight: 'Dock de discussion à droite',
+  chatMessageFailed: `Impossible d'envoyer votre message. Veuillez réessayer.`,
+  chatPlaceholder: 'Message ou URL',
   chatRevealHint: 'Appuie sur <1></1> pour révéler le chat.',
   chatNewMessage: 'Un nouveau message à été posté !',
+  chatTimestamp: 'Horodatage du chat',
+  chatTimestampDesc: `Afficher l'horodatage à côté des messages de discussion.`,
+  chatUndock: 'Ouvrir le chat dans une pop-up',
+  chatTyping1: `<0></0> est en train d'écrire...`,
+  chatTyping2: `<0></0> et <2></2> sont en train d'écrire...`,
+  chatTyping3: `<0></0>, <2></2> et <4></4> sont en train d'écrire...`,
+  chatTypingSeveral: 'Plusieurs utilisateurs écrivent...',
   chooseDisplayName: `Choisissez votre nom d'utilisateur`,
-  connecting: 'Connection..',
+  connecting: 'Connexion..',
   continue: 'Continuer',
   copy: 'Copier',
   copyLink: 'Copier le lien',
@@ -35,8 +48,9 @@ export default {
   donators: 'Donateurs',
   duplicate: 'Dupliquer',
   endSessionTitle: 'Terminer la session ?',
-  endSessionDescription:
-    'Passer à une session privée déconnectera tous les utilisateurs connectés.',
+  endSessionDescription: 'Passer à une session privée déconnectera tous les utilisateurs connectés.',
+  endSessionModalDescription: 'Tous les utilisateurs seront déconnectés de la session.',
+  endSessionButton: 'Fin de session',
   enterJoinDest: 'Entrez l’URL de la session Metastream.',
   findSession: 'Trouver une session',
   findSessionDescription:
@@ -45,6 +59,7 @@ export default {
   getStarted: 'Commencer',
   info: 'Information',
   installToDesktop: 'Installer l’application bureau',
+  interact: 'Interagir',
   invite: 'Inviter',
   interact: 'Interagir',
   join: 'Rejoindre',
@@ -62,6 +77,9 @@ export default {
   networkDisconnectVersionMismatch: 'Version du client non prise en charge.',
   networkDisconnectFull: 'La session est complète.',
   networkDisconnectKicked: 'Expulsé de la session.',
+  networkDisconnectMultiTab:
+    'Vous hébergez une session Metastream à partir de plusieurs navigateurs ou onglets. Veuillez fermer les autres onglets ou autres navigateurs, puis rechargez la page.',
+  networkDisconnectSessionNotFound: 'Session introuvable.',
   networkTroubleshootingHelp:
     "Consultez le <1>Guide de dépannage réseau</1> pour obtenir de l'aide.",
   noticeAddedMedia: 'Ajout <Media id="{{mediaId}}">{{mediaTitle}}</Media>',
@@ -72,7 +90,10 @@ export default {
     '<Username id="{{userId}}">{{username}}</Username> demande la permission de rejoindre la session. ',
   offline: 'Hors ligne',
   ok: 'OK',
+  once: 'Une fois que',
   openInBrowser: 'Ouvrir dans le navigateur',
+  openInPopup: 'Ouvrir dans une popup',
+  playingInPopup: 'Lecture dans une popup',
   private: 'Privé',
   profile: 'Profil',
   public: 'Publique',
@@ -82,9 +103,15 @@ export default {
   retry: 'Réessayez',
   requestUrl: 'Ajouter à la session',
   requestUrlPlaceholder: '',
+  required: 'Obligatoire',
   requiresDJPermissions: 'Nécessite l’autorisation DJ',
   requiresPortForward:
     'Nécessite <1>l’ouverture du port</1> <3>{{port}}</3> pour accepter les connexions directes.',
+  safeBrowse: 'Navigation sécurisée',
+  safeBrowseDesc: `Demander l'autorisation avant de charger un site Web non reconnu.`,
+  safeBrowseLoadContent: 'Charger du contenu depuis <1>{{host}}</1>?',
+  safeBrowseDisableForSession: 'Désactiver la navigation sécurisée pour cette session',
+  session: 'Session',
   sessionMode: 'Mode session',
   sessionModePublicDescription: 'Tout le monde est autorisé à rejoindre.',
   sessionModePrivateDescription: 'La permission de rejoindre doit être accordée.',
@@ -96,6 +123,9 @@ export default {
     'Partager <1>votre adresse IP public</1> pour permettre à des amis de se connecter directement.',
   shareSessionUrl: `Partager l'URL de la session ci-dessous pour inviter des amis.`,
   startSession: 'Démarrer la session',
+  theaterMode: 'Mode théâtre',
+  theaterModeDesc:
+    'Masquez tout le contenu non vidéo sur la page Web. Notez que cela peut également masquer les sous-titres souples.',
   thirdPartyIntegrations: 'Intégrations tierces',
   toggleDJ: 'Lui rajouter le rôle de DJ',
   unlimited: 'Illimité',
@@ -105,6 +135,8 @@ export default {
   userJoined: '<Username id="{{userId}}">{{username}}</Username> a rejoint.',
   userLeft: '<Username id="{{userId}}">{{username}}</Username> est parti.',
   viewOnGitHub: 'Voir sur GitHub',
+  userNameChanged:
+    '<Username id="{{userId}}">{{prevName}}</Username> est maintenant connu sous le nom de <Username id="{{userId}}">{{name}}</Username>.',
   waitingForHost: `En attente de l'hôte pour autoriser la connexion.`,
   welcome: 'Bienvenue'
 }
