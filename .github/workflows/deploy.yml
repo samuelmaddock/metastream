@@ -1,9 +1,9 @@
 name: Deploy
 
 on:
-  push:
-    branches:
-      - master
+  release:
+    types:
+      - published
 
 jobs:
   deploy:
@@ -11,7 +11,7 @@ jobs:
 
     steps:
     - name: Checkout Repo
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
 
     - name: Setup Node
       uses: actions/setup-node@v1
@@ -22,15 +22,15 @@ jobs:
       run: |
         yarn install
 
-    - name: Build signal server
-      working-directory: ./packages/metastream-signal-server
-      run: |
-        yarn build
-
     - name: Create dotenv file
       working-directory: ./packages/metastream-app
       run: |
         echo "${{ secrets.DOTENV_CONTENTS }}" >> .env
+
+    - name: Build signal server
+      working-directory: ./packages/metastream-signal-server
+      run: |
+        yarn build
 
     - name: Build web app
       working-directory: ./packages/metastream-app
