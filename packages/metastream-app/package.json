@@ -11,7 +11,8 @@
     "start:https": "cross-env NODE_ENV=development USE_HTTPS=1 webpack-dev-server --config webpack.config.dev.js",
     "start:firefox": "cross-env PORT=80 NODE_ENV=development webpack-dev-server --config webpack.config.dev.js",
     "test": "jest --runInBand --verbose",
-    "test:watch": "jest --watch --runInBand --verbose"
+    "test:watch": "jest --watch --runInBand --verbose",
+    "locale:diff": "node localeDiff.js"
   },
   "browserslist": "Chrome >= 73, Firefox >= 66",
   "repository": {
@@ -57,6 +58,7 @@
     "mini-css-extract-plugin": "^0.6.0",
     "postcss-loader": "^3.0.0",
     "prettier": "^1.16.4",
+    "require-from-string": "^2.0.2",
     "style-loader": "^0.23.1",
     "ts-jest": "^24.1.0",
     "typescript": "3.6.4",
