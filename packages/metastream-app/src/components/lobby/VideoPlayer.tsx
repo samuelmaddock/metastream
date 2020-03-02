@@ -41,18 +41,10 @@ const processMediaDuration = (payload?: MediaReadyPayload) => {
   let duration = payload.duration && !isNaN(payload.duration) ? payload.duration : null
   if (!duration) return null
 
-  let shouldPadDuration = false
-
-  const { href } = payload
-  if (href.includes('hulu.com')) {
-    // Hulu includes rating warning at the start which causes video to skip
-    // before it should. #132
-    shouldPadDuration = true
-  }
-
-  if (shouldPadDuration) {
-    duration += 5e3
-  }
+  // Hulu and Crunchyroll display videos only a few seconds long prior to
+  // showing a full video. To avoid the issue of prematuring ending videos,
+  // we just set a minimum duration.
+  duration = Math.max(duration, MEDIA_DURATION_MIN) || MEDIA_DURATION_MIN
 
   return duration
 }
@@ -81,6 +73,7 @@ interface IState {
 
 const DEFAULT_URL = assetUrl('idlescreen.html')
 const MEDIA_TIMEOUT_DURATION = 10e3
+const MEDIA_DURATION_MIN = 5e3
 
 const mapStateToProps = (state: IAppState): IConnectedProps => {
   return {
