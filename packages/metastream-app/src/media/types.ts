@@ -88,7 +88,8 @@ export interface IMediaContext {
     /** Response content type shorthand */
     type?: string
 
-    headResponseHeaders?: { [key: string]: string }
+    /** Whether to disable using the Googlebot UA */
+    disableGooglebot?: boolean
 
     [key: string]: any
   }

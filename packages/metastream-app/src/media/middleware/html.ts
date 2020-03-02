@@ -20,10 +20,12 @@ const mware: IMediaMiddleware = {
 
     try {
       const result = await fetchText(url.href, {
-        headers: {
-          'user-agent': MEDIA_USER_AGENT,
-          host: url.host
-        }
+        headers: ctx.state.disableGooglebot
+          ? {}
+          : {
+              'user-agent': MEDIA_USER_AGENT,
+              host: url.host
+            }
       })
       text = result[0]
     } catch {

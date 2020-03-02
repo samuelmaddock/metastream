@@ -37,13 +37,16 @@ const mware: IMediaMiddleware = {
 
     const code = response.status || 200
 
+    const server = response.headers['server']
     const contentType = getContentTypeToken(response.headers['content-type'])
     const type = getTypeToken(contentType)
 
     ctx.state.responseCode = code
     ctx.state.contentType = contentType
     ctx.state.type = type
-    ctx.state.headResponseHeaders = response.headers
+
+    // #244: Cloudflare validates agents using the Googlebot UA
+    ctx.state.disableGooglebot = server === 'cloudflare'
 
     return next()
   }
