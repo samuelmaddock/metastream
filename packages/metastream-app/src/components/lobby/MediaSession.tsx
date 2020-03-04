@@ -21,7 +21,13 @@ export class MediaSession extends React.PureComponent<Props> {
   updatePlayback() {
     if (!this.video) return
     if (this.props.playing) {
-      this.video.play().catch(noop)
+      try {
+        this.video.play().catch(noop)
+      } catch {
+        // "Disable HTML5 Autoplay" extension prevents `play()` from returning
+        // a promise.
+        // https://chrome.google.com/webstore/detail/disable-html5-autoplay/efdhoaajjjgckpbkoglidkeendpkolai
+      }
     } else {
       this.video.pause()
     }
