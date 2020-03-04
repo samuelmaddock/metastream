@@ -1,0 +1,4 @@
+.container {
+  composes: absolute-full from '~styles/layout.css';
+  composes: fill-center from '~styles/layout.css';
+}

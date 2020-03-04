@@ -70,16 +70,6 @@
   margin: 0 5px;
 }
 
-.addMediaButton {
-  background-color: var(--color-highlight);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.addMediaButton:hover {
-  background-color: var(--color-highlight);
-}
-
 .menuDivider {
   width: 100%;
   border-color: rgba(255, 255, 255, 0.1);

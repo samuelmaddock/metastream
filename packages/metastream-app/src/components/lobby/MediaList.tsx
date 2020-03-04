@@ -21,13 +21,13 @@ import MenuItem from '@material-ui/core/MenuItem'
 import { MediaItem } from '../media/MediaItem'
 import { localUser } from 'network'
 import { copyMediaLink, openMediaInBrowser } from '../../media/utils'
-import { IReactReduxProps } from 'types/redux-thunk'
 import { withNamespaces, WithNamespaces } from 'react-i18next'
 import { sendMediaRequest } from 'lobby/actions/media-request'
+import { setLobbyModal } from 'actions/ui'
+import { LobbyModal } from 'reducers/ui'
 
 interface IProps {
   className?: string
-  onAddMedia(): void
   onShowInfo(media?: IMediaItem): void
 }
 
@@ -38,22 +38,22 @@ interface IConnectedProps {
   mediaQueueLocked: boolean
 }
 
-type Props = IProps & IConnectedProps & IReactReduxProps & WithNamespaces
+interface DispatchProps {
+  openMediaBrowser(): void
+  moveToTop(mediaId: string): void
+  sendMediaRequest(url: string): void
+  deleteMedia(mediaId: string): void
+  toggleQueueLock(): void
+}
+
+type Props = IProps & IConnectedProps & DispatchProps & WithNamespaces
 
 class _MediaList extends Component<Props> {
   private listOverlay: ListOverlay<IMediaItem> | null = null
 
-  private get hasRequested() {
-    return (parseInt(localStorage.getItem('requestCount') || '0', 10) || 0) > 0
-  }
-
   private get mediaList() {
     const { currentMedia, mediaQueue } = this.props
     return currentMedia && currentMedia.hasMore ? [currentMedia, ...mediaQueue] : mediaQueue
-  }
-
-  private get isQueueEmpty() {
-    return this.mediaList.length === 0
   }
 
   render(): JSX.Element | null {
@@ -97,21 +97,15 @@ class _MediaList extends Component<Props> {
               ...items,
               {
                 label: t('moveToTop'),
-                onClick: () => this.props.dispatch!(server_requestMoveToTop(media.id))
+                onClick: () => this.props.moveToTop(media.id)
               },
               {
                 label: t('duplicate'),
-                onClick: () =>
-                  this.props.dispatch!(
-                    sendMediaRequest({
-                      url: media.requestUrl,
-                      source: 'media-context-menu-duplicate'
-                    })
-                  )
+                onClick: () => this.props.sendMediaRequest(media.requestUrl)
               },
               {
                 label: t('remove'),
-                onClick: () => this.props.dispatch!(server_requestDeleteMedia(media.id))
+                onClick: () => this.props.deleteMedia(media.id)
               }
             ]
           }
@@ -157,30 +151,18 @@ class _MediaList extends Component<Props> {
         iconSize="small"
         title={title}
         disabled={!hasPlaybackPermissions}
-        onClick={() => {
-          this.props.dispatch!(server_requestToggleQueueLock())
-        }}
+        onClick={this.props.toggleQueueLock}
       />
     )
   }
 
   private renderAddMedia() {
-    const { isQueueEmpty } = this
-    const { t, currentMedia, mediaQueueLocked, hasPlaybackPermissions } = this.props
+    const { t, mediaQueueLocked, hasPlaybackPermissions } = this.props
 
     if (!hasPlaybackPermissions && mediaQueueLocked) return
 
     return (
-      <HighlightButton
-        icon="plus"
-        highlight={(!currentMedia && isQueueEmpty) || !this.hasRequested}
-        onClick={() => {
-          if (this.props.onAddMedia) {
-            this.props.onAddMedia()
-          }
-        }}
-        title={t('add')}
-      />
+      <HighlightButton icon="plus" onClick={this.props.openMediaBrowser} title={t('addMedia')} />
     )
   }
 }
@@ -192,6 +174,26 @@ export const MediaList = withNamespaces()(
       currentMedia: getCurrentMedia(state),
       mediaQueue: getMediaQueue(state),
       mediaQueueLocked: state.mediaPlayer.queueLocked
+    }),
+    (dispatch): DispatchProps => ({
+      openMediaBrowser() {
+        dispatch(setLobbyModal(LobbyModal.Browser))
+      },
+      moveToTop(mediaId) {
+        dispatch(server_requestMoveToTop(mediaId) as any)
+      },
+      sendMediaRequest(url) {
+        dispatch(sendMediaRequest({
+          url,
+          source: 'media-context-menu-duplicate'
+        }) as any)
+      },
+      deleteMedia(mediaId: string) {
+        dispatch(server_requestDeleteMedia(mediaId) as any)
+      },
+      toggleQueueLock() {
+        dispatch(server_requestToggleQueueLock() as any)
+      }
     })
   )(_MediaList)
 )

@@ -29,6 +29,7 @@ import { localUserId } from 'network'
 import { setPopupPlayer } from 'actions/ui'
 import { StorageKey } from 'constants/storage'
 import { EMBED_BLOCKED_DOMAIN_LIST } from 'constants/embed'
+import { IdleScreen } from './overlays/IdleScreen'
 
 type MediaReadyPayload = {
   duration?: number
@@ -145,6 +146,7 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     if (!this.props.isExtensionInstalled) return false
     if (!this.isPermittedBySafeBrowse) return false
     if (this.shouldRenderPopup) return false
+    if (this.props.playback === PlaybackState.Idle) return false
     return true
   }
 
@@ -405,6 +407,7 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
         {this.renderMediaSession()}
         {this.renderInteract()}
         {this.renderBrowser()}
+        {this.props.playback === PlaybackState.Idle && this.renderIdleScreen()}
       </div>
     )
   }
@@ -460,6 +463,10 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
         onActivity={this.onActivity}
       />
     )
+  }
+
+  private renderIdleScreen() {
+    return <IdleScreen />
   }
 
   private onActivity = (eventName: string) => {

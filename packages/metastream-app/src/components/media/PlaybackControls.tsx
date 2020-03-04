@@ -78,7 +78,6 @@ const ButtonListItem: React.SFC<{
 interface IProps {
   className?: string
   reload?: React.MouseEventHandler<HTMLButtonElement>
-  openBrowser: (url?: string) => void
   showInfo: Function
   showInteract: Function
   toggleChat: Function
@@ -91,7 +90,6 @@ interface IConnectedProps extends IMediaPlayerState {
 
   /** Has permission to change playback state */
   dj: boolean
-  queueLocked: boolean
 }
 
 const mapStateToProps = (state: IAppState): IConnectedProps => {
@@ -99,8 +97,7 @@ const mapStateToProps = (state: IAppState): IConnectedProps => {
     ...state.mediaPlayer,
     mute: state.settings.mute,
     volume: state.settings.volume,
-    dj: hasPlaybackPermissions(state),
-    queueLocked: state.mediaPlayer.queueLocked
+    dj: hasPlaybackPermissions(state)
   }
 }
 
@@ -116,34 +113,13 @@ class _PlaybackControls extends Component<PrivateProps> {
   }
 
   render(): JSX.Element | null {
-    const {
-      current: media,
-      playback,
-      startTime,
-      pauseTime,
-      dj,
-      queueLocked,
-      repeatMode
-    } = this.props
+    const { current: media, playback, startTime, pauseTime, dj, repeatMode } = this.props
     const playbackIcon = playback === PlaybackState.Playing ? 'pause' : 'play'
 
     const isIdle = playback === PlaybackState.Idle
     const isPaused = playback === PlaybackState.Paused
     const duration = (media && media.duration) || 0
     const isTimed = duration > 0
-    const isAddAllowed = dj || !queueLocked
-
-    const addMediaBtn = (
-      <Button
-        className={styles.addMediaButton}
-        icon="plus"
-        onClick={e => {
-          this.props.openBrowser()
-        }}
-      >
-        {t('addMedia')}
-      </Button>
-    )
 
     const permTitle = t('requiresDJPermissions')
 
@@ -210,7 +186,8 @@ class _PlaybackControls extends Component<PrivateProps> {
 
     return (
       <div className={cx(this.props.className, styles.container)}>
-        {isIdle && isAddAllowed ? addMediaBtn : [playPauseBtn, nextBtn]}
+        {playPauseBtn}
+        {nextBtn}
         {repeatBtn}
         {timeline}
         {volumeSlider}

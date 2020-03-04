@@ -137,11 +137,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
         {this.renderPlaybackControls()}
 
         <UserList className={styles.users} onInvite={() => this.openModal(LobbyModal.Invite)} />
-        <MediaList
-          className={styles.queue}
-          onAddMedia={this.openBrowser}
-          onShowInfo={this.showInfo}
-        />
+        <MediaList className={styles.queue} onShowInfo={this.showInfo} />
 
         {!this.props.isChatDocked && (
           <Chat
@@ -250,7 +246,6 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
             this.player.reload()
           }
         }}
-        openBrowser={this.openBrowser}
         showInfo={this.showInfo}
         showInteract={() => {
           if (this.player) {
@@ -267,10 +262,6 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
         }}
       />
     )
-  }
-
-  private openBrowser = (url?: string) => {
-    this.setState({ modal: LobbyModal.Browser, modalProps: { initialUrl: url } })
   }
 
   private showInfo = (media?: IMediaItem) => {
