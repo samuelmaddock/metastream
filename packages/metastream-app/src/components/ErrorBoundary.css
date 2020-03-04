@@ -1,0 +1,23 @@
+.container {
+  composes: fill-center from '~styles/layout.css';
+  composes: select-text from '~styles/text.css';
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.5);
+  flex-direction: row;
+  overflow: auto;
+}
+
+.container > * {
+  max-width: 600px;
+  overflow: auto;
+}
+
+.container pre {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
+  background: #222;
+  color: #fff;
+  padding: 0.5rem;
+  overflow: auto;
+  max-height: 15rem;
+}

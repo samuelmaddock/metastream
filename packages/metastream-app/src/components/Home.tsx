@@ -12,7 +12,7 @@ import { ExternalLink } from './common/link'
 import Tooltip from '@material-ui/core/Tooltip'
 import { assetUrl } from 'utils/appUrl'
 import { MenuTabs } from './menu/MenuTabs'
-import { DISCORD_INVITE_URL } from 'constants/social'
+import { DISCORD_INVITE_URL, GITHUB_REPO_URL } from 'constants/social'
 import { withNamespaces, WithNamespaces } from 'react-i18next'
 import { localUserId } from '../network/index'
 
@@ -126,7 +126,7 @@ class Home extends Component<IProps> {
             />
 
             <SocialLink
-              href="https://github.com/samuelmaddock/metastream"
+              href={GITHUB_REPO_URL}
               image="./assets/icons/social/github-mark.svg"
               title="GitHub"
             />

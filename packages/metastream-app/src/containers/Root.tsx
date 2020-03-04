@@ -7,6 +7,7 @@ import Routes from '../routes'
 import { IAppState } from '../reducers'
 import { PersistGate } from 'redux-persist/integration/react'
 import { Persistor } from 'redux-persist'
+import { ErrorBoundary } from 'components/ErrorBoundary'
 
 interface IProps {
   store: Store<IAppState>
@@ -18,13 +19,15 @@ export default class Root extends Component<IProps> {
   render() {
     const { store, history, persistor } = this.props
     return (
-      <Provider store={store}>
-        <PersistGate persistor={persistor}>
-          <ConnectedRouter history={history}>
-            <Routes />
-          </ConnectedRouter>
-        </PersistGate>
-      </Provider>
+      <ErrorBoundary>
+        <Provider store={store}>
+          <PersistGate persistor={persistor}>
+            <ConnectedRouter history={history}>
+              <Routes />
+            </ConnectedRouter>
+          </PersistGate>
+        </Provider>
+      </ErrorBoundary>
     )
   }
 }
