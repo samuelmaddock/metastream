@@ -148,7 +148,6 @@ class _PlaybackControls extends Component<PrivateProps> {
         icon={repeatMode === RepeatMode.One ? 'repeat-one' : 'repeat'}
         title={dj ? t('repeat') : permTitle}
         enabled={repeatMode !== RepeatMode.Off}
-        disabled={isIdle}
         onClick={this.repeat}
       />
     )
