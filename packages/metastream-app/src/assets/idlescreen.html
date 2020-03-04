@@ -14,22 +14,33 @@
       }
 
       body {
-        color: #e1e1e1;
-        font-family: sans-serif;
+        font-family: 'Karla', -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', 'Ubuntu',
+          'Droid Sans', sans-serif;
+        color: rgba(255, 255, 255, 0.8);
       }
 
-      .popup {
-        background: var(--app-bg-lobby) !important;
+      #popup {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        background: var(--app-bg-lobby);
+        font-size: 2rem;
       }
     </style>
   </head>
 
   <body>
+    <div id="popup" style="display:none">
+      No media playing in Metastream session.
+    </div>
+
     <script>
       ;(function() {
         const isTopFrame = window.top === window.self
         if (isTopFrame) {
-          document.body.classList.add('popup')
+          document.getElementById('popup').style.display = null
         }
       })()
     </script>

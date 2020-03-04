@@ -99,7 +99,8 @@ input,
 input::-webkit-input-placeholder,
 textarea,
 select {
-  font-family: 'Karla', sans-serif;
+  font-family: 'Karla', -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', 'Ubuntu',
+    'Droid Sans', sans-serif;
   font-size: 16px;
   color: var(--app-text-color);
 }
