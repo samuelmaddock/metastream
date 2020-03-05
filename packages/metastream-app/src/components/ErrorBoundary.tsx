@@ -4,6 +4,7 @@ import styles from './ErrorBoundary.css'
 import { DISCORD_INVITE_URL, GITHUB_REPO_URL } from 'constants/social'
 import { HighlightButton } from './common/button'
 import { copyToClipboard } from 'utils/clipboard'
+import { VERSION } from 'constants/app'
 
 interface Props {}
 
@@ -17,7 +18,8 @@ export class ErrorBoundary extends Component<Props, State> {
 
   private get errorText() {
     const { error, errorInfo } = this.state
-    return `URL: ${location.href}
+    return `Version: ${VERSION}
+URL: ${location.href}
 User-Agent: ${navigator.userAgent}
 
 Stack trace:
@@ -59,7 +61,8 @@ ${errorInfo ? errorInfo.componentStack : ''}
             <pre>{this.errorText}</pre>
             <p>
               <br />
-              To continue, you can try reloading the page. If the problem persists, refer to the{' '}
+              To continue, you can try reloading the application. If the problem persists, refer to
+              the{' '}
               <ExternalLink className="link" href={`${GITHUB_REPO_URL}/wiki/FAQ`}>
                 Metastream FAQ
               </ExternalLink>{' '}
