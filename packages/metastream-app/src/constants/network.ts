@@ -15,7 +15,7 @@ const METASTREAM_STUN_SERVERS = [
   { url: 'stun:stun1.l.google.com:19302' },
   { url: 'stun:stun2.l.google.com:19302' }
 ]
-const METASTREAM_TURN_SERVER = {
+const METASTREAM_TURN_SERVER = process.env.METASTREAM_TURN_CREDENTIAL && {
   url: process.env.METASTREAM_TURN_SERVER || 'turn:turn.rtc.getmetastream.com:5349?transport=tcp',
   username: process.env.METASTREAM_TURN_USERNAME || 'metastream',
   credential: process.env.METASTREAM_TURN_CREDENTIAL
@@ -25,7 +25,7 @@ const METASTREAM_TURN_SERVER = {
 export const METASTREAM_ICE_SERVERS = [
   ...METASTREAM_STUN_SERVERS,
   METASTREAM_TURN_SERVER
-]
+].filter(Boolean)
 
 export const NETWORK_TIMEOUT = 30e3
 export const RECONNECT_TIMEOUT = 30e3
