@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Redirect from Metastream</title>
+    <link rel="stylesheet" href="../../styles/app.global.css" />
+    <link rel="stylesheet" href="../../styles/resource.global.css" />
+  </head>
+
+  <body class="top">
+    <main class="container dim">
+      <section class="text-container" style="max-width: 600px;">
+        <p><strong>Share media from outside of Metastream</strong></p>
+        <p>
+          Browse the web to find media you&rsquo;d like to share, then press the Metastream Remote browser action
+          to add it the session.
+        </p>
+        <p>
+          <img src="./images/browser-action.png" />
+        </p>
+        <p>You can also copy & paste the media link into Metastream.</p>
+        <p style="margin-top: 1rem;"><a id="externalLink" href="#" class="button uppercase" rel="nofollow">Continue</a></p>
+      </section>
+    </main>
+
+    <script type="text/javascript" src="./scripts/mediabrowser.js"></script>
+    <script>
+      ;(function() {
+        const params = new URLSearchParams(location.search)
+        const redirectHref = params.get('href') || '#'
+
+        let url
+        try {
+          url = new URL(redirectHref)
+        } catch {}
+
+        if (url) {
+          document.getElementById('externalLink').textContent = `Continue to ${url.host}`
+        }
+
+        document.getElementById('externalLink').href = redirectHref
+      })()
+    </script>
+  </body>
+</html>

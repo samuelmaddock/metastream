@@ -5,118 +5,10 @@
     <title>Home</title>
     <link rel="stylesheet" href="../../styles/app.global.css" />
     <link rel="stylesheet" href="../../styles/resource.global.css" />
-    <style>
-      :root {
-        --color-btn: rgba(255, 255, 255, 0.22);
-        --color-btn-text: rgba(255, 255, 255, 0.88);
-      }
-
-      body {
-        overflow: auto;
-      }
-
-      .top {
-        background: var(--app-bg-lobby);
-      }
-
-      main {
-        min-height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-      }
-
-      strong {
-        color: var(--color-highlight);
-      }
-
-      .link {
-        text-decoration: underline;
-      }
-
-      .grid-container {
-        --grid-width: 750px;
-
-        display: grid;
-        grid-gap: 30px;
-        grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
-        grid-auto-flow: dense;
-
-        width: var(--grid-width);
-        max-width: 100%;
-      }
-
-      .button {
-        background: var(--color-btn);
-        color: var(--color-btn-text);
-        transition: color 120ms ease-out, background-color 120ms ease-out;
-        letter-spacing: 1px;
-        border-radius: 4px;
-        backdrop-filter: blur(10px);
-      }
-
-      .button:hover {
-        background: var(--color-highlight);
-        color: #fff;
-      }
-
-      .social-link {
-        text-decoration: none;
-
-        display: flex;
-        justify-content: center;
-        align-items: center;
-
-        height: 4rem;
-        padding: 0.75rem 1rem;
-
-        font-size: 1.5rem;
-        text-align: center;
-      }
-
-      .text-container {
-        flex: 1 0 auto;
-        display: flex;
-        align-items: center;
-        max-width: var(--grid-width);
-        text-align: center;
-        font-size: 1.125rem;
-        padding: 1rem 0;
-      }
-
-      .input-container {
-        display: flex;
-        margin-top: 2rem;
-      }
-
-      .input-container input,
-      .input-container button {
-        padding: 0.5rem 1rem;
-        line-height: 1.5rem;
-      }
-
-      .input-container button {
-        text-transform: uppercase;
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
-      }
-
-      .input-container input {
-        background: none;
-        flex: 1 1 auto;
-        border: none;
-        color: #fff;
-        border: 1px solid var(--color-btn);
-        border-radius: 4px;
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
-      }
-    </style>
   </head>
 
   <body>
-    <main>
+    <main class="container">
       <section class="text-container">
         <p>
           <strong>Browse</strong> the web, <strong>find media</strong> you want to share, then
@@ -128,7 +20,13 @@
           <a href="https://www.youtube.com/" class="button social-link" rel="noopener">YouTube</a>
           <a href="https://www.twitch.tv/" class="button social-link" rel="noopener">Twitch</a>
           <a href="https://soundcloud.com/" class="button social-link" rel="noopener">SoundCloud</a>
-          <a href="https://www.netflix.com/" class="button social-link" rel="noopener">Netflix</a>
+          <a
+            href="./redirect.html?href=https%3A%2F%2Fwww.netflix.com"
+            class="button social-link"
+            rel="noopener"
+            target="_blank"
+            >Netflix</a
+          >
           <a href="https://www.hulu.com/" class="button social-link" rel="noopener">Hulu</a>
           <a href="https://www.crunchyroll.com/" class="button social-link" rel="noopener"
             >Crunchyroll</a
@@ -143,7 +41,7 @@
             autocomplete="url"
             spellcheck="false"
           />
-          <button id="addbtn" class="button">Add to Session</button>
+          <button id="addbtn" class="button uppercase">Add to Session</button>
         </div>
       </section>
       <div class="text-container">
@@ -156,7 +54,6 @@
         </p>
       </div>
     </main>
-
     <script>
       ;(function() {
         const isTopFrame = window.top === window.self
