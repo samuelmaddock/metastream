@@ -7,12 +7,12 @@
   "license": "MIT",
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack-cli --config webpack.config.prod.js",
+    "locale:diff": "node scripts/localeDiff.js",
     "start": "cross-env NODE_ENV=development webpack-dev-server --config webpack.config.dev.js",
     "start:https": "cross-env NODE_ENV=development USE_HTTPS=1 webpack-dev-server --config webpack.config.dev.js",
     "start:firefox": "cross-env PORT=80 NODE_ENV=development webpack-dev-server --config webpack.config.dev.js",
     "test": "jest --runInBand --verbose",
-    "test:watch": "jest --watch --runInBand --verbose",
-    "locale:diff": "node localeDiff.js"
+    "test:watch": "jest --watch --runInBand --verbose"
   },
   "browserslist": "Chrome >= 73, Firefox >= 66",
   "repository": {
