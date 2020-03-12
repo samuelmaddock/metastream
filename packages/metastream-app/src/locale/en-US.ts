@@ -1,6 +1,7 @@
 export default {
   add: 'Add',
   addMedia: 'Add Media',
+  addMediaCTA: 'Get started by adding media to the session.',
   admin: 'Admin',
   advanced: 'Advanced',
   allow: 'Allow',

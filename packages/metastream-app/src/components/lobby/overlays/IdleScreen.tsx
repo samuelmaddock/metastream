@@ -33,7 +33,7 @@ const _IdleScreen = (props: PrivateProps) => {
 
   const addMediaCTA = (
     <>
-      <p>Get started by adding media to the session.</p>
+      <p>{t('addMediaCTA')}</p>
       <HighlightButton icon="plus" size="large" highlight onClick={props.openMediaBrowser}>
         {t('addMedia')}
       </HighlightButton>
