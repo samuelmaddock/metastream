@@ -1,11 +1,12 @@
 const fs = require('fs')
+const path = require("path")
 const chalk = require('chalk')
 const requireFromString = require('require-from-string')
 const languageToCompare = process.argv[2]
 
 // Reading the files through fs because js can't import ts modules and typescript can't dynamically import modules
-const localeBaseRaw = fs.readFileSync(__dirname + '/src/locale/en-US.ts', 'utf8')
-const localeNewRaw = fs.readFileSync(__dirname + '/src/locale/' + languageToCompare + '.ts', 'utf8')
+const localeBaseRaw = fs.readFileSync(path.join(__dirname, '..', '/src/locale/en-US.ts'), 'utf8')
+const localeNewRaw = fs.readFileSync(path.join(__dirname, '..', '/src/locale', languageToCompare + '.ts'), 'utf8')
 
 const localeBase = typescriptToObject(localeBaseRaw)
 const localeNew = typescriptToObject(localeNewRaw)
