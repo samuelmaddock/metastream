@@ -289,6 +289,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
         source: pendingMedia.source || 'pending',
         immediate: this.props.host
       })
+      this.closeModal()
     }
   }
 }
