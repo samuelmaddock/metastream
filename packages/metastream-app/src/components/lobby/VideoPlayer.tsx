@@ -466,6 +466,7 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
   }
 
   private renderIdleScreen() {
+    if (!this.props.isExtensionInstalled) return
     return <IdleScreen />
   }
 
