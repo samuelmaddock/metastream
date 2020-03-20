@@ -39,7 +39,7 @@ describe('signal server', () => {
 
   beforeEach(() => {
     wsServer = new Server(fakeUrl)
-    server = new SignalServer(wsServer)
+    server = new SignalServer({ wsServer })
   })
 
   afterEach(() => {

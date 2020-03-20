@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events'
-import { IncomingMessage } from 'http'
+import http, { IncomingMessage, STATUS_CODES } from 'http'
 
 import WebSocket, { Server } from 'ws'
 import sodium from 'libsodium-wrappers'
@@ -14,6 +14,8 @@ const DEFAULT_PORT = 27064
 
 let clientCounter: ClientID = 0
 
+const getIP = (req: IncomingMessage) =>
+  (req.headers['x-forwarded-for'] as string) || req.connection.remoteAddress
 const isValidRoom = (pk: string) => typeof pk === 'string' && pk.length == 64
 const isValidOffer = (offer: any): offer is SignalData =>
   typeof offer === 'object' && (offer.hasOwnProperty('sdp') || offer.hasOwnProperty('candidate'))
@@ -26,27 +28,46 @@ const enum ClientStatus {
 
 interface Client {
   id: ClientID
+  ip?: string
   socket: WebSocket
   status: ClientStatus
   authSecret?: Uint8Array
   pendingRoom?: RoomID
   room?: RoomID
+  created: number
 }
 
 interface Room {
   id: RoomID
   clients: Set<ClientID>
   host: ClientID
+  created: number
+  clientCounter: number
+}
+
+interface Credentials {
+  username: string
+  password: string
+}
+
+interface SignalServerOptions {
+  wsServer: Server
+  credentials?: Credentials
 }
 
 export class SignalServer extends EventEmitter {
+  private wsServer: Server
+  private credentials?: Credentials
+  private roomCounter = 0
   private clients = new Map<ClientID, Client>()
   private rooms = new Map<RoomID, Room>()
 
-  constructor(private wsServer: Server) {
+  constructor(opts: SignalServerOptions) {
     super()
     this.onConnection = this.onConnection.bind(this)
+    this.wsServer = opts.wsServer
     this.wsServer.on('connection', this.onConnection)
+    this.credentials = opts.credentials
   }
 
   private log(...args: any[]) {
@@ -69,14 +90,81 @@ export class SignalServer extends EventEmitter {
     this.wsServer.close()
   }
 
+  httpHandler(req: IncomingMessage, res: http.ServerResponse) {
+    if (this.credentials) {
+      try {
+        const url = new URL(req.url!, `http://${req.headers.host}`)
+        if (url && url.pathname === '/stats') {
+          this.statsHandler(req, res)
+          return
+        }
+      } catch {}
+    }
+
+    // Upgrade required
+    const body = STATUS_CODES[426]
+    res.writeHead(426, {
+      'Content-Length': body ? body.length : 0,
+      'Content-Type': 'text/plain'
+    })
+    res.end(body)
+  }
+
+  private statsHandler(req: IncomingMessage, res: http.ServerResponse) {
+    const credentials = this.credentials!
+
+    const header = req.headers['authorization'] || '',
+      token = header.split(/\s+/).pop() || '',
+      auth = Buffer.from(token, 'base64').toString(),
+      parts = auth.split(/:/),
+      username = parts[0],
+      password = parts[1]
+
+    if (!(credentials.username === username && credentials.password === password)) {
+      res.writeHead(401, {
+        'WWW-Authenticate': 'Basic'
+      })
+      res.end()
+      return
+    }
+
+    const json = {
+      uptime: process.uptime(),
+      clientCounter,
+      roomCounter: this.roomCounter,
+      rooms: Array.from(this.rooms).map(([id, room]) => ({
+        id,
+        created: new Date(room.created).toISOString(),
+        clientCounter: room.clientCounter
+      })),
+      clients: Array.from(this.clients).map(([id, client]) => ({
+        id,
+        ip: client.ip,
+        created: new Date(client.created).toISOString(),
+        status: client.status,
+        pendingRoom: client.pendingRoom,
+        room: client.room
+      }))
+    }
+
+    res.writeHead(200, { 'Content-Type': 'application/json' })
+    res.end(JSON.stringify(json))
+  }
+
   private sendTo(client: Client, json: Request) {
     const data = JSON.stringify(json)
     client.socket.send(data)
   }
 
-  private addClient(socket: WebSocket): Client {
+  private addClient(socket: WebSocket, ip?: string): Client {
     const id = ++clientCounter
-    const client = { id, socket, status: ClientStatus.Unauthed }
+    const client: Client = {
+      id,
+      ip,
+      socket,
+      status: ClientStatus.Unauthed,
+      created: Date.now()
+    }
     this.clients.set(id, client)
     return client
   }
@@ -120,10 +208,10 @@ export class SignalServer extends EventEmitter {
   }
 
   private onConnection(socket: WebSocket, req: IncomingMessage) {
-    const client = this.addClient(socket)
+    const ip = req && getIP(req)
+    const client = this.addClient(socket, ip)
     const { id } = client
-    const addr = (req && req.connection.remoteAddress) || 'unknown'
-    this.log(`connect[${id}] ${addr}`)
+    this.log(`connect[${id}] ${ip}`)
 
     socket.on('message', msg => {
       if (DEBUG) this.log(`received[${id}]: ${msg.toString()}`)
@@ -145,7 +233,7 @@ export class SignalServer extends EventEmitter {
     })
 
     socket.once('close', () => {
-      this.log(`disconnect[${id}] ${addr}`)
+      this.log(`disconnect[${id}] ${ip}`)
       this.removeClient(client.id)
     })
 
@@ -243,9 +331,16 @@ export class SignalServer extends EventEmitter {
     }
 
     const clients = new Set([client.id])
-    const room: Room = { id, clients, host: client.id }
+    const room: Room = {
+      id,
+      clients,
+      host: client.id,
+      created: Date.now(),
+      clientCounter: 0
+    }
     this.rooms.set(id, room)
     client.room = id
+    this.roomCounter++
 
     this.sendTo(client, {
       t: MessageType.CreateRoomSuccess
@@ -278,6 +373,7 @@ export class SignalServer extends EventEmitter {
     }
 
     room.clients.add(client.id)
+    room.clientCounter++
     client.room = roomId
 
     this.brokerOffer(client, offer, client.id)
@@ -317,10 +413,28 @@ export class SignalServer extends EventEmitter {
 
 export interface Options {
   port?: number
+  credentials?: Credentials
 }
 
 export default async (opts: Options) => {
   await sodium.ready
-  const ws = new Server({ port: opts.port || DEFAULT_PORT })
-  return new SignalServer(ws)
+
+  let signalServer: SignalServer
+
+  const server = http.createServer((req, res) => {
+    if (signalServer) {
+      signalServer.httpHandler(req, res)
+    }
+  })
+
+  const port = opts.port || DEFAULT_PORT
+  const ws = new Server({ server })
+  signalServer = new SignalServer({
+    wsServer: ws,
+    credentials: opts.credentials
+  })
+
+  server.listen(port)
+
+  return signalServer
 }
