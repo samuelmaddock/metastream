@@ -48,6 +48,11 @@ export class SignalClient extends EventEmitter {
     if (this.ws.readyState < 2) {
       this.ws.close()
     }
+
+    for (const peer of Object.values(this.connectingPeers)) {
+      if (peer) peer.destroy()
+    }
+    this.connectingPeers = {}
   }
 
   send(data: Request) {
@@ -63,15 +68,12 @@ export class SignalClient extends EventEmitter {
   }
 
   private onDisconnect() {
-    if (Object.keys(this.connectingPeers).length) {
-      this.connectingPeers = {}
-    }
-
     this.ws.removeEventListener('open', this.onConnect)
     this.ws.removeEventListener('close', this.onDisconnect)
     this.ws.removeEventListener('message', this.onMessage)
     this.ws.removeEventListener('error', this.onError)
 
+    this.close()
     this.emit('close')
   }
 
@@ -246,13 +248,14 @@ export class SignalClient extends EventEmitter {
 export interface ClientOptions extends SignalClientOptions {
   /** Server URL */
   server: string
+  WebSocket?: typeof WebSocket
 }
 
 export default async (opts: ClientOptions) => {
   // TODO: validate keys
   await sodium.ready
 
-  const ws = new WebSocket(opts.server)
+  const ws = new (opts.WebSocket || WebSocket)(opts.server)
   const client = new SignalClient(ws, opts)
 
   await new Promise<void>((resolve, reject) => {

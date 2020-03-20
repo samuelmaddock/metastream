@@ -122,14 +122,14 @@ export class SignalServer extends EventEmitter {
   private onConnection(socket: WebSocket, req: IncomingMessage) {
     const client = this.addClient(socket)
     const { id } = client
-    const addr = req.connection.remoteAddress || 'unknown'
+    const addr = (req && req.connection.remoteAddress) || 'unknown'
     this.log(`connect[${id}] ${addr}`)
 
     socket.on('message', msg => {
       if (DEBUG) this.log(`received[${id}]: ${msg.toString()}`)
-      let req
+      let request
       try {
-        req = JSON.parse(msg.toString()) as Request
+        request = JSON.parse(msg.toString()) as Request
       } catch {
         this.log(`Client[${id}] sent invalid JSON request`)
         socket.close()
@@ -137,9 +137,9 @@ export class SignalServer extends EventEmitter {
       }
 
       try {
-        this.dispatchRequest(client, req)
+        this.dispatchRequest(client, request)
       } catch (e) {
-        this.logError(`Error dispatching client[${id}] request[t=${req.t}]:`, e)
+        this.logError(`Error dispatching client[${id}] request[t=${request.t}]:`, e)
         this.removeClient(client.id)
       }
     })
