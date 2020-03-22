@@ -22,10 +22,10 @@
 - Synchronized playback of streaming media across various websites.
 - Public, private, and offline sessions.
 - Support for WebRTC peer-to-peer connections.
-- Real-time chat with peers.
-- Queue of media requested by peers in session.
+- Real-time chat.
+- Collaborative media queue.
 - [Timestamp cue points](./resources/screenshots/screenshot2.png) parsed from media description.
-- Auto-fullscreen of embedded media players on websites.
+- Auto-fullscreen of embedded media.
 - Per-user playback permissions, managed by the host.
 - Basic host administrative functionality (kicking peers).
 - Localization—[see info on contributing](./app/locale).
@@ -73,7 +73,9 @@ yarn
 Creates a development web server accessible from [http://localhost:8080](http://localhost:8080)
 
 ```
-cd packages/metastream-app
+cd packages/metastream-signal-server
+yarn build
+cd ../packages/metastream-app
 yarn start
 ```
 
