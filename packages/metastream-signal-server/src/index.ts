@@ -72,7 +72,10 @@ export class SignalServer extends EventEmitter {
 
   constructor(opts: SignalServerOptions) {
     super()
+
     this.onConnection = this.onConnection.bind(this)
+    this.checkInactive = this.checkInactive.bind(this)
+
     this.wsServer = opts.wsServer
     this.wsServer.on('connection', this.onConnection)
     this.credentials = opts.credentials
