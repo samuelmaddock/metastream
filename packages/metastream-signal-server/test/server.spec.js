@@ -21,6 +21,7 @@ WebSocket.prototype.once = function(type, callback) {
 const fakeUrl = 'ws://mockhost'
 const peerOpts = { wrtc }
 const getKeypair = seed => sodium.crypto_box_seed_keypair(sodium.from_string(seed.padEnd(32)))
+const inactiveTimeout = 200
 
 describe('signal server', () => {
   let server
@@ -39,7 +40,7 @@ describe('signal server', () => {
 
   beforeEach(() => {
     wsServer = new Server(fakeUrl)
-    server = new SignalServer({ wsServer })
+    server = new SignalServer({ wsServer, inactiveTimeout })
   })
 
   afterEach(() => {
@@ -107,6 +108,33 @@ describe('signal server', () => {
       peerPromise = waitEvent(clientC, 'peer')
       await clientC.joinRoom(sodium.to_hex(clientAKeypair.publicKey))
       await peerPromise
+    })
+  })
+
+  describe('inactivity', () => {
+    it('closes inactive room after created timeout', async () => {
+      const clientA = await createClient({ peerOpts, server: fakeUrl, WebSocket })
+      await clientA.createRoom(getKeypair('a'))
+
+      await new Promise(resolve => setTimeout(resolve, inactiveTimeout))
+
+      expect(server.clients.size).toEqual(1)
+      server.checkInactive()
+      expect(server.clients.size).toEqual(0)
+    })
+    it('closes inactive room after lastModified timeout', async () => {
+      const clientA = await createClient({ peerOpts, server: fakeUrl, WebSocket })
+      const clientAKeypair = getKeypair('a')
+      await clientA.createRoom(clientAKeypair)
+
+      const clientB = await createClient({ peerOpts, server: fakeUrl, WebSocket })
+      await clientB.joinRoom(sodium.to_hex(clientAKeypair.publicKey))
+
+      await new Promise(resolve => setTimeout(resolve, inactiveTimeout))
+
+      expect(server.clients.size).toEqual(2)
+      server.checkInactive()
+      expect(server.clients.size).toEqual(0)
     })
   })
 })

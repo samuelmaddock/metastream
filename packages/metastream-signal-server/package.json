@@ -27,7 +27,7 @@
     "@types/ws": "^6.0.1",
     "jest": "^25.1.0",
     "mock-socket": "^9.0.3",
-    "typescript": "^3.2.2",
+    "typescript": "^3.8.3",
     "wrtc": "^0.4.4"
   },
   "bin": {

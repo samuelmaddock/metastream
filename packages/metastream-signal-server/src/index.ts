@@ -42,6 +42,7 @@ interface Room {
   clients: Set<ClientID>
   host: ClientID
   created: number
+  lastModified?: number
   clientCounter: number
 }
 
@@ -52,12 +53,19 @@ interface Credentials {
 
 interface SignalServerOptions {
   wsServer: Server
+
+  /** Credentials for accessing stats endpoint. */
   credentials?: Credentials
+
+  /** Time until inactive session is disconnected. */
+  inactiveTimeout?: number
 }
 
 export class SignalServer extends EventEmitter {
   private wsServer: Server
   private credentials?: Credentials
+  private inactiveTimeout: number
+  private inactiveIntervalId?: number
   private roomCounter = 0
   private clients = new Map<ClientID, Client>()
   private rooms = new Map<RoomID, Room>()
@@ -68,6 +76,9 @@ export class SignalServer extends EventEmitter {
     this.wsServer = opts.wsServer
     this.wsServer.on('connection', this.onConnection)
     this.credentials = opts.credentials
+    this.inactiveTimeout = opts.inactiveTimeout || 10800e3
+
+    this.inactiveIntervalId = setInterval(this.checkInactive, 60e3) as any
   }
 
   private log(...args: any[]) {
@@ -85,9 +96,24 @@ export class SignalServer extends EventEmitter {
   }
 
   close() {
+    if (this.inactiveIntervalId) {
+      clearInterval(this.inactiveIntervalId)
+      this.inactiveIntervalId = undefined
+    }
+
     this.reset()
     this.wsServer.off('connection', this.onConnection)
     this.wsServer.close()
+  }
+
+  private checkInactive() {
+    const now = Date.now()
+    for (const [id, room] of this.rooms) {
+      const elapsed = now - (room.lastModified || room.created)
+      if (elapsed >= this.inactiveTimeout) {
+        this.closeRoom(id)
+      }
+    }
   }
 
   httpHandler(req: IncomingMessage, res: http.ServerResponse) {
@@ -374,6 +400,8 @@ export class SignalServer extends EventEmitter {
 
     room.clients.add(client.id)
     room.clientCounter++
+    room.lastModified = Date.now()
+
     client.room = roomId
 
     this.brokerOffer(client, offer, client.id)
@@ -411,9 +439,8 @@ export class SignalServer extends EventEmitter {
   }
 }
 
-export interface Options {
+export interface Options extends Omit<SignalServerOptions, 'wsServer'> {
   port?: number
-  credentials?: Credentials
 }
 
 export default async (opts: Options) => {
@@ -431,7 +458,8 @@ export default async (opts: Options) => {
   const ws = new Server({ server })
   signalServer = new SignalServer({
     wsServer: ws,
-    credentials: opts.credentials
+    credentials: opts.credentials,
+    inactiveTimeout: opts.inactiveTimeout
   })
 
   server.listen(port)
