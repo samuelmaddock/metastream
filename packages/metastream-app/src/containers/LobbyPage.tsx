@@ -247,11 +247,11 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
     let content
     switch (err.errorCode) {
       case NetworkErrorCode.SignalServerDisconnect: {
-        content = '❌ Disconnected from signal server, reconnecting...'
+        content = '❌ Disconnected from session server. Reconnecting…'
         break
       }
       case NetworkErrorCode.SignalServerReconnect: {
-        content = '✅ Reconnected to signal server.'
+        content = '✅ Reconnected to session server.'
         break
       }
       default:
