@@ -11,7 +11,7 @@ export default {
   appearance: 'Apariencia',
   autoFullscreen: 'Auto ampliar pantalla',
   autoFullscreenDesc: 'Ampliar para enfocar el video dentro del tamaño de la ventana.',
-  avatar: 'Foto do perfil',
+  avatar: 'Foto de perfil',
   avatarCredit: '<0>Foto de perfil seleccionada hecha por</0> <1>{{artist}}</1>',
   cancel: 'Cancelar',
   changelog: 'Registro de cambios',
