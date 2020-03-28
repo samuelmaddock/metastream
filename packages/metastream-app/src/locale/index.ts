@@ -13,6 +13,7 @@ import koKR from './ko-KR'
 import frFR from './fr-FR'
 import zhCN from './zh-CN'
 import trTR from './tr-TR'
+import itIT from './it-IT'
 
 export const DEFAULT_LANGUAGE = 'en-US'
 
@@ -20,6 +21,7 @@ export const locales = [
   { label: 'English', code: 'en-US', translation: enUS, flag: '🇺🇸' },
   { label: 'Español', code: 'es-ES', translation: es, flag: '🇪🇸' },
   { label: 'Français', code: 'fr-FR', translation: frFR, flag: '🇫🇷' },
+  { label: 'Italiano', code: 'it-IT', translation: itIT, flag: '🇮🇹' },
   { label: 'Pусский', code: 'ru-RU', translation: ru, flag: '🇷🇺' },
   { label: 'Português do Brasil', code: 'pt-BR', translation: ptBR, flag: '🇧🇷' },
   { label: 'Deutsch', code: 'de-DE', translation: deDE, flag: '🇩🇪' },
