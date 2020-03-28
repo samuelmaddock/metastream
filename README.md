@@ -28,7 +28,7 @@
 - Auto-fullscreen of embedded media.
 - Per-user playback permissions, managed by the host.
 - Basic host administrative functionality (kicking peers).
-- Localization—[see info on contributing](./app/locale).
+- Localization—[see info on contributing](./packages/metastream-app/src/locale#contributing).
 
 #### Are you a website owner?
 Easily add watch party support to your website by redirecting the user to Metastream.
