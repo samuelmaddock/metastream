@@ -1,0 +1,26 @@
+.container {
+  composes: center-vertical from '~styles/layout.css';
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.then {
+  margin: 0 1rem;
+}
+
+.buttons {
+  composes: center-vertical from '~styles/layout.css';
+}
+
+@media only screen and (max-width: 1150px) {
+  .container {
+    flex-direction: column;
+  }
+}
+
+.error {
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 0, 0, 0.3);
+  text-align: center;
+}

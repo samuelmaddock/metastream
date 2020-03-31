@@ -14,6 +14,7 @@ import { IAppState } from '../../reducers/index'
 import { connect } from 'react-redux'
 import { setSetting } from '../../actions/settings'
 import { SettingsProps } from './types'
+import { DonateBar } from 'components/account/DonateBar'
 
 interface IProps {
   inSession?: boolean
@@ -62,7 +63,7 @@ class _SettingsMenu extends PureComponent<Props, State> {
         isHost && {
           label: t('session'),
           value: 'session',
-          children: () => <SessionSettings />
+          children: () => <SessionSettings className={styles.section} />
         },
       {
         label: t('appearance'),
@@ -104,13 +105,16 @@ class _SettingsMenu extends PureComponent<Props, State> {
           transparent: this.props.inSession
         })}
       >
-        <aside className={styles.tabSidebar}>
-          <ul>{tabs}</ul>
-        </aside>
-        <section className={styles.content}>
-          <h2>{selected.label}</h2>
-          {children}
-        </section>
+        <div className={styles.columns}>
+          <aside className={styles.tabSidebar}>
+            <ul>{tabs}</ul>
+          </aside>
+          <section className={styles.content}>
+            <h2>{selected.label}</h2>
+            {children}
+          </section>
+        </div>
+        <DonateBar className={styles.bottom} />
       </div>
     )
   }

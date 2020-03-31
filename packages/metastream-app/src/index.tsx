@@ -21,6 +21,8 @@ import { initAnalytics } from './analytics'
 import { initLocale } from 'locale'
 import { setPendingMedia } from 'lobby/actions/mediaPlayer'
 import { SEC2MS } from 'utils/math'
+import { AccountService } from 'account/account'
+import { sleep } from 'utils/async'
 
 let store: Store<IAppState>
 let history: History
@@ -58,6 +60,15 @@ async function init() {
 
   store = storeCfg.store
   persistor = storeCfg.persistor
+
+  try {
+    await Promise.race([
+      AccountService.get().checkLogin(),
+      sleep(15e3) // skip on timeout
+    ])
+  } catch (e) {
+    console.error(e)
+  }
 
   // Setup libsodium and cryptographic identity
   await PlatformService.get().ready

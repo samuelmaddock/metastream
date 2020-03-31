@@ -111,7 +111,7 @@ export class WebControls extends Component<IProps, IState> {
           highlight={this.state.canRequest}
           title={
             <MediumText>
-              When you&rsquo;re ready to share, press the{' '}
+              When you&rsquo;re ready to share a link, press the{' '}
               <HighlightText>Add To Session</HighlightText> button.
             </MediumText>
           }

@@ -1,5 +1,6 @@
 export const enum StorageKey {
   RequestCount = 'requestCount',
   AutoplayNotice = 'autoplayNotice',
-  HasInteracted = 'hasInteracted'
+  HasInteracted = 'hasInteracted',
+  Login = 'login'
 }

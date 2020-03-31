@@ -9,6 +9,7 @@ import { assetUrl } from 'utils/appUrl'
 import { IReactReduxProps } from 'types/redux-thunk'
 import { Webview } from 'components/Webview'
 import { sendMediaRequest } from 'lobby/actions/media-request'
+import { DonateBar } from 'components/account/DonateBar'
 
 const NONCE = shortid()
 const DEFAULT_URL = `${assetUrl('homescreen.html')}?nonce=${NONCE}`
@@ -98,6 +99,7 @@ export class _WebBrowser extends Component<PrivateProps> {
           onRequestUrl={url => this.requestUrl(url, 'browser')}
         />
         {this.renderContent()}
+        <DonateBar className={styles.donateBar} />
       </div>
     )
   }

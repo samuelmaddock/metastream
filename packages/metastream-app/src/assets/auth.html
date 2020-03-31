@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Authenticating with Metastream</title>
+  </head>
+  <body>
+    <script>
+      ;(function() {
+        const { opener } = window
+        if (!opener) return
+
+        const params = new URLSearchParams(location.search)
+        const error = params.get('e')
+        const token = params.get('t')
+
+        const message = { type: 'auth-token', error, token }
+        opener.postMessage(message, location.origin)
+      })()
+    </script>
+  </body>
+</html>

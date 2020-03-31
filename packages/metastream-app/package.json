@@ -78,6 +78,7 @@
     "classnames": "^2.2.5",
     "deep-diff": "^1.0.2",
     "exponential-backoff": "^2.1.1",
+    "firebase": "^7.13.1",
     "history": "^4.7.2",
     "html-parse-stringify2": "^2.0.1",
     "i18next": "^12.0.0",

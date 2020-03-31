@@ -1,5 +1,6 @@
 # Local env vars
-.env
+*.env
+!.example.env
 
 # Logs
 logs

@@ -21,7 +21,8 @@ interface IProps {
 
 // too lazy to move into css
 const DEFAULT_STYLE: React.CSSProperties = {
-  display: 'inline-block'
+  display: 'inline-block',
+  flexShrink: 0
 }
 
 const SIZE_SCALE = {

@@ -15,6 +15,7 @@ import { stripEmoji } from 'utils/string'
 import { AvatarRegistry } from '../services/avatar'
 import { DEFAULT_LANGUAGE } from 'locale'
 import { ChatLocation } from '../components/chat/Location'
+import { AccountService, MetastreamUserTier } from 'account/account'
 
 export const enum SessionMode {
   /** Open to connections. */
@@ -95,8 +96,10 @@ export const settings: Reducer<ISettingsState> = (
   return state
 }
 
+export const getLocalColor = (state: IAppState) =>
+  (AccountService.get().tier > MetastreamUserTier.None && state.settings.color) || DEFAULT_COLOR
+
 export const getLocalUsername = (state: IAppState) => state.settings.username || DEFAULT_USERNAME
-export const getLocalColor = (state: IAppState) => state.settings.color || DEFAULT_COLOR
 export const getLocalSessionMode = (state: IAppState) => state.settings.sessionMode || DEFAULT_COLOR
 
 export const getLocalAvatar = (state: IAppState) => {
