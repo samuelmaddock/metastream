@@ -12,6 +12,8 @@ export class UpdateService extends EventEmitter {
     return updateService
   }
 
+  isUpdateAvailable: boolean = false
+
   private constructor() {
     super()
     this.checkForUpdate = this.checkForUpdate.bind(this)
@@ -32,9 +34,9 @@ export class UpdateService extends EventEmitter {
 
     if (!liveVersion) return
 
-    const isUpdateAvailable = VERSION !== liveVersion
+    this.isUpdateAvailable = VERSION !== liveVersion
 
-    if (isUpdateAvailable) {
+    if (this.isUpdateAvailable) {
       this.emit('update', liveVersion, VERSION)
     }
   }

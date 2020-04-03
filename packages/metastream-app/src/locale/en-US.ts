@@ -135,6 +135,8 @@ export default {
   toggleDJ: 'Toggle DJ',
   unlimited: 'Unlimited',
   unlockQueue: 'Unlock queue',
+  updateAvailable:
+    'An update for Metastream is available. Press the UPDATE button in the top-right to receive the update.',
   username: 'Username',
   users: 'Users',
   userJoined: '<Username id="{{userId}}">{{username}}</Username> has joined.',

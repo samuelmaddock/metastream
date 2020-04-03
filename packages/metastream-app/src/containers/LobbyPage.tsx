@@ -27,6 +27,7 @@ import { NetworkError, NetworkErrorCode } from '../network/error'
 import { addChat } from '../lobby/actions/chat'
 import { MultiTabObserver } from '../utils/multitab'
 import { SafeBrowse } from '../services/safeBrowse'
+import { UpdateService } from 'services/updater'
 
 interface IRouteParams {
   lobbyId: string
@@ -232,6 +233,10 @@ export class _LobbyPage extends Component<PrivateProps, IState> {
 
     if (!this.host || this.supportsNetworking) {
       this.setupLobby()
+    }
+
+    if (UpdateService.getInstance().isUpdateAvailable) {
+      this.props.dispatch(addChat({ content: `🆕 ${t('updateAvailable')}`, timestamp: Date.now() }))
     }
   }
 
