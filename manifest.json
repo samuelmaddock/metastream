@@ -1,0 +1,20 @@
+{
+  "name": "Metastream",
+  "icons": [
+    {
+      "src": "/images/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/images/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/?source=pwa",
+  "background_color": "#584C59",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#584C59"
+}

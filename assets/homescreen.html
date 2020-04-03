@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Home</title>
+    <link rel="stylesheet" href="../../styles/app.global.css" />
+    <link rel="stylesheet" href="../../styles/resource.global.css" />
+  </head>
+
+  <body>
+    <main class="container">
+      <section class="text-container">
+        <p>
+          <strong>Browse</strong> the web, <strong>find media</strong> you want to share, then
+          <strong>add it to the session.</strong>
+        </p>
+      </section>
+      <section style="max-width: 100%;">
+        <div class="grid-container">
+          <a href="https://www.youtube.com/" class="button social-link" rel="noopener">YouTube</a>
+          <a href="https://www.twitch.tv/" class="button social-link" rel="noopener">Twitch</a>
+          <a href="https://soundcloud.com/" class="button social-link" rel="noopener">SoundCloud</a>
+          <a
+            href="./external.html?href=https%3A%2F%2Fwww.netflix.com"
+            class="button social-link"
+            rel="noopener"
+            target="_blank"
+            >Netflix</a
+          >
+          <a href="https://www.hulu.com/" class="button social-link" rel="noopener">Hulu</a>
+          <a href="https://www.crunchyroll.com/" class="button social-link" rel="noopener"
+            >Crunchyroll</a
+          >
+          <a href="https://www.reddit.com/" class="button social-link" rel="noopener">Reddit</a>
+          <a href="https://www.google.com/" class="button social-link" rel="noopener">Google</a>
+        </div>
+        <div class="input-container">
+          <input
+            id="urlinput"
+            placeholder="Or paste any URL (e.g. https://cool.website/video/123)"
+            autocomplete="url"
+            spellcheck="false"
+          />
+          <button id="addbtn" class="button uppercase">Add to Session</button>
+        </div>
+      </section>
+      <div class="text-container">
+        <p>
+          Having trouble with a website?
+          <br />Please
+          <a class="link" href="https://github.com/samuelmaddock/metastream/issues" target="_blank"
+            >let us know on GitHub</a
+          >.
+        </p>
+      </div>
+    </main>
+    <script>
+      ;(function() {
+        const isTopFrame = window.top === window.self
+        if (isTopFrame) {
+          document.body.classList.add('top')
+          return
+        }
+
+        const submitURL = () => {
+          const url = urlInput.value
+          if (url.length === 0) return
+          const nonce = new URLSearchParams(location.search).get('nonce')
+          const message = { type: 'add-to-session', payload: { url, nonce } }
+          window.top.postMessage(message)
+        }
+
+        const urlInput = document.getElementById('urlinput')
+        urlInput.addEventListener(
+          'keydown',
+          event => {
+            if (event.key === 'Enter') {
+              event.preventDefault()
+              submitURL()
+            }
+          },
+          false
+        )
+
+        const addBtn = document.getElementById('addbtn')
+        addBtn.addEventListener('click', submitURL, false)
+      })()
+    </script>
+  </body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="referrer" content="origin" />
+    <meta name="description" content="Watch streaming media with friends." />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Metastream</title>
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" type="image/png" href="/images/icon-192.png" sizes="192x192" />
+    <link rel="icon" type="image/png" href="/images/icon-512.png" sizes="512x512" />
+    <style>
+      html {
+        min-height: 100%;
+        background: radial-gradient(
+          circle at 10% -40%,
+          #6f749e 0%,
+          #9a8daf 31%,
+          #d0a8b9 58%,
+          #f8bbb1 80%,
+          #fde6b1 100%
+        );
+      }
+      body {
+        color: #e1e1e1;
+        font-family: Helvetica, Arial, sans-serif;
+        margin: 0;
+      }
+      body,
+      #root,
+      .loading-screen {
+        min-height: 100vh;
+      }
+      .loading-screen {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        text-align: center;
+        font-style: italic;
+        line-height: 1.2;
+        background: rgba(0, 0, 0, 0.33);
+        animation: pulse 3s infinite;
+      }
+      .launcherror {
+        white-space: pre;
+        text-align: left;
+        background: rgba(0,0,0,0.11);
+        padding: 1rem;
+        margin-top: 1rem;
+        font-size: 0.8rem;
+      }
+      @keyframes pulse {
+        from {
+          background: rgba(0, 0, 0, 0.33);
+        }
+        50% {
+          background: rgba(0, 0, 0, 0.22);
+        }
+        to {
+          background: rgba(0, 0, 0, 0.33);
+        }
+      }
+    </style>
+    <script type="text/javascript">
+      // Single Page Apps for GitHub Pages
+      // https://github.com/rafrex/spa-github-pages
+      // Copyright (c) 2016 Rafael Pedicini, licensed under the MIT License
+      ;(function(l) {
+        if (l.search) {
+          var q = {}
+          l.search
+            .slice(1)
+            .split('&')
+            .forEach(function(v) {
+              var a = v.split('=')
+              q[a[0]] = a
+                .slice(1)
+                .join('=')
+                .replace(/~and~/g, '&')
+            })
+          if (q.p !== undefined) {
+            window.history.replaceState(
+              null,
+              null,
+              l.pathname.slice(0, -1) + (q.p || '') + (q.q ? '?' + q.q : '') + l.hash
+            )
+          }
+        }
+      })(window.location)
+    </script>
+    <script type="text/javascript">
+      ;(function() {
+        function warnBrowserSupport(error) {
+          var load = document.querySelector('.loading-screen');
+          if (load) {
+            load.innerText = [
+              'An error occured while launching Metastream.',
+              'Currently supported browsers include Chrome and Firefox.',
+              'Please check if your browser is up-to-date.',
+              'Contact: hello@getmetastream.com'
+            ].join('\n');
+
+            var el = document.createElement('div');
+            el.className = 'launcherror';
+            el.innerText = error;
+            load.appendChild(el);
+          }
+        }
+
+        window.onerror = function(msg, url, lineNo, columnNo, error) {
+          var errorMessage = [
+            msg,
+            url + ':' + lineNo + ':' + columnNo,
+            JSON.stringify(error)
+          ].join('\n');
+          warnBrowserSupport(errorMessage);
+          window.onerror = null;
+          console.error(error);
+        };
+      })();
+    </script>
+  <meta name="version" content="v0.8.1_1 (master@d12f6c24)"><link href="/style.css" rel="stylesheet"></head>
+  <body>
+    <div id="root">
+      <div class="loading-screen">
+        <img src="/assets/icons/metastream-icon.svg" width="192" alt="Loading Metastream" />
+        <noscript>
+          <p>
+            Metastream requires JavaScript.<br />
+            <a href="https://github.com/samuelmaddock/metastream" target="_blank">View source code.</a>
+          </p>
+        </noscript>
+      </div>
+    </div>
+  <script type="text/javascript" src="/app.prod.js"></script></body>
+</html>
