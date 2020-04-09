@@ -21,12 +21,12 @@ export interface IUIState {
   popupPlayer?: boolean
 }
 
-const initialState: IUIState = {
+const initialState = (): IUIState => ({
   isExtensionInstalled: getIsInstalled()
-}
+})
 
 export const ui: Reducer<IUIState> = (
-  state: IUIState = initialState,
+  state: IUIState = initialState(),
   action: AnyAction
 ): IUIState => {
   if (isType(action, setUpdateState)) {

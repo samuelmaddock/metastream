@@ -16,14 +16,29 @@
     return
   }
 
+  function dispatchInstallEvent() {
+    document.dispatchEvent(new Event('metastreamRemoteInstalled'))
+  }
+
   // Notify background script of initialization request
-  chrome.runtime.sendMessage({ type: 'metastream-init' }, initialized => {
+  chrome.runtime.sendMessage({ type: 'metastream-init' }, (initialized) => {
     document.documentElement.dataset.extensionInstalled = ''
+
+    try {
+      document.documentElement.dataset.extensionVersion = chrome.runtime.getManifest().version
+    } catch (e) {}
+
+    if (document.readyState === 'complete') {
+      dispatchInstallEvent()
+    } else {
+      window.addEventListener('load', dispatchInstallEvent, false)
+    }
+
     console.debug(`[Metastream Remote] Initialized`, initialized)
   })
 
   // Listen for subframe events
-  chrome.runtime.onMessage.addListener(message => {
+  chrome.runtime.onMessage.addListener((message) => {
     if (typeof message !== 'object' || typeof message.type !== 'string') return
 
     if (message.type.startsWith('metastream-')) {
@@ -36,7 +51,7 @@
   })
 
   // Listen for events to forward to background script
-  window.addEventListener('message', event => {
+  window.addEventListener('message', (event) => {
     if (event.origin !== location.origin) return
     const { data: action } = event
     if (typeof action !== 'object' || typeof action.type !== 'string' || action.__internal) return

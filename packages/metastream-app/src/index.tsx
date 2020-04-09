@@ -23,6 +23,7 @@ import { setPendingMedia } from 'lobby/actions/mediaPlayer'
 import { SEC2MS } from 'utils/math'
 import { AccountService } from 'account/account'
 import { sleep } from 'utils/async'
+import { checkExtensionInstall } from 'actions/ui'
 
 let store: Store<IAppState>
 let history: History
@@ -48,7 +49,11 @@ function onMessage(event: MessageEvent) {
   }
 }
 
-async function init() {
+function extensionInstalled() {
+  store.dispatch(checkExtensionInstall())
+}
+
+async function main() {
   history = cfgStore.history
 
   const storeCfg = cfgStore.configureStore({
@@ -60,6 +65,14 @@ async function init() {
 
   store = storeCfg.store
   persistor = storeCfg.persistor
+
+  // setup listeners
+  window.addEventListener('message', onMessage, false)
+  document.addEventListener('metastreamRemoteInstalled', extensionInstalled)
+
+  // fix: sometimes the extension installs too late and the app misses its check
+  // this can be removed after Metastream Remote v0.4.2 is released
+  setTimeout(extensionInstalled, 3e3)
 
   try {
     await Promise.race([
@@ -74,7 +87,6 @@ async function init() {
   await PlatformService.get().ready
 
   initAnalytics(store, history)
-  window.addEventListener('message', onMessage, false)
 
   // DEBUG
   if (process.env.NODE_ENV === 'development') {
@@ -94,7 +106,7 @@ async function init() {
   )
 }
 
-init()
+main()
 
 if (module.hot) {
   module.hot.accept('./containers/Root', () => {
