@@ -20,7 +20,6 @@ const isMetastreamUrl = url =>
   url.startsWith('http://localhost:8080') ||
   url.startsWith('https://localhost:8080')
 const isTopFrame = details => details.frameId === TOP_FRAME
-const isDirectChild = details => details.parentFrameId === TOP_FRAME
 const isValidAction = action => typeof action === 'object' && typeof action.type === 'string'
 const isFirefox = () => navigator.userAgent.toLowerCase().includes('firefox')
 
@@ -172,9 +171,11 @@ const onHeadersReceived = details => {
   const { tabId, frameId, responseHeaders: headers } = details
   let permitted = false
 
-  const isMetastreamTab = watchedTabs.has(tabId) && isDirectChild(details)
+  // Whether these headers are within the context of a frame embedded in app.getmetastream.com
+  const isMetastreamEmbedFrame = watchedTabs.has(tabId) && !isTopFrame(details)
+
   const isServiceWorkerRequest = watchedTabs.size > 0 && tabId === -1 && frameId === -1
-  const shouldModify = isMetastreamTab || isServiceWorkerRequest
+  const shouldModify = isMetastreamEmbedFrame || isServiceWorkerRequest
 
   // TODO: HTTP 301 redirects don't get captured. Try https://reddit.com/
 
@@ -182,13 +183,32 @@ const onHeadersReceived = details => {
     for (let i = headers.length - 1; i >= 0; --i) {
       const header = headers[i].name.toLowerCase()
       const value = headers[i].value
-      if (header === 'x-frame-options' || header === 'frame-options') {
-        headers.splice(i, 1)
-        permitted = true
-      } else if (header === 'content-security-policy' && value.includes('frame-ancestors')) {
-        const policies = value.split(';').filter(value => !value.includes('frame-ancestors'))
-        headers[i].value = policies.join(';')
-        permitted = true
+
+      switch (header) {
+        case 'x-frame-options':
+        case 'frame-options': {
+          headers.splice(i, 1)
+          permitted = true
+          break
+        }
+        case 'content-security-policy': {
+          if (value.includes('frame-ancestors')) {
+            const policies = value.split(';').filter(value => !value.includes('frame-ancestors'))
+            headers[i].value = policies.join(';')
+            permitted = true
+          }
+          break
+        }
+        case 'set-cookie': {
+          // Allow third-party cookies specifically in Metastream tabs
+          if (value.includes('SameSite=')) {
+            headers[i].value = value.replace(/SameSite=(Lax|Strict)/i, 'SameSite=None')
+          } else {
+            // Chrome applies SameSite=Lax by default so avoid this by being explicit
+            headers[i].value += '; SameSite=None'
+          }
+          break
+        }
       }
     }
   }
@@ -383,7 +403,9 @@ const startWatchingTab = tab => {
     [
       chrome.webRequest.OnHeadersReceivedOptions.BLOCKING,
       chrome.webRequest.OnHeadersReceivedOptions.RESPONSEHEADERS, // firefox
-      chrome.webRequest.OnHeadersReceivedOptions.RESPONSE_HEADERS // chromium
+      chrome.webRequest.OnHeadersReceivedOptions.RESPONSE_HEADERS, // chromium
+      chrome.webRequest.OnHeadersReceivedOptions.EXTRAHEADERS, // firefox
+      chrome.webRequest.OnHeadersReceivedOptions.EXTRA_HEADERS, // chromium
     ].filter(Boolean)
   )
 
