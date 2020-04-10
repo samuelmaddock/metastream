@@ -535,14 +535,6 @@ chrome.runtime.onMessage.addListener((action, sender, sendResponse) => {
     case 'metastream-webview-event':
       handleWebviewEvent(sender, action)
       break
-    case 'metastream-host-event': {
-      // DEPRECATED: used by app v0.5.0
-      handleWebviewEvent(sender, {
-        type: 'metastream-webview-event',
-        payload: action
-      })
-      break
-    }
     case 'metastream-fetch': {
       const { requestId, url, options } = action.payload
       request(tabId, requestId, url, options)
