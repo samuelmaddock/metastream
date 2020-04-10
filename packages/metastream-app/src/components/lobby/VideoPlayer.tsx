@@ -36,16 +36,16 @@ type MediaReadyPayload = {
   href: string
 }
 
-const processMediaDuration = (payload?: MediaReadyPayload) => {
-  if (!payload) return null
-
-  let duration = payload.duration && !isNaN(payload.duration) ? payload.duration : null
-  if (!duration) return null
+const processMediaDuration = (duration?: number, prevDuration?: number) => {
+  duration = duration && !isNaN(duration) ? duration : undefined
+  if (!duration) return
 
   // Hulu and Crunchyroll display videos only a few seconds long prior to
   // showing a full video. To avoid the issue of prematuring ending videos,
   // we just set a minimum duration.
-  duration = Math.max(duration, MEDIA_DURATION_MIN) || MEDIA_DURATION_MIN
+  if (typeof prevDuration !== 'number') {
+    duration = Math.max(duration, MEDIA_DURATION_MIN) || MEDIA_DURATION_MIN
+  }
 
   return duration
 }
@@ -74,7 +74,7 @@ interface IState {
 
 const DEFAULT_URL = assetUrl('idlescreen.html')
 const MEDIA_TIMEOUT_DURATION = 10e3
-const MEDIA_DURATION_MIN = 5e3
+const MEDIA_DURATION_MIN = 10e3
 
 const mapStateToProps = (state: IAppState): IConnectedProps => {
   return {
@@ -323,8 +323,8 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
 
     const media = this.props.current
     if (this.props.host) {
-      const prevDuration = media ? media.duration : null
-      const nextDuration = processMediaDuration(payload)
+      const prevDuration = media ? media.duration : undefined
+      const nextDuration = processMediaDuration(payload && payload.duration, prevDuration)
 
       const isLiveMedia = prevDuration === 0
       const noDuration = !prevDuration
