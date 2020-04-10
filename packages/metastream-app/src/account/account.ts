@@ -46,7 +46,7 @@ export class AccountService extends EventEmitter {
     ])
 
     if (!this._firebase) {
-      const firebaseConfig = JSON.parse(process.env.FIREBASE_CONFIG)
+      const firebaseConfig = JSON.parse(atob(process.env.FIREBASE_CONFIG))
       firebase.initializeApp(firebaseConfig)
       this._firebase = firebase
     }
