@@ -369,6 +369,14 @@
     // HTMLMediaPlayer class for active media element.
     //===========================================================================
 
+    const MIN_DURATION = 1
+    const MAX_DURATION = 60 * 60 * 20 * SEC2MS
+    const isValidDuration = duration =>
+      typeof duration === 'number' &&
+      !isNaN(duration) &&
+      duration < MAX_DURATION &&
+      duration > MIN_DURATION
+
     /** Abstraction around HTML video tag. */
     class HTMLMediaPlayer {
       constructor(media) {
@@ -382,6 +390,7 @@
         this.onVolumeChange = this.onVolumeChange.bind(this)
         this.onTimeUpdate = throttle(this.onTimeUpdate.bind(this), 1e3)
         this.onWaiting = this.onWaiting.bind(this)
+        this.onDurationChange = debounce(this.onReady.bind(this), 2e3)
 
         this.media.addEventListener('play', this.onPlay, false)
         this.media.addEventListener('pause', this.onPause, false)
@@ -389,6 +398,9 @@
         this.media.addEventListener('seeked', this.onSeeked, false)
         this.media.addEventListener('volumechange', this.onVolumeChange, false)
         this.media.addEventListener('timeupdate', this.onTimeUpdate, false)
+        this.media.addEventListener('durationchange', this.onDurationChange, false)
+
+        this.onReady()
       }
 
       destroy() {
@@ -398,6 +410,7 @@
         this.media.removeEventListener('seeked', this.onSeeked, false)
         this.media.removeEventListener('volumechange', this.onVolumeChange, false)
         this.media.removeEventListener('timeupdate', this.onTimeUpdate, false)
+        this.media.removeEventListener('durationchange', this.onDurationChange, false)
         this.stopWaitingListener()
       }
 
@@ -423,7 +436,23 @@
         return this.media.currentTime * SEC2MS
       }
       getDuration() {
-        return getVideoDuration(this.media)
+        let duration
+
+        if (this.media instanceof HTMLMediaElement) {
+          duration = this.media.duration
+          if (isValidDuration(duration)) return duration
+        }
+
+        // attempt to get duration from global 'player'
+        const { player } = window
+        if (typeof player === 'object' && typeof player.getDuration === 'function') {
+          try {
+            duration = player.getDuration()
+          } catch (e) {}
+          if (isValidDuration(duration)) return duration
+        }
+
+        return null
       }
       seek(time) {
         if (this.dispatch('metastreamseek', time)) return
@@ -458,6 +487,21 @@
       timeExceedsThreshold(time) {
         const dt = Math.abs(time - this.getCurrentTime())
         return dt > (playerSettings.seekThreshold || 0)
+      }
+
+      onReady() {
+        const duration = this.getDuration()
+        if (duration === this.prevDuration) return
+
+        dispatchMediaEvent({
+          type: 'media-ready',
+          payload: {
+            duration: duration ? duration * SEC2MS : undefined,
+            href: location.href
+          }
+        })
+
+        this.prevDuration = duration
       }
 
       onPlay() {
@@ -909,50 +953,6 @@ ${ignoredSelectors}:empty {
     // Track the active/primary media element
     //===========================================================================
 
-    const MIN_DURATION = 1
-    const MAX_DURATION = 60 * 60 * 20 * SEC2MS
-    const isValidDuration = duration =>
-      typeof duration === 'number' &&
-      !isNaN(duration) &&
-      duration < MAX_DURATION &&
-      duration > MIN_DURATION
-
-    const getVideoDuration = mediaElement => {
-      let duration
-
-      if (mediaElement instanceof HTMLMediaElement) {
-        duration = mediaElement.duration
-        if (isValidDuration(duration)) return duration
-      }
-
-      // attempt to get duration from global 'player'
-      const { player } = window
-      if (typeof player === 'object' && typeof player.getDuration === 'function') {
-        try {
-          duration = player.getDuration()
-        } catch (e) {}
-        if (isValidDuration(duration)) return duration
-      }
-
-      return null
-    }
-
-    let prevDuration
-    const signalReady = mediaElement => {
-      const duration = getVideoDuration(mediaElement)
-      if (prevDuration === duration) return
-
-      dispatchMediaEvent({
-        type: 'media-ready',
-        payload: {
-          duration: duration ? duration * SEC2MS : undefined,
-          href: location.href
-        }
-      })
-
-      prevDuration = duration
-    }
-
     const setActiveMedia = media => {
       activeMedia = media
       activeFrame = undefined
@@ -968,15 +968,9 @@ ${ignoredSelectors}:empty {
         autoplayTimerId = undefined
       }
 
-      prevDuration = undefined
-
       startAutoFullscreen()
 
       // TODO: Use MutationObserver to observe if video gets removed from DOM
-
-      const onDurationChange = debounce(signalReady, 2000, media)
-      media.addEventListener('durationchange', onDurationChange, false)
-      signalReady(media)
     }
 
     const addMedia = media => {
