@@ -20,7 +20,7 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import { IReactReduxProps } from 'types/redux-thunk'
 import { Dropdown } from 'components/settings/controls'
 import { setSessionData } from 'lobby/actions/session'
-import { getMaxUsers } from 'lobby/reducers/session'
+import { ClipboardTextInput } from 'components/common/input'
 
 interface IProps {
   className?: string
@@ -49,20 +49,33 @@ class SessionSettings extends Component<PrivateProps, IState> {
   state: IState = {}
 
   render(): JSX.Element {
-    /*
-        TODO:
-        - password?
-        - allow chat
-        - Allow Direct IP [on/off]
-        - Allow P2P [on/off]
-        - ban management
-        */
     return (
       <div className={cx(styles.container, this.props.className)}>
-        {this.renderSessionMode()}
-        {this.renderSessionModeDialog()}
-        {this.renderUserOpts()}
+        {this.renderSessionLink()}
+        {this.props.isHost && (
+          <>
+            {this.renderSessionMode()}
+            {this.renderSessionModeDialog()}
+            {this.renderUserOpts()}
+          </>
+        )}
       </div>
+    )
+  }
+
+  private renderSessionLink() {
+    return (
+      <>
+        <p>{t('shareSessionUrl')}</p>
+
+        <ClipboardTextInput
+          className={styles.idContainer}
+          inputClassName={styles.idText}
+          defaultValue={location.href}
+          disabled
+          style={{ marginBottom: '1rem' }}
+        />
+      </>
     )
   }
 

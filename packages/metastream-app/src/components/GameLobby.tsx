@@ -136,7 +136,10 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
       <>
         {this.renderPlaybackControls()}
 
-        <UserList className={styles.users} onInvite={() => this.openModal(LobbyModal.Invite)} />
+        <UserList
+          className={styles.users}
+          onInvite={() => this.openModal(LobbyModal.Settings, { initialSelected: 'session' })}
+        />
         <MediaList className={styles.queue} onShowInfo={this.showInfo} />
 
         {!this.props.isChatDocked && (
@@ -205,10 +208,6 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
           />
         )
       }
-      case LobbyModal.Invite: {
-        modalChildren = <Modals.Invite {...modalProps} />
-        break
-      }
       case LobbyModal.MediaInfo: {
         const media =
           (this.state.modalProps && this.state.modalProps.media) || this.props.currentMedia
@@ -220,7 +219,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
         break
       }
       case LobbyModal.Settings: {
-        modalChildren = <Modals.Settings {...modalProps} />
+        modalChildren = <Modals.Settings {...modalProps} {...this.state.modalProps} />
         fillHeight = true
         break
       }

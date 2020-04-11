@@ -52,7 +52,7 @@ export default {
   endSessionDescription: 'Changing to an offline session will disconnect all connected users.',
   endSessionModalDescription: 'All users will be disconnected from the session.',
   endSessionButton: 'End Session',
-  enterJoinDest: 'Enter a Metastream session URL.',
+  enterJoinDest: 'Enter a Metastream session link.',
   findSession: 'Find Session',
   findSessionDescription:
     'Join the <1>#sessions</1> channel on the Metastream Discord community to find other users’ sessions. Click the Discord logo below to join.',
@@ -125,7 +125,7 @@ export default {
   shareFriendCode: 'Share your friend code below to invite friends.',
   shareFriendCodeOther: 'Share {{name}}’s friend code below to invite friends.',
   sharePublicIP: 'Share <1>your public IP address</1> to allow friends to connect directly.',
-  shareSessionUrl: 'Share the session URL below to invite friends.',
+  shareSessionUrl: 'Share the session link below to invite friends.',
   supportMetastream: 'Support Metastream to unlock rewards!',
   startSession: 'Start Session',
   theaterMode: 'Theater mode',

@@ -17,3 +17,13 @@
 .sessionMode button:not(:first-of-type) {
   margin-left: 1rem;
 }
+
+.idContainer {
+  max-width: 600px;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.idText {
+  font-size: 14px;
+}

@@ -20,6 +20,7 @@ interface IProps {
   inSession?: boolean
   isHost?: boolean
   invalidate: () => void
+  initialSelected?: string
 }
 
 interface IConnectedProps {
@@ -43,7 +44,12 @@ interface TabItem {
 type Props = IProps & IConnectedProps & DispatchProps & IReactReduxProps
 
 class _SettingsMenu extends PureComponent<Props, State> {
-  state: State = {}
+  constructor(props: Props) {
+    super(props)
+    this.state = {
+      selected: props.initialSelected
+    }
+  }
 
   private buildMenu(): TabItem[] {
     const { inSession, isHost } = this.props
@@ -59,12 +65,11 @@ class _SettingsMenu extends PureComponent<Props, State> {
         value: 'profile',
         children: () => <ProfileSettings {...settingsProps} />
       },
-      inSession &&
-        isHost && {
-          label: t('session'),
-          value: 'session',
-          children: () => <SessionSettings className={styles.section} />
-        },
+      inSession && {
+        label: t('session'),
+        value: 'session',
+        children: () => <SessionSettings className={styles.section} />
+      },
       {
         label: t('appearance'),
         value: 'appearance',

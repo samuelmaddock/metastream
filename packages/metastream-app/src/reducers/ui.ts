@@ -7,7 +7,6 @@ import { BEFORE_INSTALL_PROMPT, APP_INSTALLED } from '../middleware/pwa'
 
 export const enum LobbyModal {
   Browser = 'browser',
-  Invite = 'invite',
   MediaInfo = 'media-info',
   EndSession = 'end-session',
   Settings = 'settings'
