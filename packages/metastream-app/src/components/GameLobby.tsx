@@ -32,6 +32,8 @@ interface IProps {
 
 interface IState {
   inactive: boolean
+
+  // TODO: eventually move this state into redux
   modal?: LobbyModal
   modalProps?: React.Props<any> & { [key: string]: any }
 }
@@ -49,7 +51,7 @@ interface IConnectedProps {
 interface DispatchProps {
   registerMediaShortcuts(): void
   unregisterMediaShortcuts(): void
-  closeLobbyModal(): void
+  setLobbyModal(modal?: LobbyModal): void
   clearPendingMedia(): void
   sendMediaRequest(opts: ClientMediaRequestOptions): void
 }
@@ -90,7 +92,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
 
   componentDidUpdate(prevProps: PrivateProps) {
     if (this.props.modal && this.props.modal !== prevProps.modal) {
-      this.setState({ modal: this.props.modal })
+      this.openModal(this.props.modal)
     }
     this.checkPendingMedia()
   }
@@ -264,18 +266,19 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
   }
 
   private showInfo = (media?: IMediaItem) => {
-    this.setState({ modal: LobbyModal.MediaInfo, modalProps: { media } })
+    this.openModal(LobbyModal.MediaInfo, { media })
   }
 
   private openModal = (modal: LobbyModal, modalProps?: any) => {
     this.setState({ modal, modalProps })
+    this.props.setLobbyModal(modal)
   }
 
   private closeModal = () => {
-    this.setState({ modal: undefined })
+    this.setState({ modal: undefined, modalProps: undefined })
 
     if (this.props.modal) {
-      this.props.closeLobbyModal()
+      this.props.setLobbyModal()
     }
   }
 
@@ -308,7 +311,7 @@ export const GameLobby = (connect(
   (dispatch: Function): DispatchProps => ({
     registerMediaShortcuts: () => dispatch(registerMediaShortcuts()),
     unregisterMediaShortcuts: () => dispatch(unregisterMediaShortcuts()),
-    closeLobbyModal: () => dispatch(setLobbyModal()),
+    setLobbyModal: modal => dispatch(setLobbyModal(modal)),
     clearPendingMedia: () => dispatch(setPendingMedia()),
     sendMediaRequest: (opts: ClientMediaRequestOptions) => {
       dispatch(sendMediaRequest(opts))
