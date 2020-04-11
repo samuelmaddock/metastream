@@ -14,7 +14,7 @@ interface Props {
 }
 
 interface StateProps {
-  isBrowserOpen: boolean
+  isModalOpen: boolean
   dj: boolean
   queueLocked: boolean
 }
@@ -27,7 +27,7 @@ type PrivateProps = Props & StateProps & DispatchProps
 
 const _IdleScreen = (props: PrivateProps) => {
   // Hide CTA while browser is open
-  if (props.isBrowserOpen) return null
+  if (props.isModalOpen) return null
 
   const isAddAllowed = props.dj || !props.queueLocked
 
@@ -45,7 +45,7 @@ const _IdleScreen = (props: PrivateProps) => {
 
 export const IdleScreen = connect<StateProps, DispatchProps, Props, IAppState>(
   state => ({
-    isBrowserOpen: state.ui.lobbyModal === LobbyModal.Browser,
+    isModalOpen: Boolean(state.ui.lobbyModal),
     dj: hasPlaybackPermissions(state),
     queueLocked: state.mediaPlayer.queueLocked
   }),

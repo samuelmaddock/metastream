@@ -5,21 +5,117 @@
     <title>Home</title>
     <link rel="stylesheet" href="../../styles/app.global.css" />
     <link rel="stylesheet" href="../../styles/resource.global.css" />
+    <style>
+      :root {
+        --tips-height: 3rem;
+      }
+
+      .container {
+        min-height: calc(100vh - var(--tips-height));
+      }
+
+      .tips {
+        height: var(--tips-height);
+        overflow: hidden;
+        background-color: var(--color-btn);
+      }
+
+      .tips--expanded {
+        height: auto;
+        backdrop-filter: blur(10px);
+      }
+
+      .tips--expanded svg {
+        transform: rotate(180deg);
+      }
+
+      .tips-button {
+        width: 100%;
+        height: var(--tips-height);
+      }
+
+      .tips-button .column {
+        text-align: left;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .emoji-list {
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .emoji-list li {
+        padding-left: 2rem;
+        position: relative;
+        margin-top: 1rem;
+      }
+
+      .emoji-list li:first-child {
+        margin-top: 0;
+      }
+      .emoji-bullet {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 2rem;
+        display: inline-block;
+        text-align: center;
+      }
+    </style>
   </head>
 
   <body>
-    <main class="container">
-      <section class="text-container">
-        <p>
-          <strong>Browse</strong> the web, <strong>find media</strong> you want to share, then
-          <strong>add it to the session.</strong>
+    <header id="tips" class="tips">
+      <button id="tipsbtn" class="tips-button">
+        <div class="column">
+          <b>📝 Tips for getting started</b>
+          <svg
+            width="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="4 8 12 16 20 8"></polyline>
+          </svg>
+        </div>
+      </button>
+      <div class="tips-content">
+        <p class="column">
+          From here you can browse the web to find media to share in the session.
         </p>
-      </section>
+
+        <ul class="column emoji-list">
+          <li>
+            <span class="emoji-bullet">🌐</span> Metastream supports many websites! Don't see one in
+            the list? Try adding the link anyway!
+          </li>
+          <li>
+            <span class="emoji-bullet">💲</span> If the website requires an account or subscription,
+            everyone in the session will need one as well.
+          </li>
+          <li>
+            <span class="emoji-bullet">🐛</span> Is a website not working how you'd expect? You can
+            help us out by
+            <a
+              class="link"
+              href="https://github.com/samuelmaddock/metastream/issues"
+              target="_blank"
+              >reporting the issue on GitHub.</a
+            >
+          </li>
+        </ul>
+      </div>
+    </header>
+    <main class="container">
       <section style="max-width: 100%;">
-        <div class="grid-container">
+        <div class="column grid-container">
           <a href="https://www.youtube.com/" class="button social-link" rel="noopener">YouTube</a>
           <a href="https://www.twitch.tv/" class="button social-link" rel="noopener">Twitch</a>
-          <a href="https://soundcloud.com/" class="button social-link" rel="noopener">SoundCloud</a>
           <a
             href="./external.html?href=https%3A%2F%2Fwww.netflix.com"
             class="button social-link"
@@ -28,13 +124,14 @@
             >Netflix</a
           >
           <a href="https://www.hulu.com/" class="button social-link" rel="noopener">Hulu</a>
+          <a href="https://www.disneyplus.com/" class="button social-link" rel="noopener">Disney+</a>
           <a href="https://www.crunchyroll.com/" class="button social-link" rel="noopener"
             >Crunchyroll</a
           >
+          <a href="https://soundcloud.com/" class="button social-link" rel="noopener">SoundCloud</a>
           <a href="https://www.reddit.com/" class="button social-link" rel="noopener">Reddit</a>
-          <a href="https://www.google.com/" class="button social-link" rel="noopener">Google</a>
         </div>
-        <div class="input-container">
+        <div class="column input-container">
           <input
             id="urlinput"
             placeholder="Or paste any URL (e.g. https://cool.website/video/123)"
@@ -44,23 +141,10 @@
           <button id="addbtn" class="button uppercase">Add to Session</button>
         </div>
       </section>
-      <div class="text-container">
-        <p>
-          Having trouble with a website?
-          <br />Please
-          <a class="link" href="https://github.com/samuelmaddock/metastream/issues" target="_blank"
-            >let us know on GitHub</a
-          >.
-        </p>
-      </div>
     </main>
     <script>
       ;(function() {
-        const isTopFrame = window.top === window.self
-        if (isTopFrame) {
-          document.body.classList.add('top')
-          return
-        }
+        document.body.classList.toggle('top', window.top === window.self)
 
         const submitURL = () => {
           const url = urlInput.value
@@ -84,6 +168,17 @@
 
         const addBtn = document.getElementById('addbtn')
         addBtn.addEventListener('click', submitURL, false)
+
+        const tips = document.getElementById('tips')
+        const tipsBtn = document.getElementById('tipsbtn')
+        const toggleTips = () => {
+          const expanded = !tips.classList.contains('tips--expanded')
+          tips.classList.toggle('tips--expanded', expanded)
+          if (!expanded) localStorage.setItem('tipsDismissed', '1')
+        }
+        tipsBtn.addEventListener('click', toggleTips, false)
+
+        if (!localStorage.getItem('tipsDismissed')) tips.classList.add('tips--expanded')
       })()
     </script>
   </body>

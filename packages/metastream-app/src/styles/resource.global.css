@@ -4,6 +4,11 @@ body {
 
 .container {
   padding: 0 30px;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 .dim {
@@ -13,6 +18,7 @@ body {
 :root {
   --color-btn: rgba(255, 255, 255, 0.22);
   --color-btn-text: rgba(255, 255, 255, 0.88);
+  --column-width: 47rem;
 }
 
 body {
@@ -23,14 +29,6 @@ body {
   background: var(--app-bg-lobby);
 }
 
-main {
-  min-height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-
 strong {
   color: var(--color-highlight);
 }
@@ -39,16 +37,24 @@ strong {
   text-decoration: underline;
 }
 
-.grid-container {
-  --grid-width: 750px;
+.column {
+  width: 100%;
+  max-width: var(--column-width);
+  padding-left: 1rem;
+  padding-right: 1rem;
+  margin: 0 auto;
+}
 
+.row {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.grid-container {
   display: grid;
   grid-gap: 30px;
   grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
   grid-auto-flow: dense;
-
-  width: var(--grid-width);
-  max-width: 100%;
 }
 
 .button {
@@ -85,7 +91,7 @@ strong {
   display: flex;
   justify-content: center;
   align-items: center;
-  max-width: var(--grid-width);
+  max-width: var(--column-width);
   text-align: center;
   font-size: 1.125rem;
   padding: 1rem 0;
