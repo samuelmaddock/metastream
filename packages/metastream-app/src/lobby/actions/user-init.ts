@@ -14,7 +14,8 @@ import {
   getLocalUsername,
   getLocalColor,
   getLocalSessionMode,
-  SessionMode
+  SessionMode,
+  getLocalAvatar
 } from 'reducers/settings'
 import { USERNAME_MAX_LEN, COLOR_LEN } from 'constants/settings'
 import { getMaxUsers, ConnectionStatus } from '../reducers/session'
@@ -71,7 +72,7 @@ export const initialize = (server: NetServer): AppThunkAction => {
           version: METASTREAM_NETWORK_VERSION,
           name: getLocalUsername(state),
           color: getLocalColor(state),
-          avatar: state.settings.avatar,
+          avatar: getLocalAvatar(state),
           secret
         })
       )

@@ -16,6 +16,7 @@ import { AvatarRegistry } from '../services/avatar'
 import { DEFAULT_LANGUAGE } from 'locale'
 import { ChatLocation } from '../components/chat/Location'
 import { AccountService, MetastreamUserTier } from 'account/account'
+import { localUserId } from 'network'
 
 export const enum SessionMode {
   /** Open to connections. */
@@ -104,9 +105,7 @@ export const getLocalSessionMode = (state: IAppState) => state.settings.sessionM
 
 export const getLocalAvatar = (state: IAppState) => {
   const { avatar } = state.settings
-  if (avatar) {
-    return avatar
-  }
+  return avatar || `uid:${localUserId()}`
 }
 
 export const resolveLocalAvatar = (state: IAppState) => {

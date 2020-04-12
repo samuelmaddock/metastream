@@ -2,6 +2,7 @@ import { assetUrl } from 'utils/appUrl'
 
 interface AvatarType {
   name: string
+  order: number
   resolver: (...args: string[]) => string | undefined
 }
 
@@ -40,7 +41,7 @@ export class AvatarRegistry implements ArrayLike<AvatarEntry> {
     return avatarRegistry
   }
 
-  private types: Map<AvatarType['name'], AvatarType['resolver']> = new Map()
+  private types: Map<AvatarType['name'], AvatarType> = new Map()
   private avatars: AvatarEntry[] = []
 
   readonly [n: number]: AvatarEntry
@@ -51,19 +52,23 @@ export class AvatarRegistry implements ArrayLike<AvatarEntry> {
   private constructor() {}
 
   /** Register avatar type. */
-  registerType(name: AvatarType['name'], resolver: AvatarType['resolver']): void {
-    this.types.set(name, resolver)
+  registerType(
+    name: AvatarType['name'],
+    resolver: AvatarType['resolver'],
+    order: AvatarType['order'] = 0
+  ): void {
+    this.types.set(name, { name, resolver, order })
   }
 
   /** Register avatar. */
   register(avatar: RawAvatarEntry): AvatarEntry {
-    const resolver = this.types.get(avatar.type)
+    const avatarType = this.types.get(avatar.type)
 
-    if (!resolver) {
+    if (!avatarType) {
       throw new Error(`Attempt to register avatar with unknown type '${avatar.type}'`)
     }
 
-    const src = resolver(...avatar.params)
+    const src = avatarType.resolver(...avatar.params)
     if (!src) {
       throw new Error(`Attempt to register avatar with invalid params '${avatar.params.join(',')}'`)
     }
@@ -71,6 +76,7 @@ export class AvatarRegistry implements ArrayLike<AvatarEntry> {
     const uri = `${avatar.type}:${avatar.params.join(',')}`
     const entry = { ...avatar, uri, src }
     this.avatars.push(entry)
+    this.sort()
     return entry
   }
 
@@ -79,12 +85,12 @@ export class AvatarRegistry implements ArrayLike<AvatarEntry> {
     const [typeName, _params] = uri.split(':')
     const params = _params.split(',')
 
-    const resolver = this.types.get(typeName)
-    if (!resolver) {
+    const avatarType = this.types.get(typeName)
+    if (!avatarType) {
       throw new Error(`Attempt to resolve avatar with unknown type '${typeName}'`)
     }
 
-    return resolver(...params)
+    return avatarType.resolver(...params)
   }
 
   getAll(): AvatarEntry[] {
@@ -98,20 +104,60 @@ export class AvatarRegistry implements ArrayLike<AvatarEntry> {
   deleteByURI(uri: string) {
     this.avatars = this.avatars.filter(avatar => avatar.uri !== uri)
   }
+
+  private sort() {
+    this.avatars.sort((a, b) => {
+      const typeA = this.types.get(a.type)!
+      const typeB = this.types.get(b.type)!
+      if (typeA.order > typeB.order) return 1
+      if (typeA.order < typeB.order) return -1
+      return 0
+    })
+  }
+}
+
+const pastelColors = [
+  ['beebe9', 'f4dada', 'ffb6b9', 'f6eec7'], // https://colorhunt.co/palette/172665
+  ['721b65', 'b80d57', 'f8615a', 'ffd868'], // https://colorhunt.co/palette/175336
+  ['b590ca', 'a8d3da', 'f5cab3', 'f3ecb8'], // https://colorhunt.co/palette/175341
+  ['2a1a5e', 'f45905', 'fb9224', 'fbe555'] // https://colorhunt.co/palette/158955
+]
+
+/** Procedurally generate an SVG gradient given a hex string. */
+function generateGradientSvg(hex: string) {
+  const buf = Buffer.from(hex.substr(0, 8), 'hex')
+  const palette = pastelColors[buf.readUInt8(0) % pastelColors.length]
+  const paletteLen = palette.length
+  const startIndex = buf.readUInt8(1) % paletteLen
+  const startColor = palette[startIndex]
+  let endIndex = buf.readUInt8(2) % paletteLen
+  endIndex = startIndex === endIndex ? (endIndex + 1) % paletteLen : endIndex
+  const endColor = palette[endIndex]
+  const rotateDeg = buf.readUInt8(3) % 360
+  return `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 5 5'>
+<linearGradient id='g' gradientTransform='rotate(${rotateDeg} 0.5 0.5)'>
+<stop offset='0%' stop-color='%23${startColor}'/>
+<stop offset='100%' stop-color='%23${endColor}'/>
+</linearGradient>
+<rect fill='url(%23g)' width='5' height='5'/>
+</svg>`
 }
 
 function initAppAvatars() {
   const reg = AvatarRegistry.getInstance()
 
+  reg.registerType(
+    'uid',
+    (hash: string) => {
+      if (typeof hash !== 'string') return 'test'
+      return 'data:image/svg+xml;utf8,' + generateGradientSvg(hash)
+    },
+    -1
+  )
+
   reg.registerType('asset', (fileName: string) => {
     if (fileName && fileName.indexOf('..') > -1) return
     return assetUrl(`avatars/${fileName}`)
-  })
-
-  const localAvatars = ['default.svg']
-
-  localAvatars.forEach(fileName => {
-    reg.register({ type: 'asset', params: [fileName] })
   })
 
   const artistAvatars = [

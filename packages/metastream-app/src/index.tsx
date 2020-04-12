@@ -24,6 +24,7 @@ import { SEC2MS } from 'utils/math'
 import { AccountService } from 'account/account'
 import { sleep } from 'utils/async'
 import { checkExtensionInstall } from 'actions/ui'
+import { AvatarRegistry } from 'services/avatar'
 
 let store: Store<IAppState>
 let history: History
@@ -84,7 +85,14 @@ async function main() {
   }
 
   // Setup libsodium and cryptographic identity
-  await PlatformService.get().ready
+  const platform = PlatformService.get()
+  await platform.ready
+
+  // Register default avatar
+  AvatarRegistry.getInstance().register({
+    type: 'uid',
+    params: [platform.getLocalId().toString()]
+  })
 
   initAnalytics(store, history)
 
