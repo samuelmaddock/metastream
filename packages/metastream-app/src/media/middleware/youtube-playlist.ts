@@ -1,17 +1,6 @@
-import { Url, parse } from 'url'
-import { buildUrl, encodeQueryParams } from 'utils/url'
-import {
-  MediaThumbnailSize,
-  IMediaMiddleware,
-  IMediaRequest,
-  IMediaResponse,
-  MediaType,
-  IMediaContext
-} from '../types'
+import { IMediaMiddleware } from '../types'
 
 const URL_PATTERN = /youtu\.?be(?:.com)?/i
-
-const PLAYLIST_LEN_PATTERN = /"playlist_length":"(\d+)"/i
 
 interface IYouTubePlaylistState {
   title: string
@@ -47,7 +36,17 @@ const mware: IMediaMiddleware = {
         .text()
         .split(' ')[0]
       const len = parseInt(rawLen, 10)
-      if (isNaN(len)) return
+      if (isNaN(len)) {
+        // private playlist
+        // try to remove playlist params from embed
+        try {
+          const embedUrl = new URL(ctx.res.url)
+          embedUrl.searchParams.delete('list')
+          ctx.res.url = embedUrl.href
+        } catch {}
+
+        return ctx.res
+      }
 
       ytpl.length = len
 
