@@ -29,7 +29,7 @@ export default {
   chatTyping1: '<0></0> is typing…',
   chatTyping2: '<0></0> and <2></2> are typing…',
   chatTyping3: '<0></0>, <2></2>, and <4></4> are typing…',
-  chatTypingSeveral: 'Several users are typing…',
+  chatTypingSeveral: 'Several people are typing…',
   chooseDisplayName: 'Choose your display name',
   connecting: 'Connecting',
   continue: 'Continue',
