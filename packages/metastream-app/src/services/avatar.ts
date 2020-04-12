@@ -149,7 +149,7 @@ function initAppAvatars() {
   reg.registerType(
     'uid',
     (hash: string) => {
-      if (typeof hash !== 'string') return 'test'
+      if (typeof hash !== 'string') return
       return 'data:image/svg+xml;utf8,' + generateGradientSvg(hash)
     },
     -1
