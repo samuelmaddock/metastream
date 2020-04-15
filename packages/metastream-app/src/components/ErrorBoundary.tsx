@@ -58,7 +58,7 @@ ${errorInfo ? errorInfo.componentStack : ''}
                 Discord community.
               </ExternalLink>
             </p>
-            <pre>{this.errorText}</pre>
+            <pre className="notranslate">{this.errorText}</pre>
             <p>
               <br />
               To continue, you can try reloading the application. If the problem persists, refer to
