@@ -1,4 +1,4 @@
-import React, { SFC, useState, useEffect } from 'react'
+import React, { SFC, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
 import styles from '../SettingsMenu.css'
 import { TextInput } from 'components/common/input'
@@ -30,21 +30,35 @@ interface IConnectedProps {
 type Props = IProps & IConnectedProps & IReactReduxProps
 
 const ProfileSettings: SFC<Props> = props => {
-  const [usernameInput, setUsernameInput] = useState<HTMLInputElement | null>(null)
-  const [dirty, setDirty] = useState<boolean>(false)
+  const propsRef = useRef<Props>(props)
+  const dirtyRef = useRef<boolean>(false)
+  const usernameInputRef = useRef<HTMLInputElement | null>(null)
+
   const tier = usePatronTier()
+  const tierRef = useRef<MetastreamUserTier>(tier)
 
   useEffect(
     function onTierChange() {
-      // update color on exit
-      setDirty(true)
+      if (tier !== tierRef.current) {
+        // update color on exit
+        dirtyRef.current = true
+
+        tierRef.current = tier
+      }
     },
     [tier]
   )
 
+  useEffect(
+    function saveProps() {
+      propsRef.current = props
+    },
+    [props]
+  )
   useEffect(() => {
     return function componentWillUnmount() {
-      if (dirty) {
+      const { current: props } = propsRef
+      if (dirtyRef.current) {
         props.dispatch(
           server_updateUser({
             name: props.username,
@@ -54,16 +68,16 @@ const ProfileSettings: SFC<Props> = props => {
         )
       }
     }
-  }, [dirty, props])
+  }, [])
 
   // TODO: debounce
   const onChangeUsername = () => {
-    const username = usernameInput && usernameInput.value
+    const username = usernameInputRef.current && usernameInputRef.current.value
     if (!username) return
 
     if (username !== props.username) {
       props.dispatch(setUsername(username))
-      setDirty(true)
+      dirtyRef.current = true
     }
   }
 
@@ -85,7 +99,7 @@ const ProfileSettings: SFC<Props> = props => {
                 selected={avatar.uri === props.avatar}
                 onClick={() => {
                   props.setSetting('avatar', avatar.uri)
-                  setDirty(true)
+                  dirtyRef.current = true
                   ga('event', {
                     ec: 'settings',
                     ea: 'select_avatar',
@@ -113,13 +127,13 @@ const ProfileSettings: SFC<Props> = props => {
       <label htmlFor="profile_username">{t('displayName')}</label>
       <TextInput
         id="profile_username"
-        theRef={e => setUsernameInput(e)}
+        theRef={e => (usernameInputRef.current = e)}
         defaultValue={props.username}
         maxLength={USERNAME_MAX_LEN}
         onChange={onChangeUsername}
         onBlur={e => {
-          if (usernameInput) {
-            usernameInput.value = props.username
+          if (usernameInputRef.current) {
+            usernameInputRef.current.value = props.username
           }
         }}
       />
@@ -140,7 +154,7 @@ const ProfileSettings: SFC<Props> = props => {
           defaultValue={props.color}
           onChange={e => {
             props.dispatch(setColor(e.target!.value))
-            setDirty(true)
+            dirtyRef.current = true
           }}
         />
       </Tooltip>
