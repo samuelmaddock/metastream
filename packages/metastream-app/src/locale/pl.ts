@@ -109,7 +109,7 @@ export default {
   requestUrl: 'Dodaj do sesji',
   requestUrlPlaceholder: '',
   required: 'Wymagane',
-  requiresDJPermissions: 'Poproś o uprawienia DJ'a',
+  requiresDJPermissions: 'Poproś o uprawienia DJ-a',
   requiresPortForward:
     'Wymaga <1>ustawienia przekierowania portów</1> <3>{{port}}</3>, aby akceptować bezpośrednie połączenia.',
   safeBrowse: 'Bezpieczne przeglądanie',
@@ -132,7 +132,7 @@ export default {
   theaterModeDesc:
     'Ukryj wszystkie treści nie-video na stronie. Należy pamiętać, że może to również ukrywać napisy.',
   thirdPartyIntegrations: 'Third-party Integrations',
-  toggleDJ: 'Przełącz DJ'a',
+  toggleDJ: 'Przełącz DJ-a',
   unlimited: 'Nielimitowany',
   unlockQueue: 'Odblokuj kolejkę',
   updateAvailable:
@@ -143,7 +143,7 @@ export default {
   userLeft: '<Username id="{{userId}}">{{username}}</Username> wyszedł.',
   userNameChanged:
     '<Username id="{{userId}}">{{prevName}}</Username> zmienił nazwę na <Username id="{{userId}}">{{name}}</Username>.',
-  viewOnGitHub: 'Zobacz na GitHub'ie',
+  viewOnGitHub: 'Zobacz na GitHub-ie',
   waitingForHost: 'Poczekaj, aż host zaakcpetuje twoje dołączenie.',
   welcome: 'Witaj'
 }
