@@ -131,15 +131,16 @@ function generateGradientSvg(hex: string) {
   const startIndex = buf.readUInt8(1) % paletteLen
   const startColor = palette[startIndex]
   let endIndex = buf.readUInt8(2) % paletteLen
-  endIndex = startIndex === endIndex ? (endIndex + 1) % paletteLen : endIndex
+  endIndex =
+    startIndex === endIndex ? (endIndex + Math.floor(paletteLen / 2)) % paletteLen : endIndex
   const endColor = palette[endIndex]
   const rotateDeg = buf.readUInt8(3) % 360
-  return `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 5 5'>
+  return `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'>
 <linearGradient id='g' gradientTransform='rotate(${rotateDeg} 0.5 0.5)'>
-<stop offset='0%' stop-color='%23${startColor}'/>
-<stop offset='100%' stop-color='%23${endColor}'/>
+  <stop offset='0%' stop-color='%23${startColor}'></stop>
+  <stop offset='100%' stop-color='%23${endColor}'></stop>
 </linearGradient>
-<rect fill='url(%23g)' width='5' height='5'/>
+<circle cx='50%' cy='50%' r='50%' fill='url(%23g)' />
 </svg>`
 }
 
@@ -150,7 +151,9 @@ function initAppAvatars() {
     'uid',
     (hash: string) => {
       if (typeof hash !== 'string') return
-      return 'data:image/svg+xml;utf8,' + generateGradientSvg(hash)
+      const svg = generateGradientSvg(hash)
+      const uri = 'data:image/svg+xml;utf8,' + svg
+      return uri
     },
     -1
   )
