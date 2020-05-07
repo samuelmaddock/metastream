@@ -12,17 +12,33 @@
 
       .container {
         min-height: calc(100vh - var(--tips-height));
+        margin-top: var(--tips-height);
       }
 
       .tips {
+        position: absolute;
+        z-index: 1;
+        width: 100%;
         height: var(--tips-height);
         overflow: hidden;
-        background-color: var(--color-btn);
+        border-bottom: 1px solid var(--color-btn);
+        transition: background-color 100ms ease-out;
       }
 
       .tips--expanded {
         height: auto;
+      }
+
+      .tips:hover, .tips--expanded {
         backdrop-filter: blur(10px);
+        background-color: var(--color-btn);
+      }
+
+      /* fix bad contrast in firefox where backdrop blur isn't supported */
+      @-moz-document url-prefix() {
+        .tips--expanded {
+          background-color: rgba(0, 0, 0, 0.4);
+        }
       }
 
       .tips--expanded svg {
@@ -95,12 +111,10 @@
             the list? Try adding the link anyway!
           </li>
           <li>
-            <span class="emoji-bullet">💲</span> If the website requires an account or subscription,
-            everyone in the session will need one as well.
+            <span class="emoji-bullet">💲</span> Everyone in the session will need an account or subscription if required by a website.
           </li>
           <li>
-            <span class="emoji-bullet">🐛</span> Is a website not working how you'd expect? You can
-            help us out by
+            <span class="emoji-bullet">🐛</span> Is a website not working how you'd expect? Help us out by
             <a
               class="link"
               href="https://github.com/samuelmaddock/metastream/issues"
