@@ -247,7 +247,7 @@ export class WebControls extends Component<IProps, IState> {
 
   private onAddressChange() {
     const url = this.addressUrl
-    const canRequest = !!(url && url.length >= 1)
+    const canRequest = !!(url && url.length >= 1 && !url.startsWith('about:blank'))
     if (canRequest !== this.state.canRequest) {
       this.setState({ canRequest })
 
