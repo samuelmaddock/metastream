@@ -2,6 +2,7 @@ import i18n, { TranslationFunction, Resource } from 'i18next'
 import { reactI18nextModule } from 'react-i18next'
 
 import enUS from './en-US'
+import enGB from './en-GB'
 import deDE from './de-DE'
 import ptBR from './pt-BR'
 import huHU from './hu-HU'
@@ -20,6 +21,7 @@ export const DEFAULT_LANGUAGE = 'en-US'
 
 export const locales = [
   { label: 'English', code: 'en-US', translation: enUS, flag: '🇺🇸' },
+  { label: 'English', code: 'en-GB', translation: enGB, flag: '🇬🇧' },
   { label: 'Español', code: 'es-ES', translation: es, flag: '🇪🇸' },
   { label: 'Français', code: 'fr-FR', translation: frFR, flag: '🇫🇷' },
   { label: 'Italiano', code: 'it-IT', translation: itIT, flag: '🇮🇹' },
