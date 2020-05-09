@@ -11,7 +11,7 @@ import { IconButton } from '../common/button'
 import { t } from 'locale'
 import { connect } from 'react-redux'
 import { IAppState } from 'reducers/index'
-import { sendChat, server_notifyTyping } from 'lobby/actions/chat'
+import { sendChat, notifyTyping } from 'lobby/actions/chat'
 import { setSetting } from 'actions/settings'
 import { ChatLocation } from './Location'
 import { UserTyping } from './UserTyping'
@@ -264,7 +264,7 @@ export const Chat = connect(
         )
       )
     },
-    notifyTyping: throttle(() => dispatch(server_notifyTyping()), TYPING_DURATION - 500, {
+    notifyTyping: throttle(() => dispatch(notifyTyping()), TYPING_DURATION - 500, {
       trailing: false
     })
   })

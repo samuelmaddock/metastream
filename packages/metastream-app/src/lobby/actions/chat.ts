@@ -1,9 +1,9 @@
 import { actionCreator } from 'utils/redux'
 import { RpcThunk } from 'lobby/types'
-import { getUserName } from 'lobby/reducers/users.helpers'
+import { getUserName, getNumUsers } from 'lobby/reducers/users.helpers'
 import { rpc, RpcRealm } from 'network/middleware/rpc'
-import { IMessage, Typing } from 'lobby/reducers/chat'
-import { CHAT_MAX_MESSAGE_LENGTH } from 'constants/chat'
+import { IMessage } from 'lobby/reducers/chat'
+import { CHAT_MAX_MESSAGE_LENGTH, CHAT_MAX_USERS_TYPING } from 'constants/chat'
 import { AppThunkAction } from 'types/redux-thunk'
 import { t } from 'locale'
 import { isUrl } from 'utils/url'
@@ -93,4 +93,13 @@ const rpcNotifyTyping = (): RpcThunk<void> => (dispatch, getState, context) => {
   const userId = context.client.id.toString()
   dispatch(multi_broadcastTyping(userId))
 }
-export const server_notifyTyping = rpc('rpcNotifyTyping', RpcRealm.Server, rpcNotifyTyping)
+const server_notifyTyping = rpc('rpcNotifyTyping', RpcRealm.Server, rpcNotifyTyping)
+
+export const notifyTyping = (): AppThunkAction => {
+  return async (dispatch, getState) => {
+    const state = getState()
+    const numUsers = getNumUsers(state)
+    if (numUsers > CHAT_MAX_USERS_TYPING) return
+    dispatch(server_notifyTyping())
+  }
+}
