@@ -2,7 +2,7 @@ import { Reducer } from 'redux'
 import { createStructuredSelector } from 'reselect'
 import { isType } from 'utils/redux'
 import { clamp } from 'utils/math'
-import { setVolume, setMute, setUsername, setColor, setSetting } from 'actions/settings'
+import { setVolume, setMute, setUsername, setColor, setSetting, addVolume } from 'actions/settings'
 import {
   USERNAME_MAX_LEN,
   COLOR_LEN,
@@ -75,6 +75,12 @@ export const settings: Reducer<ISettingsState> = (
       ...state,
       mute: false,
       volume: clamp(action.payload, 0, 1)
+    }
+  } else if (isType(action, addVolume)) {
+    return {
+      ...state,
+      mute: false,
+      volume: clamp(state.volume + action.payload, 0, 1)
     }
   } else if (isType(action, setMute)) {
     return {

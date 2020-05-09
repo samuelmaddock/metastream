@@ -3,6 +3,7 @@ import { IAppState } from 'reducers'
 import { server_requestPlayPause, server_requestSeekRelative } from 'lobby/actions/mediaPlayer'
 import { AppThunkAction } from 'types/redux-thunk'
 import { ThunkDispatch } from 'redux-thunk'
+import { addVolume } from 'actions/settings'
 
 const enum HotKeyAction {
   PlayPause,
@@ -26,12 +27,8 @@ type ActionHandler = (dispatch: ThunkDispatch<IAppState, any, any>) => void
 // TODO: clear throttle cooldowns on keyup
 const ActionHandlers: { [key in HotKeyAction]: ActionHandler } = {
   [HotKeyAction.PlayPause]: dispatch => dispatch(server_requestPlayPause()),
-  [HotKeyAction.DecreaseVolume]: dispatch => {
-    /* TODO */
-  },
-  [HotKeyAction.IncreaseVolume]: dispatch => {
-    /* TODO */
-  },
+  [HotKeyAction.DecreaseVolume]: dispatch => dispatch(addVolume(-0.05)),
+  [HotKeyAction.IncreaseVolume]: dispatch => dispatch(addVolume(0.05)),
   // TODO: when held down for awhile, change relative seek to 1 minute, then 5 minutes
   [HotKeyAction.SeekBackward]: dispatch => dispatch(server_requestSeekRelative(-5e3)),
   [HotKeyAction.SeekForward]: dispatch => dispatch(server_requestSeekRelative(5e3))

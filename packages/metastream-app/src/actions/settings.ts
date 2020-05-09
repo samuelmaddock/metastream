@@ -2,6 +2,7 @@ import { actionCreator } from 'utils/redux'
 import { ISettingsState } from '../reducers/settings'
 
 export const setVolume = actionCreator<number>('SET_VOLUME')
+export const addVolume = actionCreator<number>('ADD_VOLUME')
 export const setMute = actionCreator<boolean>('SET_MUTE')
 
 type SettingValueCallback<T> = (value: T) => T
