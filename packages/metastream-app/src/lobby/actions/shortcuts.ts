@@ -45,7 +45,8 @@ function onDocumentKeyDown(
   // Ignore inputs entered while typing (ie. in the chat box)
   const { activeElement } = document
   if (activeElement instanceof HTMLInputElement || activeElement instanceof HTMLTextAreaElement) {
-    return
+    // Continue if we haven't typed anything yet
+    if (activeElement.value.length > 0) return
   }
 
   let hotkey = event.code

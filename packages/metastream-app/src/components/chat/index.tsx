@@ -220,11 +220,6 @@ export class ChatComponent extends PureComponent<PrivateProps, State> {
   }
 
   private onKeyDown = (event: KeyboardEvent): void => {
-    if (this.state.focused) {
-      // Prevent activity monitor from revealing UI
-      event.stopImmediatePropagation()
-    }
-
     switch (event.key) {
       case 'Enter':
         if (!this.state.focused) {
@@ -234,6 +229,7 @@ export class ChatComponent extends PureComponent<PrivateProps, State> {
         break
       case 'Escape':
         if (this.state.focused && this.form) {
+          event.stopImmediatePropagation()
           event.preventDefault()
           this.form.dismiss()
         }

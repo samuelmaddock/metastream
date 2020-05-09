@@ -49,7 +49,12 @@ export class ActivityMonitor extends Component<IProps> {
     this.activityTimeoutId = undefined
   }
 
-  private onActivity = (): void => {
+  private onActivity = (event?: Event): void => {
+    // Ignore chat activity
+    if (event instanceof KeyboardEvent && document.activeElement instanceof HTMLInputElement) {
+      return
+    }
+
     this.active = true
 
     if (this.activityTimeoutId) {
