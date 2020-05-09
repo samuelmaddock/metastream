@@ -33,10 +33,10 @@ export class MediaSessionObserver implements SessionObserver {
       const { media, users, playback } = state
 
       const startTimestamp =
-        media && playback === PlaybackState.Playing
-          ? Math.floor((state.startTime || Date.now()) / 1000)
-          : undefined
-      const currentTime = startTimestamp ? Math.max(0, Date.now() - startTimestamp) : 0
+        media && playback === PlaybackState.Playing ? state.startTime || Date.now() : undefined
+      const currentTime = Math.floor(
+        startTimestamp ? Math.max(0, Date.now() - startTimestamp) / 1000 : 0
+      )
 
       mediaSession.playbackState = playback === PlaybackState.Playing ? 'playing' : 'paused'
 
@@ -56,7 +56,7 @@ export class MediaSessionObserver implements SessionObserver {
       mediaSession.metadata = new window.MediaMetadata(metadata)
 
       if (typeof mediaSession.setPositionState === 'function') {
-        const duration = (media && media.duration) || Number.POSITIVE_INFINITY
+        const duration = (media && media.duration) || 0
         mediaSession.setPositionState({
           duration,
           playbackRate: 1,
