@@ -57,11 +57,16 @@ export class MediaSessionObserver implements SessionObserver {
 
       if (typeof mediaSession.setPositionState === 'function') {
         const duration = (media && media.duration) || 0
-        mediaSession.setPositionState({
-          duration,
-          playbackRate: 1,
-          position: currentTime
-        })
+        const position = currentTime
+        const positionState =
+          position > duration
+            ? null
+            : {
+                duration,
+                playbackRate: 1,
+                position: currentTime
+              }
+        mediaSession.setPositionState(positionState)
       }
     } else {
       mediaSession.playbackState = 'none'
