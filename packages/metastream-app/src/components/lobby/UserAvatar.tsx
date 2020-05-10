@@ -31,7 +31,10 @@ export class UserAvatar extends Component<IProps> {
   }
 
   private requestAvatar(avatarUri?: string) {
-    const src = avatarUri && AvatarRegistry.getInstance().resolve(avatarUri)
+    let src: string | undefined
+    try {
+      src = avatarUri && AvatarRegistry.getInstance().resolve(avatarUri)
+    } catch {}
     if (!src) return
     let img = new Image()
     img.onload = () => this.setState({ src })
