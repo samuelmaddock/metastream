@@ -3,13 +3,7 @@ import { addUser } from 'lobby/middleware/users'
 import { RpcThunk } from 'lobby/types'
 import { multi_userJoined, client_kick } from 'lobby/actions/users'
 import { rpc, RpcRealm } from 'network/middleware/rpc'
-import {
-  getUser,
-  getNumUsers,
-  isAdmin,
-  findUserByName,
-  getUniqueName
-} from 'lobby/reducers/users.helpers'
+import { getUser, getNumUsers, isAdmin, getUniqueName } from 'lobby/reducers/users.helpers'
 import {
   getLocalUsername,
   getLocalColor,
@@ -17,7 +11,6 @@ import {
   SessionMode,
   getLocalAvatar
 } from 'reducers/settings'
-import { USERNAME_MAX_LEN, COLOR_LEN } from 'constants/settings'
 import { getMaxUsers, ConnectionStatus } from '../reducers/session'
 import { NetworkDisconnectReason, METASTREAM_NETWORK_VERSION } from 'constants/network'
 import { setAuthorized, setConnectionStatus, setDisconnectReason } from './session'
@@ -28,12 +21,7 @@ import { actionCreator } from 'utils/redux'
 import { AppThunkAction } from 'types/redux-thunk'
 import { parseQuery } from 'utils/url'
 import { translateEscaped } from 'locale'
-import {
-  validateDisplayName,
-  validateColor,
-  validateAvatar,
-  getValidAvatar
-} from './user-validation'
+import { validateDisplayName, validateColor, validateAvatar } from './user-validation'
 
 export type ClientProfile = {
   name: string
@@ -177,13 +165,12 @@ const initClient = (info: ClientInitRequest): RpcThunk<ClientInitResponse | void
   const shouldAwaitAuthorization = sessionMode === SessionMode.Private ? secretMismatch : false
 
   const name = getUniqueName(state, info.name)
-  const avatar = getValidAvatar(info.avatar)
 
   dispatch(
     addUser({
       conn: client,
       name,
-      avatar,
+      avatar: info.avatar,
       color: info.color,
       pending: shouldAwaitAuthorization
     })

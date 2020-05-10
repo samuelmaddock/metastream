@@ -8,12 +8,7 @@ import { setDisconnectReason } from './session'
 import { UserRole, IUserInvite } from '../reducers/users'
 import { translateEscaped } from 'locale'
 import { ClientProfile } from './user-init'
-import {
-  validateDisplayName,
-  validateColor,
-  validateAvatar,
-  getValidAvatar
-} from './user-validation'
+import { validateDisplayName, validateColor, validateAvatar } from './user-validation'
 import { cleanObject } from '../../utils/object'
 import { addChat } from './chat'
 
@@ -128,7 +123,7 @@ const requestUpdateUser = (newProfile: Partial<ClientProfile>): RpcThunk<void> =
   }
 
   if (avatar && validateAvatar(avatar) && avatar !== user.avatar) {
-    nextAvatar = getValidAvatar(avatar)
+    nextAvatar = avatar
   }
 
   if (nextName || nextColor || nextAvatar) {

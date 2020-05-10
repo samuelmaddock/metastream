@@ -4,12 +4,7 @@ import { localUser, NetConnection, NetServer } from 'network'
 import { NetMiddlewareOptions, NetActions } from 'network/actions'
 import { multi_userLeft } from '../actions/users'
 import { initialize } from 'lobby/actions/user-init'
-import {
-  getLocalUsername,
-  getLocalColor,
-  getLocalAvatar,
-  resolveLocalAvatar
-} from '../../reducers/settings'
+import { getLocalUsername, getLocalColor, getLocalAvatar } from '../../reducers/settings'
 import { IAppState } from '../../reducers'
 import { initLobby } from '../actions/common'
 
@@ -53,7 +48,7 @@ export const usersMiddleware = (): Middleware => {
           conn: localUser(),
           host: true,
           name: getLocalUsername(state),
-          avatar: resolveLocalAvatar(state),
+          avatar: getLocalAvatar(state),
           color: getLocalColor(state)
         })
       )

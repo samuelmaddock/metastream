@@ -95,7 +95,7 @@ const ProfileSettings: SFC<Props> = props => {
             .map((avatar, idx) => (
               <UserAvatar
                 key={idx}
-                avatar={avatar.src}
+                avatar={avatar.uri}
                 selected={avatar.uri === props.avatar}
                 onClick={() => {
                   props.setSetting('avatar', avatar.uri)

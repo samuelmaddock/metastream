@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import cx from 'classnames'
 import { assetUrl } from 'utils/appUrl'
 import styles from './UserAvatar.css'
+import { AvatarRegistry } from 'services/avatar'
 
 interface IProps {
   className?: string
@@ -20,9 +21,7 @@ export class UserAvatar extends Component<IProps> {
   state: IState = {}
 
   componentWillMount(): void {
-    if (this.props.avatar) {
-      this.requestAvatar(this.props.avatar)
-    }
+    this.requestAvatar(this.props.avatar)
   }
 
   componentWillReceiveProps(nextProps: IProps): void {
@@ -31,7 +30,9 @@ export class UserAvatar extends Component<IProps> {
     }
   }
 
-  private requestAvatar(src: string) {
+  private requestAvatar(avatarUri?: string) {
+    const src = avatarUri && AvatarRegistry.getInstance().resolve(avatarUri)
+    if (!src) return
     let img = new Image()
     img.onload = () => this.setState({ src })
     img.src = src
