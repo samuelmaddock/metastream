@@ -140,7 +140,7 @@ function generateGradientSvg(hex: string) {
   <stop offset='0%' stop-color='%23${startColor}'></stop>
   <stop offset='100%' stop-color='%23${endColor}'></stop>
 </linearGradient>
-<circle cx='50%' cy='50%' r='50%' fill='url(%23g)' />
+<rect width='100%' height='100%' fill='url(%23g)' />
 </svg>`
 }
 

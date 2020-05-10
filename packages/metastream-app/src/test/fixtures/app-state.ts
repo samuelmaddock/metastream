@@ -65,7 +65,7 @@ export const INITIAL_TEST_APP_STATE: IAppState = {
     theaterMode: false,
     safeBrowse: true,
     username: 'sam',
-    avatar: '"asset:default.svg',
+    avatar: 'asset:default.svg',
     color: '#7cfcc6',
     maxUsers: 0
   },

@@ -12,7 +12,6 @@ import {
 } from 'constants/settings'
 import { IAppState } from '.'
 import { stripEmoji } from 'utils/string'
-import { AvatarRegistry } from '../services/avatar'
 import { DEFAULT_LANGUAGE } from 'locale'
 import { ChatLocation } from '../components/chat/Location'
 import { AccountService, MetastreamUserTier } from 'account/account'
@@ -112,17 +111,6 @@ export const getLocalSessionMode = (state: IAppState) => state.settings.sessionM
 export const getLocalAvatar = (state: IAppState) => {
   const { avatar } = state.settings
   return avatar || `uid:${localUserId()}`
-}
-
-export const resolveLocalAvatar = (state: IAppState) => {
-  const avatar = getLocalAvatar(state)
-  let src
-  if (avatar) {
-    try {
-      src = AvatarRegistry.getInstance().resolve(avatar)
-    } catch {}
-  }
-  return src
 }
 
 export interface PlayerSettings {
