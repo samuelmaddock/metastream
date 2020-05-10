@@ -91,7 +91,11 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
   }
 
   componentDidUpdate(prevProps: PrivateProps) {
-    if (this.props.modal && this.props.modal !== prevProps.modal) {
+    if (
+      this.props.modal &&
+      this.props.modal !== prevProps.modal &&
+      this.props.modal !== this.state.modal
+    ) {
       this.openModal(this.props.modal)
     }
     this.checkPendingMedia()
