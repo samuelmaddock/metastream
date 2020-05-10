@@ -35,7 +35,8 @@ const SAFE_HOSTS = new Set([
   'www.plex.tv',
   'app.plex.tv',
   'www.nicovideo.jp',
-  'i.imgur.com'
+  'i.imgur.com',
+  'www.disneyplus.com'
 ])
 
 let safeBrowse: SafeBrowse | undefined
