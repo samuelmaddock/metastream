@@ -16,8 +16,10 @@ class NetServer extends EventEmitter implements INetServerEvents {
   isHost: boolean
 
   connected: boolean
+
   private connections: Map<string, NetConnection> = new Map()
   private coordinators: PeerCoordinator[] = []
+  private closing: boolean = false
 
   constructor(opts: INetServerOptions) {
     super()
@@ -82,6 +84,8 @@ class NetServer extends EventEmitter implements INetServerEvents {
   }
 
   close(): void {
+    this.closing = true
+
     this.forEachClient(conn => conn.close())
     this.connections.clear()
 
@@ -96,6 +100,8 @@ class NetServer extends EventEmitter implements INetServerEvents {
       this.emit('close')
       this.connected = false
     }
+
+    this.closing = false
   }
 
   private receive(conn: NetConnection, data: Buffer) {
@@ -103,6 +109,7 @@ class NetServer extends EventEmitter implements INetServerEvents {
   }
 
   send(data: Buffer): void {
+    if (this.closing) return
     this.forEachClient(conn => {
       if (conn.isAuthed()) {
         conn.send(data)
@@ -111,6 +118,7 @@ class NetServer extends EventEmitter implements INetServerEvents {
   }
 
   sendTo(clientId: string, data: Buffer): void {
+    if (this.closing) return
     const conn = this.getClientById(clientId)
     if (conn) {
       conn.send(data)
