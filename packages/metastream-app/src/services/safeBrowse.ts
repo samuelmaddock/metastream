@@ -15,6 +15,7 @@ const SAFE_HOSTS = new Set([
   'w.soundcloud.com',
   'www.amazon.com',
   'www.twitch.tv',
+  'player.twitch.tv',
   'clips.twitch.tv',
   'drive.google.com',
   'www.dailymotion.com',
