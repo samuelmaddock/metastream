@@ -207,6 +207,12 @@ const onHeadersReceived = details => {
             // Chrome applies SameSite=Lax by default so avoid this by being explicit
             headers[i].value += '; SameSite=None'
           }
+
+          // SameSite=None requires Secure
+          if (!value.includes('Secure')) {
+            headers[i].value += '; Secure'
+          }
+
           break
         }
       }
