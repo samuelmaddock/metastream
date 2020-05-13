@@ -27,13 +27,10 @@ module.exports = {
     rules: [
       {
         test: /\.tsx?$/,
-        exclude: /node_modules/,
         use: {
-          loader: 'awesome-typescript-loader',
+          loader: 'ts-loader',
           options: {
-            silent: true,
-            useBabel: false,
-            useCache: process.env.NODE_ENV === 'development'
+            onlyCompileBundledFiles: true
           }
         }
       },

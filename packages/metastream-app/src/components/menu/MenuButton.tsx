@@ -6,6 +6,7 @@ import styles from './MenuButton.css'
 import { Link } from 'react-router-dom'
 
 interface IProps {
+  id?: string
   children?: ReactNode
   className?: string
   icon?: string

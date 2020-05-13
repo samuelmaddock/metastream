@@ -5,6 +5,7 @@ import styles from './ListOverlay.css'
 import Menu from '@material-ui/core/Menu'
 
 interface IProps<T> {
+  id: string
   className?: string
   title?: string
   tagline?: string
@@ -24,6 +25,7 @@ export class ListOverlay<T = any> extends Component<IProps<T>, IState<T>> {
   render(): JSX.Element | null {
     return (
       <div
+        id={this.props.id}
         className={cx(this.props.className, styles.container, {
           [styles.active]: !!this.state.menuAnchorEl
         })}

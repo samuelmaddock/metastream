@@ -12,6 +12,7 @@ import { t } from 'locale'
 
 interface IProps {
   name: string
+  user?: IUser
   avatar?: string
   avatarBadge?: string
 
@@ -71,7 +72,7 @@ export class UserItem extends Component<IProps, IState> {
     }
 
     return (
-      <figure className={styles.container}>
+      <figure className={styles.container} data-user={this.props.user && this.props.user.id}>
         <UserAvatar
           className={styles.avatar}
           avatar={this.props.avatar}

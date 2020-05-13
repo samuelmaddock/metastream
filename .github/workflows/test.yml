@@ -30,7 +30,13 @@ jobs:
       run: |
         yarn build
 
-    - name: Run unit tests
+    - name: Run tests
       working-directory: ./packages/metastream-app
       run: |
         yarn test
+
+    - name: Archive screenshots
+      uses: actions/upload-artifact@v2
+      with:
+        name: screenshots
+        path: packages/metastream-app/test/artifacts/*.jpg

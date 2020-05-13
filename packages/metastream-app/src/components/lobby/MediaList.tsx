@@ -61,6 +61,7 @@ class _MediaList extends Component<Props> {
     return (
       <ListOverlay
         ref={(e: any) => (this.listOverlay = e)}
+        id="mediaqueue"
         className={this.props.className}
         title={t('nextUp')}
         tagline={this.props.mediaQueue.length ? `${this.props.mediaQueue.length}` : undefined}

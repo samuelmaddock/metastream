@@ -83,6 +83,7 @@ class _UserList extends Component<Props> {
     return (
       <ListOverlay
         ref={(e: any) => (this.listOverlay = e)}
+        id="userlist"
         className={this.props.className}
         title={t('users')}
         tagline={this.userSlots}

@@ -67,17 +67,22 @@ class Home extends Component<IProps> {
         <section className={styles.nav}>
           <ul>
             <li>
-              <MenuButton to={`/join/${localUserId()}`} className={styles.btn} icon="play">
+              <MenuButton
+                id="startsession"
+                to={`/join/${localUserId()}`}
+                className={styles.btn}
+                icon="play"
+              >
                 {t('startSession')}
               </MenuButton>
             </li>
             <li>
-              <MenuButton to="/join" className={styles.btn} icon="globe">
+              <MenuButton id="joinsession" to="/join" className={styles.btn} icon="globe">
                 {t('joinSession')}
               </MenuButton>
             </li>
             <li>
-              <MenuButton to="/settings" className={styles.btn} icon="settings">
+              <MenuButton id="settings" to="/settings" className={styles.btn} icon="settings">
                 {t('settings')}
               </MenuButton>
             </li>

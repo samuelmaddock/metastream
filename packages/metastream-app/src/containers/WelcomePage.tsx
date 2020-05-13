@@ -86,7 +86,7 @@ class WelcomePage extends Component<Props> {
             divider={false}
           />
 
-          <MenuButton icon="check-circle" onClick={submit}>
+          <MenuButton id="getstarted" icon="check-circle" onClick={submit}>
             {t('getStarted')}
           </MenuButton>
         </form>
