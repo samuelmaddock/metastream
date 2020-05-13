@@ -1,6 +1,5 @@
 import { combineReducers } from 'redux'
-import { routerReducer as router, RouterState } from 'react-router-redux'
-import { Reducer } from 'redux'
+import { connectRouter, RouterState } from 'connected-react-router'
 import { merge } from 'lodash-es'
 
 import { settings, ISettingsState } from './settings'
@@ -15,6 +14,7 @@ import { usersReplicatedState } from '../lobby/reducers/users'
 import { sessionReplicatedState } from 'lobby/reducers/session'
 import { isType } from 'utils/redux'
 import { reduceChange } from './deepDiff'
+import { History } from 'history'
 
 export interface IAppState extends ILobbyNetState {
   settings: ISettingsState
@@ -28,26 +28,28 @@ export const AppReplicatedState: ReplicatedState<IAppState> = {
   users: usersReplicatedState
 }
 
-const rootReducer = combineReducers<IAppState>({
-  router: router as Reducer<any>,
-  ...lobbyReducers,
-  settings,
-  ui
-})
+export const createReducer = (history: History) => {
+  const rootReducer = combineReducers<IAppState>({
+    router: connectRouter(history),
+    ...lobbyReducers,
+    settings,
+    ui
+  })
 
-const reducer = (state: IAppState, action: AnyAction): IAppState => {
-  if (isType(action, netApplyFullUpdate)) {
-    return merge({}, state, action.payload)
-  } else if (isType(action, netApplyUpdate)) {
-    const diffs = action.payload
-    let newState = state
-    for (let i = 0; i < diffs.length; i++) {
-      newState = reduceChange(newState, diffs[i])
+  const reducer = (state: IAppState, action: AnyAction): IAppState => {
+    if (isType(action, netApplyFullUpdate)) {
+      return merge({}, state, action.payload)
+    } else if (isType(action, netApplyUpdate)) {
+      const diffs = action.payload
+      let newState = state
+      for (let i = 0; i < diffs.length; i++) {
+        newState = reduceChange(newState, diffs[i])
+      }
+      return newState
     }
-    return newState
+
+    return rootReducer(state, action)
   }
 
-  return rootReducer(state, action)
+  return reducer
 }
-
-export default reducer

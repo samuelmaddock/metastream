@@ -1,4 +1,4 @@
-import { Store } from 'react-redux'
+import { Store } from 'redux'
 import { PersistedState } from 'redux-persist'
 
 import { GA_HOST, GA_HEARTBEAT_INTERVAL } from 'constants/analytics'

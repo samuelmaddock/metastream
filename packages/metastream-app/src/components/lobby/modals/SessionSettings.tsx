@@ -221,4 +221,4 @@ export default connect(
       settings: state.settings
     }
   }
-)(SessionSettings) as React.ComponentClass<IProps>
+)(SessionSettings)

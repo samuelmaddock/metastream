@@ -3,9 +3,9 @@ import { connect } from 'react-redux'
 import { RouteComponentProps } from 'react-router'
 
 import { SessionJoin } from '../components/SessionJoin'
-import { push } from 'react-router-redux'
+import { push } from 'connected-react-router'
 import { IReactReduxProps } from 'types/redux-thunk'
-import { formatSessionPath } from 'utils/network';
+import { formatSessionPath } from 'utils/network'
 
 interface IProps extends RouteComponentProps<void> {}
 
@@ -23,4 +23,4 @@ class _SessionJoinPage extends Component<PrivateProps> {
   }
 }
 
-export const SessionJoinPage = connect()(_SessionJoinPage) as React.ComponentClass<IProps>
+export const SessionJoinPage = connect()(_SessionJoinPage)

@@ -1,28 +1,26 @@
-import React, { Component } from 'react'
+import React, { SFC, useEffect } from 'react'
 import { UpdateService } from '../services/updater'
-import { connect } from 'react-redux'
-import { IReactReduxProps } from '../types/redux-thunk'
+import { useDispatch } from 'react-redux'
 import { setUpdateState } from '../actions/ui'
 
-type Props = IReactReduxProps
+const App: SFC = props => {
+  const dispatch = useDispatch()
 
-class App extends Component<Props> {
-  componentDidMount() {
-    UpdateService.getInstance().on('update', this.onUpdate)
-    UpdateService.getInstance().checkForUpdate(3000)
-  }
+  useEffect(function componentDidMount() {
+    function onAppUpdate() {
+      dispatch(setUpdateState(true))
+    }
 
-  componentWillUnmount() {
-    UpdateService.getInstance().removeListener('update', this.onUpdate)
-  }
+    const updater = UpdateService.getInstance()
+    updater.on('update', onAppUpdate)
+    updater.checkForUpdate(3000)
 
-  private onUpdate = () => {
-    this.props.dispatch(setUpdateState(true))
-  }
+    return function componentWillUnmount() {
+      updater.removeListener('update', onAppUpdate)
+    }
+  })
 
-  render() {
-    return <div className="app">{this.props.children}</div>
-  }
+  return <div className="app">{props.children}</div>
 }
 
-export default connect()(App)
+export default App

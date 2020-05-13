@@ -130,4 +130,4 @@ export class _WebBrowser extends Component<PrivateProps> {
   }
 }
 
-export const WebBrowser = connect()(_WebBrowser) as React.ComponentClass<IProps>
+export const WebBrowser = connect()(_WebBrowser)

@@ -1,8 +1,8 @@
 import { createMemoryHistory } from 'history'
-import { routerMiddleware } from 'react-router-redux'
+import { routerMiddleware } from 'connected-react-router'
 import { applyMiddleware, compose, createStore, Middleware, DeepPartial } from 'redux'
 import thunk from 'redux-thunk'
-import rootReducer, { IAppState } from '../reducers'
+import { createReducer, IAppState } from '../reducers'
 
 const history = createMemoryHistory()
 
@@ -24,6 +24,7 @@ export const configureTestStore = (opts: Options = {}) => {
   const enhancer = compose(...enhancers)
 
   // Create Store
+  const rootReducer = createReducer(history)
   const store = createStore(rootReducer as any, opts.initialState || {}, enhancer as any)
 
   return store

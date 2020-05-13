@@ -176,4 +176,4 @@ export default connect(
       color: getLocalColor(state)
     }
   }
-)(ProfileSettings) as React.ComponentClass<IProps>
+)(ProfileSettings)

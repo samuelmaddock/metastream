@@ -14,7 +14,7 @@ import { ISettingsState } from '../reducers/settings'
 import { TextInput } from '../components/common/input'
 import { USERNAME_MAX_LEN } from 'constants/settings'
 import { MenuHeader } from '../components/menu/MenuHeader'
-import { replace } from 'react-router-redux'
+import { replace } from 'connected-react-router'
 import { setUsername, setSetting } from '../actions/settings'
 import { PRODUCT_NAME } from 'constants/app'
 import { IReactReduxProps } from '../types/redux-thunk'
@@ -22,7 +22,7 @@ import { IReactReduxProps } from '../types/redux-thunk'
 interface IProps extends RouteComponentProps<any> {}
 
 interface IConnectedProps {
-  location: Location | null
+  location: Location
   settings: ISettingsState
 }
 
@@ -99,7 +99,7 @@ export default connect(
   (state: IAppState): IConnectedProps => {
     const { location } = state.router
     return {
-      location,
+      location: location!,
       settings: state.settings
     }
   }

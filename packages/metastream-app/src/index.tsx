@@ -7,7 +7,7 @@ import React from 'react'
 import { render } from 'react-dom'
 import { AppContainer } from 'react-hot-loader'
 import { History } from 'history'
-import { Store } from 'react-redux'
+import { Store } from 'redux'
 import { IAppState } from 'reducers'
 import { Persistor } from 'redux-persist'
 

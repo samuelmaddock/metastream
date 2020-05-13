@@ -1,11 +1,11 @@
 import { createHashHistory } from 'history'
-import { routerActions, routerMiddleware } from 'react-router-redux'
+import { routerActions, routerMiddleware } from 'connected-react-router'
 import { applyMiddleware, compose, createStore } from 'redux'
 import { createLogger } from 'redux-logger'
 import { persistReducer, persistStore } from 'redux-persist'
 import thunk from 'redux-thunk'
 import appMiddleware from 'store/appMiddleware'
-import rootReducer from '../reducers'
+import { createReducer } from '../reducers'
 import persistConfig from './persistStore'
 import { ConfigureStoreOptions } from './types'
 
@@ -35,7 +35,7 @@ const configureStore = (opts: ConfigureStoreOptions) => {
   middleware.push(router)
 
   // Persist Middleware
-  const persistedReducer = persistReducer<any, any>(persistConfig, rootReducer)
+  const persistedReducer = persistReducer<any, any>(persistConfig, createReducer(history))
 
   // Redux DevTools Configuration
   const actionCreators = {

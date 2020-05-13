@@ -287,6 +287,4 @@ class _PlaybackControls extends Component<PrivateProps> {
   }
 }
 
-export const PlaybackControls = connect(mapStateToProps)(_PlaybackControls) as React.ComponentClass<
-  IProps
->
+export const PlaybackControls = connect(mapStateToProps)(_PlaybackControls)

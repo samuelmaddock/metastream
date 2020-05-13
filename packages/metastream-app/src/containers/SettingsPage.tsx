@@ -39,4 +39,4 @@ class _SettingsPage extends Component<PrivateProps, State> {
   }
 }
 
-export const SettingsPage = connect()(_SettingsPage) as React.ComponentClass<IProps>
+export const SettingsPage = connect()(_SettingsPage)

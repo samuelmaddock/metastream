@@ -9,7 +9,7 @@ import { PlatformService } from 'platform'
 import { NetServer, localUserId } from 'network'
 import { NetActions } from 'network/actions'
 import { ReplicatedState } from 'network/types'
-import { push } from 'react-router-redux'
+import { push } from 'connected-react-router'
 import {
   NetworkDisconnectReason,
   NetworkDisconnectMessages,

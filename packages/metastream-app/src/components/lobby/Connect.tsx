@@ -33,4 +33,4 @@ class _Connect extends Component<PrivateProps> {
   }
 }
 
-export const Connect = connect()(_Connect) as React.ComponentClass<IProps>
+export const Connect = connect()(_Connect)

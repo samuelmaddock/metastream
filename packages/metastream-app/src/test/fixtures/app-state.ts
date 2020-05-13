@@ -10,7 +10,8 @@ export const INITIAL_TEST_APP_STATE: IAppState = {
       search: '',
       hash: '',
       state: {}
-    }
+    },
+    action: 'PUSH'
   },
   chat: {
     messages: [],

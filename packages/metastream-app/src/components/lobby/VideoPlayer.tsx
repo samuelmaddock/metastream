@@ -547,6 +547,4 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
 }
 
 export type VideoPlayer = _VideoPlayer
-export const VideoPlayer = connect(mapStateToProps)(_VideoPlayer as any) as React.ComponentClass<
-  IProps
->
+export const VideoPlayer = connect(mapStateToProps)(_VideoPlayer)
