@@ -18,6 +18,7 @@ import { replace } from 'connected-react-router'
 import { setUsername, setSetting } from '../actions/settings'
 import { PRODUCT_NAME } from 'constants/app'
 import { IReactReduxProps } from '../types/redux-thunk'
+import { LanguageSetting } from 'components/settings/Language'
 
 interface IProps extends RouteComponentProps<any> {}
 
@@ -51,7 +52,7 @@ class WelcomePage extends Component<Props> {
             submit()
           }}
         >
-          <MenuHeader text={`Welcome to ${PRODUCT_NAME}`} />
+          <MenuHeader text={t('welcomeToMetastream')} />
 
           <div className={styles.formControl}>
             <label htmlFor="profile_username">{t('chooseDisplayName')}</label>
@@ -74,6 +75,10 @@ class WelcomePage extends Component<Props> {
               }}
               autoFocus
             />
+          </div>
+
+          <div className={styles.formControl}>
+            <LanguageSetting />
           </div>
 
           <SwitchOption

@@ -145,5 +145,6 @@ export default {
     '<Username id="{{userId}}">{{prevName}}</Username> is now known as <Username id="{{userId}}">{{name}}</Username>.',
   viewOnGitHub: 'View on GitHub',
   waitingForHost: 'Waiting for host to allow connection',
-  welcome: 'Welcome'
+  welcome: 'Welcome',
+  welcomeToMetastream: 'Welcome to Metastream'
 }
