@@ -1,3 +1,4 @@
+const { promises: fs } = require('fs')
 const path = require('path')
 const { setup: setupServer, teardown: teardownServer } = require('jest-dev-server')
 
