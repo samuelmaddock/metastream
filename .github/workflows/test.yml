@@ -25,6 +25,11 @@ jobs:
       run: |
         yarn install
 
+    - name: Build signal server
+      working-directory: ./packages/metastream-signal-server
+      run: |
+        yarn build
+
     - name: Run unit tests
       working-directory: ./packages/metastream-app
       run: |
