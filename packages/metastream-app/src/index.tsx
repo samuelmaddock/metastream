@@ -54,10 +54,19 @@ function extensionInstalled() {
   store.dispatch(checkExtensionInstall())
 }
 
+function getInitialState() {
+  const url = new URL(location.href)
+  if (url.searchParams.has('initialState')) {
+    const state = url.searchParams.get('initialState')
+    return state ? JSON.parse(state) : undefined
+  }
+}
+
 async function main() {
   history = cfgStore.history
 
   const storeCfg = cfgStore.configureStore({
+    initialState: process.env.NODE_ENV === 'development' ? getInitialState() : undefined,
     persistCallback: () => {
       const state = store.getState()
       initLocale(state.settings.language)
@@ -66,6 +75,11 @@ async function main() {
 
   store = storeCfg.store
   persistor = storeCfg.persistor
+
+  if (process.env.NODE_ENV === 'development') {
+    // Assign store early for e2e tests
+    Object.assign((window as any).app, { store })
+  }
 
   // setup listeners
   window.addEventListener('message', onMessage, false)

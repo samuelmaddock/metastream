@@ -3,7 +3,7 @@
     "target": "esnext",
     "module": "esnext",
     "lib": ["esnext", "dom"],
-    "types": ["jest", "puppeteer", "expect-puppeteer"],
+    "types": ["jest"],
     "allowJs": true,
     "jsx": "react",
 

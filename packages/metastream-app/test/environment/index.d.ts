@@ -1,14 +1,11 @@
-import { Page, Browser, BrowserContext } from 'puppeteer'
+import { Page, Browser, BrowserContext } from 'playwright-chromium'
 
 interface MetastreamTestUtils {
-  screenshot: (page?: Page) => Promise<void>
-  visit: (pathname: string) => ReturnType<Page['goto']>
+  screenshot: (filename: string, page?: Page) => Promise<void>
+  visit: Page['goto']
   useProfile(): void
 }
 
 declare global {
   const ms: MetastreamTestUtils
-  const browser: Browser
-  const context: BrowserContext
-  const page: Page
 }

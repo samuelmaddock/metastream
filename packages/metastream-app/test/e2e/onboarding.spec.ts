@@ -6,9 +6,8 @@ describe('onboarding', () => {
   it('should show welcome screen on first visit', async () => {
     await page.evaluate(() => localStorage.clear())
     await page.reload()
-    await page.waitForSelector('#profile_username')
     await page.type('#profile_username', 'default')
-    await ms.screenshot()
+    await ms.screenshot('welcome')
     await page.click('#getstarted')
     await page.waitForSelector('#startsession')
   })
