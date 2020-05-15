@@ -33,7 +33,7 @@ class _Disconnect extends Component<IProps> {
         <h1 className={styles.header}>{t('disconnected')}</h1>
         <p className={styles.info}>
           <Icon name="info" />
-          <span>
+          <span id="disconnect_reason">
             {msg}
             {reason === NetworkDisconnectReason.Error && <>&nbsp;</>}
             {reason === NetworkDisconnectReason.Error && (

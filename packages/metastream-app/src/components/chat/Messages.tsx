@@ -73,7 +73,7 @@ export class Messages extends Component<IProps, IState> {
 
     return (
       <div className={styles.chatWrapper}>
-        <ul ref={el => (this.list = el)} className={styles.messages}>
+        <ul id="chat_messages" ref={el => (this.list = el)} className={styles.messages}>
           {messages}
         </ul>
         {this.state.hasNewMessage && (

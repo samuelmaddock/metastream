@@ -5,6 +5,7 @@ import { Icon } from 'components/Icon'
 import Tooltip, { TooltipProps } from '@material-ui/core/Tooltip'
 
 export interface IIconButtonProps {
+  id?: string
   icon: string
   iconSize?: 'small'
 

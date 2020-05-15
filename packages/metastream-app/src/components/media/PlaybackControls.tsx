@@ -31,6 +31,7 @@ import { setPopupPlayer } from 'actions/ui'
 import { PopupWindow } from 'components/Popup'
 
 const Button: React.SFC<{
+  id?: string
   className?: string
   icon: string
   title?: string
@@ -45,6 +46,7 @@ const Button: React.SFC<{
 }> = props => {
   return (
     <IconButton
+      id={props.id}
       icon={props.icon}
       disabled={props.disabled}
       className={cx(props.className, styles.button, {
@@ -180,7 +182,12 @@ class _PlaybackControls extends Component<PrivateProps> {
     )
 
     const settingsBtn = (
-      <Button icon="settings" title={t('settings')} onClick={() => this.props.openSettings()} />
+      <Button
+        id="settings_btn"
+        icon="settings"
+        title={t('settings')}
+        onClick={() => this.props.openSettings()}
+      />
     )
 
     return (

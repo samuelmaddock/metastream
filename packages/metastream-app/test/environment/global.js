@@ -10,14 +10,23 @@ async function setup(jestConfig = {}) {
   } catch {}
 
   if (isCI) {
-    await setupServer({
-      command: 'yarn start',
-      launchTimeout: 120e3,
-      port: 8080,
-      waitOnScheme: {
-        resources: ['http-get://localhost:8080/']
+    await setupServer([
+      {
+        command: 'yarn start',
+        launchTimeout: 120e3,
+        port: 8080,
+        waitOnScheme: {
+          resources: ['http-get://localhost:8080/']
+        }
+      },
+      {
+        command: 'yarn start:signal-server',
+        port: 27064,
+        waitOnScheme: {
+          resources: ['tcp:localhost:27064']
+        }
       }
-    })
+    ])
   }
 }
 

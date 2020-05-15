@@ -52,12 +52,14 @@ export class UserItem extends Component<IProps, IState> {
             className={styles.allowBtn}
             title={t('allow')}
             onClick={() => onApprovalResponse(true)}
+            data-id="allow"
           />
           <IconButton
             icon="x"
             className={styles.disallowBtn}
             title={t('disallow')}
             onClick={() => onApprovalResponse(false)}
+            data-id="disallow"
           />
         </>
       )
@@ -72,7 +74,11 @@ export class UserItem extends Component<IProps, IState> {
     }
 
     return (
-      <figure className={styles.container} data-user={this.props.user && this.props.user.id}>
+      <figure
+        className={styles.container}
+        data-user={this.props.user && this.props.user.id}
+        data-pending={this.props.requestApproval}
+      >
         <UserAvatar
           className={styles.avatar}
           avatar={this.props.avatar}

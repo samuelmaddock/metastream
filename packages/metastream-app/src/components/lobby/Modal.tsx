@@ -32,7 +32,12 @@ export class Modal extends Component<IProps> {
   render(): JSX.Element {
     return (
       <div className={cx(styles.container, this.props.className)}>
-        <IconButton icon="x" className={styles.close} onClick={this.props.onClose} />
+        <IconButton
+          id="modal_close"
+          icon="x"
+          className={styles.close}
+          onClick={this.props.onClose}
+        />
         <div
           className={cx(styles.content, {
             [styles.fill]: this.props.fill

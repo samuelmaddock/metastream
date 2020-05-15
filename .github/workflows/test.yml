@@ -34,6 +34,8 @@ jobs:
       working-directory: ./packages/metastream-app
       run: |
         yarn test
+      env:
+        METASTREAM_SIGNAL_SERVER: ws://localhost:27064
 
     - name: Archive screenshots
       uses: actions/upload-artifact@v2

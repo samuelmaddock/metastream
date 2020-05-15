@@ -91,6 +91,7 @@ class _SettingsMenu extends PureComponent<Props, State> {
     const tabs = menu.map(item => (
       <li
         key={item.value}
+        id={`settings_tab_${item.value}`}
         className={cx(styles.tabItem, { [styles.selectedTab]: item.value === selected.value })}
       >
         <button

@@ -19,6 +19,8 @@ const GIT_COMMIT = childProcess
   .toString()
   .trim()
 
+const dotEnvPlugin = new Dotenv({ silent: true })
+
 module.exports = {
   mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
   target: 'web',
@@ -101,9 +103,13 @@ module.exports = {
   plugins: [
     new webpack.EnvironmentPlugin({
       GIT_BRANCH,
-      GIT_COMMIT
+      GIT_COMMIT,
+      // Allow us to set this in CI
+      METASTREAM_SIGNAL_SERVER:
+        process.env.METASTREAM_SIGNAL_SERVER ||
+        dotEnvPlugin.definitions['process.env.METASTREAM_SIGNAL_SERVER']
     }),
-    new Dotenv({ silent: true }),
+    dotEnvPlugin,
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'src/index.html'),
       meta: {
