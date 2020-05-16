@@ -131,10 +131,9 @@
           <a href="https://www.youtube.com/" class="button social-link" rel="noopener">YouTube</a>
           <a href="https://www.twitch.tv/" class="button social-link" rel="noopener">Twitch</a>
           <a
-            href="./external.html?href=https%3A%2F%2Fwww.netflix.com"
-            class="button social-link"
+            href="https://www.netflix.com"
+            class="button social-link samesite"
             rel="noopener"
-            target="_blank"
             >Netflix</a
           >
           <a href="https://www.hulu.com/" class="button social-link" rel="noopener">Hulu</a>
@@ -156,41 +155,63 @@
     </main>
     <script>
       ;(function() {
+        const isFirefox = navigator.userAgent.toLowerCase().includes('firefox')
+
+        // If opened in its own window, add background
         document.body.classList.toggle('top', window.top === window.self)
 
-        const submitURL = () => {
-          const url = urlInput.value
-          if (url.length === 0) return
-          const nonce = new URLSearchParams(location.search).get('nonce')
-          const message = { type: 'add-to-session', payload: { url, nonce } }
-          window.top.postMessage(message)
+        function setupURLSubmit() {
+          const submitURL = () => {
+            const url = urlInput.value
+            if (url.length === 0) return
+            const nonce = new URLSearchParams(location.search).get('nonce')
+            const message = { type: 'add-to-session', payload: { url, nonce } }
+            window.top.postMessage(message)
+          }
+
+          const urlInput = document.getElementById('urlinput')
+          urlInput.addEventListener(
+            'keydown',
+            event => {
+              if (event.key === 'Enter') {
+                event.preventDefault()
+                submitURL()
+              }
+            },
+            false
+          )
+
+          const addBtn = document.getElementById('addbtn')
+          addBtn.addEventListener('click', submitURL, false)
         }
 
-        const urlInput = document.getElementById('urlinput')
-        urlInput.addEventListener(
-          'keydown',
-          event => {
-            if (event.key === 'Enter') {
-              event.preventDefault()
-              submitURL()
-            }
-          },
-          false
-        )
+        function setupTips() {
+          const tips = document.getElementById('tips')
+          const tipsBtn = document.getElementById('tipsbtn')
+          const toggleTips = () => {
+            const expanded = !tips.classList.contains('tips--expanded')
+            tips.classList.toggle('tips--expanded', expanded)
+            if (!expanded) localStorage.setItem('tipsDismissed', '1')
+          }
+          tipsBtn.addEventListener('click', toggleTips, false)
 
-        const addBtn = document.getElementById('addbtn')
-        addBtn.addEventListener('click', submitURL, false)
-
-        const tips = document.getElementById('tips')
-        const tipsBtn = document.getElementById('tipsbtn')
-        const toggleTips = () => {
-          const expanded = !tips.classList.contains('tips--expanded')
-          tips.classList.toggle('tips--expanded', expanded)
-          if (!expanded) localStorage.setItem('tipsDismissed', '1')
+          if (!localStorage.getItem('tipsDismissed')) tips.classList.add('tips--expanded')
         }
-        tipsBtn.addEventListener('click', toggleTips, false)
 
-        if (!localStorage.getItem('tipsDismissed')) tips.classList.add('tips--expanded')
+        function applySameSiteFix() {
+          if (!isFirefox) return
+
+          const links = Array.from(document.querySelectorAll('a.samesite'))
+          links.forEach(link => {
+            const href = `./external.html?href=${encodeURIComponent(link.href)}`
+            link.href = href
+            link.target = '_blank'
+          })
+        }
+
+        setupURLSubmit()
+        setupTips()
+        applySameSiteFix()
       })()
     </script>
   </body>
