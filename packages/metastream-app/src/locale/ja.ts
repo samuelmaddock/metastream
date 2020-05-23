@@ -1,6 +1,7 @@
 export default {
   add: '追加する',
   addMedia: '動画を追加',
+  addMediaCTA: '見たい動画をセッションに追加しましょう。',
   admin: '管理者',
   advanced: '上級設定',
   allow: '許可する',
@@ -92,6 +93,11 @@ export default {
   once: '一度',
   openInBrowser: 'ブラウザで開く',
   openInPopup: 'ポップアップで表示する',	
+  patreonLogin: 'Patronでログイン',	
+  patreonLogout: 'ログアウト',	
+  patreonPledge: 'Patronになる',	
+  patreonPledgeRequired: 'Patronメンバー専用です',	
+  patreonPledgeTierRequired: 'ティア{{tier}}のPatronメンバー専用です',
   playingInPopup: 'ポップアップで再生中',
   private: '限定公開',
   profile: 'プロフィール',
@@ -120,6 +126,7 @@ export default {
   shareFriendCodeOther: '他の人を招待するには、以下の{{name}}のフレンドコードを共有してください。',
   sharePublicIP: 'ダイレクト接続をするには <1>グローバルアドレス</1> を共有してください。',
   shareSessionUrl: '他の人を招待するには、以下のURLを共有してください。',
+  supportMetastream: 'Metastreamを支援して特典をゲットしよう！',
   startSession: 'セッションを開始',
   theaterMode: 'シアターモード',
   theaterModeDesc:
@@ -128,6 +135,8 @@ export default {
   toggleDJ: 'DJの切り替え',
   unlimited: '無制限',
   unlockQueue: '再生リストを編集可にする',
+  updateAvailable:	
+    '新しいMetastreamのアップデートがあります。 右上のUPDATEボタンを押すとアップデートが始まります。',
   username: 'ユーザーネーム',
   users: 'ユーザー',
   userJoined: '<Username id="{{userId}}">{{username}}</Username> が参加しました。',
@@ -136,5 +145,6 @@ export default {
     '<Username id="{{userId}}">{{prevName}}</Username> が <Username id="{{userId}}">{{name}}</Username> に名前を変えました。',
   viewOnGitHub: 'GitHubで見る',
   waitingForHost: 'ホストが接続を許可するのを待機しています・・・',
-  welcome: 'ようこそ'
+  welcome: 'ようこそ',
+  welcomeToMetastream: 'Metastreamへようこそ'
 }
