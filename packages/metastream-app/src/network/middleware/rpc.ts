@@ -1,5 +1,4 @@
-import { Middleware, MiddlewareAPI, Action, Dispatch, AnyAction } from 'redux'
-import { ActionCreator } from 'redux'
+import { Middleware, Action, AnyAction } from 'redux'
 
 import { NetConnection, NetServer, localUser, localUserId } from 'network'
 import { NetMiddlewareOptions, NetActions } from 'network/actions'
@@ -44,10 +43,10 @@ interface IRpcThunkContext {
   server: NetServer
 }
 
-export type RpcThunkAction<R, S> = (
-  dispatch: ThunkDispatch<S, IRpcThunkContext, AnyAction>,
+export type RpcThunkAction<R, S, Extra = {}> = (
+  dispatch: ThunkDispatch<S, IRpcThunkContext & Extra, AnyAction>,
   getState: () => S,
-  context: IRpcThunkContext
+  context: IRpcThunkContext & Extra
 ) => R
 
 const isRpcThunk = (arg: any): arg is RpcThunkAction<any, any> => typeof arg === 'function'
@@ -77,9 +76,14 @@ type RpcJson =
       result: any
     }
 
-export const netRpcMiddleware = (): Middleware => {
+interface RpcMiddlewareOptions<Extra = any> {
+  extra?: Extra
+}
+
+export const netRpcMiddleware = (rpcOpts: RpcMiddlewareOptions): Middleware => {
   return store => {
     const { dispatch, getState } = store
+    const { extra } = rpcOpts
 
     let server: NetServer | null, host: boolean
 
@@ -181,7 +185,7 @@ export const netRpcMiddleware = (): Middleware => {
       if (isRpcThunk(result)) {
         // TODO: update IRpcThunkContext to reflect possibly undefined server
         // when user is in offline session
-        const context = { client, host, server: server! }
+        const context = { client, host, server: server!, ...extra }
         return result(dispatch, getState, context)
       } else if (typeof result === 'object') {
         dispatch(result as Action)

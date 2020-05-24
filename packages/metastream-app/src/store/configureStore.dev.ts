@@ -4,7 +4,7 @@ import { applyMiddleware, compose, createStore } from 'redux'
 import { createLogger } from 'redux-logger'
 import { persistReducer, persistStore } from 'redux-persist'
 import thunk from 'redux-thunk'
-import appMiddleware from 'store/appMiddleware'
+import { configureAppMiddleware } from 'store/appMiddleware'
 import { createReducer } from '../reducers'
 import persistConfig from './persistStore'
 import { ConfigureStoreOptions } from './types'
@@ -21,7 +21,7 @@ const configureStore = (opts: ConfigureStoreOptions) => {
   middleware.push(thunkMiddleware)
 
   // App Middleware
-  middleware.push(...appMiddleware)
+  middleware.push(...configureAppMiddleware(opts))
 
   // Logging Middleware
   const logger = createLogger({

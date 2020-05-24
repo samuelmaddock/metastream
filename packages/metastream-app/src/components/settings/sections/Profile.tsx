@@ -18,6 +18,7 @@ import Tooltip from '@material-ui/core/Tooltip'
 import { MetastreamUserTier, AccountService } from 'account/account'
 import { usePatronTier } from 'account/hooks'
 import { LogoutButton } from 'components/account/buttons'
+import { useAppContext } from 'appContext'
 
 interface IProps extends SettingsProps {}
 
@@ -81,7 +82,8 @@ const ProfileSettings: SFC<Props> = props => {
     }
   }
 
-  const selectedAvatar = props.avatar ? AvatarRegistry.getInstance().getByURI(props.avatar) : null
+  const { avatarRegistry } = useAppContext()
+  const selectedAvatar = props.avatar ? avatarRegistry.getByURI(props.avatar) : null
   const hasArtist = selectedAvatar ? !!selectedAvatar.artist : false
   const hasPledged = tier > MetastreamUserTier.None
 
@@ -90,24 +92,22 @@ const ProfileSettings: SFC<Props> = props => {
       <label>{t('avatar')}</label>
       <div className={styles.avatarContainer}>
         <div className={styles.avatarList}>
-          {AvatarRegistry.getInstance()
-            .getAll()
-            .map((avatar, idx) => (
-              <UserAvatar
-                key={idx}
-                avatar={avatar.uri}
-                selected={avatar.uri === props.avatar}
-                onClick={() => {
-                  props.setSetting('avatar', avatar.uri)
-                  dirtyRef.current = true
-                  ga('event', {
-                    ec: 'settings',
-                    ea: 'select_avatar',
-                    el: avatar.pii ? avatar.type : avatar.uri
-                  })
-                }}
-              />
-            ))}
+          {avatarRegistry.getAll().map((avatar, idx) => (
+            <UserAvatar
+              key={idx}
+              avatar={avatar.uri}
+              selected={avatar.uri === props.avatar}
+              onClick={() => {
+                props.setSetting('avatar', avatar.uri)
+                dirtyRef.current = true
+                ga('event', {
+                  ec: 'settings',
+                  ea: 'select_avatar',
+                  el: avatar.pii ? avatar.type : avatar.uri
+                })
+              }}
+            />
+          ))}
         </div>
         {hasArtist && (
           <div className={styles.small}>

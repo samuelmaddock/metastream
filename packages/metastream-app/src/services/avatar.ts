@@ -36,7 +36,7 @@ export class AvatarRegistry implements ArrayLike<AvatarEntry> {
   static getInstance() {
     if (!avatarRegistry) {
       avatarRegistry = new AvatarRegistry()
-      initAppAvatars()
+      initAppAvatars(avatarRegistry)
     }
     return avatarRegistry
   }
@@ -144,10 +144,8 @@ function generateGradientSvg(hex: string) {
 </svg>`
 }
 
-function initAppAvatars() {
-  const reg = AvatarRegistry.getInstance()
-
-  reg.registerType(
+function initAppAvatars(avatarRegistry: AvatarRegistry) {
+  avatarRegistry.registerType(
     'uid',
     (hash: string) => {
       if (typeof hash !== 'string') return
@@ -158,7 +156,7 @@ function initAppAvatars() {
     -1
   )
 
-  reg.registerType('asset', (fileName: string) => {
+  avatarRegistry.registerType('asset', (fileName: string) => {
     if (fileName && fileName.indexOf('..') > -1) return
     return assetUrl(`avatars/${fileName}`)
   })
@@ -177,7 +175,7 @@ function initAppAvatars() {
 
   artistAvatars.forEach(artist => {
     artist.fileNames.forEach(fileName => {
-      reg.register({
+      avatarRegistry.register({
         type: 'asset',
         artist: artist.name,
         href: artist.href,

@@ -8,6 +8,7 @@ import { IAppState } from '../reducers'
 import { PersistGate } from 'redux-persist/integration/react'
 import { Persistor } from 'redux-persist'
 import { ErrorBoundary } from 'components/ErrorBoundary'
+import { AppContext } from 'appContext'
 
 interface IProps {
   store: Store<IAppState>

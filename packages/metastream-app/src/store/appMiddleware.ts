@@ -7,16 +7,18 @@ import { sessionMiddleware, SessionObserver } from 'lobby/middleware/session'
 import { pwaMiddleware } from '../middleware/pwa'
 import { MediaSessionObserver } from '../lobby/mediaSessionObserver'
 import { mediaSessionMiddleware } from '../lobby/middleware/mediaSession'
+import { ConfigureStoreOptions } from './types'
 
-const list: (Middleware | undefined)[] = [
-  netRpcMiddleware(),
-  netSyncMiddleware(),
-  usersMiddleware(),
-  sessionMiddleware([new MediaSessionObserver()]),
-  pwaMiddleware(),
-  mediaSessionMiddleware()
-]
+export const configureAppMiddleware = (opts: ConfigureStoreOptions) => {
+  const list: (Middleware | undefined)[] = [
+    netRpcMiddleware({ extra: opts.extra }),
+    netSyncMiddleware(),
+    usersMiddleware(),
+    sessionMiddleware([new MediaSessionObserver()]),
+    pwaMiddleware(),
+    mediaSessionMiddleware()
+  ]
 
-const middleware = list.filter(Boolean) as Middleware[]
-
-export default middleware
+  const middleware = list.filter(Boolean) as Middleware[]
+  return middleware
+}

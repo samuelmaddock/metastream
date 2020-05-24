@@ -25,6 +25,7 @@ import { AccountService } from 'account/account'
 import { sleep } from 'utils/async'
 import { checkExtensionInstall } from 'actions/ui'
 import { AvatarRegistry } from 'services/avatar'
+import { AppContext } from 'appContext'
 
 let store: Store<IAppState>
 let history: History
@@ -65,11 +66,16 @@ function getInitialState() {
 async function main() {
   history = cfgStore.history
 
+  const avatarRegistry = AvatarRegistry.getInstance()
+
   const storeCfg = cfgStore.configureStore({
     initialState: process.env.NODE_ENV === 'development' ? getInitialState() : undefined,
     persistCallback: () => {
       const state = store.getState()
       initLocale(state.settings.language)
+    },
+    extra: {
+      avatarRegistry
     }
   })
 
@@ -103,7 +109,7 @@ async function main() {
   await platform.ready
 
   // Register default avatar
-  AvatarRegistry.getInstance().register({
+  avatarRegistry.register({
     type: 'uid',
     params: [platform.getLocalId().toString()]
   })
@@ -121,7 +127,13 @@ async function main() {
 
   render(
     <AppContainer>
-      <Root store={store} history={history} persistor={persistor} />
+      <AppContext.Provider
+        value={{
+          avatarRegistry
+        }}
+      >
+        <Root store={store} history={history} persistor={persistor} />
+      </AppContext.Provider>
     </AppContainer>,
     document.getElementById('root'),
     renderComplete
