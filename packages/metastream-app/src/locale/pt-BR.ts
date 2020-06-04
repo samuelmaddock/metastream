@@ -1,6 +1,7 @@
 export default {
   add: 'Adicionar',
   addMedia: 'Adicionar Midia',
+  addMediaCTA: 'Inice adicionando mídia',
   admin: 'Administrador',
   advanced: 'Avançado',
   allow: 'Permitir',
@@ -12,7 +13,7 @@ export default {
   autoFullscreen: 'Tela cheia automática',
   autoFullscreenDesc: 'Ampliar para ajustar o video a janela',
   avatar: 'Foto de Perfil',
-  avatarCredit: '<0>Arte do avatar selecionado feita por</0> <1>{{artist}}</1>',
+  avatarCredit: '<0>Arte do perfil selecionado feita por</0> <1>{{artist}}</1>',
   cancel: 'Cancelar',
   changelog: 'Registro de Alterações',
   chat: 'Bate-papo',
@@ -106,6 +107,7 @@ export default {
   retry: 'Tentar Novamente',
   requestUrl: 'Adicionar a sessão',
   requestUrlPlaceholder: '',
+  required: 'Necessário',
   requiresDJPermissions: 'Requer permissão de DJ',
   requiresPortForward:
     'Requer <1>liberação de portas</1> da porta <3>{{port}}</3> para aceitar coneções diretas.',
