@@ -194,12 +194,24 @@ const onHeadersReceived = details => {
         case 'content-security-policy': {
           if (value.includes('frame-ancestors')) {
             const policies = value.split(';').filter(value => !value.includes('frame-ancestors'))
-            headers[i].value = policies.join(';')
+
+            if (policies.length > 0) {
+              headers[i].value = policies.join(';')
+            } else {
+              // Since Firefox 77, an empty CSP will not overwrite the original
+              // Remove it completely if all policies were filtered out
+              headers.splice(i, 1)
+            }
+
             permitted = true
           }
           break
         }
         case 'set-cookie': {
+          if (isFirefox()) {
+            break // only apply SameSite fix in Chrome
+          }
+
           // Allow third-party cookies specifically in Metastream tabs
           if (value.includes('SameSite=')) {
             headers[i].value = value.replace(/SameSite=(Lax|Strict)/i, 'SameSite=None')
