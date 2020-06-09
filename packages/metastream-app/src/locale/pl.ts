@@ -1,5 +1,5 @@
 export default {
-  add: 'Add',
+  add: 'Dodaj',
   addMedia: 'Dodaj film',
   addMediaCTA: 'Zacznij od dodania filmów do sesji.',
   admin: 'Admin',
