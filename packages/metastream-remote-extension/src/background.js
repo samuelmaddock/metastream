@@ -580,11 +580,6 @@ chrome.runtime.onMessage.addListener((action, sender, sendResponse) => {
       request(tabId, requestId, url, options)
       break
     }
-    case 'metastream-remove-data': {
-      const { options, dataToRemove } = action.payload
-      chrome.browsingData.remove(options, dataToRemove)
-      break
-    }
     case 'metastream-popup-init': {
       const { id: webviewId } = action.payload
       popupParents[webviewId] = tabId
