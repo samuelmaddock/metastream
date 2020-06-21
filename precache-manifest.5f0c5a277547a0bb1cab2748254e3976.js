@@ -1,58 +1,58 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "246b071c1b197f6e44f8",
+    "revision": "f188359f9d07604260bc",
     "url": "/0.app.prod.js"
   },
   {
-    "revision": "246b071c1b197f6e44f8",
+    "revision": "f188359f9d07604260bc",
     "url": "/0.app.prod.js.map"
   },
   {
-    "revision": "89e6ce40f4d5778d6de0",
+    "revision": "e2d2f55c5826428c8e01",
     "url": "/1.app.prod.js"
   },
   {
-    "revision": "89e6ce40f4d5778d6de0",
+    "revision": "e2d2f55c5826428c8e01",
     "url": "/1.app.prod.js.map"
   },
   {
-    "revision": "11de07e33a5fbc7432f5",
+    "revision": "62adf1d52818042e3c2d",
     "url": "/3.app.prod.js"
   },
   {
-    "revision": "11de07e33a5fbc7432f5",
+    "revision": "62adf1d52818042e3c2d",
     "url": "/3.app.prod.js.map"
   },
   {
-    "revision": "04186380ffa804c7e4d8",
+    "revision": "55079fd18773cafe5180",
     "url": "/4.app.prod.js"
   },
   {
-    "revision": "04186380ffa804c7e4d8",
+    "revision": "55079fd18773cafe5180",
     "url": "/4.app.prod.js.map"
   },
   {
-    "revision": "8d188c51d57843923cd8",
+    "revision": "f2723b299406b1427f5c",
     "url": "/5.app.prod.js"
   },
   {
-    "revision": "8d188c51d57843923cd8",
+    "revision": "f2723b299406b1427f5c",
     "url": "/5.app.prod.js.map"
   },
   {
-    "revision": "e41d4471446b91e81e92",
+    "revision": "877e3311403aa86f7ca2",
     "url": "/6.app.prod.js"
   },
   {
-    "revision": "e41d4471446b91e81e92",
+    "revision": "877e3311403aa86f7ca2",
     "url": "/6.app.prod.js.map"
   },
   {
-    "revision": "99724fa422a2638cc38f",
+    "revision": "67c7730ca61c2815d87c",
     "url": "/app.prod.js"
   },
   {
-    "revision": "99724fa422a2638cc38f",
+    "revision": "67c7730ca61c2815d87c",
     "url": "/app.prod.js.map"
   },
   {
@@ -100,7 +100,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/assets/fonts/karla-v5-latin-regular.woff2"
   },
   {
-    "revision": "89c7ce93255186e00b10f33532de3cf0",
+    "revision": "907f983eaf1aabe36b607fb1a218698e",
     "url": "/assets/homescreen.html"
   },
   {
@@ -408,7 +408,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/images/icon-512.png"
   },
   {
-    "revision": "ee15d739c03f9dc601508a6b54be420f",
+    "revision": "76f031d705aa4a0a39e6a1cd1a9cccd4",
     "url": "/index.html"
   },
   {
@@ -420,11 +420,11 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/mediasession.mp4"
   },
   {
-    "revision": "99724fa422a2638cc38f",
+    "revision": "67c7730ca61c2815d87c",
     "url": "/style.css"
   },
   {
-    "revision": "99724fa422a2638cc38f",
+    "revision": "67c7730ca61c2815d87c",
     "url": "/style.css.map"
   },
   {
