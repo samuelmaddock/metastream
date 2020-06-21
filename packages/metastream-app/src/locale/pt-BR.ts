@@ -1,7 +1,7 @@
 export default {
   add: 'Adicionar',
   addMedia: 'Adicionar Midia',
-  addMediaCTA: 'Inice adicionando mídia',
+  addMediaCTA: 'Inicie adicionando uma mídia',
   admin: 'Administrador',
   advanced: 'Avançado',
   allow: 'Permitir',
