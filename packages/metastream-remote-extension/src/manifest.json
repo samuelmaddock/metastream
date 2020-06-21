@@ -29,5 +29,5 @@
     "persistent": true
   },
   "manifest_version": 2,
-  "permissions": ["tabs", "webNavigation", "webRequest", "webRequestBlocking", "browsingData", "contextMenus", "<all_urls>"]
+  "permissions": ["tabs", "webNavigation", "webRequest", "webRequestBlocking", "contextMenus", "<all_urls>"]
 }

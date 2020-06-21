@@ -52,7 +52,6 @@ export class Webview extends Component<Props, State> {
   private emitter = new EventEmitter()
   private iframe: HTMLIFrameElement | null = null
   private url: string = 'about:blank'
-  private didFixSW: boolean = false
   private navigateTimeoutId?: number
   private initializeTimeoutId?: number
 
@@ -187,48 +186,6 @@ export class Webview extends Component<Props, State> {
     document.dispatchEvent(e)
   }
 
-  private removeServiceWorkers(origin: string) {
-    window.postMessage(
-      {
-        type: 'metastream-remove-data',
-        payload: {
-          options: { origins: [origin] },
-          dataToRemove: { serviceWorkers: true }
-        }
-      },
-      location.origin
-    )
-  }
-
-  private fixServiceWorker(url: string) {
-    // Only apply SW fix to Chromium browsers
-    if (isFirefox()) return
-
-    // Ignore request to fix after hard reload
-    if (this.didFixSW) {
-      this.didFixSW = false
-      return
-    }
-
-    let origin
-    try {
-      origin = new URL(url).origin
-    } catch {
-      return
-    }
-
-    const shouldFixSW = swFixOrigins.has(origin)
-    if (!shouldFixSW) return
-
-    this.didFixSW = true
-    this.removeServiceWorkers(origin)
-
-    // Perform full page reload after service worker has been removed
-    this.emitter.once('did-navigate', () => {
-      this.reloadIgnoringCache()
-    })
-  }
-
   private clearNavigateTimeout() {
     if (this.navigateTimeoutId) {
       clearTimeout(this.navigateTimeoutId)
@@ -248,11 +205,6 @@ export class Webview extends Component<Props, State> {
   }
 
   private willNavigate = ({ url }: { url: string }) => {
-    if (process.env.NODE_ENV === 'development') {
-      // TODO(samuelmaddock): only fix service worker if page fails to load after timeout
-      // this.fixServiceWorker(url)
-    }
-
     this.clearNavigateTimeout()
     this.startNavigateTimeout()
   }
