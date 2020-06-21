@@ -423,7 +423,7 @@ const startWatchingTab = tab => {
       chrome.webRequest.OnHeadersReceivedOptions.RESPONSEHEADERS, // firefox
       chrome.webRequest.OnHeadersReceivedOptions.RESPONSE_HEADERS, // chromium
       chrome.webRequest.OnHeadersReceivedOptions.EXTRAHEADERS, // firefox
-      chrome.webRequest.OnHeadersReceivedOptions.EXTRA_HEADERS, // chromium
+      chrome.webRequest.OnHeadersReceivedOptions.EXTRA_HEADERS // chromium
     ].filter(Boolean)
   )
 
@@ -477,6 +477,23 @@ const stopWatchingTab = tabId => {
   }
 
   console.log(`Metastream stopped watching tabId=${tabId}`)
+}
+
+const updateMetastreamPermissions = tab => {
+  if (chrome.contentSettings) {
+    // Allow Metastream to open two popups at the same time without one getting blocked.
+    // Some websites can't be played while embedded in the site so they need to open
+    // in a popup to have a top-level browser context.
+    const { origin } = new URL(tab.url)
+    chrome.contentSettings.popups.get({ primaryUrl: tab.url }, details => {
+      if (details.setting !== chrome.contentSettings.PopupsContentSetting.ALLOW) {
+        chrome.contentSettings.popups.set({
+          primaryPattern: `${origin}/*`,
+          setting: chrome.contentSettings.PopupsContentSetting.ALLOW
+        })
+      }
+    })
+  }
 }
 
 //=============================================================================
@@ -565,6 +582,7 @@ chrome.runtime.onMessage.addListener((action, sender, sendResponse) => {
   if (action.type === 'metastream-init' && isMetastreamUrl(sender.tab.url)) {
     startWatchingTab(sender.tab)
     sendResponse(true)
+    updateMetastreamPermissions(sender.tab)
     return
   }
 
