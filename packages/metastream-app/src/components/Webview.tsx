@@ -1,18 +1,9 @@
 import React, { Component } from 'react'
 import cx from 'classnames'
 import { EventEmitter } from 'events'
-import { isFirefox } from '../utils/browser'
 import { PopupWindow } from './Popup'
 import { WebviewError } from './lobby/overlays/WebviewError'
 import styles from './Webview.css'
-
-/**
- * List of hostnames to apply service worker fix to.
- *
- * Chrome extensions can't intercept SWs yet so we need to
- * remove any service workers and then reload the page.
- */
-const swFixOrigins = new Set(['https://www.netflix.com'])
 
 const INITIALIZE_TIMEOUT_DURATION = 1000
 const NAVIGATION_TIMEOUT_DURATION = 5000
