@@ -155,8 +155,6 @@
     </main>
     <script>
       ;(function() {
-        const isFirefox = navigator.userAgent.toLowerCase().includes('firefox')
-
         // If opened in its own window, add background
         document.body.classList.toggle('top', window.top === window.self)
 
@@ -199,8 +197,6 @@
         }
 
         function applySameSiteFix() {
-          if (!isFirefox) return
-
           const links = Array.from(document.querySelectorAll('a.samesite'))
           links.forEach(link => {
             const href = `./external.html?href=${encodeURIComponent(link.href)}`
