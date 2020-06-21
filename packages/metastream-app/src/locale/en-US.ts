@@ -56,6 +56,7 @@ export default {
   findSession: 'Find Session',
   findSessionDescription:
     'Join the <1>#sessions</1> channel on the Metastream Discord community to find other users’ sessions. Click the Discord logo below to join.',
+  focusPopup: 'Focus popup',
   friendCode: 'Friend code',
   getStarted: 'Get Started',
   help: 'Help',

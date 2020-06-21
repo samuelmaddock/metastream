@@ -40,10 +40,6 @@ export class PopupWindow extends Component<Props, State> {
     return PopupWindow.windowRef
   }
 
-  componentWillMount() {
-    this.openWindow()
-  }
-
   componentWillUnmount() {
     if (this.window) {
       this.window.close()
@@ -66,6 +62,11 @@ export class PopupWindow extends Component<Props, State> {
   }
 
   private openWindow = () => {
+    if (this.window && !this.window.closed) {
+      this.window.focus()
+      return
+    }
+
     window.postMessage(
       {
         type: 'metastream-popup-init',
@@ -115,7 +116,12 @@ export class PopupWindow extends Component<Props, State> {
           />
         )}
         {this.state.open ? (
-          <div className={styles.text}>{t('playingInPopup')}</div>
+          <div className={styles.text}>
+            <p>{t('playingInPopup')}</p>
+            <HighlightButton icon="external-link" size="large" onClick={this.openWindow}>
+              {t('focusPopup')}
+            </HighlightButton>
+          </div>
         ) : (
           <div className={styles.text}>
             <p>{this.renderDescription()}</p>
