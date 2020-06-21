@@ -103,21 +103,6 @@
   }
 
   //=============================================================================
-  // Popup player enhancements
-  //=============================================================================
-
-  window.addEventListener('DOMContentLoaded', () => {
-    // only apply to top frame player, aka popup player
-    if (window.top !== window.self) return
-
-    const style = document.createElement('style')
-    style.innerHTML = `body { background: #000 !important; }`
-    if (document.head) {
-      document.head.appendChild(style)
-    }
-  })
-
-  //=============================================================================
   // Main world script - modifies media in the main browser context.
   //=============================================================================
 
@@ -126,6 +111,16 @@
   const mainWorldScript = function() {
     // Injected by Metastream
     console.debug(`Metastream main world script ${location.href}`)
+
+    // Hide opener when Metastream opens media in a popup.
+    // Prevents pages from redirecting app.getmetastream.com, but still allows
+    // for app.getmetastream.com to control the popup.
+    let opener
+    if (window.opener) {
+      opener = window.opener
+      Object.defineProperty(window, 'opener', { value: { location: {} } })
+      window.close = () => {} // you won't
+    }
 
     //===========================================================================
     // Globals
@@ -901,7 +896,7 @@
         .join('')
 
       // :not(:empty) used to boost specificity
-      return `
+      let styles = `
 ${ignoredSelectors}:not(:empty),
 ${ignoredSelectors}:not(:empty):after,
 ${ignoredSelectors}:not(:empty):before {
@@ -919,11 +914,19 @@ ${ignoredSelectors}:not(:empty):before {
   -webkit-text-stroke: transparent !important;
   -webkit-mask: none !important;
   transition: none !important;
+  user-select: none !important;
 }
 
 ${ignoredSelectors}:empty {
   visibility: hidden !important;
 }`
+
+      // popup player background color
+      if (opener) {
+        styles += `body${ignoredSelectors}:not(:empty) { background: #000 !important; }`
+      }
+
+      return styles
     }
 
     function setTheaterMode(enable) {
