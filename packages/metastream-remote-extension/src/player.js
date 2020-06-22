@@ -534,14 +534,10 @@
         dispatchMediaEvent({ type: 'media-time-update', payload: this.getCurrentTime() })
       }
 
-      /** Prevent third-party service from restoring cached volume */
       onVolumeChange() {
         const { volume } = this
         if (volume && this.media.volume !== volume) {
-          console.debug(
-            `[Metastream Remote] Volume changed internally (${this.media.volume}), reverting to ${volume}`
-          )
-          this.setVolume(volume)
+          dispatchMediaEvent({ type: 'media-volume-change', payload: this.media.volume })
         }
       }
 
