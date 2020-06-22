@@ -31,6 +31,7 @@ import { setPopupPlayer } from 'actions/ui'
 import { StorageKey } from 'constants/storage'
 import { EMBED_BLOCKED_DOMAIN_LIST } from 'constants/embed'
 import { IdleScreen } from './overlays/IdleScreen'
+import { setVolume } from 'actions/settings'
 
 type MediaReadyPayload = {
   duration?: number
@@ -280,6 +281,13 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
         if (activityTimeDelta > 5000) break
         this.onMediaSeek(action.payload)
         break
+      case 'media-volume-change':
+        if (activityTimeDelta > 1000) {
+          this.updateVolume() // overwrite change
+        } else {
+          this.onMediaVolumeChange(action.payload)
+        }
+        break
     }
   }
 
@@ -304,6 +312,14 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
   private onMediaSeek = throttle(
     (time: number) => {
       this.props.dispatch(server_requestSeek(time))
+    },
+    100,
+    { leading: true, trailing: true }
+  )
+
+  private onMediaVolumeChange = throttle(
+    (volume: number) => {
+      this.props.dispatch(setVolume(volume))
     },
     100,
     { leading: true, trailing: true }
