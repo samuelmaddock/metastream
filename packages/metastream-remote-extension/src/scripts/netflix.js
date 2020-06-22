@@ -31,8 +31,12 @@
       e.preventDefault()
       const player = netflixPlayer()
       if (player) {
+        const curTime = player.getCurrentTime()
         const time = e.detail
-        player.seek(time)
+        const dt = Math.abs(curTime - time)
+        if (dt > 100) {
+          player.seek(time)
+        }
       }
     })
   }

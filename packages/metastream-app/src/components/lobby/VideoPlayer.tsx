@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import cx from 'classnames'
+import { throttle } from 'lodash-es'
 import styles from './VideoPlayer.css'
 import { PlaybackState, IMediaPlayerState } from 'lobby/reducers/mediaPlayer'
 import {
@@ -259,7 +260,10 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     if (typeof action !== 'object' || action === null) return
     console.debug('VideoPlayer IPC', action)
     const isTopSubFrame = !!args[0]
-    const dt = Date.now() - this.lastActivityTime
+
+    // Time since last activity in the frame. Used to ignore events that happen
+    // not on the user's behalf.
+    const activityTimeDelta = Date.now() - this.lastActivityTime
 
     switch (action.type) {
       case 'media-ready':
@@ -269,33 +273,41 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
         this.onAutoplayError(action.payload.error)
         break
       case 'media-playback-change':
-        if (dt > 1000) break
+        if (activityTimeDelta > 1000) break
         this.onMediaPlaybackChange(action.payload)
         break
       case 'media-seeked':
-        if (dt > 5000) break
+        if (activityTimeDelta > 5000) break
         this.onMediaSeek(action.payload)
         break
     }
   }
 
-  onMediaPlaybackChange(event: { state: 'playing' | 'paused'; time: number }) {
-    const time = getPlaybackTime2(this.props)
-    const dt = Math.abs(event.time - time)
-    if (dt > 100) {
-      this.props.dispatch(server_requestSeek(event.time))
-    }
+  private onMediaPlaybackChange = throttle(
+    (event: { state: 'playing' | 'paused'; time: number }) => {
+      const time = getPlaybackTime2(this.props)
+      const dt = Math.abs(event.time - time)
+      if (dt > 100) {
+        this.props.dispatch(server_requestSeek(event.time))
+      }
 
-    if (this.isPlaying && event.state === 'paused') {
-      this.props.dispatch(server_requestPlayPause())
-    } else if (this.isPaused && event.state === 'playing') {
-      this.props.dispatch(server_requestPlayPause())
-    }
-  }
+      if (this.isPlaying && event.state === 'paused') {
+        this.props.dispatch(server_requestPlayPause())
+      } else if (this.isPaused && event.state === 'playing') {
+        this.props.dispatch(server_requestPlayPause())
+      }
+    },
+    100,
+    { leading: true, trailing: true }
+  )
 
-  onMediaSeek(time: number) {
-    this.props.dispatch(server_requestSeek(time))
-  }
+  private onMediaSeek = throttle(
+    (time: number) => {
+      this.props.dispatch(server_requestSeek(time))
+    },
+    100,
+    { leading: true, trailing: true }
+  )
 
   private onMediaReady = (isTopSubFrame: boolean = false, payload?: MediaReadyPayload) => {
     console.debug('onMediaReady', payload)
