@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import cx from 'classnames'
-import { throttle } from 'lodash-es'
+import { throttle, debounce } from 'lodash-es'
 import styles from './VideoPlayer.css'
 import { PlaybackState, IMediaPlayerState } from 'lobby/reducers/mediaPlayer'
 import {
@@ -274,18 +274,21 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
         this.onAutoplayError(action.payload.error)
         break
       case 'media-playback-change':
-        if (activityTimeDelta > 1000) break
-        this.onMediaPlaybackChange(action.payload)
+        if (activityTimeDelta <= 1000) {
+          this.onMediaPlaybackChange(action.payload)
+        }
         break
       case 'media-seeked':
-        if (activityTimeDelta > 5000) break
-        this.onMediaSeek(action.payload)
+        if (activityTimeDelta <= 5000) {
+          this.onMediaSeek(action.payload)
+        }
         break
       case 'media-volume-change':
-        if (activityTimeDelta > 1000) {
-          this.updateVolume() // overwrite change
-        } else {
+        if (activityTimeDelta <= 1000) {
           this.onMediaVolumeChange(action.payload)
+        } else {
+          // overwrite changes to volume update outside of user interacting
+          this.updateVolume()
         }
         break
     }
@@ -317,13 +320,9 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     { leading: true, trailing: true }
   )
 
-  private onMediaVolumeChange = throttle(
-    (volume: number) => {
-      this.props.dispatch(setVolume(volume))
-    },
-    100,
-    { leading: true, trailing: true }
-  )
+  private onMediaVolumeChange = debounce((volume: number) => {
+    this.props.dispatch(setVolume(this.unscaleVolume(volume)))
+  }, 200)
 
   private onMediaReady = (isTopSubFrame: boolean = false, payload?: MediaReadyPayload) => {
     console.debug('onMediaReady', payload)
@@ -426,6 +425,11 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     return volume === 0 ? 0 : clamp(Math.exp(6.908 * volume) / 1000, 0, 1)
   }
 
+  /** Convert exponential volume into linear. */
+  private unscaleVolume(volume: number): number {
+    return volume === 0 ? 0 : clamp(Math.log(volume * 1000) / 6.908, 0, 1)
+  }
+
   render(): JSX.Element | null {
     return (
       <div
@@ -499,9 +503,6 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
   }
 
   private onActivity = (eventName: string) => {
-    // ignore event where user isn't activating something
-    if (eventName === 'mousemove') return
-
     this.lastActivityTime = Date.now()
   }
 

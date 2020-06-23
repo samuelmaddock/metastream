@@ -534,9 +534,8 @@
         dispatchMediaEvent({ type: 'media-time-update', payload: this.getCurrentTime() })
       }
 
-      onVolumeChange() {
-        const { volume } = this
-        if (volume && this.media.volume !== volume) {
+      onVolumeChange(event) {
+        if (event.isTrusted) {
           dispatchMediaEvent({ type: 'media-volume-change', payload: this.media.volume })
         }
       }
