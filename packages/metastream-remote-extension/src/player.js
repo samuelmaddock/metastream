@@ -499,13 +499,13 @@
         this.prevDuration = duration
       }
 
-      onPlay() {
+      onPlay(event) {
         // Set volume as soon as playback begins
         if (typeof this.volume === 'number') {
           this.setVolume(this.volume)
         }
 
-        this.onPlaybackChange('playing')
+        this.onPlaybackChange(event, 'playing')
       }
 
       onPlayError(err) {
@@ -518,16 +518,18 @@
         }
       }
 
-      onPause() {
-        this.onPlaybackChange('paused')
+      onPause(event) {
+        this.onPlaybackChange(event, 'paused')
       }
 
-      onEnded() {
-        this.onPlaybackChange('ended')
+      onEnded(event) {
+        this.onPlaybackChange(event, 'ended')
       }
 
       onSeeked() {
-        dispatchMediaEvent({ type: 'media-seeked', payload: this.getCurrentTime() })
+        if (event.isTrusted) {
+          dispatchMediaEvent({ type: 'media-seeked', payload: this.getCurrentTime() })
+        }
       }
 
       onTimeUpdate() {
@@ -540,10 +542,10 @@
         }
       }
 
-      onPlaybackChange(state) {
+      onPlaybackChange(event, state) {
         dispatchMediaEvent({
           type: 'media-playback-change',
-          payload: { state: state, time: this.getCurrentTime() }
+          payload: { state: state, time: this.getCurrentTime(), isTrusted: event.isTrusted }
         })
       }
 
@@ -558,13 +560,13 @@
       }
 
       /** Force start playback on waiting */
-      onWaiting() {
+      onWaiting(event) {
         if (!playerSettings.syncOnBuffer) return
 
         if (this._awaitingStart) return
         this._awaitingStart = true
 
-        this.onPlaybackChange('buffering')
+        this.onPlaybackChange(event, 'buffering')
 
         let timeoutId = null
 
@@ -971,6 +973,13 @@ ${ignoredSelectors}:empty {
       // TODO: Use MutationObserver to observe if video gets removed from DOM
     }
 
+    const MEDIA_CHECK_EVENTS = [
+      'playing',
+      'durationchange',
+      'canplay',
+      'timeupdate'
+    ]
+
     const addMedia = media => {
       if (mediaList.has(media)) {
         return
@@ -997,19 +1006,19 @@ ${ignoredSelectors}:empty {
 
         if (media.readyState >= MediaReadyState.HAVE_CURRENT_DATA) {
           setActiveMedia(media)
-          media.removeEventListener('playing', checkMediaReady)
-          media.removeEventListener('durationchange', checkMediaReady)
-          media.removeEventListener('canplay', checkMediaReady)
+          MEDIA_CHECK_EVENTS.forEach(eventName => {
+            media.removeEventListener(eventName, checkMediaReady)
+          })
           return true
         }
 
         return false
       }
 
-      if (media.paused || !checkMediaReady()) {
-        media.addEventListener('playing', checkMediaReady)
-        media.addEventListener('durationchange', checkMediaReady)
-        media.addEventListener('canplay', checkMediaReady)
+      if (!checkMediaReady()) {
+        MEDIA_CHECK_EVENTS.forEach(eventName => {
+          media.addEventListener(eventName, checkMediaReady)
+        })
 
         clearTimeout(autoplayTimerId)
         autoplayTimerId = setTimeout(attemptAutoplay, AUTOPLAY_TIMEOUT)
