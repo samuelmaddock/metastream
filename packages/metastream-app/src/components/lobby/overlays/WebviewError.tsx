@@ -28,9 +28,6 @@ class _WebviewError extends React.Component<PrivateProps> {
             Check that the Metastream Remote browser extension has{' '}
             <strong>access to all sites</strong>.
           </li>
-          <li>
-            Verify that the website uses <strong>https://</strong>
-          </li>
           <li>Test the site outside of Metastream.</li>
           <li>Reload the site.</li>
           {FEATURE_POPUP_PLAYER && <li>Try opening the popup player.</li>}
