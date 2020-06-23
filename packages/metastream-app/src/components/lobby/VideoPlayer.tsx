@@ -96,7 +96,12 @@ type PrivateProps = IProps & IConnectedProps & IReactReduxProps
 class _VideoPlayer extends PureComponent<PrivateProps, IState> {
   private webview: Webview | null = null
   private mediaTimeout?: number
+
+  /** Last time any activity occurred within the media frame. */
   private lastActivityTime: number = 0
+
+  /** Last time the user interacted within the media frame. */
+  private lastInteractTime: number = 0
 
   state: IState = { interacting: false, mediaReady: false, permitURLOnce: false }
 
@@ -265,6 +270,7 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     // Time since last activity in the frame. Used to ignore events that happen
     // not on the user's behalf.
     const activityTimeDelta = Date.now() - this.lastActivityTime
+    const interactTimeDelta = Date.now() - this.lastInteractTime
 
     switch (action.type) {
       case 'media-ready':
@@ -274,7 +280,9 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
         this.onAutoplayError(action.payload.error)
         break
       case 'media-playback-change':
-        if (activityTimeDelta <= 1000) {
+        // Need to react only to user interaction to prevent infinite loop
+        // of play/pause
+        if (interactTimeDelta <= 1000) {
           this.onMediaPlaybackChange(action.payload)
         }
         break
@@ -295,7 +303,7 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
   }
 
   private onMediaPlaybackChange = throttle(
-    (event: { state: 'playing' | 'paused'; time: number }) => {
+    (event: { state: 'playing' | 'paused'; time: number; isTrusted: boolean }) => {
       const time = getPlaybackTime2(this.props)
       const dt = Math.abs(event.time - time)
       if (dt > 100) {
@@ -504,6 +512,10 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
 
   private onActivity = (eventName: string) => {
     this.lastActivityTime = Date.now()
+
+    if (eventName !== 'mousemove') {
+      this.lastInteractTime = Date.now()
+    }
   }
 
   private renderInteract = () => {
