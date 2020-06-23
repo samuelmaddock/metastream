@@ -989,7 +989,9 @@ ${ignoredSelectors}:empty {
         }
 
         // Wait for videos to appear in the DOM
-        if (media instanceof HTMLVideoElement && !media.parentElement) {
+        const body = media.ownerDocument && media.ownerDocument.body
+        const isInDocument = body && body.contains(media)
+        if (media instanceof HTMLVideoElement && !isInDocument) {
           return false
         }
 
