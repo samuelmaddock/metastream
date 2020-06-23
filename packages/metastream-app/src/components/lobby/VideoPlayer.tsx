@@ -158,13 +158,14 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
   }
 
   private get canEmbed(): boolean {
+    let url
     try {
-      const url = new URL(this.mediaUrl)
-      const isEmbedBlocked = EMBED_BLOCKED_DOMAIN_LIST.has(url.host)
-      return !isEmbedBlocked
+      url = new URL(this.mediaUrl)
     } catch {
       return true
     }
+    const isEmbedBlocked = EMBED_BLOCKED_DOMAIN_LIST.has(url.host) || url.protocol === 'http:'
+    return !isEmbedBlocked
   }
 
   private get shouldRenderPopup(): boolean {
