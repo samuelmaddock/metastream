@@ -13,11 +13,20 @@
   z-index: 0;
   background-size: cover;
   background-position: 50% 50%;
-  filter: blur(10px) brightness(0.6);
+  filter: blur(10px) brightness(0.3);
   transform: scale(1.05); /* hide blurred edges */
 }
 
 .text {
   z-index: 1;
   text-align: center;
+}
+
+.remote {
+  composes: fill from '~styles/layout.css';
+  background: var(--app-bg-lobby);
+}
+
+.chat {
+  composes: absolute-full from '~styles/layout.css';
 }

@@ -26,6 +26,7 @@ interface Props {
   className?: string
   disabled?: boolean
   showHint?: boolean
+  showDockOption?: boolean
 
   /** Whether to fade chat while inactive. */
   fade?: boolean
@@ -57,7 +58,8 @@ export class ChatComponent extends PureComponent<PrivateProps, State> {
   private messagesRef: Messages | null = null
 
   static defaultProps = {
-    messageFadeDelay: 10000
+    messageFadeDelay: 10000,
+    showDockOption: true
   }
 
   state: State = {
@@ -168,12 +170,14 @@ export class ChatComponent extends PureComponent<PrivateProps, State> {
             >
               <UserTyping />
             </ChatForm>
-            <IconButton
-              icon={this.props.fade ? 'dock-right' : 'undock-float'}
-              className={styles.btnLayout}
-              onClick={this.props.toggleChatLayout}
-              title={t(this.props.fade ? 'chatDockToRight' : 'chatUndock')}
-            />
+            {this.props.showDockOption && (
+              <IconButton
+                icon={this.props.fade ? 'dock-right' : 'undock-float'}
+                className={styles.btnLayout}
+                onClick={this.props.toggleChatLayout}
+                title={t(this.props.fade ? 'chatDockToRight' : 'chatUndock')}
+              />
+            )}
           </div>
         </div>
       </div>

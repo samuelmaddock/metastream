@@ -287,7 +287,7 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
         }
         break
       case 'media-seeked':
-        if (activityTimeDelta <= 5000) {
+        if (interactTimeDelta <= 5000) {
           this.onMediaSeek(action.payload)
         }
         break
