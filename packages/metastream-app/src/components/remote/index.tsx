@@ -13,6 +13,7 @@ export const Remote: React.SFC = () => {
     <div id="app" className={styles.remote}>
       <UserList
         className={styles.users}
+        showMenu={false} // having trouble rendering this in a portal
         onInvite={() => {
           dispatchExtensionMessage('metastream-focus')
           dispatch(setLobbyModal(LobbyModal.SessionSettings))

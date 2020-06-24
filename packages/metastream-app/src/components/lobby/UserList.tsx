@@ -16,11 +16,11 @@ import { server_answerClient } from '../../lobby/actions/user-init'
 import { localUserId } from '../../network'
 import { assetUrl } from 'utils/appUrl'
 import { SessionMode } from 'reducers/settings'
-import { compose } from 'redux'
 import { withNamespaces, WithNamespaces } from 'react-i18next'
 
 interface IProps {
   className?: string
+  showMenu?: boolean
   onInvite(): void
 }
 
@@ -39,6 +39,10 @@ interface IState {
 type Props = IProps & IConnectedProps & IReactReduxProps & WithNamespaces
 
 class _UserList extends Component<Props> {
+  static defaultProps = {
+    showMenu: true
+  }
+
   state: IState = { sortedUsers: [] }
 
   private listOverlay: ListOverlay<IUser> | null = null
@@ -125,7 +129,7 @@ class _UserList extends Component<Props> {
         user={user}
         name={user.name}
         avatar={user.avatar}
-        showMenu={this.props.isAdmin && user.id !== localUserId()}
+        showMenu={this.props.showMenu && this.props.isAdmin && user.id !== localUserId()}
         onClickMenu={e => this.listOverlay!.onSelect(e, user)}
         requestApproval={requestApproval}
         onApprovalResponse={
