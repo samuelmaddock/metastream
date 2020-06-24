@@ -47,7 +47,7 @@
 
 .staticBackground {
   composes: absolute-full from '~styles/layout.css';
-  background: rgba(0, 0, 0, 0.66);
+  background: var(--color-transparent-dark-66);
 }
 
 .foreground {

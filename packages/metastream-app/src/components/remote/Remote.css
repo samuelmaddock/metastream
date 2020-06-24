@@ -1,0 +1,16 @@
+.remote {
+  composes: fill from '~styles/layout.css';
+  background: var(--app-bg-lobby);
+}
+
+.chat {
+  width: 100%;
+  flex: 1 1 auto;
+}
+
+.users {
+  flex: 0 1 auto;
+  height: 14rem;
+  background: var(--color-transparent-dark-66);
+  border-bottom: 1px solid var(--color-transparent-light-10);
+}

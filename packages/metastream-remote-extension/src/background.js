@@ -8,6 +8,30 @@
 //
 
 //=============================================================================
+// Locals
+//=============================================================================
+
+// Observed tabs on Metastream URL
+const watchedTabs = new Set()
+
+// Store for active tabs state
+const tabStore = {}
+
+// Used to know which metastream instance to sent browser badge requests to
+let lastActiveTabId
+
+// Map from popup webview ID to parent tab ID
+// Used for popups pending initialization
+const popupParents = {}
+
+// Map from popup tab ID to parent tab ID
+// Used for routing messages between popup and parent app
+const popupParentTabs = {}
+
+// List of popup tab IDs
+const popupTabs = new Set()
+
+//=============================================================================
 // Helpers
 //=============================================================================
 
@@ -89,29 +113,16 @@ const sendWebviewEventToHost = async (tabId, frameId, message) => {
   )
 }
 
-//=============================================================================
-// Locals
-//=============================================================================
+const getLastActiveMetastreamTabId = () => {
+  const isMetastreamOpen = watchedTabs.size > 0
+  if (!isMetastreamOpen) return -1
 
-// Observed tabs on Metastream URL
-const watchedTabs = new Set()
+  const targetTabId = watchedTabs.has(lastActiveTabId)
+    ? lastActiveTabId
+    : Array.from(watchedTabs)[0]
 
-// Store for active tabs state
-const tabStore = {}
-
-// Used to know which metastream instance to sent browser badge requests to
-let lastActiveTabId
-
-// Map from popup webview ID to parent tab ID
-// Used for popups pending initialization
-const popupParents = {}
-
-// Map from popup tab ID to parent tab ID
-// Used for routing messages between popup and parent app
-const popupParentTabs = {}
-
-// List of popup tab IDs
-const popupTabs = new Set()
+  return targetTabId
+}
 
 //=============================================================================
 // Content scripts
@@ -603,9 +614,22 @@ chrome.runtime.onMessage.addListener((action, sender, sendResponse) => {
       popupParents[webviewId] = tabId
       break
     }
+    case 'metastream-focus': {
+      const targetTabId = getLastActiveMetastreamTabId()
+      if (targetTabId > -1) {
+        // window.focus() is not reliable, but the WebExtensions API is!
+        chrome.tabs.update(targetTabId, { active: true })
+        chrome.tabs.get(targetTabId, tab => {
+          chrome.windows.update(tab.windowId, { focused: true })
+        })
+      }
+      break
+    }
   }
 
-  lastActiveTabId = tabId
+  if (!popupTabs.has(tabId)) {
+    lastActiveTabId = tabId
+  }
 })
 
 //=============================================================================
@@ -665,11 +689,8 @@ const openLinkInMetastream = details => {
 
   console.log(`Opening URL in Metastream: ${requestUrl}${currentTime ? ` @ ${currentTime}` : ''}`)
 
-  const isMetastreamOpen = watchedTabs.size > 0
-  if (isMetastreamOpen) {
-    const targetTabId = watchedTabs.has(lastActiveTabId)
-      ? lastActiveTabId
-      : Array.from(watchedTabs)[0]
+  const targetTabId = getLastActiveMetastreamTabId()
+  if (targetTabId > -1) {
     sendToHost(targetTabId, {
       type: 'metastream-extension-request',
       payload: { url: requestUrl, time: currentTime, source }

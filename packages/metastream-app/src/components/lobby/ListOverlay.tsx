@@ -27,7 +27,7 @@ export class ListOverlay<T = any> extends Component<IProps<T>, IState<T>> {
       <div
         id={this.props.id}
         className={cx(this.props.className, styles.container, {
-          [styles.active]: !!this.state.menuAnchorEl
+          active: !!this.state.menuAnchorEl
         })}
       >
         <header className={styles.header}>

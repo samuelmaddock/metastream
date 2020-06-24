@@ -112,9 +112,23 @@
   width: var(--chat-docked-width);
 }
 
+.overlayList {
+  composes: glass rounded from '~styles/layout.css';
+  composes: overlay;
+  width: 19rem;
+  height: 15rem;
+  -webkit-mask-image: linear-gradient(180deg, white 0%, white 20%, transparent 100%);
+}
+
+.overlayList:global(.active),
+.overlayList:hover {
+  /* Fully opaque mask to hack bgblur from breaking */
+  -webkit-mask-image: linear-gradient(#000, #000);
+}
+
 .users,
 .queue {
-  composes: overlay;
+  composes: overlayList;
   top: calc(var(--overlay-spacing) + var(--app-titlebar-height));
   max-width: var(--overlay-list-max-width);
 }
