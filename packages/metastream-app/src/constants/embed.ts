@@ -3,5 +3,7 @@
  */
 export const EMBED_BLOCKED_DOMAIN_LIST = new Set<string>([
   // Blocked by SameSite cookie
-  'www.netflix.com'
+  'www.netflix.com',
+  // Cross-origin script errors
+  'fmovies.to'
 ])
