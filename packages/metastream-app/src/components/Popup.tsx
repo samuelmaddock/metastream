@@ -106,6 +106,7 @@ export class PopupWindow extends Component<Props, State> {
   }
 
   private intervalId?: number
+  private stylesheetObserver?: MutationObserver
 
   componentWillUnmount() {
     this.closeWindows()
@@ -131,6 +132,11 @@ export class PopupWindow extends Component<Props, State> {
     if (mediaWin) {
       if (!mediaWin.closed) mediaWin.close()
       PopupWindow.mediaWindowRef = null
+    }
+
+    if (this.stylesheetObserver) {
+      this.stylesheetObserver.disconnect()
+      this.stylesheetObserver = undefined
     }
 
     clearInterval(this.intervalId)
@@ -161,8 +167,18 @@ export class PopupWindow extends Component<Props, State> {
   private onWindowLoad = () => {
     this.setState({ loaded: true })
 
-    const remoteDocument = PopupWindow.remoteWindowRef && PopupWindow.remoteWindowRef.document
+    this.stylesheetObserver = new MutationObserver(this.onHeadMutation)
+    this.stylesheetObserver.observe(document.head, { childList: true })
 
+    this.copyStyleSheets()
+  }
+
+  private onHeadMutation: MutationCallback = () => {
+    this.copyStyleSheets()
+  }
+
+  private copyStyleSheets() {
+    const remoteDocument = PopupWindow.remoteWindowRef && PopupWindow.remoteWindowRef.document
     if (remoteDocument) {
       // remove existing stylesheets
       Array.from(remoteDocument.styleSheets).forEach(stylesheet => {
