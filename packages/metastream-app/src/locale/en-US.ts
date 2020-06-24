@@ -47,7 +47,8 @@ export default {
   donate: 'Donate',
   donators: 'Donators',
   duplicate: 'Duplicate',
-  embedBlocked: '<0>{{host}}</0> is embed blocked⁠—playback in a popup is required.',
+  embedBlocked:
+    'To enable playback with <1>{{host}}</1>, Metastream must open the website in a popup.',
   endSessionTitle: 'End Session?',
   endSessionDescription: 'Changing to an offline session will disconnect all connected users.',
   endSessionModalDescription: 'All users will be disconnected from the session.',
@@ -99,7 +100,7 @@ export default {
   patreonPledge: 'Become a patron',
   patreonPledgeRequired: 'Only available to patrons',
   patreonPledgeTierRequired: 'Only available to patrons pledged to the {{tier}} tier',
-  playingInPopup: 'Playing in popup',
+  playingInPopup: '<0>{{host}}</0> is playing in a popup.',
   private: 'Private',
   profile: 'Profile',
   public: 'Public',

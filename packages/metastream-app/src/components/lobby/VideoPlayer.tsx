@@ -164,8 +164,13 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     } catch {
       return true
     }
-    const isEmbedBlocked = EMBED_BLOCKED_DOMAIN_LIST.has(url.host) || url.protocol === 'http:'
-    return !isEmbedBlocked
+
+    const isEmbedBlocked = EMBED_BLOCKED_DOMAIN_LIST.has(url.host)
+
+    // can't embed http inside of https
+    const isMixedContent = url.protocol === 'http:'
+
+    return !(isEmbedBlocked || isMixedContent)
   }
 
   private get shouldRenderPopup(): boolean {

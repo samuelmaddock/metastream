@@ -47,7 +47,6 @@ export default {
   donate: 'Wesprzyj',
   donators: 'Wspierający',
   duplicate: 'Duplikuj',
-  embedBlocked: '<0>{{host}}</0> jest zablokowany ⁠ - wymagane jest odtwarzanie w wyskakującym okienku.',
   endSessionTitle: 'Czy chcesz zakończyć sesje?',
   endSessionDescription: 'Przejście na sesję offline spowoduje rozłączenie wszystkich użytkowników',
   endSessionModalDescription: 'Wszyscy użytkownicy zostaną rozłączeni z sesji.',
@@ -86,8 +85,7 @@ export default {
   noticeMediaError: 'Wystąpił błąd podczas żądania {{url}}',
   noticeNowPlaying:
     'Teraz leci <Media id="{{mediaId}}">{{mediaTitle}}</Media> na prośbę <Username id="{{userId}}">{{username}}</Username>.',
-  noticeUserRequestJoin:
-    '<Username id="{{userId}}">{{username}}</Username> prosi o dołączenie.',
+  noticeUserRequestJoin: '<Username id="{{userId}}">{{username}}</Username> prosi o dołączenie.',
   offline: 'Offline',
   ok: 'OK',
   once: 'Raz',
@@ -98,7 +96,6 @@ export default {
   patreonPledge: 'Zostań patronem',
   patreonPledgeRequired: 'Dostępne tylko dla patronów',
   patreonPledgeTierRequired: 'Tylko dla patronów na {{tier}} poziomie',
-  playingInPopup: 'Gra w popupie',
   private: 'Prywatne',
   profile: 'Profil',
   public: 'Publiczne',
@@ -113,7 +110,8 @@ export default {
   requiresPortForward:
     'Wymaga <1>ustawienia przekierowania portów</1> <3>{{port}}</3>, aby akceptować bezpośrednie połączenia.',
   safeBrowse: 'Bezpieczne przeglądanie',
-  safeBrowseDesc: 'Zwróć się o zatwierdzenie przed załadowaniem nierozpoznanej strony internetowej.',
+  safeBrowseDesc:
+    'Zwróć się o zatwierdzenie przed załadowaniem nierozpoznanej strony internetowej.',
   safeBrowseLoadContent: 'Załaduj treść z <1>{{host}}</1>?',
   safeBrowseDisableForSession: 'Wyłącz bezpieczne przeglądanie dla tej sesji',
   session: 'Sesja',
@@ -124,7 +122,8 @@ export default {
   settings: 'Ustawienia',
   shareFriendCode: 'Udostępnij znajomym poniższy kod, aby ich zaprosić.',
   shareFriendCodeOther: 'Udostępnij {{name}} poniższy kod, aby ją/go zaprosić',
-  sharePublicIP: 'Udostępnij <1>twój publiczny adres ip</1>, aby pozwolić przyjaciołom na bezpośrednie połączenie.',
+  sharePublicIP:
+    'Udostępnij <1>twój publiczny adres ip</1>, aby pozwolić przyjaciołom na bezpośrednie połączenie.',
   shareSessionUrl: 'Udostępnij poniższy link sesji, aby zaprosić znajomych',
   supportMetastream: 'Wspomóż Metastream, aby odblokować nagrody!',
   startSession: 'Rozpocznij sesję',
