@@ -144,7 +144,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
 
         <UserList
           className={styles.users}
-          onInvite={() => this.openModal(LobbyModal.Settings, { initialSelected: 'session' })}
+          onInvite={() => this.openModal(LobbyModal.SessionSettings)}
         />
         <MediaList className={styles.queue} onShowInfo={this.showInfo} />
 
@@ -224,6 +224,9 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
         modalChildren = <Modals.EndSession onCancel={this.closeModal} {...this.state.modalProps} />
         break
       }
+      case LobbyModal.SessionSettings:
+        Object.assign(modalProps, { initialSelected: 'session' })
+      // fallthrough to LobbyModal.Settings
       case LobbyModal.Settings: {
         modalChildren = <Modals.Settings {...modalProps} {...this.state.modalProps} />
         fillHeight = true

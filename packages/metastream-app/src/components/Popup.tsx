@@ -6,6 +6,8 @@ import { Trans } from 'react-i18next'
 import { isFirefox } from 'utils/browser'
 import { createPortal } from 'react-dom'
 import { Chat } from './chat'
+import { Remote } from './remote'
+import { dispatchExtensionMessage } from 'utils/extension'
 
 const POPUP_WIDTH = 336 // px
 
@@ -221,15 +223,9 @@ export class PopupWindow extends Component<Props, State> {
       return
     }
 
-    window.postMessage(
-      {
-        type: 'metastream-popup-init',
-        payload: {
-          id: this.props.id
-        }
-      },
-      location.origin
-    )
+    dispatchExtensionMessage('metastream-popup-init', {
+      id: this.props.id
+    })
 
     // wait for extension to initialize popup
     setTimeout(() => {
@@ -290,12 +286,7 @@ export class PopupWindow extends Component<Props, State> {
     const root = remoteDocument.getElementById('root')
     if (!root) return
 
-    return createPortal(
-      <div id="app" className={styles.remote}>
-        <Chat className={styles.chat} showDockOption={false} />
-      </div>,
-      root
-    )
+    return createPortal(<Remote />, root)
   }
 
   render() {

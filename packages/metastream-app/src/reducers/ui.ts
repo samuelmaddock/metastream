@@ -9,7 +9,9 @@ export const enum LobbyModal {
   Browser = 'browser',
   MediaInfo = 'media-info',
   EndSession = 'end-session',
-  Settings = 'settings'
+  Settings = 'settings',
+  /** Shortcut for Settings with initially selected tab */
+  SessionSettings = 'session-settings'
 }
 
 export interface IUIState {

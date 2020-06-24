@@ -21,12 +21,3 @@
   z-index: 1;
   text-align: center;
 }
-
-.remote {
-  composes: fill from '~styles/layout.css';
-  background: var(--app-bg-lobby);
-}
-
-.chat {
-  composes: absolute-full from '~styles/layout.css';
-}
