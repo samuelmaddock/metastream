@@ -6,8 +6,7 @@ export default {
   advanced: 'Avanzate',
   allow: 'Consenti',
   allowTracking: `Invia informazioni sull'utilizzo dell'app`,
-  allowTrackingDesc:
-    `Informazioni di utilizzo anonime vengono inviate allo sviluppatore per comprendere meglio come viene utilizzata l'app.`,
+  allowTrackingDesc: `Informazioni di utilizzo anonime vengono inviate allo sviluppatore per comprendere meglio come viene utilizzata l'app.`,
   always: 'Sempre',
   appearance: 'Aspetto',
   autoFullscreen: 'Schermo intero automatico',
@@ -47,7 +46,6 @@ export default {
   donate: 'Dona',
   donators: 'Donatori',
   duplicate: 'Duplica',
-  embedBlocked: '<0>{{host}}</0> ha la riproduzione incorporata bloccata—riproduzione in un popup richiesta.',
   endSessionTitle: 'Fine sessione?',
   endSessionDescription: 'Passare a una sessione offline disconnetterà tutti gli utenti connessi.',
   endSessionModalDescription: 'Tutti gli utenti verranno disconnessi dalla sessione.',
@@ -81,7 +79,8 @@ export default {
   networkDisconnectMultiTab:
     'Stai ospitando una sessione Metastream da più di un browser o scheda. Chiudi le altre schede o gli altri browser, quindi ricarica la pagina.',
   networkDisconnectSessionNotFound: 'Sessione non trovata.',
-  networkTroubleshootingHelp: 'Vedi la <1>guida alla risoluzione dei problemi di rete</1> per aiuto.',
+  networkTroubleshootingHelp:
+    'Vedi la <1>guida alla risoluzione dei problemi di rete</1> per aiuto.',
   noticeAddedMedia: 'Aggiunto <Media id="{{mediaId}}">{{mediaTitle}}</Media>',
   noticeMediaError: 'Si è verificato un errore nella richiesta di {{url}}',
   noticeNowPlaying:
@@ -93,7 +92,6 @@ export default {
   once: 'Una volta',
   openInBrowser: 'Apri nel browser',
   openInPopup: 'Apri in un popup',
-  playingInPopup: 'Riproduci in popup',
   private: 'Privata',
   profile: 'Profilo',
   public: 'Pubblica',
@@ -105,8 +103,7 @@ export default {
   requestUrlPlaceholder: '',
   required: 'Richiesto',
   requiresDJPermissions: 'Richiede le autorizzazioni DJ',
-  requiresPortForward:
-    `Richiede l'<1>impostazione del forwarding</1> della porta <3>{{port}}</3> per accettare connessioni dirette.`,
+  requiresPortForward: `Richiede l'<1>impostazione del forwarding</1> della porta <3>{{port}}</3> per accettare connessioni dirette.`,
   safeBrowse: 'Navigazione sicura',
   safeBrowseDesc: `Richiede l'approvazione prima di caricare un sito web non riconosciuto.`,
   safeBrowseLoadContent: 'Caricare contenuti da <1>{{host}}</1>?',
@@ -119,7 +116,8 @@ export default {
   settings: 'Impostazioni',
   shareFriendCode: 'Condividi il tuo codice amico qui sotto per invitare amici.',
   shareFriendCodeOther: 'Condividi il codice amico di {{name}} qui sotto per invitare amici.',
-  sharePublicIP: 'Condividi <1>il tuo indirizzo IP pubblico</1> per consentire agli amici di connettersi direttamente.',
+  sharePublicIP:
+    'Condividi <1>il tuo indirizzo IP pubblico</1> per consentire agli amici di connettersi direttamente.',
   shareSessionUrl: `Condividi l'URL della sessione in basso per invitare amici.`,
   startSession: 'Inizia sessione',
   theaterMode: 'Modalità cinema',

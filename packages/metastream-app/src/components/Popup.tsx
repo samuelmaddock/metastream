@@ -5,7 +5,6 @@ import { t } from 'locale'
 import { Trans } from 'react-i18next'
 import { isFirefox } from 'utils/browser'
 import { createPortal } from 'react-dom'
-import { Chat } from './chat'
 import { Remote } from './remote'
 import { dispatchExtensionMessage } from 'utils/extension'
 
@@ -94,6 +93,16 @@ export class PopupWindow extends Component<Props, State> {
 
     focusRemote()
     setTimeout(focusRemote, 0)
+  }
+
+  private get mediaHostname(): string {
+    const { mediaSrc } = this.props
+    if (mediaSrc) {
+      try {
+        return new URL(mediaSrc).hostname
+      } catch {}
+    }
+    return mediaSrc || ''
   }
 
   private intervalId?: number
@@ -261,24 +270,6 @@ export class PopupWindow extends Component<Props, State> {
     }, 0)
   }
 
-  private renderDescription() {
-    const { mediaSrc } = this.props
-
-    if (mediaSrc) {
-      let url
-      try {
-        url = new URL(mediaSrc)
-      } catch {
-        return
-      }
-      return (
-        <Trans i18nKey="embedBlocked" values={{ host: url.host }}>
-          <strong>This website</strong> is embed blocked⁠—playback in a popup is required.
-        </Trans>
-      )
-    }
-  }
-
   private renderRemote() {
     if (!(PopupWindow.remoteWindowRef && this.state.loaded)) return
 
@@ -291,6 +282,7 @@ export class PopupWindow extends Component<Props, State> {
 
   render() {
     const { backgroundImage } = this.props
+    const { mediaHostname } = this
 
     return (
       <div className={styles.container}>
@@ -302,7 +294,11 @@ export class PopupWindow extends Component<Props, State> {
         )}
         {this.state.open ? (
           <div className={styles.text}>
-            <p>{t('playingInPopup')}</p>
+            <p>
+              <Trans i18nKey="playingInPopup" values={{ host: mediaHostname }}>
+                <strong>website</strong> is playing in a popup.
+              </Trans>
+            </p>
             <HighlightButton icon="external-link" size="large" onClick={PopupWindow.focus}>
               {t('focusPopup')}
             </HighlightButton>
@@ -310,7 +306,12 @@ export class PopupWindow extends Component<Props, State> {
           </div>
         ) : (
           <div className={styles.text}>
-            <p>{this.renderDescription()}</p>
+            <p>
+              <Trans i18nKey="embedBlocked" values={{ host: mediaHostname }}>
+                To enable playback with <strong>this website</strong>, Metastream must open the
+                website in a popup.
+              </Trans>
+            </p>
             <HighlightButton highlight icon="external-link" size="large" onClick={this.openWindows}>
               {t('openInPopup')}
             </HighlightButton>

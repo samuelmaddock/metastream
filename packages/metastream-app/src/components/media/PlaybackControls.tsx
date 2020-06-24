@@ -219,7 +219,7 @@ class _PlaybackControls extends Component<PrivateProps> {
               this.props.dispatch(setPopupPlayer(true))
             }}
           >
-            Open in popup
+            {t('openInPopup')}
           </ButtonListItem>
         ) : null}
         <ButtonListItem icon="external-link" onClick={this.openLink}>
