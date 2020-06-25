@@ -360,6 +360,7 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
 
     this.updateVolume()
     this.updatePlaybackTime()
+    this.updatePlaybackRate(1)
     this.updatePlayback(this.props.playback)
 
     const media = this.props.current
@@ -422,6 +423,10 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
 
   private updatePlayback = (state: PlaybackState) => {
     this.dispatchMedia('set-media-playback', state)
+  }
+
+  private updatePlaybackRate = (playbackRate: number) => {
+    this.dispatchMedia('set-media-playback-rate', playbackRate)
   }
 
   private updateVolume = () => {
