@@ -288,6 +288,9 @@
         case 'set-media-volume':
           player.setVolume(action.payload)
           break
+        case 'set-media-playback-rate':
+          player.setPlaybackRate(action.payload)
+          break
       }
     }
     window.addEventListener('message', eventMiddleware)
@@ -386,6 +389,7 @@
         this.onTimeUpdate = throttle(this.onTimeUpdate.bind(this), 1e3)
         this.onWaiting = this.onWaiting.bind(this)
         this.onDurationChange = debounce(this.onReady.bind(this), 2e3)
+        this.onRateChange = this.onRateChange.bind(this)
 
         this.media.addEventListener('play', this.onPlay, false)
         this.media.addEventListener('pause', this.onPause, false)
@@ -394,6 +398,7 @@
         this.media.addEventListener('volumechange', this.onVolumeChange, false)
         this.media.addEventListener('timeupdate', this.onTimeUpdate, false)
         this.media.addEventListener('durationchange', this.onDurationChange, false)
+        this.media.addEventListener('ratechange', this.onRateChange, false)
 
         this.onReady()
       }
@@ -406,6 +411,7 @@
         this.media.removeEventListener('volumechange', this.onVolumeChange, false)
         this.media.removeEventListener('timeupdate', this.onTimeUpdate, false)
         this.media.removeEventListener('durationchange', this.onDurationChange, false)
+        this.media.removeEventListener('ratechange', this.onRateChange, false)
         this.stopWaitingListener()
       }
 
@@ -477,6 +483,10 @@
           this.media.muted = false
         }
       }
+      setPlaybackRate(playbackRate) {
+        this.playbackRate = playbackRate
+        this.media.playbackRate = playbackRate
+      }
 
       /** Only seek if we're off by greater than our threshold */
       timeExceedsThreshold(time) {
@@ -537,8 +547,9 @@
       }
 
       onVolumeChange(event) {
-        if (event.isTrusted) {
-          dispatchMediaEvent({ type: 'media-volume-change', payload: this.media.volume })
+        const { volume } = this.media
+        if (event.isTrusted && this.volume !== volume) {
+          dispatchMediaEvent({ type: 'media-volume-change', payload: volume })
         }
       }
 
@@ -547,6 +558,14 @@
           type: 'media-playback-change',
           payload: { state: state, time: this.getCurrentTime(), isTrusted: event.isTrusted }
         })
+      }
+
+      onRateChange() {
+        const { playbackRate } = this.media
+        if (playbackRate !== this.playbackRate) {
+          dispatchMediaEvent({ type: 'media-playback-rate-change', payload: { value: playbackRate } })
+          this.playbackRate = playbackRate
+        }
       }
 
       startWaitingListener() {
