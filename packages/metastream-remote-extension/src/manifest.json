@@ -1,7 +1,7 @@
 {
   "name": "Metastream Remote",
   "short_name": "Metastream",
-  "version": "0.4.3",
+  "version": "0.5.0",
   "description": "Watch streaming media with friends.",
   "icons": {
     "16": "icon16.png",
