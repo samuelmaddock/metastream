@@ -20,7 +20,7 @@ export default {
   chatColor: 'Chat Color',
   chatDockToRight: 'Dock chat to right',
   chatMessageFailed: 'Unable to send your message. Please try again.',
-  chatPlaceholder: 'Message or URL',
+  chatPlaceholder: 'Message or link',
   chatRevealHint: 'Press <1></1> to reveal chat.',
   chatNewMessage: 'A new message has been posted!',
   chatTimestamp: 'Chat timestamps',
