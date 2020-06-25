@@ -1,8 +1,10 @@
 import { normalize, dirname, isAbsolute, resolve } from 'path'
 
+export const ASSETS_PATH = '/assets'
+
 export const assetUrl = (relativePath: string) => {
   let path = normalize(relativePath)
-  return `/assets/${path}`
+  return `${ASSETS_PATH}/${path}`
 }
 
 export const absoluteUrl = (relativePath: string) => {

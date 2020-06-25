@@ -7,6 +7,7 @@ import { isFirefox } from 'utils/browser'
 import { createPortal } from 'react-dom'
 import { Remote } from './remote'
 import { dispatchExtensionMessage } from 'utils/extension'
+import { ASSETS_PATH } from 'utils/appUrl'
 
 const POPUP_WIDTH = 336 // px
 
@@ -95,12 +96,15 @@ export class PopupWindow extends Component<Props, State> {
     setTimeout(focusRemote, 0)
   }
 
-  private get mediaHostname(): string {
+  private get mediaHostname(): string | undefined {
     const { mediaSrc } = this.props
     if (mediaSrc) {
       try {
         return new URL(mediaSrc).hostname
       } catch {}
+    }
+    if (mediaSrc && mediaSrc.startsWith(ASSETS_PATH)) {
+      return
     }
     return mediaSrc || ''
   }
@@ -310,11 +314,13 @@ export class PopupWindow extends Component<Props, State> {
         )}
         {this.state.open ? (
           <div className={styles.text}>
-            <p>
-              <Trans i18nKey="playingInPopup" values={{ host: mediaHostname }}>
-                <strong>website</strong> is playing in a popup.
-              </Trans>
-            </p>
+            {mediaHostname && (
+              <p>
+                <Trans i18nKey="playingInPopup" values={{ host: mediaHostname }}>
+                  <strong>website</strong> is playing in a popup.
+                </Trans>
+              </p>
+            )}
             <HighlightButton icon="external-link" size="large" onClick={PopupWindow.focus}>
               {t('focusPopup')}
             </HighlightButton>
@@ -322,12 +328,14 @@ export class PopupWindow extends Component<Props, State> {
           </div>
         ) : (
           <div className={styles.text}>
-            <p>
-              <Trans i18nKey="embedBlocked" values={{ host: mediaHostname }}>
-                To enable playback with <strong>this website</strong>, Metastream must open the
-                website in a popup.
-              </Trans>
-            </p>
+            {mediaHostname && (
+              <p>
+                <Trans i18nKey="embedBlocked" values={{ host: mediaHostname }}>
+                  To enable playback with <strong>this website</strong>, Metastream must open the
+                  website in a popup.
+                </Trans>
+              </p>
+            )}
             <HighlightButton highlight icon="external-link" size="large" onClick={this.openWindows}>
               {t('openInPopup')}
             </HighlightButton>
