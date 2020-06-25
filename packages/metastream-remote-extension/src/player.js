@@ -549,7 +549,7 @@
       onVolumeChange(event) {
         const { volume } = this.media
         if (event.isTrusted && this.volume !== volume) {
-          dispatchMediaEvent({ type: 'media-volume-change', payload: volume })
+          dispatchMediaEvent({ type: 'media-volume-change', payload: { value: volume } })
         }
       }
 

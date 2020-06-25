@@ -299,7 +299,7 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
         break
       case 'media-volume-change':
         if (activityTimeDelta <= 1000) {
-          this.onMediaVolumeChange(action.payload)
+          this.onMediaVolumeChange(action.payload.value)
         } else {
           // overwrite changes to volume update outside of user interacting
           this.updateVolume()
