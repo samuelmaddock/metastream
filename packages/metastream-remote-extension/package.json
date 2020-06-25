@@ -1,0 +1,13 @@
+{
+  "name": "metastream-remote-extension",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Metastream companion extension for controlling media.",
+  "main": "build.js",
+  "scripts": {
+    "build": "node build.js"
+  },
+  "devDependencies": {
+    "archiver": "^4.0.1"
+  }
+}
