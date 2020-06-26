@@ -150,12 +150,22 @@ export class PopupWindow extends Component<Props, State> {
     this.props.onClose()
   }
 
-  private checkClosed = () => {
+  private checkWindows = () => {
     if (
       (PopupWindow.mediaWindowRef && PopupWindow.mediaWindowRef.closed) ||
       (PopupWindow.remoteWindowRef && PopupWindow.remoteWindowRef.closed)
     ) {
       this.closeWindows()
+    }
+
+    // Force re-render of remote window
+    if (PopupWindow.remoteWindowRef && !PopupWindow.remoteWindowRef.closed) {
+      const remoteDocument = PopupWindow.remoteWindowRef.document
+      const stylesheets = remoteDocument.styleSheets
+      if (stylesheets.length === 0) {
+        this.setState({ loaded: false })
+        this.onWindowLoad()
+      }
     }
   }
 
@@ -163,7 +173,7 @@ export class PopupWindow extends Component<Props, State> {
     if (this.isWindowOpen()) {
       this.setState({ open: true })
       if (this.intervalId) clearInterval(this.intervalId)
-      this.intervalId = setInterval(this.checkClosed, 1000) as any
+      this.intervalId = setInterval(this.checkWindows, 1000) as any
       this.props.theRef(true)
     }
   }
@@ -172,13 +182,18 @@ export class PopupWindow extends Component<Props, State> {
     this.setState({ loaded: true })
 
     this.stylesheetObserver = new MutationObserver(this.onHeadMutation)
-    this.stylesheetObserver.observe(document.head, { childList: true })
+    this.stylesheetObserver.observe(document.head, {
+      childList: true
+    })
 
     this.copyStyleSheets()
   }
 
-  private onHeadMutation: MutationCallback = () => {
-    this.copyStyleSheets()
+  private onHeadMutation: MutationCallback = list => {
+    const shouldCopyStyles = list.some(record => record.type === 'childList')
+    if (shouldCopyStyles) {
+      this.copyStyleSheets()
+    }
   }
 
   private copyStyleSheets() {
@@ -192,7 +207,7 @@ export class PopupWindow extends Component<Props, State> {
       // add all stylesheets from main document
       Array.from(document.styleSheets).forEach(stylesheet => {
         if (stylesheet.ownerNode) {
-          remoteDocument.head.appendChild(stylesheet.ownerNode.cloneNode())
+          remoteDocument.head.appendChild(stylesheet.ownerNode.cloneNode(true))
         }
       })
     }

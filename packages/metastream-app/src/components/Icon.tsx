@@ -1,9 +1,10 @@
 import React from 'react'
 import { assetUrl } from 'utils/appUrl'
-import { CSSProperties } from 'jss/css'
 
 interface IProps {
   className?: string
+
+  ref?: React.Ref<SVGSVGElement>
 
   /**
    * Name of SVG file to use in 'assets/icons/'
@@ -30,22 +31,28 @@ const SIZE_SCALE = {
   default: 1.0
 }
 
-/** SVG icon component */
-export const Icon = ({ name, size, pointerEvents, ...rest }: IProps) => {
-  const path = assetUrl(`icons/${name}.svg#${name}`)
-  let style = DEFAULT_STYLE
+/**
+ * SVG icon component.
+ * Uses a class to hold a ref.
+ */
+export class Icon extends React.Component<IProps> {
+  render() {
+    const { name, size, pointerEvents, ...rest } = this.props
+    const path = assetUrl(`icons/${name}.svg#${name}`)
+    let style = DEFAULT_STYLE
 
-  if (size) {
-    style = { ...style, transform: `scale(${SIZE_SCALE[size]}` }
+    if (size) {
+      style = { ...style, transform: `scale(${SIZE_SCALE[size]}` }
+    }
+
+    if (pointerEvents) {
+      style = { ...style, pointerEvents }
+    }
+
+    return (
+      <svg width="24" height="24" style={style} {...rest}>
+        <use href={path} />
+      </svg>
+    )
   }
-
-  if (pointerEvents) {
-    style = { ...style, pointerEvents }
-  }
-
-  return (
-    <svg width="24" height="24" style={style} {...rest}>
-      <use href={path} />
-    </svg>
-  )
 }

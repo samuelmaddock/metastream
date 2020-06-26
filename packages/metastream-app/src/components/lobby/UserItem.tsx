@@ -27,7 +27,7 @@ interface IProps {
 }
 
 interface IState {
-  anchorEl?: HTMLElement
+  anchorEl?: any
 }
 
 export class UserItem extends Component<IProps, IState> {
