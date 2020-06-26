@@ -194,7 +194,12 @@
 
     const noop = () => {}
 
+    // List of potential media to synchronize
     const mediaList = new Set()
+
+    // Previously synchronized media which we recently switched from
+    const mediaCooldownList = new Set()
+
     let player
     let activeMedia, activeFrame
     let isInInteractMode = false
@@ -340,6 +345,9 @@
       }
 
       setActionHandler(name, handler) {
+        if (typeof handler !== 'function' || handler.toString() === function() {}.toString()) {
+          return // ignore noop handlers (seen on tunein.com)
+        }
         console.debug(`MediaSession.setActionHandler '${name}'`)
         this._handlers[name] = handler
       }
@@ -563,7 +571,10 @@
       onRateChange() {
         const { playbackRate } = this.media
         if (playbackRate !== this.playbackRate) {
-          dispatchMediaEvent({ type: 'media-playback-rate-change', payload: { value: playbackRate } })
+          dispatchMediaEvent({
+            type: 'media-playback-rate-change',
+            payload: { value: playbackRate }
+          })
           this.playbackRate = playbackRate
         }
       }
@@ -972,6 +983,60 @@ ${ignoredSelectors}:empty {
     // Track the active/primary media element
     //===========================================================================
 
+    // TODO: This comparison logic should happen in the metastream app where we
+    // could also do comparisons across frames.
+    const maybeSetActiveMedia = media => {
+      let replace = true
+
+      try {
+        while (replace) {
+          // This is the first media we've found
+          if (!activeMedia) break
+
+          if (media instanceof HTMLVideoElement && activeMedia instanceof HTMLVideoElement) {
+            // Prefer the video with more pixels on the screen
+            const mediaRect = media.getBoundingClientRect()
+            const activeRect = activeMedia.getBoundingClientRect()
+            if (mediaRect.width * mediaRect.height > activeRect.width * activeRect.height) break
+          }
+
+          // There's a good chance we want to watch more long form content
+          if (media.duration > activeMedia.duration) break
+
+          // Prefer media we get further into
+          if (media.currentTime > activeMedia.currentTime) break
+
+          // The more data we have, the better
+          if (media.readyState > activeMedia.readyState) break
+
+          replace = false
+        }
+      } catch (e) {}
+
+      if (replace) {
+        const prevActiveMedia = activeMedia
+
+        // Remove new active media from list of potential media
+        mediaList.delete(media)
+
+        // Use this as our primary media
+        setActiveMedia(media)
+
+        if (prevActiveMedia) {
+          // Add previous media into the potential list, but not too quickly to
+          // cause it to switch rapidly if they alternate. Adding back to the
+          // list helps detection when ad interruptions occur.
+          mediaCooldownList.add(prevActiveMedia)
+          setTimeout(() => {
+            mediaCooldownList.delete(prevActiveMedia)
+            addMedia(prevActiveMedia)
+          }, 2000)
+        }
+      }
+
+      return replace
+    }
+
     const setActiveMedia = media => {
       activeMedia = media
       activeFrame = undefined
@@ -992,17 +1057,10 @@ ${ignoredSelectors}:empty {
       // TODO: Use MutationObserver to observe if video gets removed from DOM
     }
 
-    const MEDIA_CHECK_EVENTS = [
-      'playing',
-      'durationchange',
-      'canplay',
-      'timeupdate'
-    ]
+    const MEDIA_CHECK_EVENTS = ['playing', 'durationchange', 'canplay', 'timeupdate']
 
     const addMedia = media => {
-      if (mediaList.has(media)) {
-        return
-      }
+      if (mediaList.has(media) || mediaCooldownList.has(media)) return
 
       console.debug('Add media', media, media.src, media.duration)
       mediaList.add(media)
@@ -1024,11 +1082,12 @@ ${ignoredSelectors}:empty {
         }
 
         if (media.readyState >= MediaReadyState.HAVE_CURRENT_DATA) {
-          setActiveMedia(media)
-          MEDIA_CHECK_EVENTS.forEach(eventName => {
-            media.removeEventListener(eventName, checkMediaReady)
-          })
-          return true
+          if (maybeSetActiveMedia(media)) {
+            MEDIA_CHECK_EVENTS.forEach(eventName => {
+              media.removeEventListener(eventName, checkMediaReady)
+            })
+            return true
+          }
         }
 
         return false
