@@ -15,19 +15,20 @@ interface IProps<T> {
 }
 
 interface IState<T> {
+  menuOpen: boolean
   selection?: T
   menuAnchorEl?: HTMLElement
 }
 
 export class ListOverlay<T = any> extends Component<IProps<T>, IState<T>> {
-  state: IState<T> = {}
+  state: IState<T> = { menuOpen: false }
 
   render(): JSX.Element | null {
     return (
       <div
         id={this.props.id}
         className={cx(this.props.className, styles.container, {
-          active: !!this.state.menuAnchorEl
+          active: this.state.menuOpen
         })}
       >
         <header className={styles.header}>
@@ -48,21 +49,36 @@ export class ListOverlay<T = any> extends Component<IProps<T>, IState<T>> {
   }
 
   private renderMenu() {
-    const { menuAnchorEl, selection } = this.state
+    const { menuAnchorEl, selection, menuOpen: open } = this.state
     return (
-      <Menu anchorEl={menuAnchorEl} open={Boolean(menuAnchorEl)} onClose={this.handleClose}>
+      <Menu anchorEl={menuAnchorEl} open={open} onClose={this.handleClose} disableScrollLock>
         {selection && this.props.renderMenuOptions(selection, this.handleClose)}
       </Menu>
     )
   }
 
   private handleClose = () => {
-    this.setState({ menuAnchorEl: undefined })
+    this.setState({ menuOpen: false })
   }
 
   onSelect = (e: React.MouseEvent<HTMLElement>, selection: T) => {
-    if (e.target instanceof HTMLElement || e.target instanceof SVGElement) {
-      this.setState({ selection, menuAnchorEl: e.target as any })
+    if (!e.target) return
+
+    // 'instanceof' does not work with constructors in another window. Need to
+    // account for elements rendered in popups
+    let targetWindow: typeof window
+    try {
+      targetWindow = (e.target as any).ownerDocument.defaultView
+      if (targetWindow.constructor.name !== 'Window') return
+    } catch {
+      return
+    }
+
+    if (
+      e.target instanceof targetWindow.HTMLElement ||
+      e.target instanceof targetWindow.SVGElement
+    ) {
+      this.setState({ menuOpen: true, selection, menuAnchorEl: e.target as any })
     }
   }
 }
