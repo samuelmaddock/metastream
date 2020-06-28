@@ -26,7 +26,8 @@ async function writeArchive(manifest, target) {
     })
 
     if (target === 'firefox') {
-      manifest.permissions = manifest.permissions.filter(permission => permission !== 'contentSettings')
+      manifest.optional_permissions = manifest.optional_permissions.filter(permission => permission !== 'contentSettings')
+      delete manifest.externally_connectable
     }
 
     archive.append(Buffer.from(JSON.stringify(manifest, null, '  ')), { name: 'manifest.json' })

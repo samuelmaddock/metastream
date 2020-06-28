@@ -7,11 +7,14 @@ export const dispatchExtensionMessage = (type: string, payload?: any) => {
     throw new Error('Extension messages must start with metastream-')
   }
 
-  window.postMessage(
-    {
-      type,
-      payload
-    },
-    location.origin
-  )
+  const message = { type, payload }
+
+  const chrome = (window as any).chrome
+  if (typeof chrome === 'object' && typeof chrome.runtime === 'object') {
+    const extensionId = document.documentElement.dataset.extensionId
+    chrome.runtime.sendMessage(extensionId, message)
+    return
+  }
+
+  window.postMessage(message, location.origin)
 }

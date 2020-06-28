@@ -345,7 +345,8 @@
       }
 
       setActionHandler(name, handler) {
-        if (typeof handler !== 'function' || handler.toString() === function() {}.toString()) {
+        const noopStr = (function(){}).toString() // prettier-ignore
+        if (typeof handler !== 'function' || handler.toString() === noopStr) {
           return // ignore noop handlers (seen on tunein.com)
         }
         console.debug(`MediaSession.setActionHandler '${name}'`)

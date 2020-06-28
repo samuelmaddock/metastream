@@ -25,7 +25,9 @@
     document.documentElement.dataset.extensionInstalled = ''
 
     try {
-      document.documentElement.dataset.extensionVersion = chrome.runtime.getManifest().version
+      const manifest = chrome.runtime.getManifest()
+      document.documentElement.dataset.extensionId = chrome.runtime.id
+      document.documentElement.dataset.extensionVersion = manifest.version
     } catch (e) {}
 
     if (document.readyState === 'complete') {

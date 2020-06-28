@@ -1,7 +1,7 @@
 {
   "name": "Metastream Remote",
   "short_name": "Metastream",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Watch streaming media with friends.",
   "icons": {
     "16": "icon16.png",
@@ -24,10 +24,14 @@
       "all_frames": true
     }
   ],
+  "externally_connectable": {
+    "matches": ["https://app.getmetastream.com/*", "http://local.getmetastream.com/*", "http://localhost:8080/*"]
+  },
   "background": {
     "scripts": ["background.js"],
     "persistent": true
   },
   "manifest_version": 2,
-  "permissions": ["tabs", "webNavigation", "webRequest", "webRequestBlocking", "contentSettings", "contextMenus", "<all_urls>"]
+  "permissions": ["tabs", "webNavigation", "webRequest", "webRequestBlocking", "contextMenus", "<all_urls>"],
+  "optional_permissions": ["contentSettings"]
 }

@@ -490,21 +490,26 @@ const stopWatchingTab = tabId => {
   console.log(`Metastream stopped watching tabId=${tabId}`)
 }
 
-const updateMetastreamPermissions = tab => {
-  if (chrome.contentSettings) {
+
+const PERMISSION_ACTIONS = {
+  allowPopups(request) {
     // Allow Metastream to open two popups at the same time without one getting blocked.
     // Some websites can't be played while embedded in the site so they need to open
     // in a popup to have a top-level browser context.
-    const { origin } = new URL(tab.url)
-    chrome.contentSettings.popups.get({ primaryUrl: tab.url }, details => {
-      if (details.setting !== chrome.contentSettings.PopupsContentSetting.ALLOW) {
-        chrome.contentSettings.popups.set({
-          primaryPattern: `${origin}/*`,
-          setting: chrome.contentSettings.PopupsContentSetting.ALLOW
-        })
-      }
+    chrome.contentSettings.popups.set({
+      primaryPattern: request.origins[0],
+      setting: chrome.contentSettings.PopupsContentSetting.ALLOW
     })
   }
+}
+
+const requestPermissions = request => {
+  const { action, ...rest } = request
+  chrome.permissions.request(rest, granted => {
+    if (granted && typeof action === 'string') {
+      PERMISSION_ACTIONS[action](request)
+    }
+  })
 }
 
 //=============================================================================
@@ -585,7 +590,7 @@ const handleWebviewEvent = async (sender, action) => {
   }
 }
 
-chrome.runtime.onMessage.addListener((action, sender, sendResponse) => {
+function messageHandler(action, sender, sendResponse) {
   const { id: tabId } = sender.tab
   if (!isValidAction(action)) return
 
@@ -593,7 +598,6 @@ chrome.runtime.onMessage.addListener((action, sender, sendResponse) => {
   if (action.type === 'metastream-init' && isMetastreamUrl(sender.tab.url)) {
     startWatchingTab(sender.tab)
     sendResponse(true)
-    updateMetastreamPermissions(sender.tab)
     return
   }
 
@@ -625,12 +629,22 @@ chrome.runtime.onMessage.addListener((action, sender, sendResponse) => {
       }
       break
     }
+    case 'metastream-permissions-request': {
+      requestPermissions(action.payload)
+      break
+    }
   }
 
   if (!popupTabs.has(tabId)) {
     lastActiveTabId = tabId
   }
-})
+}
+
+chrome.runtime.onMessage.addListener(messageHandler)
+
+if (chrome.runtime.onMessageExternal) {
+  chrome.runtime.onMessageExternal.addListener(messageHandler)
+}
 
 //=============================================================================
 // Inject content scripts into existing tabs on startup
