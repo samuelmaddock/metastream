@@ -333,17 +333,17 @@ export class PopupWindow extends Component<Props, State> {
           xmlns="http://www.w3.org/2000/svg"
         >
           <g stroke={this.state.mediaPopupReady ? '#f98673' : 'white'}>
-            <rect x="1" y="1" width="154" height="145" stroke-width="2" />
-            <line x1="8.74228e-08" y1="10" x2="154" y2="10" stroke-width="2" />
-            <path d="M65.5 51.3494L103 73L65.5 94.6506L65.5 51.3494Z" stroke-width="2" />
+            <rect x="1" y="1" width="154" height="145" strokeWidth="2" />
+            <line x1="8.74228e-08" y1="10" x2="154" y2="10" strokeWidth="2" />
+            <path d="M65.5 51.3494L103 73L65.5 94.6506L65.5 51.3494Z" strokeWidth="2" />
           </g>
           <g stroke={this.state.remotePopupReady ? '#f98673' : 'white'}>
-            <rect x="159" y="1" width="60" height="145" stroke-width="2" />
-            <line x1="159" y1="10" x2="220" y2="10" stroke-width="2" />
-            <line x1="166" y1="18" x2="213" y2="18" stroke-width="2" />
-            <line x1="166" y1="139" x2="213" y2="139" stroke-width="2" />
-            <line x1="166" y1="24" x2="213" y2="24" stroke-width="2" />
-            <line x1="166" y1="30" x2="199" y2="30" stroke-width="2" />
+            <rect x="159" y="1" width="60" height="145" strokeWidth="2" />
+            <line x1="159" y1="10" x2="220" y2="10" strokeWidth="2" />
+            <line x1="166" y1="18" x2="213" y2="18" strokeWidth="2" />
+            <line x1="166" y1="139" x2="213" y2="139" strokeWidth="2" />
+            <line x1="166" y1="24" x2="213" y2="24" strokeWidth="2" />
+            <line x1="166" y1="30" x2="199" y2="30" strokeWidth="2" />
           </g>
         </svg>
       </p>

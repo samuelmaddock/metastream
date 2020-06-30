@@ -12,25 +12,25 @@
     }
 
     document.addEventListener('metastreamplay', e => {
-      e.preventDefault()
       const player = netflixPlayer()
       if (player && player.getPaused()) {
+        e.preventDefault()
         player.play()
       }
     })
 
     document.addEventListener('metastreampause', e => {
-      e.preventDefault()
       const player = netflixPlayer()
       if (player && !player.getPaused()) {
+        e.preventDefault()
         player.pause()
       }
     })
 
     document.addEventListener('metastreamseek', e => {
-      e.preventDefault()
       const player = netflixPlayer()
       if (player) {
+        e.preventDefault()
         const curTime = player.getCurrentTime()
         const time = e.detail
         const dt = Math.abs(curTime - time)

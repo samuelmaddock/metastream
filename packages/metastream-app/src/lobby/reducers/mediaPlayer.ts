@@ -166,6 +166,7 @@ export const mediaPlayer: Reducer<IMediaPlayerState> = (
         return {
           ...state,
           playback: PlaybackState.Paused,
+          startTime: undefined,
           pauseTime: action.payload
         }
       case PlaybackState.Paused:

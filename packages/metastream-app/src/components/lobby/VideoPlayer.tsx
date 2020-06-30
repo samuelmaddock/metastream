@@ -7,8 +7,8 @@ import { PlaybackState, IMediaPlayerState } from 'lobby/reducers/mediaPlayer'
 import {
   updateMedia,
   updatePlaybackTimer,
-  server_requestPlayPause,
-  server_requestSeek
+  server_requestSeek,
+  server_requestPlayPause
 } from 'lobby/actions/mediaPlayer'
 import { clamp } from 'utils/math'
 import { MEDIA_REFERRER, MEDIA_SESSION_USER_AGENT } from 'constants/http'
@@ -103,6 +103,8 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
   /** Last time the user interacted within the media frame. */
   private lastInteractTime: number = 0
 
+  private lastPlaybackPause: number = 0
+
   state: IState = { interacting: false, mediaReady: false, permitURLOnce: false }
 
   get isPlaying() {
@@ -193,6 +195,10 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     }
 
     this.props.dispatch(updatePlaybackTimer())
+
+    this.onMediaPlaybackChange.cancel()
+    this.onMediaSeek.cancel()
+    this.onMediaVolumeChange.cancel()
   }
 
   componentDidUpdate(prevProps: PrivateProps): void {
@@ -310,27 +316,27 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
 
   private onMediaPlaybackChange = throttle(
     (event: { state: 'playing' | 'paused'; time: number; isTrusted: boolean }) => {
-      const time = getPlaybackTime2(this.props)
-      const dt = Math.abs(event.time - time)
-      if (dt > 100) {
-        this.props.dispatch(server_requestSeek(event.time))
-      }
-
       if (this.isPlaying && event.state === 'paused') {
         this.props.dispatch(server_requestPlayPause())
+        this.lastPlaybackPause = Date.now()
       } else if (this.isPaused && event.state === 'playing') {
         this.props.dispatch(server_requestPlayPause())
       }
     },
-    100,
+    200,
     { leading: true, trailing: true }
   )
 
   private onMediaSeek = throttle(
     (time: number) => {
       this.props.dispatch(server_requestSeek(time))
+
+      // Resume playback if player paused prior to seek
+      if (this.isPaused && Date.now() - this.lastPlaybackPause < 500) {
+        this.props.dispatch(server_requestPlayPause())
+      }
     },
-    100,
+    500,
     { leading: true, trailing: true }
   )
 
