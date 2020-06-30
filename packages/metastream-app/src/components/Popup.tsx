@@ -60,11 +60,12 @@ interface Props {
 
 interface State {
   open: boolean
-  loaded: boolean
+  remotePopupReady: boolean
+  mediaPopupReady: boolean
 }
 
 export class PopupWindow extends Component<Props, State> {
-  state: State = { open: false, loaded: false }
+  state: State = { open: false, remotePopupReady: false, mediaPopupReady: false }
 
   static mediaWindowRef: Window | null = null
   static remoteWindowRef: Window | null = null
@@ -116,15 +117,16 @@ export class PopupWindow extends Component<Props, State> {
     this.closeWindows()
   }
 
-  private isWindowOpen = () => {
+  private areWindowsOpen = () => {
     return Boolean(
-      (PopupWindow.mediaWindowRef && !PopupWindow.mediaWindowRef.closed) ||
+      PopupWindow.mediaWindowRef &&
+        !PopupWindow.mediaWindowRef.closed &&
         (PopupWindow.remoteWindowRef && !PopupWindow.remoteWindowRef.closed)
     )
   }
 
   private closeWindows = () => {
-    this.setState({ open: false, loaded: false })
+    this.setState({ open: false, remotePopupReady: false, mediaPopupReady: false })
 
     const remoteWin = PopupWindow.remoteWindowRef
     const mediaWin = PopupWindow.mediaWindowRef
@@ -156,6 +158,7 @@ export class PopupWindow extends Component<Props, State> {
       (PopupWindow.remoteWindowRef && PopupWindow.remoteWindowRef.closed)
     ) {
       this.closeWindows()
+      return
     }
 
     // Force re-render of remote window
@@ -163,23 +166,26 @@ export class PopupWindow extends Component<Props, State> {
       const remoteDocument = PopupWindow.remoteWindowRef.document
       const stylesheets = remoteDocument.styleSheets
       if (stylesheets.length === 0) {
-        this.setState({ loaded: false })
+        this.setState({ remotePopupReady: false })
         this.onWindowLoad()
       }
     }
   }
 
   private startWindowCheck = () => {
-    if (this.isWindowOpen()) {
+    if (this.areWindowsOpen()) {
       this.setState({ open: true })
       if (this.intervalId) clearInterval(this.intervalId)
-      this.intervalId = setInterval(this.checkWindows, 1000) as any
+      this.intervalId = setInterval(this.checkWindows, 500) as any
       this.props.theRef(true)
     }
   }
 
   private onWindowLoad = () => {
-    this.setState({ loaded: true })
+    this.setState({
+      remotePopupReady: Boolean(PopupWindow.remoteWindowRef && !PopupWindow.remoteWindowRef.closed),
+      mediaPopupReady: Boolean(PopupWindow.mediaWindowRef && !PopupWindow.mediaWindowRef.closed)
+    })
 
     this.stylesheetObserver = new MutationObserver(this.onHeadMutation)
     this.stylesheetObserver.observe(document.head, {
@@ -214,8 +220,8 @@ export class PopupWindow extends Component<Props, State> {
   }
 
   private openWindows = () => {
-    this.openMediaWindow()
     this.openRemoteWindow()
+    this.openMediaWindow()
     setTimeout(() => {
       PopupWindow.focus()
     }, 0)
@@ -299,6 +305,7 @@ export class PopupWindow extends Component<Props, State> {
 
       if (windowRef) {
         PopupWindow.mediaWindowRef = windowRef
+        setTimeout(this.onWindowLoad, 10)
       }
 
       this.startWindowCheck()
@@ -306,7 +313,7 @@ export class PopupWindow extends Component<Props, State> {
   }
 
   private renderRemote() {
-    if (!(PopupWindow.remoteWindowRef && this.state.loaded)) return
+    if (!(PopupWindow.remoteWindowRef && this.state.remotePopupReady)) return
 
     const remoteDocument = PopupWindow.remoteWindowRef.document.body.ownerDocument
     const root = remoteDocument.getElementById('root')
@@ -315,9 +322,81 @@ export class PopupWindow extends Component<Props, State> {
     return createPortal(<Remote />, root)
   }
 
+  private renderPopupIcon() {
+    return (
+      <p>
+        <svg
+          width="220"
+          height="147"
+          viewBox="0 0 220 147"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <g stroke={this.state.mediaPopupReady ? '#f98673' : 'white'}>
+            <rect x="1" y="1" width="154" height="145" stroke-width="2" />
+            <line x1="8.74228e-08" y1="10" x2="154" y2="10" stroke-width="2" />
+            <path d="M65.5 51.3494L103 73L65.5 94.6506L65.5 51.3494Z" stroke-width="2" />
+          </g>
+          <g stroke={this.state.remotePopupReady ? '#f98673' : 'white'}>
+            <rect x="159" y="1" width="60" height="145" stroke-width="2" />
+            <line x1="159" y1="10" x2="220" y2="10" stroke-width="2" />
+            <line x1="166" y1="18" x2="213" y2="18" stroke-width="2" />
+            <line x1="166" y1="139" x2="213" y2="139" stroke-width="2" />
+            <line x1="166" y1="24" x2="213" y2="24" stroke-width="2" />
+            <line x1="166" y1="30" x2="199" y2="30" stroke-width="2" />
+          </g>
+        </svg>
+      </p>
+    )
+  }
+
+  private renderPopupPrompt() {
+    const { mediaHostname } = this
+    const onePopupOpen =
+      (this.state.remotePopupReady || this.state.mediaPopupReady) &&
+      (!this.state.remotePopupReady || !this.state.mediaPopupReady)
+
+    return (
+      <div className={styles.text}>
+        {mediaHostname && (
+          <p>
+            <Trans i18nKey="embedBlocked" values={{ host: mediaHostname }}>
+              To enable playback with <strong>this website</strong>, Metastream must open the
+              website in a popup.
+            </Trans>
+          </p>
+        )}
+        {this.renderPopupIcon()}
+        {onePopupOpen ? <p>⚠️&nbsp;{t('popupBlocked')}</p> : null}
+        <HighlightButton highlight icon="external-link" size="large" onClick={this.openWindows}>
+          {t('openInPopup')}
+          {onePopupOpen ? ' ' + t('openSecondPopup') : null}
+        </HighlightButton>
+      </div>
+    )
+  }
+
+  private renderFocusPopups() {
+    const { mediaHostname } = this
+    return (
+      <div className={styles.text}>
+        {mediaHostname && (
+          <p>
+            <Trans i18nKey="playingInPopup" values={{ host: mediaHostname }}>
+              <strong>website</strong> is playing in a popup.
+            </Trans>
+          </p>
+        )}
+        {this.renderPopupIcon()}
+        <HighlightButton icon="external-link" size="large" onClick={PopupWindow.focus}>
+          {t('focusPopup')}
+        </HighlightButton>
+      </div>
+    )
+  }
+
   render() {
     const { backgroundImage } = this.props
-    const { mediaHostname } = this
 
     return (
       <div className={styles.container}>
@@ -327,35 +406,8 @@ export class PopupWindow extends Component<Props, State> {
             style={{ backgroundImage: `url(${backgroundImage})` }}
           />
         )}
-        {this.state.open ? (
-          <div className={styles.text}>
-            {mediaHostname && (
-              <p>
-                <Trans i18nKey="playingInPopup" values={{ host: mediaHostname }}>
-                  <strong>website</strong> is playing in a popup.
-                </Trans>
-              </p>
-            )}
-            <HighlightButton icon="external-link" size="large" onClick={PopupWindow.focus}>
-              {t('focusPopup')}
-            </HighlightButton>
-            {this.renderRemote()}
-          </div>
-        ) : (
-          <div className={styles.text}>
-            {mediaHostname && (
-              <p>
-                <Trans i18nKey="embedBlocked" values={{ host: mediaHostname }}>
-                  To enable playback with <strong>this website</strong>, Metastream must open the
-                  website in a popup.
-                </Trans>
-              </p>
-            )}
-            <HighlightButton highlight icon="external-link" size="large" onClick={this.openWindows}>
-              {t('openInPopup')}
-            </HighlightButton>
-          </div>
-        )}
+        {this.state.open ? this.renderFocusPopups() : this.renderPopupPrompt()}
+        {this.renderRemote()}
       </div>
     )
   }
