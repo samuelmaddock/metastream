@@ -4,6 +4,7 @@ import { EventEmitter } from 'events'
 import { PopupWindow } from './Popup'
 import { WebviewError } from './lobby/overlays/WebviewError'
 import styles from './Webview.css'
+import { dispatchExtensionMessage } from 'utils/extension'
 
 const INITIALIZE_TIMEOUT_DURATION = 1000
 const NAVIGATION_TIMEOUT_DURATION = 5000
@@ -290,14 +291,11 @@ export class Webview extends Component<Props, State> {
 
   dispatchRemoteEvent<T>(type: string, payload?: T, options: { allFrames?: boolean } = {}): void {
     if (this.tabId === -1 || this.frameId === -1) return
-    window.postMessage(
-      {
-        type: 'metastream-webview-event',
-        payload: { type, payload },
-        tabId: this.tabId,
-        frameId: options.allFrames ? undefined : this.frameId
-      },
-      location.origin
+
+    dispatchExtensionMessage(
+      'metastream-webview-event',
+      { type, payload },
+      { tabId: this.tabId, frameId: options.allFrames ? undefined : this.frameId }
     )
   }
 

@@ -1,4 +1,5 @@
 import { CoreOptions, RequestResponse } from 'request'
+import { dispatchExtensionMessage } from './extension'
 
 type FetchResponse = Response & {
   body: any
@@ -63,10 +64,7 @@ const mainFetch = (url: string, options: FetchOptions = {}): Promise<FetchRespon
     }
 
     window.addEventListener('message', handler, false)
-    window.postMessage(
-      { type: 'metastream-fetch', payload: { requestId, url, options } },
-      location.origin
-    )
+    dispatchExtensionMessage('metastream-fetch', { requestId, url, options })
   })
 }
 
