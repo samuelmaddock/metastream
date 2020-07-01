@@ -344,6 +344,23 @@
         })
       }
 
+      validateHandlers() {
+        const { play, pause } = this._handlers
+
+        // Metastream needs to be able to set the playback state accurately.
+        // Some websites use the same handler for both play and pause which
+        // causes them to toggle.
+        if (typeof play === 'function' && typeof pause === 'function') {
+          // HACK: check whether function definitions are the same.
+          const playStr = play.toString()
+          const pauseStr = pause.toString()
+          if (play === pause || (!playStr.includes('[native code]') && playStr === pauseStr)) {
+            delete this._handlers.play
+            delete this._handlers.pause
+          }
+        }
+      }
+
       setActionHandler(name, handler) {
         const noopStr = (function(){}).toString() // prettier-ignore
         if (typeof handler !== 'function' || handler.toString() === noopStr) {
@@ -351,6 +368,7 @@
         }
         console.debug(`MediaSession.setActionHandler '${name}'`)
         this._handlers[name] = handler
+        this.validateHandlers()
       }
 
       execActionHandler(name, ...args) {
