@@ -828,6 +828,11 @@
 
     // Fit media within viewport
     function renderFullscreen() {
+      // Set minimum height for video to scale up to. Otherwise the video may
+      // reduce to its minimum height when transformed.
+      document.documentElement.style.setProperty('min-height', '100vh', 'important')
+
+      // Always hide document scrollbar while in fullscreen.
       document.body.style.setProperty('overflow', 'hidden', 'important')
 
       const { innerWidth: viewportWidth, innerHeight: viewportHeight } = window
@@ -914,6 +919,7 @@
       console.debug('Stopping autofullscreen')
       isFullscreen = false
       fullscreenElement = undefined
+      document.documentElement.minHeight = ''
       if (origDocumentOverflow) {
         document.body.style.overflow = origDocumentOverflow
         origDocumentOverflow = undefined
