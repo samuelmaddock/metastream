@@ -20,6 +20,7 @@ import { PlatformService } from 'platform'
 import { initAnalytics } from './analytics'
 import { initLocale } from 'locale'
 import { setPendingMedia } from 'lobby/actions/mediaPlayer'
+import { sendMediaRequest } from 'lobby/actions/media-request'
 import { SEC2MS } from 'utils/math'
 import { AccountService } from 'account/account'
 import { sleep } from 'utils/async'
@@ -121,7 +122,10 @@ async function main() {
     Object.assign((window as any).app, {
       history,
       store,
-      platform: PlatformService.get()
+      platform: PlatformService.get(),
+      sendMediaRequest: function(opts: any) {
+        return store.dispatch(sendMediaRequest(opts) as any)
+      }
     })
   }
 
