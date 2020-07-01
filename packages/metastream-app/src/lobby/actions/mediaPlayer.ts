@@ -21,7 +21,7 @@ import { addChat } from './chat'
 export const playPauseMedia = actionCreator<void>('PLAY_PAUSE_MEDIA')
 export const repeatMedia = actionCreator<number>('REPEAT_MEDIA')
 export const seekMedia = actionCreator<number>('SEEK_MEDIA')
-export const setPlaybackRate = actionCreator<number>('SEEK_PLAYBACK_RATE')
+export const setPlaybackRate = actionCreator<number>('SET_PLAYBACK_RATE')
 export const setMedia = actionCreator<IMediaItem>('SET_MEDIA')
 export const endMedia = actionCreator<boolean /* force */>('END_MEDIA')
 export const queueMedia = actionCreator<{ media: IMediaItem; index?: number }>('QUEUE_MEDIA')

@@ -355,6 +355,9 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
 
   private onMediaPlaybackRateChange = throttle(
     (playbackRate: number) => {
+      // ignore invalid sent when video is loading
+      if (playbackRate <= 0) return
+
       this.props.dispatch(server_requestSetPlaybackRate(playbackRate))
     },
     200,
