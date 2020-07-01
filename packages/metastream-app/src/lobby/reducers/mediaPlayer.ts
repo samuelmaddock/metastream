@@ -12,11 +12,14 @@ import {
   updateServerClockSkew,
   moveToTop,
   lockQueue,
-  setPendingMedia
+  setPendingMedia,
+  setPlaybackRate
 } from 'lobby/actions/mediaPlayer'
 import { MediaType } from 'media/types'
 import { ReplicatedState } from '../../network/types'
 import { resetLobby, initLobby } from '../actions/common'
+import { clamp } from 'utils/math'
+import { getPlaybackTime2 } from './mediaPlayer.helpers'
 
 export const enum PlaybackState {
   Idle,
@@ -76,11 +79,22 @@ export const enum RepeatMode {
   Count
 }
 
+export const enum PlaybackRate {
+  Min = 0.25,
+  Max = 4,
+  Default = 1
+}
+
 export interface IMediaPlayerState {
   playback: PlaybackState
   repeatMode: RepeatMode
+
+  /** Time that playback was initiated. */
   startTime?: number
+
+  /** Time while paused. */
   pauseTime?: number
+  playbackRate: number
   current?: IMediaItem
   queue: IMediaItem[]
   queueLocked: boolean
@@ -100,6 +114,7 @@ export const mediaPlayerReplicatedState: ReplicatedState<IMediaPlayerState> = {
   repeatMode: true,
   startTime: true,
   pauseTime: true,
+  playbackRate: true,
   current: true,
   queue: true,
   queueLocked: true,
@@ -111,6 +126,7 @@ const initialState: IMediaPlayerState = {
   repeatMode: RepeatMode.Off,
   startTime: undefined, // undefined to clear out old data
   pauseTime: undefined,
+  playbackRate: PlaybackRate.Default,
   current: undefined,
   queue: [],
   queueLocked: false,
@@ -130,6 +146,7 @@ export const mediaPlayer: Reducer<IMediaPlayerState> = (
       ...state,
       playback: PlaybackState.Playing,
       current: media,
+      playbackRate: PlaybackRate.Default,
       startTime: getMediaStartTime(media)
     }
   } else if (isType(action, endMedia)) {
@@ -156,24 +173,27 @@ export const mediaPlayer: Reducer<IMediaPlayerState> = (
     return {
       ...state,
       playback: next ? PlaybackState.Playing : PlaybackState.Idle,
+      playbackRate: PlaybackRate.Default,
       current: next,
       startTime: next ? getMediaStartTime(next) : undefined,
       queue: queue
     }
   } else if (isType(action, playPauseMedia)) {
     switch (state.playback) {
-      case PlaybackState.Playing:
+      case PlaybackState.Playing: {
+        const curTime = getPlaybackTime2(state)
         return {
           ...state,
           playback: PlaybackState.Paused,
           startTime: undefined,
-          pauseTime: action.payload
+          pauseTime: curTime
         }
+      }
       case PlaybackState.Paused:
         return {
           ...state,
           playback: PlaybackState.Playing,
-          startTime: Date.now() - state.pauseTime!,
+          startTime: Date.now() - state.pauseTime! / state.playbackRate,
           pauseTime: undefined
         }
     }
@@ -183,13 +203,28 @@ export const mediaPlayer: Reducer<IMediaPlayerState> = (
       case PlaybackState.Playing:
         return {
           ...state,
-          startTime: Date.now() - time
+          startTime: Date.now() - time / state.playbackRate
         }
       case PlaybackState.Paused:
         return {
           ...state,
           pauseTime: time
         }
+    }
+  } else if (isType(action, setPlaybackRate)) {
+    const playbackRate =
+      clamp(action.payload, PlaybackRate.Min, PlaybackRate.Max) || PlaybackRate.Default
+
+    switch (state.playback) {
+      case PlaybackState.Playing:
+        const curTime = getPlaybackTime2(state)
+        return {
+          ...state,
+          startTime: Date.now() - curTime / playbackRate,
+          playbackRate
+        }
+      default:
+        return { ...state, playbackRate }
     }
   } else if (isType(action, queueMedia)) {
     const { media, index } = action.payload

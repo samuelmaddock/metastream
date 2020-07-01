@@ -18,28 +18,23 @@ export const getPlaybackState = (state: IAppState) => {
 
 export const isPlaying = (state: IAppState) => getPlaybackState(state) === PlaybackState.Playing
 
-const calcTime = (playback: PlaybackState, startTime: number, pauseTime: number, delta: number) => {
-  switch (playback) {
+const calcTime = (state: IMediaPlayerState) => {
+  switch (state.playback) {
     case PlaybackState.Playing:
-      const curTime = Date.now() - (startTime! + delta)
+      const deltaTime = Date.now() - state.startTime!
+      const curTime = deltaTime * state.playbackRate + state.serverClockSkew
       return curTime
     case PlaybackState.Paused:
-      return pauseTime
+      return state.pauseTime!
     default:
       return -1
   }
 }
 
-export const getPlaybackTime = (state: IAppState) => {
-  const playback = getPlaybackState(state)
-  const startTime = state.mediaPlayer.startTime
-  const dt = state.mediaPlayer.serverClockSkew
-  return calcTime(playback, startTime!, state.mediaPlayer.pauseTime!, dt)
-}
+export const getPlaybackTime = (state: IAppState) => calcTime(state.mediaPlayer)
 
 /** Derive playback time from mediaPlayer state subset */
-export const getPlaybackTime2 = (state: IMediaPlayerState) =>
-  calcTime(state.playback, state.startTime!, state.pauseTime!, state.serverClockSkew)
+export const getPlaybackTime2 = (state: IMediaPlayerState) => calcTime(state)
 
 export const getMediaQueue = (state: IAppState) => {
   return state.mediaPlayer.queue

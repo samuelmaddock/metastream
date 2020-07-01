@@ -163,6 +163,7 @@ class _PlaybackControls extends Component<PrivateProps> {
           time={(isPaused ? pauseTime : startTime! + this.props.serverClockSkew) || 0}
           paused={isPaused}
           duration={media && media.duration}
+          playbackRate={this.props.playbackRate}
           onSeek={this.seek}
           cuePoints={this.getCuePoints()}
         />

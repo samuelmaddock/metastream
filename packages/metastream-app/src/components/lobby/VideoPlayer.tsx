@@ -8,7 +8,8 @@ import {
   updateMedia,
   updatePlaybackTimer,
   server_requestSeek,
-  server_requestPlayPause
+  server_requestPlayPause,
+  server_requestSetPlaybackRate
 } from 'lobby/actions/mediaPlayer'
 import { clamp } from 'utils/math'
 import { MEDIA_REFERRER, MEDIA_SESSION_USER_AGENT } from 'constants/http'
@@ -199,6 +200,7 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     this.onMediaPlaybackChange.cancel()
     this.onMediaSeek.cancel()
     this.onMediaVolumeChange.cancel()
+    this.onMediaPlaybackRateChange.cancel()
   }
 
   componentDidUpdate(prevProps: PrivateProps): void {
@@ -240,6 +242,8 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
       (this.isPlaying && this.props.startTime !== prevProps.startTime) ||
       (this.isPaused && this.props.pauseTime !== prevProps.pauseTime)
 
+    const didPlaybackRateUpdate = this.props.playbackRate !== prevProps.playbackRate
+
     if (didVolumeUpdate) this.updateVolume()
 
     // Update playback time if we didn't pause
@@ -248,6 +252,8 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     if (didPlaybackTimeUpdate && !didPause) this.updatePlaybackTime()
 
     if (didPlaybackUpdate) this.updatePlayback(this.props.playback)
+
+    if (didPlaybackRateUpdate) this.updatePlaybackRate(this.props.playbackRate)
   }
 
   private setupWebview = (webview: Webview | null): void => {
@@ -311,6 +317,9 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
           this.updateVolume()
         }
         break
+      case 'media-playback-rate-change':
+        this.onMediaPlaybackRateChange(action.payload.value)
+        break
     }
   }
 
@@ -344,6 +353,14 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     this.props.dispatch(setVolume(this.unscaleVolume(volume)))
   }, 200)
 
+  private onMediaPlaybackRateChange = throttle(
+    (playbackRate: number) => {
+      this.props.dispatch(server_requestSetPlaybackRate(playbackRate))
+    },
+    200,
+    { leading: true, trailing: true }
+  )
+
   private onMediaReady = (isTopSubFrame: boolean = false, payload?: MediaReadyPayload) => {
     console.debug('onMediaReady', payload)
 
@@ -366,7 +383,7 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
 
     this.updateVolume()
     this.updatePlaybackTime()
-    this.updatePlaybackRate(1)
+    this.updatePlaybackRate(this.props.playbackRate)
     this.updatePlayback(this.props.playback)
 
     const media = this.props.current

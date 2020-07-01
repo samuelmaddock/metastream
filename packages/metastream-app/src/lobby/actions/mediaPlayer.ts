@@ -18,9 +18,10 @@ import { clamp } from 'utils/math'
 import { getMediaParser } from './media-common'
 import { addChat } from './chat'
 
-export const playPauseMedia = actionCreator<number>('PLAY_PAUSE_MEDIA')
+export const playPauseMedia = actionCreator<void>('PLAY_PAUSE_MEDIA')
 export const repeatMedia = actionCreator<number>('REPEAT_MEDIA')
 export const seekMedia = actionCreator<number>('SEEK_MEDIA')
+export const setPlaybackRate = actionCreator<number>('SEEK_PLAYBACK_RATE')
 export const setMedia = actionCreator<IMediaItem>('SET_MEDIA')
 export const endMedia = actionCreator<boolean /* force */>('END_MEDIA')
 export const queueMedia = actionCreator<{ media: IMediaItem; index?: number }>('QUEUE_MEDIA')
@@ -113,12 +114,12 @@ export const updatePlaybackTimer = (): AppThunkAction => {
       const duration = media && media.duration
 
       if (duration && duration > 0) {
-        const elapsed = duration - curTime
+        const remaining = (duration - curTime) / state.mediaPlayer.playbackRate
 
         // Media end callback
         mediaTimeoutId = setTimeout(() => {
           dispatch(nextMedia())
-        }, elapsed) as any
+        }, remaining) as any
       }
     }
   }
@@ -169,12 +170,11 @@ const requestPlayPause = (): RpcThunk<void> => (dispatch, getState, context) => 
   if (!hasPlaybackPermissions(state, context.client)) return
 
   const playback = getPlaybackState(state)
-  const curTime = getPlaybackTime(state)
 
   switch (playback) {
     case PlaybackState.Playing:
     case PlaybackState.Paused:
-      dispatch(playPauseMedia(curTime))
+      dispatch(playPauseMedia())
       dispatch(updatePlaybackTimer())
       break
   }
@@ -225,6 +225,22 @@ export const server_requestSeekRelative = rpc(
   'requestSeekRelative',
   RpcRealm.Server,
   requestSeekRelative
+)
+
+const requestSetPlaybackRate = (playbackRate: number): RpcThunk<void> => (
+  dispatch,
+  getState,
+  context
+) => {
+  if (!hasPlaybackPermissions(getState(), context.client)) return
+
+  dispatch(setPlaybackRate(playbackRate))
+  dispatch(updatePlaybackTimer())
+}
+export const server_requestSetPlaybackRate = rpc(
+  'requestSetPlaybackRate',
+  RpcRealm.Server,
+  requestSetPlaybackRate
 )
 
 const requestDeleteMedia = (mediaId: string): RpcThunk<void> => (dispatch, getState, context) => {

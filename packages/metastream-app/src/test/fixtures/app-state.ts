@@ -1,5 +1,5 @@
 import { IAppState } from 'reducers'
-import { PlaybackState, RepeatMode } from 'lobby/reducers/mediaPlayer'
+import { PlaybackState, RepeatMode, PlaybackRate } from 'lobby/reducers/mediaPlayer'
 import { TEST_USER_PUBLIC_KEY } from './identity'
 import * as Media from './media'
 
@@ -20,6 +20,7 @@ export const INITIAL_TEST_APP_STATE: IAppState = {
   mediaPlayer: {
     playback: PlaybackState.Paused,
     repeatMode: RepeatMode.Off,
+    playbackRate: PlaybackRate.Default,
     startTime: 1575235118509,
     pauseTime: 39465.4879172277,
     current: Media.YOUTUBE,
@@ -80,12 +81,14 @@ export const INITIAL_TEST_APP_STATE_WITH_MEDIA_SNAPSHOT = {
   mediaPlayer: {
     playback: PlaybackState.Idle,
     repeatMode: RepeatMode.Off,
+    playbackRate: PlaybackRate.Default,
     queue: [],
     queueLocked: false,
     serverClockSkew: 0,
     localSnapshot: {
       playback: PlaybackState.Paused,
       repeatMode: RepeatMode.Off,
+      playbackRate: PlaybackRate.Default,
       startTime: 1575235118509,
       pauseTime: 39465.4879172277,
       current: Media.YOUTUBE,

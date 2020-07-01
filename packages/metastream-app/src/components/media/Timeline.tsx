@@ -16,6 +16,7 @@ interface IProps {
 
   paused?: boolean
   duration?: number
+  playbackRate?: number
 
   /**
    * Cue points with the number of seconds as the value.
@@ -37,7 +38,8 @@ const HOUR_MS = 3600 * 1000
 
 export class Timeline extends PureComponent<IProps, IState> {
   static defaultProps: Partial<IProps> = {
-    duration: 0
+    duration: 0,
+    playbackRate: 1
   }
 
   state: IState = { time: this.calcTime(), progress: this.calcProgress() }
@@ -50,20 +52,22 @@ export class Timeline extends PureComponent<IProps, IState> {
     }
   }
 
+  /** Calculate current timestamp. */
   private calcTime() {
-    const { time, paused, duration } = this.props
+    const { time, paused, duration, playbackRate } = this.props
 
     if (this.slider && this.slider.state.dragging) {
       const { cursorProgress } = this.slider.state
       return (cursorProgress || 0) * duration!
     }
 
-    return paused ? time : Date.now() - time
+    return paused ? time : (Date.now() - time) * playbackRate!
   }
 
+  /** Calculate progress bar amount. */
   private calcProgress() {
-    const { time, paused, duration } = this.props
-    const curTime = paused ? time : Date.now() - time
+    const { time, paused, duration, playbackRate } = this.props
+    const curTime = paused ? time : (Date.now() - time) * playbackRate!
     return clamp(curTime / (duration || 1), 0, 1)
   }
 
