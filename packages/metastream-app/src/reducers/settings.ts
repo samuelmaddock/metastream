@@ -51,7 +51,7 @@ const initialState: ISettingsState = {
   allowTracking: false,
   sessionMode: SessionMode.Private,
   language: DEFAULT_LANGUAGE,
-  chatLocation: ChatLocation.FloatLeft,
+  chatLocation: ChatLocation.DockRight,
   chatTimestamp: false,
   autoFullscreen: true,
   theaterMode: false,
