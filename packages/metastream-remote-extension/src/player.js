@@ -109,8 +109,11 @@
   // Code within function will be injected into main world.
   // No closure variables are allowed within the function body.
   const mainWorldScript = function() {
+    // Hold refs which could be overwritten
+    const debug = console.debug || console.log
+
     // Injected by Metastream
-    console.debug(`Metastream main world script ${location.href}`)
+    debug(`Metastream main world script ${location.href}`)
 
     // Hide opener when Metastream opens media in a popup.
     // Prevents pages from redirecting app.getmetastream.com, but still allows
@@ -238,7 +241,7 @@
       const { data: action } = event
       if (typeof action !== 'object' || typeof action.type !== 'string') return
 
-      console.debug(`[Metastream Remote] Received player event`, action)
+      debug(`[Metastream Remote] Received player event`, action)
 
       switch (action.type) {
         case 'set-settings': {
@@ -336,7 +339,7 @@
       }
 
       set metadata(metadata) {
-        console.debug('MediaSession.metadata', metadata)
+        debug('MediaSession.metadata', metadata)
         this._metadata = metadata
         dispatchMediaEvent({
           type: 'media-metadata-change',
@@ -366,7 +369,7 @@
         if (typeof handler !== 'function' || handler.toString() === noopStr) {
           return // ignore noop handlers (seen on tunein.com)
         }
-        console.debug(`MediaSession.setActionHandler '${name}'`)
+        debug(`MediaSession.setActionHandler '${name}'`)
         this._handlers[name] = handler
         this.validateHandlers()
       }
@@ -374,7 +377,7 @@
       execActionHandler(name, ...args) {
         if (!playerSettings.mediaSessionProxy) return false
         if (this._handlers.hasOwnProperty(name)) {
-          console.debug(`MediaSession.execActionHandler '${name}'`, ...args)
+          debug(`MediaSession.execActionHandler '${name}'`, ...args)
           this._handlers[name](...args)
           return true
         }
@@ -388,7 +391,7 @@
       enumerable: false,
       writable: true
     })
-    console.debug('Overwrote navigator.mediaSession')
+    debug('Overwrote navigator.mediaSession')
 
     //===========================================================================
     // HTMLMediaPlayer class for active media element.
@@ -647,7 +650,7 @@
 
         const ATTEMPT_INTERVAL = 200
         const tryPlayback = () => {
-          console.debug(
+          debug(
             `Attempting to force start playback [#${attempt++}][networkState=${
               this.media.networkState
             }][readyState=${this.media.readyState}]`
@@ -759,7 +762,7 @@
       }
 
       if (playButton instanceof HTMLButtonElement || playButton instanceof HTMLDivElement) {
-        console.debug('Attempting autoplay click', playButton)
+        debug('Attempting autoplay click', playButton)
         playButton.click()
       }
     }
@@ -767,7 +770,7 @@
     // Try different methods of initiating playback
     const attemptAutoplay = () => {
       if (hasActiveMedia()) return
-      console.debug(`Attempting autoplay in ${location.origin}`)
+      debug(`Attempting autoplay in ${location.origin}`)
       if (playJwPlayer()) return
       if (playVideoJS()) return
       if (pressStart()) return
@@ -885,7 +888,7 @@
       if (isFullscreen) stopAutoFullscreen()
       isFullscreen = true
 
-      console.debug('Starting autofullscreen', target)
+      debug('Starting autofullscreen', target)
 
       // Prevent scroll offset
       if ('scrollRestoration' in history) {
@@ -916,7 +919,7 @@
     }
 
     function stopAutoFullscreen() {
-      console.debug('Stopping autofullscreen')
+      debug('Stopping autofullscreen')
       isFullscreen = false
       fullscreenElement = undefined
       document.documentElement.minHeight = ''
@@ -1069,7 +1072,7 @@ ${ignoredSelectors}:empty {
       if (player) player.destroy()
       player = new HTMLMediaPlayer(media)
 
-      console.debug('Set active media', media, media.src, media.duration)
+      debug('Set active media', media, media.src, media.duration)
       window.MEDIA = media
 
       if (autoplayTimerId) {
@@ -1087,7 +1090,7 @@ ${ignoredSelectors}:empty {
     const addMedia = media => {
       if (mediaList.has(media) || mediaCooldownList.has(media)) return
 
-      console.debug('Add media', media, media.src, media.duration)
+      debug('Add media', media, media.src, media.duration)
       mediaList.add(media)
 
       // Immediately mute to prevent being really loud
