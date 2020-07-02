@@ -999,7 +999,7 @@ ${ignoredSelectors}:empty {
 
       const visibleTagName = target instanceof HTMLVideoElement ? 'video' : 'iframe'
       const style = document.createElement('style')
-      style.innerHTML = getFocusStyles(visibleTagName, playerSettings.theaterModeSelectors)
+      style.textContent = getFocusStyles(visibleTagName, playerSettings.theaterModeSelectors)
       theaterModeStyle = style
       document.head.appendChild(theaterModeStyle)
     }

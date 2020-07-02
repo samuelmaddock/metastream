@@ -114,7 +114,7 @@
         mutationList.reduce((scripts, mutation) => {
           if (mutation.type !== 'childList') return scripts
           const inlineScripts = Array.from(mutation.addedNodes).filter(
-            node => node instanceof HTMLScriptElement && node.innerHTML.length > 0
+            node => node instanceof HTMLScriptElement && node.textContent.length > 0
           )
           return inlineScripts.length > 0 ? [...scripts, ...inlineScripts] : scripts
         }, [])
@@ -124,8 +124,8 @@
         const scripts = getAddedScripts(mutationsList)
         for (let script of scripts) {
           for (let snippet of scriptSnippets) {
-            if (script.innerHTML.includes(snippet.code)) {
-              script.innerHTML = script.innerHTML.split(snippet.code).join(snippet.replacement)
+            if (script.textContent.includes(snippet.code)) {
+              script.textContent = script.textContent.split(snippet.code).join(snippet.replacement)
             }
           }
         }
