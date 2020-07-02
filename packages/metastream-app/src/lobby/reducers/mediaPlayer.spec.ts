@@ -1,5 +1,5 @@
 import { configureTestStore } from 'utils/tests'
-import { initLobby } from 'lobby/actions/common'
+import { initLobby, resetLobby } from 'lobby/actions/common'
 import { RepeatMode, PlaybackState, IMediaPlayerState, PlaybackRate } from './mediaPlayer'
 import {
   INITIAL_TEST_APP_STATE,
@@ -112,6 +112,22 @@ describe('mediaPlayer reducer', () => {
       store.dispatch(endMedia())
 
       expect(store.getState().mediaPlayer!.playbackRate).toEqual(PlaybackRate.Default)
+    })
+
+    it('restores session with appropriate time', () => {
+      const store = configureTestStore({ initialState: INITIAL_TEST_APP_STATE })
+
+      store.dispatch(playPauseMedia()) // start playing
+      store.dispatch(setPlaybackRate(PlaybackRate.Max))
+
+      const initialTime = getPlaybackTime(store.getState() as any)
+
+      // save and restore session
+      store.dispatch(resetLobby({ host: true }))
+      store.dispatch(initLobby({ host: true }))
+
+      const curTime = getPlaybackTime(store.getState() as any)
+      expect(curTime).toBeCloseTo(initialTime)
     })
   })
 })

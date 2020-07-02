@@ -20,6 +20,7 @@ import { ReplicatedState } from '../../network/types'
 import { resetLobby, initLobby } from '../actions/common'
 import { clamp } from 'utils/math'
 import { getPlaybackTime2 } from './mediaPlayer.helpers'
+import { start } from 'repl'
 
 export const enum PlaybackState {
   Idle,
@@ -301,7 +302,7 @@ export const mediaPlayer: Reducer<IMediaPlayerState> = (
       localSnapshot: {
         ...state,
         playback: isPlaying ? PlaybackState.Paused : state.playback,
-        pauseTime: isPlaying ? Date.now() - state.startTime! : state.pauseTime
+        pauseTime: isPlaying ? getPlaybackTime2(state) : state.pauseTime
       }
     }
   }
