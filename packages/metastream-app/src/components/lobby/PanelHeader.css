@@ -1,0 +1,36 @@
+.header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 10px;
+  flex-wrap: nowrap;
+}
+
+.title {
+  composes: single-line from '~styles/text.css';
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-right: 5px;
+  text-overflow: clip;
+}
+
+.tagline {
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  padding: 2px 4px;
+  font-size: 12px;
+  min-width: 18px;
+  text-align: center;
+}
+
+.actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: nowrap;
+  margin-left: auto;
+}
+
+.actions > *:not(:last-child) {
+  margin-right: 0.5rem;
+}

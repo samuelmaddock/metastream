@@ -10,19 +10,17 @@ export default {
   always: 'Her zaman',
   appearance: 'Görünüm',
   autoFullscreen: 'Otomatik tam ekran',
-  autoFullscreenDesc: 'Oynatılan videoyu tam ekran olarak sığdırmak için yakınlaştırır.',		   
+  autoFullscreenDesc: 'Oynatılan videoyu tam ekran olarak sığdırmak için yakınlaştırır.',
   avatar: 'Karakter',
   avatarCredit: '<1>{{artist}}</1> tarafından tasarlanan karakter seçildi.',
   cancel: 'İptal et',
   changelog: 'Değişiklikler',
   chat: 'Sohbet',
   chatColor: 'Sohbet rengi',
-  chatDockToRight: 'Ekranın sağ tarafına sabitle',
   chatMessageFailed: 'Mesajınız gönderilemedi, lütfen daha sonra tekrar deneyiniz.',
   chatPlaceholder: 'Mesajı veya linki buraya yaz',
-  chatRevealHint: 'Sohbete erişmek için <1></1>\'a tıklayın.',
+  chatRevealHint: "Sohbete erişmek için <1></1>'a tıklayın.",
   chatNewMessage: 'Yeni bir mesaj gönderildi!',
-  chatUndock: 'Sohbeti eski pozisyonuna al',
   chatTyping1: '<0></0> yazıyor…',
   chatTyping2: '<0></0> ve <2></2> yazıyor…',
   chatTyping3: '<0></0>, <2></2>, ve <4></4> yazıyor…',
@@ -45,7 +43,8 @@ export default {
   donators: 'Bağışçılar',
   duplicate: 'Kopyala',
   endSessionTitle: 'Oturumu kapatmak istediğinize emin misiniz?',
-  endSessionDescription: 'Özel oturuma geçmek bütün kullanıcıların oturumdan atılmasına yol açacaktır.',
+  endSessionDescription:
+    'Özel oturuma geçmek bütün kullanıcıların oturumdan atılmasına yol açacaktır.',
   endSessionModalDescription: 'Bütün kullanıcılar oturumdan atılacaktır.',
   endSessionButton: 'Oturumu kapat',
   enterJoinDest: 'Bir Metastream oturum linki giriniz.',
@@ -71,13 +70,15 @@ export default {
   networkDisconnectHostDisconnect: 'Sunucu bağlantıyı kapattı.',
   networkDisconnectError: 'Bağlantı hatası.',
   networkDisconnectInvalidClientInfo: 'İstemci kimliği hatalı.',
-  networkDisconnectVersionMismatch: 'İstemci versiyonu uyumsuz. Oturuma katılmak adına uygulamayı son sürüme güncelleyiniz.',
+  networkDisconnectVersionMismatch:
+    'İstemci versiyonu uyumsuz. Oturuma katılmak adına uygulamayı son sürüme güncelleyiniz.',
   networkDisconnectFull: 'Oturumda yer yok.',
   networkDisconnectKicked: 'Oturumdan atıldınız.',
   networkDisconnectMultiTab:
     'Birden fazla tarayıcı ya da sekmede Metastream oturumu yönetmektesiniz. Lütfen diğer sekmeleri ya da tarayıcıları kapatınız ve daha sonrasında bulunduğunuz sayfayı yenileyiniz.',
   networkDisconnectSessionNotFound: 'Oturum bulunamadı.',
-  networkTroubleshootingHelp: 'Yardım için lütfen <1>bağlantı hatalarını giderme rehberine</1> bakınız.',
+  networkTroubleshootingHelp:
+    'Yardım için lütfen <1>bağlantı hatalarını giderme rehberine</1> bakınız.',
   noticeAddedMedia: '<Media id="{{mediaId}}">{{mediaTitle}}</Media> eklendi.',
   noticeMediaError: '{{url}} eklenirken bir hata oluştu.',
   noticeNowPlaying:
@@ -102,9 +103,9 @@ export default {
     'Doğrudan bağlantıların sağlanabilmesi için <3>{{port}}</3> nolu <1>port yönlendirmesi</1> yapılması gerekmektedir.',
   safeBrowse: 'Güvenli mod',
   safeBrowseDesc: 'Bilinmeyen internet sitelerinden yükleme yapmadan önce uyarı ver.',
-  safeBrowseLoadContent: '<1>{{host}}</1>\'da/de yer alan medya yüklensin mi?',
+  safeBrowseLoadContent: "<1>{{host}}</1>'da/de yer alan medya yüklensin mi?",
   safeBrowseDisableForSession: 'Bu oturum için güvenli modu devre dışı bırak.',
-  session: 'Oturum',							
+  session: 'Oturum',
   sessionMode: 'Oturum modu',
   sessionModePublicDescription: 'Herkes bu oturuma katılabilir.',
   sessionModePrivateDescription: 'Oturuma katılmak için yönetici onayı beklenilmektedir.',
@@ -112,9 +113,10 @@ export default {
   settings: 'Ayarlar',
   shareFriendCode: 'Davet kodunuzu paylaşarak arkadaşlarınızı davet edebilirsiniz.',
   shareFriendCodeOther: 'Arkadaşlarınızı davet etmek için {{name}} kodunu kullanabilirsiniz.',
-  sharePublicIP: '<1>IP adresinizi</1> paylaşarak arkadaşlarınıza doğrudan bağlantı izni verebilirsiniz.',
+  sharePublicIP:
+    '<1>IP adresinizi</1> paylaşarak arkadaşlarınıza doğrudan bağlantı izni verebilirsiniz.',
   shareSessionUrl: 'Aşağıdaki oturum linkinden arkadaşlarınızı oturuma davet edebilirsiniz.',
-  supportMetastream: 'Metastream\'i destekleyerek daha fazla özelliğe sahip olabilirsiniz!',
+  supportMetastream: "Metastream'i destekleyerek daha fazla özelliğe sahip olabilirsiniz!",
   theaterMode: 'Sinema modu',
   theaterModeDesc:
     'Ekranda video hariçi her şeyi engeller. Bu durum videoya gömülü olmayan altyazıların görünmemesine yol açabilir.',
@@ -129,8 +131,8 @@ export default {
   userLeft: '<Username id="{{userId}}">{{username}}</Username> ayrıldı.',
   userNameChanged:
     '<Username id="{{userId}}">{{prevName}}</Username> adını <Username id="{{userId}}">{{name}}</Username> olarak değiştirdi.',
-  viewOnGitHub: 'GitHub\'da görüntüle',
+  viewOnGitHub: "GitHub'da görüntüle",
   waitingForHost: 'Yönetici izni bekleniliyor',
   welcome: 'Hoş geldiniz',
-  welcomeToMetastream: 'Metastream\'e hoş geldiniz'
+  welcomeToMetastream: "Metastream'e hoş geldiniz"
 }

@@ -80,3 +80,18 @@
 .tooltip {
   composes: absolute-full from '~styles/layout.css';
 }
+
+.iconButton {
+  display: flex;
+}
+
+.iconChildren {
+  align-self: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.iconHighlight {
+  color: var(--color-highlight);
+  font-weight: bolder;
+}

@@ -8,6 +8,7 @@ export interface IIconButtonProps {
   id?: string
   icon: string
   iconSize?: 'small'
+  highlight?: boolean
 
   title?: React.ReactNode
   tooltipProps?: TooltipProps
@@ -29,11 +30,15 @@ export const IconButton: React.SFC<IIconButtonProps> = ({
   title,
   tooltipProps,
   children,
+  highlight,
   ...props
 }) => {
   return (
     <button
       type="button"
+      className={cx(styles.iconButton, props.className, {
+        [styles.iconHighlight]: highlight
+      })}
       style={
         title
           ? {
@@ -50,7 +55,7 @@ export const IconButton: React.SFC<IIconButtonProps> = ({
       ) : null}
       <Icon name={icon} size={iconSize} pointerEvents="none" />
       {!!children && nbsp}
-      {children ? <span>{children}</span> : undefined}
+      {children ? <span className={styles.iconChildren}>{children}</span> : undefined}
     </button>
   )
 }

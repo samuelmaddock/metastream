@@ -3,6 +3,7 @@ import cx from 'classnames'
 import styles from './ListOverlay.css'
 
 import Menu from '@material-ui/core/Menu'
+import { PanelHeader } from './PanelHeader'
 
 interface IProps<T> {
   id: string
@@ -31,11 +32,11 @@ export class ListOverlay<T = any> extends Component<IProps<T>, IState<T>> {
           active: this.state.menuOpen
         })}
       >
-        <header className={styles.header}>
-          <h2 className={styles.title}>{this.props.title}</h2>
-          {this.props.tagline && <span className={styles.tagline}>{this.props.tagline}</span>}
-          <div className={styles.actions}>{this.props.action}</div>
-        </header>
+        <PanelHeader
+          title={this.props.title}
+          tagline={this.props.tagline}
+          action={this.props.action}
+        />
         <div className={styles.list}>
           {React.Children.count(this.props.children) > 0 ? (
             this.props.children

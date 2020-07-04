@@ -47,7 +47,6 @@
 
 .staticBackground {
   composes: absolute-full from '~styles/layout.css';
-  background: var(--color-transparent-dark-66);
 }
 
 .foreground {
@@ -68,6 +67,7 @@
   composes: scroller from '~styles/layout.css';
   max-height: 100%;
   flex-grow: 1;
+  /* align-self: flex-end; */
   overflow-y: auto;
   position: relative;
   cursor: auto;

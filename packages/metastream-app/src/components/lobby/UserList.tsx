@@ -8,7 +8,7 @@ import { getMaxUsers } from '../../lobby/reducers/session'
 import { server_kickUser, server_toggleUserRole, answerUserInvite } from '../../lobby/actions/users'
 
 import MenuItem from '@material-ui/core/MenuItem'
-import { HighlightButton } from '../common/button'
+import { HighlightButton, IconButton } from '../common/button'
 import { ListOverlay } from './ListOverlay'
 import { UserItem, ConnectedUserItem } from './UserItem'
 import { IReactReduxProps } from 'types/redux-thunk'
@@ -146,9 +146,9 @@ class _UserList extends Component<Props> {
     const highlight = isSoloSession && !isOffline
 
     return (
-      <HighlightButton icon="mail" highlight={highlight} onClick={this.props.onInvite}>
+      <IconButton icon="link" iconSize="small" highlight={highlight} onClick={this.props.onInvite}>
         {t('invite')}
-      </HighlightButton>
+      </IconButton>
     )
   }
 

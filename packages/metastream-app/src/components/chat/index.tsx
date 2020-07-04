@@ -7,17 +7,14 @@ import { Messages } from './Messages'
 import { ChatForm } from './ChatForm'
 
 import styles from './Chat.css'
-import { IconButton } from '../common/button'
-import { t } from 'locale'
 import { connect } from 'react-redux'
 import { IAppState } from 'reducers/index'
 import { sendChat, notifyTyping } from 'lobby/actions/chat'
-import { setSetting } from 'actions/settings'
-import { ChatLocation } from './Location'
 import { UserTyping } from './UserTyping'
 import { throttle } from 'lodash-es'
 import { TYPING_DURATION } from '../../lobby/reducers/chat.helpers'
 import { Cancelable } from 'lodash'
+import { ChatLayoutButton } from './ChatLayoutButton'
 
 const CSS_PROP_CHAT_FADE_DELAY = '--chat-fade-delay'
 
@@ -41,7 +38,6 @@ interface ConnectedProps {
 
 interface DispatchProps {
   sendMessage(text: string): void
-  toggleChatLayout(): void
   notifyTyping: () => void & Cancelable
 }
 
@@ -170,14 +166,7 @@ export class ChatComponent extends PureComponent<PrivateProps, State> {
             >
               <UserTyping />
             </ChatForm>
-            {this.props.showDockOption && (
-              <IconButton
-                icon={this.props.fade ? 'dock-right' : 'undock-float'}
-                className={styles.btnLayout}
-                onClick={this.props.toggleChatLayout}
-                title={t(this.props.fade ? 'chatDockToRight' : 'chatUndock')}
-              />
-            )}
+            {this.props.showDockOption && <ChatLayoutButton className={styles.btnLayout} />}
           </div>
         </div>
       </div>
@@ -261,13 +250,6 @@ export const Chat = connect(
   },
   (dispatch: Function): DispatchProps => ({
     sendMessage: (text: string) => dispatch(sendChat(text)),
-    toggleChatLayout() {
-      dispatch(
-        setSetting('chatLocation', location =>
-          location === ChatLocation.DockRight ? ChatLocation.FloatLeft : ChatLocation.DockRight
-        )
-      )
-    },
     notifyTyping: throttle(() => dispatch(notifyTyping()), TYPING_DURATION - 500, {
       trailing: false
     })

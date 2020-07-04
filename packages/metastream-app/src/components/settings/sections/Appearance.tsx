@@ -45,7 +45,7 @@ export default class AppearanceSettings extends Component<Props> {
 
         <SwitchOption
           inputId="dock_chat"
-          title={t('chatDockToRight')}
+          title={t('uiDockToRight')}
           checked={settings.chatLocation === ChatLocation.DockRight}
           onChange={checked => setSetting('chatLocation', location =>
             location === ChatLocation.DockRight ? ChatLocation.FloatLeft : ChatLocation.DockRight

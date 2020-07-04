@@ -25,6 +25,7 @@ import { IReactReduxProps } from 'types/redux-thunk'
 import { ChatLocation } from './chat/Location'
 import { setPendingMedia } from 'lobby/actions/mediaPlayer'
 import { sendMediaRequest, ClientMediaRequestOptions } from 'lobby/actions/media-request'
+import { Sidebar } from './sidebar'
 
 interface IProps {
   host: boolean
@@ -122,13 +123,7 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
 
         {this.renderControls()}
 
-        {this.props.isChatDocked && (
-          <Chat
-            theRef={el => (this.chat = el)}
-            className={styles.chatDocked}
-            disabled={!!this.state.modal}
-          />
-        )}
+        {this.props.isChatDocked && <Sidebar className={styles.chatDocked} />}
 
         {this.isInactive && <div className={styles.inactiveOverlay} />}
       </div>
@@ -142,20 +137,25 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
       <>
         {this.renderPlaybackControls()}
 
-        <UserList
-          className={styles.users}
-          onInvite={() => this.openModal(LobbyModal.SessionSettings)}
-        />
-        <MediaList className={styles.queue} onShowInfo={this.showInfo} />
-
         {!this.props.isChatDocked && (
-          <Chat
-            theRef={el => (this.chat = el)}
-            className={styles.chatFloat}
-            disabled={!!this.state.modal}
-            showHint
-            fade
-          />
+          <>
+            <UserList
+              className={styles.users}
+              onInvite={() => this.openModal(LobbyModal.SessionSettings)}
+            />
+            <MediaList
+              className={styles.queue}
+              onOpenMediaBrowser={this.showBrowser}
+              onShowInfo={this.showInfo}
+            />
+            <Chat
+              theRef={el => (this.chat = el)}
+              className={styles.chatFloat}
+              disabled={!!this.state.modal}
+              showHint
+              fade
+            />
+          </>
         )}
 
         {this.state.modal && this.renderModal()}
@@ -270,6 +270,10 @@ class _GameLobby extends React.Component<PrivateProps, IState> {
         }}
       />
     )
+  }
+
+  private showBrowser = () => {
+    this.openModal(LobbyModal.Browser)
   }
 
   private showInfo = (media?: IMediaItem) => {

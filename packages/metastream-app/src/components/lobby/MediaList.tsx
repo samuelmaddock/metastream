@@ -29,6 +29,7 @@ import { LobbyModal } from 'reducers/ui'
 interface IProps {
   className?: string
   onShowInfo(media?: IMediaItem): void
+  onOpenMediaBrowser(): void
 }
 
 interface IConnectedProps {
@@ -39,7 +40,6 @@ interface IConnectedProps {
 }
 
 interface DispatchProps {
-  openMediaBrowser(): void
   moveToTop(mediaId: string): void
   sendMediaRequest(url: string): void
   deleteMedia(mediaId: string): void
@@ -163,7 +163,12 @@ class _MediaList extends Component<Props> {
     if (!hasPlaybackPermissions && mediaQueueLocked) return
 
     return (
-      <HighlightButton icon="plus" onClick={this.props.openMediaBrowser} title={t('addMedia')} />
+      <IconButton
+        icon="plus"
+        iconSize="small"
+        title={t('addMedia')}
+        onClick={this.props.onOpenMediaBrowser}
+      />
     )
   }
 }
@@ -177,9 +182,6 @@ export const MediaList = withNamespaces()(
       mediaQueueLocked: state.mediaPlayer.queueLocked
     }),
     (dispatch): DispatchProps => ({
-      openMediaBrowser() {
-        dispatch(setLobbyModal(LobbyModal.Browser))
-      },
       moveToTop(mediaId) {
         dispatch(server_requestMoveToTop(mediaId) as any)
       },

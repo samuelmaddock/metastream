@@ -1,0 +1,23 @@
+.container {
+  composes: fill from '~styles/layout.css';
+  /* background: var(--app-bg-lobby); */
+  box-shadow: inset 1px 0 0 0 var(--color-transparent-light-10);
+  background: var(--color-transparent-dark-66);
+}
+
+.tab {
+  min-width: 0 !important;
+}
+
+.chat {
+  width: 100%;
+  flex: 1 1 auto;
+}
+
+.list {
+  flex: 0 1 auto;
+  height: 14rem;
+  min-height: 8rem;
+  max-height: 24%;
+  box-shadow: inset 0 -1px 0 0 var(--color-transparent-light-10);
+}
