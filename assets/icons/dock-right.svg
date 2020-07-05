@@ -1,5 +1,5 @@
-<svg id="dock-right"
-	xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-layout">
-	<rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-	<line x1="16" y1="21" x2="16" y2="5"></line>
+<svg id="dock-right" width="24" height="24" viewBox="0 0 24 24" fill="none"
+	xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
+	<path fill-rule="evenodd" clip-rule="evenodd" d="M3 5C3 3.89543 3.89543 3 5 3H19C20.1046 3 21 3.89543 21 5V19C21 20.1046 20.1046 21 19 21H5C3.89543 21 3 20.1046 3 19V5Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+	<path d="M15 21V4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

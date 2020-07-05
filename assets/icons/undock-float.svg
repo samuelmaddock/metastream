@@ -1,5 +1,5 @@
-<svg id="undock-float"
-	xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-layout">
-	<rect x="8" y="3" width="13" height="13" rx="2" ry="2"></rect>
-	<rect x="3" y="8" width="13" height="13" rx="2" ry="2"></rect>
+<svg id="undock-float" width="24" height="24" viewBox="0 0 24 24" fill="none"
+	xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
+	<path fill-rule="evenodd" clip-rule="evenodd" d="M3 11C3 9.89543 3.89543 9 5 9H13C14.1046 9 15 9.89543 15 11V19C15 20.1046 14.1046 21 13 21H5C3.89543 21 3 20.1046 3 19V11Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+	<path fill-rule="evenodd" clip-rule="evenodd" d="M9 5C9 3.89543 9.89543 3 11 3H19C20.1046 3 21 3.89543 21 5V13C21 14.1046 20.1046 15 19 15H11C9.89543 15 9 14.1046 9 13V5Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

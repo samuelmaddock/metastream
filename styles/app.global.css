@@ -6,7 +6,9 @@ Variables
 :root {
   --color-transparent-dark-30: rgba(0, 0, 0, 0.3);
   --color-transparent-dark-50: rgba(0, 0, 0, 0.5);
+  --color-transparent-dark-66: rgba(0, 0, 0, 0.6);
   --color-transparent-dark-80: rgba(0, 0, 0, 0.8);
+  --color-transparent-light-10: rgba(255, 255, 255, 0.1);
   --color-transparent-light-30: rgba(255, 255, 255, 0.3);
   --color-transparent-light-40: rgba(255, 255, 255, 0.4);
   --color-transparent-light-50: rgba(255, 255, 255, 0.5);
