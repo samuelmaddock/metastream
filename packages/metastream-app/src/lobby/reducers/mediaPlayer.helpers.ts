@@ -21,8 +21,8 @@ export const isPlaying = (state: IAppState) => getPlaybackState(state) === Playb
 const calcTime = (state: IMediaPlayerState) => {
   switch (state.playback) {
     case PlaybackState.Playing:
-      const deltaTime = Date.now() - state.startTime!
-      const curTime = deltaTime * state.playbackRate + state.serverClockSkew
+      const deltaTime = Date.now() - (state.startTime! + state.serverClockSkew)
+      const curTime = deltaTime * state.playbackRate
       return curTime
     case PlaybackState.Paused:
       return state.pauseTime!
