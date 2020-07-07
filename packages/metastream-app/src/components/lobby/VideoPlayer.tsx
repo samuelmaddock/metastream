@@ -196,7 +196,10 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     }
 
     this.props.dispatch(updatePlaybackTimer())
+    this.cancelCallbacks()
+  }
 
+  private cancelCallbacks() {
     this.onMediaPlaybackChange.cancel()
     this.onMediaSeek.cancel()
     this.onMediaVolumeChange.cancel()
@@ -577,6 +580,8 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     this.updatePlayback(PlaybackState.Paused)
 
     this.setState({ mediaReady: false })
+
+    this.cancelCallbacks()
 
     if (this.mediaTimeout) clearTimeout(this.mediaTimeout)
     this.mediaTimeout = setTimeout(this.onMediaTimeout, MEDIA_TIMEOUT_DURATION) as any
