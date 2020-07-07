@@ -315,7 +315,7 @@ export class PopupWindow extends Component<Props, State> {
   private renderRemote() {
     if (!(PopupWindow.remoteWindowRef && this.state.remotePopupReady)) return
 
-    const remoteDocument = PopupWindow.remoteWindowRef.document.body.ownerDocument
+    const remoteDocument = PopupWindow.remoteWindowRef.document
     const root = remoteDocument.getElementById('root')
     if (!root) return
 
