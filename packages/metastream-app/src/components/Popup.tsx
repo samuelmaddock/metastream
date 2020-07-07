@@ -187,10 +187,12 @@ export class PopupWindow extends Component<Props, State> {
       mediaPopupReady: Boolean(PopupWindow.mediaWindowRef && !PopupWindow.mediaWindowRef.closed)
     })
 
+    if (this.stylesheetObserver) {
+      this.stylesheetObserver.disconnect()
+    }
+
     this.stylesheetObserver = new MutationObserver(this.onHeadMutation)
-    this.stylesheetObserver.observe(document.head, {
-      childList: true
-    })
+    this.stylesheetObserver.observe(document.head, { childList: true })
 
     this.copyStyleSheets()
   }
@@ -260,6 +262,7 @@ export class PopupWindow extends Component<Props, State> {
     }
 
     if (windowRef) {
+      windowRef.addEventListener('DOMContentLoaded', this.onWindowLoad)
       windowRef.addEventListener('load', this.onWindowLoad)
       PopupWindow.remoteWindowRef = windowRef
     }
