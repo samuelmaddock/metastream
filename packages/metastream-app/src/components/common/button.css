@@ -58,23 +58,23 @@
 }
 
 .medium {
-  padding: 0 12px;
-  height: 40px;
-  font-size: 18px;
+  padding: 0 0.75rem;
+  height: 2.5rem;
+  font-size: 1.125rem;
 }
 
 .medium svg {
-  margin-right: 10px;
+  margin-right: 0.625rem;
 }
 
 .large {
-  padding: 10px 16px;
-  height: 60px;
-  font-size: 24px;
+  padding: 0.625rem 1rem;
+  height: 3.75rem;
+  font-size: 1.5rem;
 }
 
 .large svg {
-  margin-right: 14px;
+  margin-right: 0.875rem;
 }
 
 .tooltip {

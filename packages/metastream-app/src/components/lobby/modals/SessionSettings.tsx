@@ -120,19 +120,21 @@ class SessionSettings extends Component<PrivateProps, IState> {
     return (
       <p className={styles.sessionMode}>
         <label className={styles.label}>{t('sessionMode')}</label>
-        {modes.map(mode => (
-          <HighlightButton
-            key={mode.label}
-            icon={mode.icon}
-            size="large"
-            highlight={sessionMode === mode.mode}
-            onClick={() => mode.onClick(mode.mode)}
-            onMouseEnter={() => this.setState({ previewMode: mode.mode })}
-            onMouseLeave={() => this.setState({ previewMode: undefined })}
-          >
-            {mode.label}
-          </HighlightButton>
-        ))}
+        <div className={styles.sessionModes}>
+          {modes.map(mode => (
+            <HighlightButton
+              key={mode.label}
+              icon={mode.icon}
+              size="large"
+              highlight={sessionMode === mode.mode}
+              onClick={() => mode.onClick(mode.mode)}
+              onMouseEnter={() => this.setState({ previewMode: mode.mode })}
+              onMouseLeave={() => this.setState({ previewMode: undefined })}
+            >
+              {mode.label}
+            </HighlightButton>
+          ))}
+        </div>
         {selectedMode && <label className={styles.descLabel}>{selectedMode.desc}</label>}
       </p>
     )

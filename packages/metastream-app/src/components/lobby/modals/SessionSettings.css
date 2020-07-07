@@ -14,6 +14,12 @@
   display: block;
 }
 
+.sessionModes {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+
 .sessionMode button:not(:first-of-type) {
   margin-left: 1rem;
 }

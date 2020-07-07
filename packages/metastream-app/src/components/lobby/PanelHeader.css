@@ -11,6 +11,8 @@
   composes: row-center from '~styles/layout.css';
   flex-grow: 1;
   padding-right: 0;
+  min-width: 0;
+  height: 100%;
 }
 
 .title {

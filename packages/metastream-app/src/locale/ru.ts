@@ -94,7 +94,7 @@ export default {
   unlimited: 'Неограниченный',
   unlockQueue: 'Разблокировать очередь',
   username: 'Имя пользователя',
-  users: '',
+  users: 'Пользователь',
   userJoined: '<Username id="{{userId}}">{{username}}</Username> присоеденился',
   userLeft: '<Username id="{{userId}}">{{username}}</Username> вышел',
   viewOnGitHub: 'Посмотреть на GitHub',
