@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import cx from 'classnames'
 
 import { IAppState } from '../../reducers'
 import { IUsersState, IUser, UserRole, IUserInvite } from '../../lobby/reducers/users'
@@ -8,7 +9,7 @@ import { getMaxUsers } from '../../lobby/reducers/session'
 import { server_kickUser, server_toggleUserRole, answerUserInvite } from '../../lobby/actions/users'
 
 import MenuItem from '@material-ui/core/MenuItem'
-import { HighlightButton, IconButton } from '../common/button'
+import { IconButton } from '../common/button'
 import { ListOverlay } from './ListOverlay'
 import { UserItem, ConnectedUserItem } from './UserItem'
 import { IReactReduxProps } from 'types/redux-thunk'
@@ -17,9 +18,11 @@ import { localUserId } from '../../network'
 import { assetUrl } from 'utils/appUrl'
 import { SessionMode } from 'reducers/settings'
 import { withNamespaces, WithNamespaces } from 'react-i18next'
+import { setSetting } from 'actions/settings'
 
 interface IProps {
   className?: string
+  collapsible?: boolean
   onInvite(): void
 }
 
@@ -29,6 +32,7 @@ interface IConnectedProps {
   isHost: boolean
   isAdmin: boolean
   sessionMode: SessionMode
+  collapsed: boolean
 }
 
 interface IState {
@@ -83,11 +87,20 @@ class _UserList extends Component<Props> {
       <ListOverlay
         ref={(e: any) => (this.listOverlay = e)}
         id="userlist"
-        className={this.props.className}
+        className={cx(this.props.className, {
+          collapsed: this.props.collapsed
+        })}
         title={t('users')}
         tagline={this.userSlots}
         action={this.renderActions()}
         renderMenuOptions={this.renderMenuOptions}
+        onTitleClick={
+          this.props.collapsible
+            ? () => {
+                this.props.dispatch(setSetting('userListCollapsed', collapsed => !collapsed))
+              }
+            : undefined
+        }
       >
         {this.props.users.invites.map(this.renderInvite)}
         {this.state.sortedUsers.map(this.renderUser)}
@@ -117,6 +130,10 @@ class _UserList extends Component<Props> {
 
   private renderUser = (user: IUser) => {
     const requestApproval = user.pending && this.props.isAdmin
+
+    if (!requestApproval && this.props.collapsible && this.props.collapsed) {
+      return
+    }
 
     return (
       <ConnectedUserItem
@@ -193,7 +210,8 @@ export const UserList = withNamespaces()(
         users: state.users,
         isAdmin: isAdmin(state),
         isHost: isHost(state),
-        sessionMode: state.settings.sessionMode
+        sessionMode: state.settings.sessionMode,
+        collapsed: !!state.settings.userListCollapsed
       }
     }
   )(_UserList)

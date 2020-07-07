@@ -1,9 +1,16 @@
 .header {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+  composes: row-center from '~styles/layout.css';
+}
+
+.titleContainer,
+.actions {
   padding: 10px;
-  flex-wrap: nowrap;
+}
+
+.titleContainer {
+  composes: row-center from '~styles/layout.css';
+  flex-grow: 1;
+  padding-right: 0;
 }
 
 .title {
@@ -24,11 +31,7 @@
 }
 
 .actions {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  flex-wrap: nowrap;
-  margin-left: auto;
+  composes: row-center from '~styles/layout.css';
 }
 
 .actions > *:not(:last-child) {

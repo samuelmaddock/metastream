@@ -67,6 +67,13 @@
   align-items: center;
 }
 
+.row-center {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
 /*
   Custom Scrollbar
 */

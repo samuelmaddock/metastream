@@ -11,8 +11,8 @@ interface IProps<T> {
   title?: string
   tagline?: string
   action?: ReactNode
-  placeholder?: ReactNode
   renderMenuOptions: (item: T, onClose: Function) => ReactNode
+  onTitleClick?: React.MouseEventHandler<HTMLButtonElement>
 }
 
 interface IState<T> {
@@ -36,14 +36,9 @@ export class ListOverlay<T = any> extends Component<IProps<T>, IState<T>> {
           title={this.props.title}
           tagline={this.props.tagline}
           action={this.props.action}
+          onTitleClick={this.props.onTitleClick}
         />
-        <div className={styles.list}>
-          {React.Children.count(this.props.children) > 0 ? (
-            this.props.children
-          ) : (
-            <div className={styles.placeholder}>{this.props.placeholder}</div>
-          )}
-        </div>
+        <div className={styles.list}>{this.props.children}</div>
         {this.renderMenu()}
       </div>
     )

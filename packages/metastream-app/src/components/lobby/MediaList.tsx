@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import cx from 'classnames'
 
 import { IAppState } from '../../reducers'
 import { IMediaItem } from '../../lobby/reducers/mediaPlayer'
@@ -14,7 +15,7 @@ import {
   server_requestToggleQueueLock
 } from '../../lobby/actions/mediaPlayer'
 
-import { HighlightButton, IconButton } from '../common/button'
+import { IconButton } from '../common/button'
 import { ListOverlay } from './ListOverlay'
 
 import MenuItem from '@material-ui/core/MenuItem'
@@ -23,11 +24,11 @@ import { localUser } from 'network'
 import { copyMediaLink, openMediaInBrowser } from '../../media/utils'
 import { withNamespaces, WithNamespaces } from 'react-i18next'
 import { sendMediaRequest } from 'lobby/actions/media-request'
-import { setLobbyModal } from 'actions/ui'
-import { LobbyModal } from 'reducers/ui'
+import { setSetting } from 'actions/settings'
 
 interface IProps {
   className?: string
+  collapsible?: boolean
   onShowInfo(media?: IMediaItem): void
   onOpenMediaBrowser(): void
 }
@@ -37,6 +38,7 @@ interface IConnectedProps {
   currentMedia?: IMediaItem
   mediaQueue: IMediaItem[]
   mediaQueueLocked: boolean
+  collapsed: boolean
 }
 
 interface DispatchProps {
@@ -44,6 +46,7 @@ interface DispatchProps {
   sendMediaRequest(url: string): void
   deleteMedia(mediaId: string): void
   toggleQueueLock(): void
+  toggleCollapsed(): void
 }
 
 type Props = IProps & IConnectedProps & DispatchProps & WithNamespaces
@@ -62,7 +65,7 @@ class _MediaList extends Component<Props> {
       <ListOverlay
         ref={(e: any) => (this.listOverlay = e)}
         id="mediaqueue"
-        className={this.props.className}
+        className={cx(this.props.className, { collapsed: this.props.collapsed })}
         title={t('nextUp')}
         tagline={this.props.mediaQueue.length ? `${this.props.mediaQueue.length}` : undefined}
         action={
@@ -71,6 +74,7 @@ class _MediaList extends Component<Props> {
             {this.renderAddMedia()}
           </>
         }
+        onTitleClick={this.props.collapsible ? this.props.toggleCollapsed : undefined}
         renderMenuOptions={(media: IMediaItem, close) => {
           let items = [
             {
@@ -125,17 +129,19 @@ class _MediaList extends Component<Props> {
           ))
         }}
       >
-        {this.mediaList.map(media => {
-          return (
-            <MediaItem
-              key={media.id}
-              media={media}
-              onClickMenu={e => {
-                this.listOverlay!.onSelect(e, media)
-              }}
-            />
-          )
-        })}
+        {this.props.collapsible && this.props.collapsed
+          ? null
+          : this.mediaList.map(media => {
+              return (
+                <MediaItem
+                  key={media.id}
+                  media={media}
+                  onClickMenu={e => {
+                    this.listOverlay!.onSelect(e, media)
+                  }}
+                />
+              )
+            })}
       </ListOverlay>
     )
   }
@@ -179,7 +185,8 @@ export const MediaList = withNamespaces()(
       hasPlaybackPermissions: hasPlaybackPermissions(state, localUser()),
       currentMedia: getCurrentMedia(state),
       mediaQueue: getMediaQueue(state),
-      mediaQueueLocked: state.mediaPlayer.queueLocked
+      mediaQueueLocked: state.mediaPlayer.queueLocked,
+      collapsed: !!state.settings.mediaListCollapsed
     }),
     (dispatch): DispatchProps => ({
       moveToTop(mediaId) {
@@ -196,6 +203,9 @@ export const MediaList = withNamespaces()(
       },
       toggleQueueLock() {
         dispatch(server_requestToggleQueueLock() as any)
+      },
+      toggleCollapsed() {
+        dispatch(setSetting('mediaListCollapsed', collapsed => !collapsed))
       }
     })
   )(_MediaList)

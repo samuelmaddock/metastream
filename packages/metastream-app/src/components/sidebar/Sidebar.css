@@ -16,8 +16,11 @@
 
 .list {
   flex: 0 1 auto;
-  height: 14rem;
-  min-height: 8rem;
   max-height: 24%;
   box-shadow: inset 0 -1px 0 0 var(--color-transparent-light-10);
+}
+
+.list:not(:global(.collapsed)) {
+  height: 14rem;
+  min-height: 8rem;
 }

@@ -40,6 +40,8 @@ export interface ISettingsState {
   language: string
   chatLocation: ChatLocation
   chatTimestamp: boolean
+  userListCollapsed?: boolean
+  mediaListCollapsed?: boolean
   autoFullscreen: boolean
   theaterMode: boolean
   safeBrowse: boolean

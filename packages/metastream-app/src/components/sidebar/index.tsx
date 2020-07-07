@@ -27,6 +27,7 @@ export const Sidebar: React.SFC<Props> = ({ className, popup }) => {
           dispatchExtensionMessage('metastream-focus')
           dispatch(setLobbyModal(LobbyModal.SessionSettings))
         }}
+        collapsible
       />
       <MediaList
         className={styles.list}
@@ -38,6 +39,7 @@ export const Sidebar: React.SFC<Props> = ({ className, popup }) => {
           dispatchExtensionMessage('metastream-focus')
           dispatch(setLobbyModal(LobbyModal.MediaInfo))
         }}
+        collapsible
       />
       <PanelHeader title={t('chat')} action={popup ? null : <ChatLayoutButton />} />
       <Chat className={styles.chat} showDockOption={false} />
