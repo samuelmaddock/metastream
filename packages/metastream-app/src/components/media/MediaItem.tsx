@@ -4,6 +4,9 @@ import styles from './Media.css'
 import { formatMs } from 'utils/time'
 
 import { IconButton } from '../common/button'
+import { assetUrl } from 'utils/appUrl'
+
+const DEFAULT_FAVICON = assetUrl('icons/favicon-default.svg')
 
 interface IProps {
   media: IMediaItem
@@ -24,8 +27,24 @@ export class MediaItem extends Component<IProps, IState> {
   render(): JSX.Element | null {
     const { media } = this.props
 
+    let hostname
+
+    try {
+      hostname = new URL(media.url).hostname
+    } catch {}
+
     return (
       <figure className={styles.container}>
+        <img
+          src={media.favicon || DEFAULT_FAVICON}
+          className={styles.favicon}
+          title={hostname}
+          onError={e => {
+            if (e.target && (e.target as any).tagName === 'IMG') {
+              ;(e.target as any).src = DEFAULT_FAVICON
+            }
+          }}
+        />
         <figcaption className={styles.media}>
           <div className={styles.title} title={media.title}>
             {media.title}

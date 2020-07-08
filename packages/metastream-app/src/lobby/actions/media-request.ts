@@ -140,7 +140,8 @@ const requestMedia = (opts: MediaRequestOptions): RpcThunk<Promise<MediaRequestR
     ownerId: userId,
     ownerName: getUserName(getState(), userId),
     hasMore: res.hasMore,
-    startTime: opts.time && res.duration && opts.time < res.duration ? opts.time : undefined
+    startTime: opts.time && res.duration && opts.time < res.duration ? opts.time : undefined,
+    favicon: res.favicon
   }
 
   if (res.state) {

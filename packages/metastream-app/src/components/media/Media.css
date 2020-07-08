@@ -16,13 +16,11 @@
   justify-content: space-between;
 }
 
-/* .top {
-
+.favicon {
+  align-self: center;
+  margin-right: 0.5rem;
+  width: 1.25rem;
 }
-
-.bottom {
-
-} */
 
 .title {
   composes: single-line from '~styles/text.css';

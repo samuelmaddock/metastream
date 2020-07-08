@@ -56,6 +56,9 @@ export interface IMediaResponse {
 
   /** Milliseconds */
   startTime?: number
+
+  /** Website favicon URL. */
+  favicon?: string
 }
 
 export interface IMediaContext {

@@ -64,6 +64,9 @@ export interface IMediaItem {
 
   /** Time to start playback at. */
   startTime?: number
+
+  /** Website favicon URL. */
+  favicon?: string
 }
 
 export interface PendingMedia {
