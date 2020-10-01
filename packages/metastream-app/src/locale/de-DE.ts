@@ -1,5 +1,6 @@
 export default {
   add: 'Hinzufügen',
+  addMediaCTA: 'Starte, indem du Medien hinzufügst.',
   addMedia: 'Medien hinzufügen',
   admin: 'Admin',
   advanced: 'Erweitert',
@@ -34,10 +35,13 @@ export default {
   endSessionTitle: 'Sitzung beenden?',
   endSessionDescription: 'Der Umstieg auf eine private Sitzung wird alle Benutzer trennen.',
   enterJoinDest: 'Metastream Sitzungs-URL eingeben.',
+  embedBlocked:
+    'Um die Wiedergabe mit <1>{{host}}</1> zu starten, muss Metastream die Webseite in einem Popup öffnen.',
   findSession: 'Sitzung finden',
   findSessionDescription:
     'Trete den <1>#sessions</1> Channel auf dem Metastream Discord bei, um die Sitzungen anderer Nutzer zu finden. Klicke auf das Discord Logo, um dem Server beizutreten.',
   friendCode: 'Freundescode',
+  focusPopup: 'Popup fokussieren',
   getStarted: 'Los gehts',
   info: 'Info',
   installToDesktop: 'Auf den Desktop installieren',
@@ -128,9 +132,24 @@ export default {
   safeBrowseLoadContent: 'Lade Inhalt von <1>{{host}}</1>?',
   safeBrowseDisableForSession: 'Sicheres Surfen für diese Sitzung deaktivieren',
   session: 'Sitzung',
+  openSecondPopup: '(noch einmal)',
   theaterMode: 'Theater-Modus',
   theaterModeDesc:
     'Verstecke alle Inhalte, die nichts mit dem Videoinhalt zutun haben. Dies könnte jedoch auch Untertitel verstecken.',
   userNameChanged:
-    '<Username id="{{userId}}">{{prevName}}</Username> heißt nun <Username id="{{userId}}">{{name}}</Username>.'
+    '<Username id="{{userId}}">{{prevName}}</Username> heißt nun <Username id="{{userId}}">{{name}}</Username>.',
+  patreonLogin: 'Login mit Patreon',
+  patreonLogout: 'Logout',
+  patreonPledge: 'Werde Patron',
+  patreonPledgeRequired: 'Nur für Patrons verfügbar',
+  patreonPledgeTierRequired: 'Nur für Patrons in der {{tier}} Stufe verfügbar',
+  playingInPopup: '<0>{{host}}</0> spielt etwas in einem Popup.',
+  popupBlocked:
+    'Ein Popup konnte nicht geöffnet werden. Erlaube Popups auf dieser Seite oder drücke die Taste erneut.',
+  supportMetastream: 'Supporte Metastream um Belohnungen zu erhalten!',
+  uiDockToRight: 'An rechte Seite andocken',
+  uiUndock: 'Als eigenes Overlay abdocken',
+  updateAvailable:
+    'Ein Update für Metastream steht bereit. Drücke den UPDATE Knopf oben rechts um das Update zu erhalten.',
+  welcomeToMetastream: 'Willkommen zu Metastream'
 }
