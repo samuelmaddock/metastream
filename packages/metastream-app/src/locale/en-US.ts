@@ -151,5 +151,7 @@ export default {
   viewOnGitHub: 'View on GitHub',
   waitingForHost: 'Waiting for host to allow connection',
   welcome: 'Welcome',
-  welcomeToMetastream: 'Welcome to Metastream'
+  welcomeToMetastream: 'Welcome to Metastream',
+  welcomeMessage1: 'Hi, thanks for trying out Metastream!',
+
 }

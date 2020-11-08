@@ -142,5 +142,6 @@ export default {
   viewOnGitHub: 'GitHubで見る',
   waitingForHost: 'ホストが接続を許可するのを待機しています……',
   welcome: 'ようこそ',
-  welcomeToMetastream: 'Metastreamへようこそ'
+  welcomeToMetastream: 'Metastreamへようこそ',
+  welcomeMessage1: 'Metastreamをお試しいただきありがとうございます！'
 }
