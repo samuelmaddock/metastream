@@ -127,6 +127,12 @@ export default {
   theaterModeDesc:
     'ウェブ内の動画以外の項目を非表示にします。字幕が表示されなくなる可能性があります',
   thirdPartyIntegrations: 'サードパーティーの機能',
+  tipsGettingStarted1: '始めるためのヒント',
+  tipsGettingStarted2:'この画面では、セッションで共有するメディアを探すためにウェブを閲覧できます。',
+  tipsGettingStarted3: 'Metastream はたくさんのウェブサイトをサポートしています！以下の動画サイトのリストに無くても、ぜひリンクを追加してみてください！',
+  tipsGettingStarted4: '動画のサイトによっては、一緒に観たい人全員がアカウントを持っている必要があります。',
+  tipsGettingStarted5: 'ウェブサイトが思うように動作しませんか？',
+  tipsGettingStarted6: 'GitHub に issue を投稿していただくと、とても助かります。',
   toggleDJ: 'DJの切り替え',
   uiDockToRight: 'サイドバーを表示',
   unlimited: '無制限',
@@ -143,5 +149,11 @@ export default {
   waitingForHost: 'ホストが接続を許可するのを待機しています……',
   welcome: 'ようこそ',
   welcomeToMetastream: 'Metastreamへようこそ',
-  welcomeMessage1: 'Metastreamをお試しいただきありがとうございます！'
+  welcomeMessage1: 'Metastreamをお試しいただきありがとうございます！',
+  welcomeMessage2: 'まだベータ版なので改善した方が良い点が見つかるでしょう。もし何か見つけた時は、',
+  welcomeMessage3: 'Github に issue を投稿してください。',
+  welcomeMessage4: 'ディスカッションに参加する場合は、画面下部のリンクからお気軽に Discord コミュニティに参加してください。 ',
+  welcomeMessage5: 'また、もし Rabbit のユーザーだった場合は、',
+  welcomeMessage6: 'FAQ をチェックして',
+  welcomeMessage7: 'Metastream との違いを知ることができます。'
 }
