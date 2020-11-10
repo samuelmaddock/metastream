@@ -54,22 +54,20 @@ const WelcomeMessage: React.SFC = () => (
   <>
     <p>{t('welcomeMessage1')}</p>
     <p>
-      This release is still in beta, so expect there to be some issues. If you come across any,
-      please{' '}
+      {t('welcomeMessage2')}{' '}
       <ExternalLink href="https://github.com/samuelmaddock/metastream/issues">
-        submit a GitHub issue.
+      {t('welcomeMessage3')}
       </ExternalLink>
     </p>
     <p>
-      If you&rsquo;d like to join in on the discussion, feel free to join the Discord community
-      using the link at the bottom of the screen.
+      {t('welcomeMessage4')}
     </p>
     <p>
-      And if you&rsquo;re coming from Rabbit,{' '}
+    {t('welcomeMessage5')}{' '}
       <ExternalLink href="https://github.com/samuelmaddock/metastream/wiki/FAQ">
-        check out the FAQ
+      {t('welcomeMessage6')}
       </ExternalLink>{' '}
-      to learn how Metastream differs.
+      {t('welcomeMessage7')}
     </p>
     <p>💖 Sam</p>
   </>

@@ -86,7 +86,7 @@
     <header id="tips" class="tips">
       <button id="tipsbtn" class="tips-button">
         <div class="column">
-          <b>📝 Tips for getting started</b>
+          <b>📝 {t('tipsGettingStarted1')}</b>
           <svg
             width="24"
             viewBox="0 0 24 24"
@@ -102,24 +102,23 @@
       </button>
       <div class="tips-content">
         <p class="column">
-          From here you can browse the web to find media to share in the session.
+          {t('tipsGettingStarted2')}
         </p>
 
         <ul class="column emoji-list">
           <li>
-            <span class="emoji-bullet">🌐</span> Metastream supports many websites! Don't see one in
-            the list? Try adding the link anyway!
+            <span class="emoji-bullet">🌐</span> {t('tipsGettingStarted3')}
           </li>
           <li>
-            <span class="emoji-bullet">👥</span> Everyone in the session will need an account or subscription if required by a website.
+            <span class="emoji-bullet">👥</span> {t('tipsGettingStarted4')}
           </li>
           <li>
-            <span class="emoji-bullet">🐛</span> Is a website not working how you'd expect? Help us out by
+            <span class="emoji-bullet">🐛</span> {t('tipsGettingStarted5')}
             <a
               class="link"
               href="https://github.com/samuelmaddock/metastream/issues"
               target="_blank"
-              >reporting the issue on GitHub.</a
+              >{t('tipsGettingStarted6')}</a
             >
           </li>
         </ul>
@@ -149,7 +148,7 @@
             autocomplete="url"
             spellcheck="false"
           />
-          <button id="addbtn" class="button uppercase">Add to Session</button>
+          <button id="addbtn" class="button uppercase">{t('homescreenRequestURL')}</button>
         </div>
       </section>
     </main>

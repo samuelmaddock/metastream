@@ -59,6 +59,7 @@ export default {
   friendCode: 'Friend code',
   getStarted: 'Get Started',
   help: 'Help',
+  homescreenRequestURL: 'Add to Session',
   info: 'Info',
   installToDesktop: 'Install to desktop',
   interact: 'Interact',
@@ -135,6 +136,12 @@ export default {
   theaterModeDesc:
     'Hide all non-video content on the webpage. Note that this might also hide soft subtitles.',
   thirdPartyIntegrations: 'Third-party Integrations',
+  tipsGettingStarted1: 'Tips for getting started',
+  tipsGettingStarted2:'From here you can browse the web to find media to share in the session.',
+  tipsGettingStarted3: 'Metastream supports many websites! Don&#44;t see one in the list? Try adding the link anyway!',
+  tipsGettingStarted4: 'Everyone in the session will need an account or subscription if required by a website.',
+  tipsGettingStarted5: 'Is a website not working how you&#44;d expect? Help us out by',
+  tipsGettingStarted6: 'reporting the issue on GitHub.',
   toggleDJ: 'Toggle DJ',
   uiDockToRight: 'Dock to right side',
   uiUndock: 'Undock into floating overlays',
@@ -153,5 +160,10 @@ export default {
   welcome: 'Welcome',
   welcomeToMetastream: 'Welcome to Metastream',
   welcomeMessage1: 'Hi, thanks for trying out Metastream!',
-
+  welcomeMessage2: 'This release is still in beta, so expect there to be some issues. If you come across any, please',
+  welcomeMessage3: 'submit a GitHub issue.',
+  welcomeMessage4: 'If you&rsquo;d like to join in on the discussion, feel free to join the Discord community using the link at the bottom of the screen.',
+  welcomeMessage5: 'And if you&rsquo;re coming from Rabbit,',
+  welcomeMessage6: 'check out the FAQ',
+  welcomeMessage7: 'to learn how Metastream differs.'
 }
