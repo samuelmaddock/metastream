@@ -4,10 +4,10 @@ import { HighlightButton } from './common/button'
 import { t } from 'locale'
 import { Trans } from 'react-i18next'
 import { isFirefox } from 'utils/browser'
-import { createPortal } from 'react-dom'
 import { Remote } from './remote'
 import { dispatchExtensionMessage } from 'utils/extension'
 import { ASSETS_PATH } from 'utils/appUrl'
+import { Portal } from './Portal'
 
 const POPUP_WIDTH = 336 // px
 
@@ -111,7 +111,6 @@ export class PopupWindow extends Component<Props, State> {
   }
 
   private intervalId?: number
-  private stylesheetObserver?: MutationObserver
 
   componentWillUnmount() {
     this.closeWindows()
@@ -138,11 +137,6 @@ export class PopupWindow extends Component<Props, State> {
     if (mediaWin) {
       if (!mediaWin.closed) mediaWin.close()
       PopupWindow.mediaWindowRef = null
-    }
-
-    if (this.stylesheetObserver) {
-      this.stylesheetObserver.disconnect()
-      this.stylesheetObserver = undefined
     }
 
     clearInterval(this.intervalId)
@@ -186,39 +180,6 @@ export class PopupWindow extends Component<Props, State> {
       remotePopupReady: Boolean(PopupWindow.remoteWindowRef && !PopupWindow.remoteWindowRef.closed),
       mediaPopupReady: Boolean(PopupWindow.mediaWindowRef && !PopupWindow.mediaWindowRef.closed)
     })
-
-    if (this.stylesheetObserver) {
-      this.stylesheetObserver.disconnect()
-    }
-
-    this.stylesheetObserver = new MutationObserver(this.onHeadMutation)
-    this.stylesheetObserver.observe(document.head, { childList: true })
-
-    this.copyStyleSheets()
-  }
-
-  private onHeadMutation: MutationCallback = list => {
-    const shouldCopyStyles = list.some(record => record.type === 'childList')
-    if (shouldCopyStyles) {
-      this.copyStyleSheets()
-    }
-  }
-
-  private copyStyleSheets() {
-    const remoteDocument = PopupWindow.remoteWindowRef && PopupWindow.remoteWindowRef.document
-    if (remoteDocument) {
-      // remove existing stylesheets
-      Array.from(remoteDocument.styleSheets).forEach(stylesheet => {
-        if (stylesheet.ownerNode) stylesheet.ownerNode.remove()
-      })
-
-      // add all stylesheets from main document
-      Array.from(document.styleSheets).forEach(stylesheet => {
-        if (stylesheet.ownerNode) {
-          remoteDocument.head.appendChild(stylesheet.ownerNode.cloneNode(true))
-        }
-      })
-    }
   }
 
   private openWindows = () => {
@@ -322,7 +283,11 @@ export class PopupWindow extends Component<Props, State> {
     const root = remoteDocument.getElementById('root')
     if (!root) return
 
-    return createPortal(<Remote />, root)
+    return (
+      <Portal container={root}>
+        <Remote />
+      </Portal>
+    )
   }
 
   private renderPopupIcon() {

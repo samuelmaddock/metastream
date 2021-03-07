@@ -24,9 +24,9 @@ interface Props {
   /** Whether this webview should use a popup window. */
   popup?: boolean
   onClosePopup?: Function
-  onMessage?: (event: MessageEvent) => void
   backgroundImage?: string
   onActivity?: (eventName: string) => void
+  onNavigate?: (url: string) => void
 }
 
 interface State {
@@ -87,12 +87,6 @@ export class Webview extends Component<Props, State> {
   }
 
   private onMessage(event: MessageEvent) {
-    if (this.iframe && this.iframe.contentWindow === event.source) {
-      if (this.props.onMessage) {
-        this.props.onMessage(event)
-      }
-    }
-
     const { data } = event
     if (typeof data !== 'object' || typeof data.type !== 'string') return
 
@@ -203,6 +197,9 @@ export class Webview extends Component<Props, State> {
 
   private didNavigate = () => {
     this.clearNavigateTimeout()
+    if (this.props.onNavigate) {
+      this.props.onNavigate(this.url)
+    }
   }
 
   componentWillReceiveProps(nextProps: Props) {
@@ -228,10 +225,10 @@ export class Webview extends Component<Props, State> {
       className,
       popup,
       onClosePopup,
-      onMessage,
       backgroundImage,
       onActivity,
       mediaSrc,
+      onNavigate,
       ...rest
     } = this.props
 
@@ -328,5 +325,9 @@ export class Webview extends Component<Props, State> {
 
   reloadIgnoringCache() {
     this.dispatchRemoteEvent('reload', true)
+  }
+
+  getIFrame() {
+    return this.iframe
   }
 }

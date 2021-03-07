@@ -1,18 +1,18 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import cx from 'classnames'
-import shortid from 'shortid'
 
 import styles from './WebBrowser.css'
 import { WebControls } from 'components/browser/Controls'
-import { assetUrl } from 'utils/appUrl'
+import { assetUrl, absoluteUrl } from 'utils/appUrl'
 import { IReactReduxProps } from 'types/redux-thunk'
 import { Webview } from 'components/Webview'
 import { sendMediaRequest } from 'lobby/actions/media-request'
 import { DonateBar } from 'components/account/DonateBar'
+import { HomeScreen } from './Homescreen'
+import { Portal } from 'components/Portal'
 
-const NONCE = shortid()
-const DEFAULT_URL = `${assetUrl('homescreen.html')}?nonce=${NONCE}`
+const DEFAULT_URL = absoluteUrl(`${assetUrl('webview.html')}`)
 
 interface IProps {
   className?: string
@@ -22,7 +22,13 @@ interface IProps {
 
 type PrivateProps = IProps & IReactReduxProps
 
-export class _WebBrowser extends Component<PrivateProps> {
+interface State {
+  showHomescreen?: boolean
+}
+
+export class _WebBrowser extends Component<PrivateProps, State> {
+  state: State = {}
+
   private webview?: Webview | null
   private controls?: WebControls | null
 
@@ -100,6 +106,7 @@ export class _WebBrowser extends Component<PrivateProps> {
         />
         {this.renderContent()}
         <DonateBar className={styles.donateBar} />
+        {this.state.showHomescreen && this.renderHomescreen()}
       </div>
     )
   }
@@ -110,22 +117,26 @@ export class _WebBrowser extends Component<PrivateProps> {
         componentRef={this.setupWebview}
         src={this.initialUrl}
         className={styles.content}
-        onMessage={event => {
-          const { data } = event
-          if (
-            typeof data !== 'object' ||
-            typeof data.type !== 'string' ||
-            typeof data.payload !== 'object'
-          ) {
-            return
-          }
-
-          const { type, payload } = data
-          if (type === 'add-to-session' && payload.nonce === NONCE) {
-            this.requestUrl(payload.url, 'homescreen')
+        onNavigate={url => {
+          const showHomescreen = url === DEFAULT_URL
+          if (showHomescreen) {
+            this.setState({ showHomescreen: false }) // force remount
+            this.setState({ showHomescreen })
           }
         }}
       />
+    )
+  }
+
+  private renderHomescreen() {
+    const iframe = this.webview && this.webview.getIFrame()
+    const wvDoc = iframe && iframe.contentDocument && iframe.contentDocument.body
+    if (!wvDoc) return null
+
+    return (
+      <Portal container={wvDoc}>
+        <HomeScreen onRequestUrl={url => this.requestUrl(url, 'homescreen')} />
+      </Portal>
     )
   }
 }

@@ -1,4 +1,4 @@
-import { normalize, dirname, isAbsolute, resolve } from 'path'
+import { normalize, isAbsolute, resolve } from 'path'
 
 export const ASSETS_PATH = '/assets'
 
@@ -8,9 +8,7 @@ export const assetUrl = (relativePath: string) => {
 }
 
 export const absoluteUrl = (relativePath: string) => {
-  const { protocol, host, pathname } = location
-  const basepath = dirname(pathname)
-  return `${protocol}//${host}${basepath}/${normalize(relativePath)}`
+  return new URL(relativePath, location.origin).href
 }
 
 export const fileUrl = (filePath: string) => {
