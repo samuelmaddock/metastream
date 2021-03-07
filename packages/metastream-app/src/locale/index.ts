@@ -8,11 +8,13 @@ import ptBR from './pt-BR'
 import huHU from './hu-HU'
 import es from './es'
 import ru from './ru'
+import uk from './UK'
 import ja from './ja'
 import ar from './ar'
 import koKR from './ko-KR'
 import frFR from './fr-FR'
 import zhCN from './zh-CN'
+import zhTW from './zh-TW'
 import trTR from './tr-TR'
 import itIT from './it-IT'
 import pl from './pl'
@@ -26,6 +28,7 @@ export const locales = [
   { label: 'Français', code: 'fr-FR', translation: frFR, flag: '🇫🇷' },
   { label: 'Italiano', code: 'it-IT', translation: itIT, flag: '🇮🇹' },
   { label: 'Pусский', code: 'ru-RU', translation: ru, flag: '🇷🇺' },
+  { label: 'украї́нська', code: 'uk', translation: uk, flag: '🇺🇦' },
   { label: 'Polski', code: 'pl', translation: pl, flag: '🇵🇱' },
   { label: 'Português do Brasil', code: 'pt-BR', translation: ptBR, flag: '🇧🇷' },
   { label: 'Deutsch', code: 'de-DE', translation: deDE, flag: '🇩🇪' },
@@ -33,7 +36,8 @@ export const locales = [
   { label: 'Magyar', code: 'hu-HU', translation: huHU, flag: '🇭🇺' },
   { label: '日本語', code: 'ja-JP', translation: ja, flag: '🇯🇵' },
   { label: '한국어', code: 'ko-KR', translation: koKR, flag: '🇰🇷' },
-  { label: '简化字', code: 'zh-CN', translation: zhCN, flag: '🇨🇳' },
+  { label: '中文', code: 'zh-CN', translation: zhCN, flag: '🇨🇳' },
+  { label: '繁體中文', code: 'zh-TW', translation: zhTW, flag: '🇹🇼' },
   { label: 'العربية الفصحى', code: 'ar', translation: ar, flag: '🇦🇪' }
 ]
 

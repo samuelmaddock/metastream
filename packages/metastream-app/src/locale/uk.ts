@@ -48,7 +48,8 @@ export default {
   embedBlocked:
     'Щоб увімкнути відтворення за допомогою <1>{host}}</1>, Metastream має відкрити веб-сайт у спливаючому меню.',
   endSessionTitle: 'Завершити сеанс?',
-  endSessionDescription: 'Перехід до автономного сеансу призведе до відключення всіх підключених користувачів.',
+  endSessionDescription:
+    'Перехід до автономного сеансу призведе до відключення всіх підключених користувачів.',
   endSessionModalDescription: 'Усі користувачі будуть відключені від сеансу.',
   endSessionButton: 'Завершити сеанс',
   enterJoinDest: 'Введіть посилання на сеанс Metastream.',
@@ -72,7 +73,7 @@ export default {
   maxUsers: 'Максимальна кількість користувачів',
   next: 'Наступний',
   nextUp: 'У черзі',
-  networkDisconnectHostDisconnect: 'Господар закрив зв\'язок.',
+  networkDisconnectHostDisconnect: "Господар закрив зв'язок.",
   networkDisconnectError: 'Помилка мережі.',
   networkDisconnectInvalidClientInfo: 'Недійсні відомості про споживоча.',
   networkDisconnectVersionMismatch: `Невідповідність споживаючої версії. Ваш споживач або господар вимагає оновлення.`,
@@ -81,7 +82,8 @@ export default {
   networkDisconnectMultiTab:
     'Ви розміщуєте сеанс Metastream з більш ніж одного браузера або вкладки. Закрийте інші вкладки або інші браузери, а потім перезавантажте сторінку.',
   networkDisconnectSessionNotFound: 'Сеанс не знайдено.',
-  networkTroubleshootingHelp: 'Щоб отримати довідку, перегляньте <1>Посібник із Виправлення неполадок мережі</1>.',
+  networkTroubleshootingHelp:
+    'Щоб отримати довідку, перегляньте <1>Посібник із Виправлення неполадок мережі</1>.',
   noticeAddedMedia: 'Додано <Media id="{{mediaId}}">{{mediaTitle}}</Media>',
   noticeMediaError: 'Під час запиту сталася помилка {{url}}',
   noticeNowPlaying:
@@ -127,13 +129,14 @@ export default {
   settings: 'Налаштування',
   shareFriendCode: 'Поділіться кодом свого друга нижче, щоб запросити друзів.',
   shareFriendCodeOther: 'Поділіться кодом друга {{name}}’s нижче, щоб запросити друзів.',
-  sharePublicIP: 'Поділіться <1>своєю загальнодоступною IP-адресою</1>, щоб дозволити друзям підключатися безпосередньо.',
+  sharePublicIP:
+    'Поділіться <1>своєю загальнодоступною IP-адресою</1>, щоб дозволити друзям підключатися безпосередньо.',
   shareSessionUrl: 'Поділіться посиланням на сеанс нижче, щоб запросити друзів.',
   supportMetastream: 'Підтримуйте Metastream, щоб розблокувати нагороди!',
   startSession: 'Почати сеанс',
   theaterMode: 'Режим театру',
   theaterModeDesc:
-    'Приховати весь не відеоконтент на веб-сторінці. Зауважте, що це також може приховати м\'які субтитри.',
+    "Приховати весь не відеоконтент на веб-сторінці. Зауважте, що це також може приховати м'які субтитри.",
   thirdPartyIntegrations: 'Інтеграція сторонніх постачальників',
   toggleDJ: 'Увімкнути або вимкнути DJ',
   uiDockToRight: 'Пристикувати до правого боку',
@@ -142,16 +145,15 @@ export default {
   unlockQueue: 'Розблокувати чергу',
   updateAvailable:
     'Доступне оновлення Metastream. Натисніть кнопку UPDATE у верхньому правому куті, щоб отримати оновлення.',
-  username: 'Ім\'я користувача',
+  username: "Ім'я користувача",
   users: 'Користувачі',
   userJoined: '<Username id="{{userId}}">{{username}}</Username> приєднався.',
   userLeft: '<Username id="{{userId}}">{{username}}</Username> пішов.',
   userNameChanged:
     '<Username id="{{userId}}">{{prevName}}</Username> тепер відомий як <Username id="{{userId}}">{{name}}</Username>.',
   viewOnGitHub: 'Переглянути на GitHub',
-  waitingForHost: 'Очікування господаря на дозвіл з\'єднання',
+  waitingForHost: "Очікування господаря на дозвіл з'єднання",
   welcome: 'Ласкаво просимо',
   welcomeToMetastream: 'Ласкаво просимо до Metastream',
-  welcomeMessage1: 'Привіт, дякуємо за спробу Metastream!',
-
+  welcomeMessage1: 'Привіт, дякуємо за спробу Metastream!'
 }

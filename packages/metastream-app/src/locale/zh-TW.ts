@@ -1,4 +1,3 @@
-
 export default {
   add: '添加',
   addMedia: '添加影片',
@@ -45,8 +44,7 @@ export default {
   donate: '贊助',
   donators: '贊助過的人',
   duplicate: '重復',
-  embedBlocked:
-    '要開始 <1>{{host}}</1> 的播放, Metastream 需要在彈出視窗開啟網頁。',
+  embedBlocked: '要開始 <1>{{host}}</1> 的播放, Metastream 需要在彈出視窗開啟網頁。',
   endSessionTitle: '結束派對嗎?',
   endSessionDescription: '變為離線派對時會切斷所有目前用戶的連接。',
   endSessionModalDescription: '所有用戶將與此會話切斷連接.',
@@ -86,8 +84,7 @@ export default {
   noticeMediaError: '請求發生了錯誤 {{url}}',
   noticeNowPlaying:
     '現在正在播放 <Username id="{{userId}}">{{username}}</Username> 點播的 <Media id="{{mediaId}}">{{mediaTitle}}</Media>.',
-  noticeUserRequestJoin:
-    '<Username id="{{userId}}">{{username}}</Username> 請求加入會話.',
+  noticeUserRequestJoin: '<Username id="{{userId}}">{{username}}</Username> 請求加入會話.',
   offline: '離線',
   ok: 'OK',
   once: '單次',
@@ -100,8 +97,7 @@ export default {
   patreonPledgeRequired: '只限 patrons',
   patreonPledgeTierRequired: '只限達到 {{tier}} 等級的 patrons',
   playingInPopup: '<0>{{host}}</0> 正在彈出式視窗播放。',
-  popupBlocked:
-    '無法開啟彈出式視窗。請容許此網站開啟彈出式視窗或再按一次。',
+  popupBlocked: '無法開啟彈出式視窗。請容許此網站開啟彈出式視窗或再按一次。',
   private: '私有的',
   profile: '資料',
   public: '公有的',
@@ -113,8 +109,7 @@ export default {
   requestUrlPlaceholder: '',
   required: '需要',
   requiresDJPermissions: '需要 DJ 權限',
-  requiresPortForward:
-   '需要將 <3>{{port}}</3> 端口進行 <1>轉發</1> 來接受直接連接.',
+  requiresPortForward: '需要將 <3>{{port}}</3> 端口進行 <1>轉發</1> 來接受直接連接.',
   safeBrowse: '安全觀看',
   safeBrowseDesc: '載入非熱門網頁前先要求允許。',
   safeBrowseLoadContent: '載入 <1>{{host}}</1>?',
@@ -132,25 +127,23 @@ export default {
   supportMetastream: '支持 Metastream 以解鎖更多功能!',
   startSession: '開始派對',
   theaterMode: '影院模式',
-  theaterModeDesc:
-    '移除所有非影片內容。可能會隱藏字幕。',
+  theaterModeDesc: '移除所有非影片內容。可能會隱藏字幕。',
   thirdPartyIntegrations: '第三方插件',
   toggleDJ: '切換 DJ',
   uiDockToRight: '側邊欄在右邊',
   uiUndock: '浮動側邊欄',
   unlimited: '無限制',
   unlockQueue: '解鎖隊列',
-    updateAvailable:
-    'Metastream 有更新可用。按右上方 “更新” 鈕以取得更新。',
+  updateAvailable: 'Metastream 有更新可用。按右上方 “更新” 鈕以取得更新。',
   username: '用戶名',
   users: '用戶',
   userJoined: '<Username id="{{userId}}">{{username}}</Username> 加入了.',
   userLeft: '<Username id="{{userId}}">{{username}}</Username> 離開了.',
   userNameChanged:
     '<Username id="{{userId}}">{{prevName}}</Username> 已更改為 <Username id="{{userId}}">{{name}}</Username>.',
-viewOnGitHub: '在 GitHub 上查看',
+  viewOnGitHub: '在 GitHub 上查看',
   waitingForHost: '等待管理員允許加入',
-  welcome: '歡迎'
+  welcome: '歡迎',
   welcomeToMetastream: '歡迎來到 Metastream',
-  welcomeMessage1: 'Hi, thanks for trying out Metastream!',
+  welcomeMessage1: 'Hi, thanks for trying out Metastream!'
 }
