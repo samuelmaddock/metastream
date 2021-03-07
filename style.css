@@ -2744,6 +2744,185 @@ p.WebviewError__emoji__SWZHz {
   text-align: center;
 }
 
+.HomeScreen__container__7DpWP {
+  --color-btn: rgba(255, 255, 255, 0.22);
+  --color-btn-text: rgba(255, 255, 255, 0.88);
+  --column-width: 47rem;
+  --tips-height: 3rem;
+  height: 100%;
+  overflow: auto;
+}
+
+.HomeScreen__main__3APPc {
+  min-height: calc(100vh - var(--tips-height));
+  padding: 0 30px;
+  padding-top: var(--tips-height);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.HomeScreen__column__3l0Aj {
+  width: 100%;
+  max-width: var(--column-width);
+  padding-left: 1rem;
+  padding-right: 1rem;
+  margin: 0 auto;
+}
+
+.HomeScreen__row__2tHK0 {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.HomeScreen__gridContainer__77tAc {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  grid-auto-flow: dense;
+}
+
+.HomeScreen__tips__2kx7f {
+  position: absolute;
+  z-index: 1;
+  width: 100%;
+  height: var(--tips-height);
+  overflow: hidden;
+  border-bottom: 1px solid var(--color-transparent-light-30);
+  transition: background-color 100ms ease-out;
+}
+
+.HomeScreen__tipsExpanded__3R7T7 {
+  height: auto;
+}
+
+.HomeScreen__tips__2kx7f:hover,
+.HomeScreen__tipsExpanded__3R7T7 {
+  backdrop-filter: blur(10px);
+  background-color: var(--color-transparent-light-30);
+}
+
+/* fix bad contrast in firefox where backdrop blur isn't supported */
+@-moz-document url-prefix() {
+  .HomeScreen__tipsExpanded__3R7T7 {
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+}
+
+.HomeScreen__tipsExpanded__3R7T7 svg {
+  transform: rotate(180deg);
+}
+
+.HomeScreen__tipsButton__15_AZ {
+  width: 100%;
+  height: var(--tips-height);
+}
+
+.HomeScreen__tipsButton__15_AZ .HomeScreen__column__3l0Aj {
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.HomeScreen__emojiList__21Lo8 {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.HomeScreen__emojiList__21Lo8 li {
+  padding-left: 2rem;
+  position: relative;
+  margin-top: 1rem;
+}
+
+.HomeScreen__emojiList__21Lo8 li:first-child {
+  margin-top: 0;
+}
+.HomeScreen__emojiBullet__1sz2g {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2rem;
+  display: inline-block;
+  text-align: center;
+}
+
+.HomeScreen__button__3wJWY {
+  background: var(--color-btn);
+  color: var(--color-btn-text);
+  transition: color 120ms ease-out, background-color 120ms ease-out;
+  letter-spacing: 1px;
+  border-radius: 4px;
+  backdrop-filter: blur(10px);
+}
+
+.HomeScreen__button__3wJWY:hover {
+  background: var(--color-highlight);
+  color: #fff;
+}
+
+.HomeScreen__socialLink__3t6Wj {
+  text-decoration: none;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  height: 4rem;
+  padding: 0.75rem 1rem;
+
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.HomeScreen__text-container__3Cx0D {
+  flex: 1 0 auto;
+  flex-direction: column;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: var(--column-width);
+  text-align: center;
+  font-size: 1.125rem;
+  padding: 1rem 0;
+}
+
+.HomeScreen__inputContainer__3LrY6 {
+  display: flex;
+  margin-top: 2rem;
+  min-width: 12rem;
+  max-width: 100%;
+}
+
+.HomeScreen__button__3wJWY,
+.HomeScreen__inputContainer__3LrY6 input {
+  padding: 0.5rem 1rem;
+  line-height: 1.5rem;
+}
+
+.HomeScreen__inputContainer__3LrY6 .HomeScreen__button__3wJWY {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.HomeScreen__inputContainer__3LrY6 input {
+  background: none;
+  flex: 1 1 auto;
+  border: none;
+  color: #fff;
+  border: 1px solid var(--color-btn);
+  border-radius: 4px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.HomeScreen__uppercase__Gf0zv {
+  text-transform: uppercase;
+}
+
 .MediaInfo__container__2QLMr {
   white-space: pre-line;
   word-wrap: break-word;
