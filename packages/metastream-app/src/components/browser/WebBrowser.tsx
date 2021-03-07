@@ -9,7 +9,7 @@ import { IReactReduxProps } from 'types/redux-thunk'
 import { Webview } from 'components/Webview'
 import { sendMediaRequest } from 'lobby/actions/media-request'
 import { DonateBar } from 'components/account/DonateBar'
-import { HomeScreen } from './Homescreen'
+import { HomeScreen } from './HomeScreen'
 import { Portal } from 'components/Portal'
 
 const DEFAULT_URL = absoluteUrl(`${assetUrl('webview.html')}`)
