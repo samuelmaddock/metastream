@@ -75,7 +75,7 @@ Creates a development web server accessible from [http://localhost:8080](http://
 ```
 cd packages/metastream-signal-server
 yarn build
-cd ../packages/metastream-app
+cd ../metastream-app
 yarn start
 ```
 
