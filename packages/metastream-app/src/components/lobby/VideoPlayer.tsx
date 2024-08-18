@@ -33,6 +33,7 @@ import { StorageKey } from 'constants/storage'
 import { EMBED_BLOCKED_DOMAIN_LIST } from 'constants/embed'
 import { IdleScreen } from './overlays/IdleScreen'
 import { setVolume } from 'actions/settings'
+import { ytDomains } from 'constants/domains'
 
 type MediaReadyPayload = {
   duration?: number
@@ -217,7 +218,7 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
     }
 
     if (playerSettings !== prevProps.playerSettings) {
-      this.dispatchMedia('set-settings', playerSettings)
+      this.updatePlayerSettings(playerSettings)
     }
 
     if (current !== prevMedia) {
@@ -379,7 +380,7 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
       this.mediaTimeout = -1
     }
 
-    this.dispatchMedia('set-settings', this.props.playerSettings)
+    this.updatePlayerSettings(this.props.playerSettings)
 
     // Apply auto-fullscreen to all subframes with nested iframes
     const isValidFrameSender = !isTopSubFrame || this.shouldRenderPopup
@@ -456,6 +457,22 @@ class _VideoPlayer extends PureComponent<PrivateProps, IState> {
 
   private updatePlaybackRate = (playbackRate: number) => {
     this.dispatchMedia('set-media-playback-rate', playbackRate)
+  }
+
+  private updatePlayerSettings = (settings: PlayerSettings) => {
+    let url
+    try {
+      url = new URL(this.mediaUrl)
+
+      // 2024: disable due to blackscreens during seek
+      if (ytDomains.has(url.hostname)) {
+        settings = { ...settings, mediaSessionProxy: false }
+      }
+    } catch {
+      // ignore
+    }
+
+    this.dispatchMedia('set-settings', settings)
   }
 
   private updateVolume = () => {
